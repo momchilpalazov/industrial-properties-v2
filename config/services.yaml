@@ -1,0 +1,30 @@
+parameters:
+    upload_directory: '%kernel.project_dir%/public/uploads'
+    locale: 'bg'
+    app_locales: ['bg', 'en', 'de', 'ru']
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    App\Service\FileUploadService:
+        arguments:
+            $uploadDir: '%upload_directory%'
+
+    App\Service\PropertyService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $fileUploadService: '@App\Service\FileUploadService'
+            $slugger: '@slugger'
+
+    slugger:
+        class: Symfony\Component\String\Slugger\AsciiSlugger
+        arguments: ['%locale%'] 

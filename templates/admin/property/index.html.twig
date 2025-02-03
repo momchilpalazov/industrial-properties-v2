@@ -1,0 +1,160 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Управление на имоти{% endblock %}
+
+{% block body %}
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Управление на имоти</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="bi bi-table me-1"></i>
+                    Списък с имоти
+                </div>
+                <a href="{{ path('admin_property_new') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-lg"></i> Добави имот
+                </a>
+            </div>
+            <div class="card-body">
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Снимка</th>
+                                <th>Заглавие</th>
+                                <th>Тип</th>
+                                <th>Локация</th>
+                                <th>Цена</th>
+                                <th>Площ</th>
+                                <th>Статус</th>
+                                <th>Featured</th>
+                                <th>Създаден</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for property in properties %}
+                            <tr>
+                                <td>{{ property.id }}</td>
+                                <td>
+                                    {% if property.images|length > 0 %}
+                                        {% set mainImage = property.images|filter(image => image.isMain)|first %}
+                                        {% if not mainImage %}
+                                            {% set mainImage = property.images|first %}
+                                        {% endif %}
+                                        <img src="{{ asset('uploads/properties/' ~ mainImage.path) }}" 
+                                             alt="{{ property.titleBg }}" 
+                                             class="img-thumbnail" 
+                                             style="max-width: 50px;">
+                                    {% endif %}
+                                </td>
+                                <td>{{ property.titleBg }}</td>
+                                <td>{{ property.type }}</td>
+                                <td>{{ property.locationBg }}</td>
+                                <td>{{ property.price|number_format(0, '.', ' ') }} €</td>
+                                <td>{{ property.area|number_format(0, '.', ' ') }} м²</td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-active" 
+                                               type="checkbox" 
+                                               {{ property.isActive ? 'checked' : '' }}
+                                               data-property-id="{{ property.id }}">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-featured" 
+                                               type="checkbox" 
+                                               {{ property.isFeatured ? 'checked' : '' }}
+                                               data-property-id="{{ property.id }}">
+                                    </div>
+                                </td>
+                                <td>{{ property.createdAt|date('d.m.Y') }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ path('admin_property_edit', {'id': property.id}) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{{ path('admin_property_images', {'id': property.id}) }}" 
+                                           class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-images"></i>
+                                        </a>
+                                        <form method="post" 
+                                              action="{{ path('admin_property_delete', {'id': property.id}) }}" 
+                                              class="d-inline" 
+                                              onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този имот?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ property.id) }}">
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination justify-content-center">
+                    {{ knp_pagination_render(properties) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle Active Status
+            document.querySelectorAll('.toggle-active').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const propertyId = this.dataset.propertyId;
+                    fetch(`/admin/properties/${propertyId}/toggle-active`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.success) {
+                            this.checked = !this.checked;
+                        }
+                    });
+                });
+            });
+
+            // Toggle Featured Status
+            document.querySelectorAll('.toggle-featured').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const propertyId = this.dataset.propertyId;
+                    fetch(`/admin/properties/${propertyId}/toggle-featured`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.success) {
+                            this.checked = !this.checked;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %} 

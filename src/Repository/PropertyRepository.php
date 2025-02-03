@@ -1,113 +1,163 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Repository;
 
-use Doctrine\DBAL\Connection;
+use App\Entity\Property;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder;
 
-class PropertyRepository extends AbstractRepository
+/**
+ * @extends ServiceEntityRepository<Property>
+ */
+class PropertyRepository extends ServiceEntityRepository
 {
-    public function __construct(Connection $connection)
+    public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($connection);
-        $this->table = 'properties';
+        parent::__construct($registry, Property::class);
     }
 
-    public function getFeaturedProperties(int $limit = 6): array
+    public function save(Property $property, bool $flush = false): void
     {
-        $qb = $this->createQueryBuilder()
-            ->select('p.*, pi.image_path')
-            ->from($this->table, 'p')
-            ->leftJoin(
-                'p',
-                'property_images',
-                'pi',
-                'p.id = pi.property_id AND pi.is_main = 1'
-            )
-            ->where('p.featured = 1')
-            ->orderBy('p.created_at', 'DESC')
-            ->setMaxResults($limit);
+        $this->getEntityManager()->persist($property);
 
-        return $qb->executeQuery()->fetchAllAssociative();
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 
-    public function getLatestProperties(int $limit = 3): array
+    public function remove(Property $property, bool $flush = false): void
     {
-        $qb = $this->createQueryBuilder()
-            ->select('p.*, pi.image_path')
-            ->from($this->table, 'p')
-            ->leftJoin(
-                'p',
-                'property_images',
-                'pi',
-                'p.id = pi.property_id AND pi.is_main = 1'
-            )
-            ->orderBy('p.created_at', 'DESC')
-            ->setMaxResults($limit);
+        $this->getEntityManager()->remove($property);
 
-        return $qb->executeQuery()->fetchAllAssociative();
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 
-    public function searchProperties(array $criteria): array
+    public function findLatest(int $limit = 10): array
     {
-        $qb = $this->createQueryBuilder()
-            ->select('p.*, pi.image_path')
-            ->from($this->table, 'p')
-            ->leftJoin(
-                'p',
-                'property_images',
-                'pi',
-                'p.id = pi.property_id AND pi.is_main = 1'
-            );
+        return $this->createQueryBuilder('p')
+            ->where('p.isActive = :active')
+            ->setParameter('active', true)
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 
-        if (!empty($criteria['type'])) {
+    public function findFeatured(int $limit = 6): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.isActive = :active')
+            ->andWhere('p.isFeatured = :featured')
+            ->setParameter('active', true)
+            ->setParameter('featured', true)
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findSimilar(Property $property, int $limit = 3): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.isActive = :active')
+            ->andWhere('p.id != :id')
+            ->andWhere('p.type = :type')
+            ->andWhere('p.price BETWEEN :minPrice AND :maxPrice')
+            ->setParameter('active', true)
+            ->setParameter('id', $property->getId())
+            ->setParameter('type', $property->getType())
+            ->setParameter('minPrice', $property->getPrice() * 0.7)
+            ->setParameter('maxPrice', $property->getPrice() * 1.3)
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByFilters(array $filters): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->where('p.isActive = :active')
+            ->setParameter('active', true);
+
+        if (!empty($filters['type'])) {
             $qb->andWhere('p.type = :type')
-               ->setParameter('type', $criteria['type']);
+               ->setParameter('type', $filters['type']);
         }
 
-        if (!empty($criteria['min_area'])) {
-            $qb->andWhere('p.area >= :min_area')
-               ->setParameter('min_area', $criteria['min_area']);
+        if (!empty($filters['min_price'])) {
+            $qb->andWhere('p.price >= :minPrice')
+               ->setParameter('minPrice', $filters['min_price']);
         }
 
-        if (!empty($criteria['max_area'])) {
-            $qb->andWhere('p.area <= :max_area')
-               ->setParameter('max_area', $criteria['max_area']);
+        if (!empty($filters['max_price'])) {
+            $qb->andWhere('p.price <= :maxPrice')
+               ->setParameter('maxPrice', $filters['max_price']);
         }
 
-        if (!empty($criteria['min_price'])) {
-            $qb->andWhere('p.price >= :min_price')
-               ->setParameter('min_price', $criteria['min_price']);
+        if (!empty($filters['min_area'])) {
+            $qb->andWhere('p.area >= :minArea')
+               ->setParameter('minArea', $filters['min_area']);
         }
 
-        if (!empty($criteria['max_price'])) {
-            $qb->andWhere('p.price <= :max_price')
-               ->setParameter('max_price', $criteria['max_price']);
+        if (!empty($filters['max_area'])) {
+            $qb->andWhere('p.area <= :maxArea')
+               ->setParameter('maxArea', $filters['max_area']);
         }
 
-        $qb->orderBy('p.created_at', 'DESC');
+        if (!empty($filters['location'])) {
+            $qb->andWhere('p.locationBg LIKE :location OR p.locationEn LIKE :location')
+               ->setParameter('location', '%' . $filters['location'] . '%');
+        }
 
-        return $qb->executeQuery()->fetchAllAssociative();
+        if (!empty($filters['sort'])) {
+            switch ($filters['sort']) {
+                case 'price_asc':
+                    $qb->orderBy('p.price', 'ASC');
+                    break;
+                case 'price_desc':
+                    $qb->orderBy('p.price', 'DESC');
+                    break;
+                case 'area_asc':
+                    $qb->orderBy('p.area', 'ASC');
+                    break;
+                case 'area_desc':
+                    $qb->orderBy('p.area', 'DESC');
+                    break;
+                default:
+                    $qb->orderBy('p.createdAt', 'DESC');
+            }
+        } else {
+            $qb->orderBy('p.createdAt', 'DESC');
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
-    public function create(array $data): int
+    public function getStats(): array
     {
-        $this->connection->insert($this->table, $data);
-        return (int) $this->connection->lastInsertId();
+        $total = $this->count([]);
+        $active = $this->count(['isActive' => true]);
+        $featured = $this->count(['isActive' => true, 'isFeatured' => true]);
+
+        return [
+            'total' => $total,
+            'active' => $active,
+            'featured' => $featured
+        ];
     }
 
-    public function update(int $id, array $data): bool
+    public function getTypeStats(): array
     {
-        return (bool) $this->connection->update(
-            $this->table,
-            $data,
-            ['id' => $id]
-        );
-    }
-
-    public function delete(int $id): bool
-    {
-        return (bool) $this->connection->delete($this->table, ['id' => $id]);
+        return $this->createQueryBuilder('p')
+            ->select('p.type, COUNT(p.id) as count')
+            ->where('p.isActive = :active')
+            ->setParameter('active', true)
+            ->groupBy('p.type')
+            ->getQuery()
+            ->getResult();
     }
 } 

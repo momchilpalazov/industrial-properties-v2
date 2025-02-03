@@ -44,6 +44,16 @@ property:
         office: 'Офис'
         retail: 'Търговски'
         mixed: 'Смесен'
+        industrial_land: 'Индустриален терен'
+        industrial_building: 'Индустриална сграда'
+        logistics_center: 'Логистичен център'
+        production_facility: 'Производствена база'
+    sort:
+        newest: 'Най-нови'
+        price_asc: 'Цена (възходящо)'
+        price_desc: 'Цена (низходящо)'
+        area_asc: 'Площ (възходящо)'
+        area_desc: 'Площ (низходящо)'
 
 blog:
     title: 'Блог'
@@ -70,4 +80,55 @@ contact:
         message: 'Съобщение'
         submit: 'Изпрати'
         success: 'Вашето съобщение беше изпратено успешно!'
-        error: 'Възникна грешка при изпращане на съобщението.' 
+        error: 'Възникна грешка при изпращане на съобщението.'
+
+properties:
+    list:
+        title: 'Индустриални имоти'
+        heading: 'Намерете вашия индустриален имот'
+        description: 'Разгледайте нашата селекция от индустриални имоти, складове и логистични центрове'
+        no_results: 'Няма намерени имоти'
+        try_different_filters: 'Опитайте с различни критерии за търсене'
+    filter:
+        search: 'Търсене'
+        type: 'Тип имот'
+        area: 'Площ'
+        price: 'Цена'
+        location: 'Локация'
+        sort: 'Подреди по'
+    types:
+        industrial_land: 'Индустриален терен'
+        industrial_building: 'Индустриална сграда'
+        logistics_center: 'Логистичен център'
+        warehouse: 'Склад'
+        production_facility: 'Производствена база'
+    sort:
+        newest: 'Най-нови'
+        price_asc: 'Цена (възходящо)'
+        price_desc: 'Цена (низходящо)'
+        area_asc: 'Площ (възходящо)'
+        area_desc: 'Площ (низходящо)'
+
+property:
+    featured: 'Препоръчан'
+    details: 'Детайли'
+    contact: 'Свържете се с нас'
+    similar: 'Подобни имоти'
+    description: 'Описание'
+    specifications: 'Спецификации'
+    location: 'Локация'
+    area: 'Площ'
+    price: 'Цена'
+    type: 'Тип'
+    created_at: 'Публикуван на'
+    share: 'Сподели'
+    print: 'Принтирай'
+    inquiry:
+        title: 'Изпратете запитване'
+        name: 'Име'
+        email: 'Имейл'
+        phone: 'Телефон'
+        message: 'Съобщение'
+        submit: 'Изпрати'
+        success: 'Вашето запитване беше изпратено успешно'
+        error: 'Възникна грешка при изпращане на запитването' 

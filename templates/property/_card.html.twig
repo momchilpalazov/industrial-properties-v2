@@ -1,31 +1,46 @@
-<div class="col-xl-4 col-lg-6">
-    <div class="card property-card h-100">
-        <div class="position-relative">
-            <img src="{{ property.image_path ? '/uploads/properties/' ~ property.image_path : '/assets/images/no-image.jpg' }}" 
-                 class="card-img-top" alt="{{ property['title_' ~ current_language] }}"
-                 style="height: 300px; object-fit: cover;">
-            {% if property.pdf_flyer %}
-                <a href="/uploads/flyers/{{ property.pdf_flyer }}" target="_blank" class="pdf-flyer-link">
-                    <i class="fas fa-file-pdf"></i> 
-                    {{ translations.property.view_brochure }}
-                </a>
+<div class="property-item rounded overflow-hidden">
+    <div class="position-relative overflow-hidden">
+        {% if property.images|length > 0 %}
+            {% set mainImage = property.images|filter(image => image.isMain)|first %}
+            {% if not mainImage %}
+                {% set mainImage = property.images|first %}
             {% endif %}
+            <img class="img-fluid" src="{{ asset('uploads/properties/' ~ mainImage.path) }}" alt="{{ property.title }}">
+        {% else %}
+            <img class="img-fluid" src="{{ asset('images/no-image.jpg') }}" alt="No image available">
+        {% endif %}
+        
+        <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">
+            {{ property.type|trans }}
         </div>
-        <div class="card-body p-4">
-            <h5 class="card-title h4 mb-3">{{ property['title_' ~ current_language] }}</h5>
-            <div class="property-details mb-4">
-                <p class="card-text fs-5 mb-2">
-                    <strong>{{ translations.property.price }}:</strong> 
-                    <span class="text-primary">€{{ property.price|number_format }}</span>
-                </p>
-                <p class="card-text fs-5 mb-0">
-                    <strong>{{ translations.property.area }}:</strong> 
-                    <span>{{ property.area|number_format }} m²</span>
-                </p>
+        {% if property.isFeatured %}
+            <div class="bg-white rounded-pill position-absolute end-0 top-0 m-4 py-1 px-3">
+                <i class="bi bi-star-fill text-warning"></i>
+                {{ 'property.featured'|trans }}
             </div>
-            <a href="/property/{{ property.id }}" class="btn btn-outline-primary btn-lg w-100">
-                {{ translations.property.details }}
-            </a>
+        {% endif %}
+        <div class="bg-white rounded-pill position-absolute start-0 bottom-0 m-4 py-1 px-3">
+            {{ property.price|number_format(0, '.', ' ') }} €
         </div>
+    </div>
+    <div class="p-4 pb-0">
+        <h5 class="text-primary mb-3">{{ property.title }}</h5>
+        <a class="d-block h5 mb-2" href="{{ path('app_property_show', {slug: property.slug}) }}">
+            {{ property.title }}
+        </a>
+        <p>
+            <i class="bi bi-geo-alt text-primary me-2"></i>
+            {{ property.location }}
+        </p>
+    </div>
+    <div class="d-flex border-top">
+        <small class="flex-fill text-center border-end py-2">
+            <i class="bi bi-rulers text-primary me-2"></i>
+            {{ property.area|number_format(0, '.', ' ') }} м²
+        </small>
+        <small class="flex-fill text-center py-2">
+            <i class="bi bi-calendar text-primary me-2"></i>
+            {{ property.createdAt|date('d.m.Y') }}
+        </small>
     </div>
 </div> 
