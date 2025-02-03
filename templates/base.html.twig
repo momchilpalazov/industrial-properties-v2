@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Industrial Properties{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <!-- Header -->
+    <header class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/">Industrial Properties</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/properties">{{ translations.nav.properties }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/blog">{{ translations.nav.blog }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">{{ translations.nav.about }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">{{ translations.nav.contact }}</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <div class="language-selector me-3">
+                        <select class="form-select" onchange="window.location.href=this.value">
+                            <option value="?lang=bg" {% if current_language == 'bg' %}selected{% endif %}>БГ</option>
+                            <option value="?lang=en" {% if current_language == 'en' %}selected{% endif %}>EN</option>
+                            <option value="?lang=de" {% if current_language == 'de' %}selected{% endif %}>DE</option>
+                            <option value="?lang=ru" {% if current_language == 'ru' %}selected{% endif %}>RU</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container-fluid px-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Industrial Properties</h5>
+                    <p>{{ translations.footer.description }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>{{ translations.footer.quick_links }}</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/properties" class="text-light">{{ translations.nav.properties }}</a></li>
+                        <li><a href="/blog" class="text-light">{{ translations.nav.blog }}</a></li>
+                        <li><a href="/about" class="text-light">{{ translations.nav.about }}</a></li>
+                        <li><a href="/contact" class="text-light">{{ translations.nav.contact }}</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>{{ translations.footer.contact_us }}</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-phone me-2"></i> +359 888 123 456</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@industrial-properties.com</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i> Sofia, Bulgaria</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-4">
+            <div class="text-center">
+                <p class="mb-0">&copy; {{ "now"|date("Y") }} Industrial Properties. {{ translations.footer.rights }}</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/assets/js/main.js"></script>
+    {% block javascripts %}{% endblock %}
+</body>
+</html> 

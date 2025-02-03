@@ -1,0 +1,31 @@
+<div class="col-xl-4 col-lg-6">
+    <div class="card property-card h-100">
+        <div class="position-relative">
+            <img src="{{ property.image_path ? '/uploads/properties/' ~ property.image_path : '/assets/images/no-image.jpg' }}" 
+                 class="card-img-top" alt="{{ property['title_' ~ current_language] }}"
+                 style="height: 300px; object-fit: cover;">
+            {% if property.pdf_flyer %}
+                <a href="/uploads/flyers/{{ property.pdf_flyer }}" target="_blank" class="pdf-flyer-link">
+                    <i class="fas fa-file-pdf"></i> 
+                    {{ translations.property.view_brochure }}
+                </a>
+            {% endif %}
+        </div>
+        <div class="card-body p-4">
+            <h5 class="card-title h4 mb-3">{{ property['title_' ~ current_language] }}</h5>
+            <div class="property-details mb-4">
+                <p class="card-text fs-5 mb-2">
+                    <strong>{{ translations.property.price }}:</strong> 
+                    <span class="text-primary">€{{ property.price|number_format }}</span>
+                </p>
+                <p class="card-text fs-5 mb-0">
+                    <strong>{{ translations.property.area }}:</strong> 
+                    <span>{{ property.area|number_format }} m²</span>
+                </p>
+            </div>
+            <a href="/property/{{ property.id }}" class="btn btn-outline-primary btn-lg w-100">
+                {{ translations.property.details }}
+            </a>
+        </div>
+    </div>
+</div> 
