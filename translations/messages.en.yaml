@@ -1,0 +1,73 @@
+nav:
+    properties: 'Properties'
+    blog: 'Blog'
+    about: 'About'
+    contact: 'Contact'
+
+footer:
+    description: 'Your trusted partner in industrial properties'
+    quick_links: 'Quick Links'
+    contact_us: 'Contact Us'
+    rights: 'All rights reserved'
+
+property:
+    list_title: 'Industrial Properties'
+    filter:
+        type: 'Property Type'
+        all_types: 'All Types'
+        area: 'Area'
+        price: 'Price'
+        search: 'Search'
+    area: 'Area'
+    location: 'Location'
+    type: 'Type'
+    price: 'Price'
+    description: 'Description'
+    view_details: 'View Details'
+    similar: 'Similar Properties'
+    inquiry:
+        title: 'Property Inquiry'
+        name: 'Name'
+        email: 'Email'
+        phone: 'Phone'
+        message: 'Message'
+        submit: 'Send Inquiry'
+        success: 'Your inquiry has been sent successfully!'
+        error: 'An error occurred while sending your inquiry.'
+    share:
+        copied: 'Link copied to clipboard'
+    types:
+        industrial: 'Industrial'
+        warehouse: 'Warehouse'
+        logistics: 'Logistics Center'
+        production: 'Production'
+        office: 'Office'
+        retail: 'Retail'
+        mixed: 'Mixed Use'
+
+blog:
+    title: 'Blog'
+    latest_posts: 'Latest Posts'
+    categories: 'Categories'
+    read_more: 'Read More'
+    share: 'Share'
+    related_posts: 'Related Posts'
+
+contact:
+    title: 'Contact'
+    info: 'Contact Information'
+    address: 'Address'
+    phone: 'Phone'
+    email: 'Email'
+    working_hours: 'Working Hours'
+    follow_us: 'Follow Us'
+    form_title: 'Send us a Message'
+    form:
+        name: 'Name'
+        email: 'Email'
+        phone: 'Phone'
+        subject: 'Subject'
+        message: 'Message'
+        submit: 'Send'
+        success: 'Your message has been sent successfully!'
+        error: 'An error occurred while sending your message.' 

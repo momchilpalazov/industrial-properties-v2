@@ -1,0 +1,73 @@
+nav:
+    properties: 'Недвижимость'
+    blog: 'Блог'
+    about: 'О нас'
+    contact: 'Контакты'
+
+footer:
+    description: 'Ваш надежный партнер в сфере промышленной недвижимости'
+    quick_links: 'Быстрые ссылки'
+    contact_us: 'Свяжитесь с нами'
+    rights: 'Все права защищены'
+
+property:
+    list_title: 'Промышленная недвижимость'
+    filter:
+        type: 'Тип недвижимости'
+        all_types: 'Все типы'
+        area: 'Площадь'
+        price: 'Цена'
+        search: 'Поиск'
+    area: 'Площадь'
+    location: 'Расположение'
+    type: 'Тип'
+    price: 'Цена'
+    description: 'Описание'
+    view_details: 'Подробнее'
+    similar: 'Похожие объекты'
+    inquiry:
+        title: 'Запрос о недвижимости'
+        name: 'Имя'
+        email: 'Email'
+        phone: 'Телефон'
+        message: 'Сообщение'
+        submit: 'Отправить запрос'
+        success: 'Ваш запрос успешно отправлен!'
+        error: 'При отправке запроса произошла ошибка.'
+    share:
+        copied: 'Ссылка скопирована в буфер обмена'
+    types:
+        industrial: 'Промышленный'
+        warehouse: 'Склад'
+        logistics: 'Логистический центр'
+        production: 'Производственный'
+        office: 'Офис'
+        retail: 'Торговый'
+        mixed: 'Смешанный'
+
+blog:
+    title: 'Блог'
+    latest_posts: 'Последние публикации'
+    categories: 'Категории'
+    read_more: 'Читать далее'
+    share: 'Поделиться'
+    related_posts: 'Похожие публикации'
+
+contact:
+    title: 'Контакты'
+    info: 'Контактная информация'
+    address: 'Адрес'
+    phone: 'Телефон'
+    email: 'Email'
+    working_hours: 'Часы работы'
+    follow_us: 'Следите за нами'
+    form_title: 'Отправить сообщение'
+    form:
+        name: 'Имя'
+        email: 'Email'
+        phone: 'Телефон'
+        subject: 'Тема'
+        message: 'Сообщение'
+        submit: 'Отправить'
+        success: 'Ваше сообщение успешно отправлено!'
+        error: 'При отправке сообщения произошла ошибка.' 

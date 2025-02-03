@@ -1,0 +1,73 @@
+nav:
+    properties: 'Имоти'
+    blog: 'Блог'
+    about: 'За нас'
+    contact: 'Контакти'
+
+footer:
+    description: 'Вашият надежден партньор в индустриалните имоти'
+    quick_links: 'Бързи връзки'
+    contact_us: 'Свържете се с нас'
+    rights: 'Всички права запазени'
+
+property:
+    list_title: 'Индустриални имоти'
+    filter:
+        type: 'Тип имот'
+        all_types: 'Всички типове'
+        area: 'Площ'
+        price: 'Цена'
+        search: 'Търсене'
+    area: 'Площ'
+    location: 'Локация'
+    type: 'Тип'
+    price: 'Цена'
+    description: 'Описание'
+    view_details: 'Детайли'
+    similar: 'Подобни имоти'
+    inquiry:
+        title: 'Запитване за имота'
+        name: 'Име'
+        email: 'Имейл'
+        phone: 'Телефон'
+        message: 'Съобщение'
+        submit: 'Изпрати запитване'
+        success: 'Вашето запитване беше изпратено успешно!'
+        error: 'Възникна грешка при изпращане на запитването.'
+    share:
+        copied: 'Линкът е копиран в клипборда'
+    types:
+        industrial: 'Индустриален'
+        warehouse: 'Склад'
+        logistics: 'Логистичен център'
+        production: 'Производствен'
+        office: 'Офис'
+        retail: 'Търговски'
+        mixed: 'Смесен'
+
+blog:
+    title: 'Блог'
+    latest_posts: 'Последни публикации'
+    categories: 'Категории'
+    read_more: 'Прочети повече'
+    share: 'Сподели'
+    related_posts: 'Подобни публикации'
+
+contact:
+    title: 'Контакти'
+    info: 'Информация за контакт'
+    address: 'Адрес'
+    phone: 'Телефон'
+    email: 'Имейл'
+    working_hours: 'Работно време'
+    follow_us: 'Последвайте ни'
+    form_title: 'Изпратете ни съобщение'
+    form:
+        name: 'Име'
+        email: 'Имейл'
+        phone: 'Телефон'
+        subject: 'Относно'
+        message: 'Съобщение'
+        submit: 'Изпрати'
+        success: 'Вашето съобщение беше изпратено успешно!'
+        error: 'Възникна грешка при изпращане на съобщението.' 

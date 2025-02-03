@@ -1,0 +1,73 @@
+nav:
+    properties: 'Immobilien'
+    blog: 'Blog'
+    about: 'Über uns'
+    contact: 'Kontakt'
+
+footer:
+    description: 'Ihr vertrauenswürdiger Partner für Industrieimmobilien'
+    quick_links: 'Schnellzugriff'
+    contact_us: 'Kontaktieren Sie uns'
+    rights: 'Alle Rechte vorbehalten'
+
+property:
+    list_title: 'Industrieimmobilien'
+    filter:
+        type: 'Immobilientyp'
+        all_types: 'Alle Typen'
+        area: 'Fläche'
+        price: 'Preis'
+        search: 'Suchen'
+    area: 'Fläche'
+    location: 'Standort'
+    type: 'Typ'
+    price: 'Preis'
+    description: 'Beschreibung'
+    view_details: 'Details ansehen'
+    similar: 'Ähnliche Immobilien'
+    inquiry:
+        title: 'Immobilienanfrage'
+        name: 'Name'
+        email: 'E-Mail'
+        phone: 'Telefon'
+        message: 'Nachricht'
+        submit: 'Anfrage senden'
+        success: 'Ihre Anfrage wurde erfolgreich gesendet!'
+        error: 'Beim Senden Ihrer Anfrage ist ein Fehler aufgetreten.'
+    share:
+        copied: 'Link in die Zwischenablage kopiert'
+    types:
+        industrial: 'Industriell'
+        warehouse: 'Lager'
+        logistics: 'Logistikzentrum'
+        production: 'Produktion'
+        office: 'Büro'
+        retail: 'Einzelhandel'
+        mixed: 'Gemischt'
+
+blog:
+    title: 'Blog'
+    latest_posts: 'Neueste Beiträge'
+    categories: 'Kategorien'
+    read_more: 'Weiterlesen'
+    share: 'Teilen'
+    related_posts: 'Ähnliche Beiträge'
+
+contact:
+    title: 'Kontakt'
+    info: 'Kontaktinformationen'
+    address: 'Adresse'
+    phone: 'Telefon'
+    email: 'E-Mail'
+    working_hours: 'Öffnungszeiten'
+    follow_us: 'Folgen Sie uns'
+    form_title: 'Senden Sie uns eine Nachricht'
+    form:
+        name: 'Name'
+        email: 'E-Mail'
+        phone: 'Telefon'
+        subject: 'Betreff'
+        message: 'Nachricht'
+        submit: 'Senden'
+        success: 'Ihre Nachricht wurde erfolgreich gesendet!'
+        error: 'Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten.' 

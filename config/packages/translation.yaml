@@ -1,0 +1,9 @@
+framework:
+    default_locale: bg
+    translator:
+        default_path: '%kernel.project_dir%/translations'
+        fallbacks:
+            - bg
+        paths:
+            - '%kernel.project_dir%/translations'
+        enabled: true 
