@@ -1,0 +1,1 @@
+# industrial-properties-v2
