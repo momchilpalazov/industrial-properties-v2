@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ translations.blog.title }} - Industrial Properties{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .blog-card {
+        transition: transform 0.3s ease;
+    }
+    .blog-card:hover {
+        transform: translateY(-5px);
+    }
+    .blog-image {
+        height: 200px;
+        object-fit: cover;
+    }
+    .blog-meta {
+        font-size: 0.9rem;
+    }
+    .blog-excerpt {
+        height: 4.5em;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2">{{ translations.blog.latest_posts }}</h1>
+            <div class="heading-divider"></div>
+        </div>
+    </div>
+
+    <!-- Blog Grid -->
+    <div class="row g-4">
+        {% for post in posts %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm blog-card">
+                    {% if post.image %}
+                        <img src="{{ post.image }}" 
+                             class="card-img-top blog-image" 
+                             alt="{{ post.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <div class="blog-meta text-muted mb-2">
+                            <i class="fas fa-calendar-alt me-2"></i>{{ post.createdAt|date('d.m.Y') }}
+                            {% if post.author %}
+                                <span class="ms-3">
+                                    <i class="fas fa-user me-2"></i>{{ post.author }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <p class="card-text blog-excerpt">{{ post.excerpt }}</p>
+                        <a href="{{ path('blog_show', {slug: post.slug}) }}" 
+                           class="btn btn-outline-primary">
+                            {{ translations.blog.read_more }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if current_page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ current_page - 1 }}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for i in 1..total_pages %}
+                        <li class="page-item {% if i == current_page %}active{% endif %}">
+                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {% if current_page < total_pages %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ current_page + 1 }}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

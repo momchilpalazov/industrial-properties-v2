@@ -5,9 +5,15 @@ declare(strict_types=1);
 namespace App;
 
 use App\Controller\HomeController;
+use App\Controller\PropertyController;
+use App\Controller\BlogController;
+use App\Controller\ContactController;
 use App\Repository\PropertyRepository;
+use App\Repository\BlogRepository;
+use App\Repository\ContactRepository;
 use App\Service\PropertyService;
 use App\Service\BlogService;
+use App\Service\ContactService;
 use App\Service\FileUploadService;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
@@ -92,6 +98,12 @@ class Kernel
         $this->container->register('repository.property', PropertyRepository::class)
             ->setArguments([new Reference('database.connection')]);
 
+        $this->container->register('repository.blog', BlogRepository::class)
+            ->setArguments([new Reference('database.connection')]);
+
+        $this->container->register('repository.contact', ContactRepository::class)
+            ->setArguments([new Reference('database.connection')]);
+
         // Services
         $this->container->register('service.property', PropertyService::class)
             ->setArguments([
@@ -100,7 +112,10 @@ class Kernel
             ]);
 
         $this->container->register('service.blog', BlogService::class)
-            ->setArguments([new Reference('database.connection')]);
+            ->setArguments([new Reference('repository.blog')]);
+
+        $this->container->register('service.contact', ContactService::class)
+            ->setArguments([new Reference('repository.contact')]);
 
         // Controllers
         $this->container->register('controller.home', HomeController::class)
@@ -108,6 +123,24 @@ class Kernel
                 new Reference('twig'),
                 new Reference('service.property'),
                 new Reference('service.blog')
+            ]);
+
+        $this->container->register('controller.property', PropertyController::class)
+            ->setArguments([
+                new Reference('twig'),
+                new Reference('service.property')
+            ]);
+
+        $this->container->register('controller.blog', BlogController::class)
+            ->setArguments([
+                new Reference('twig'),
+                new Reference('service.blog')
+            ]);
+
+        $this->container->register('controller.contact', ContactController::class)
+            ->setArguments([
+                new Reference('twig'),
+                new Reference('service.contact')
             ]);
     }
 
@@ -119,6 +152,51 @@ class Kernel
             ['_controller' => 'controller.home']
         ));
 
-        // Add more routes here
+        // Properties
+        $this->routes->add('properties', new Route(
+            '/properties',
+            ['_controller' => 'controller.property', '_method' => 'index']
+        ));
+
+        $this->routes->add('property_show', new Route(
+            '/property/{id}',
+            ['_controller' => 'controller.property', '_method' => 'show'],
+            ['id' => '\d+']
+        ));
+
+        $this->routes->add('property_contact', new Route(
+            '/property/{id}/contact',
+            ['_controller' => 'controller.property', '_method' => 'contact'],
+            ['id' => '\d+']
+        ));
+
+        // Blog
+        $this->routes->add('blog', new Route(
+            '/blog',
+            ['_controller' => 'controller.blog', '_method' => 'index']
+        ));
+
+        $this->routes->add('blog_show', new Route(
+            '/blog/{slug}',
+            ['_controller' => 'controller.blog', '_method' => 'show'],
+            ['slug' => '[a-z0-9\-]+']
+        ));
+
+        $this->routes->add('blog_comment', new Route(
+            '/blog/post/{postId}/comment',
+            ['_controller' => 'controller.blog', '_method' => 'comment'],
+            ['postId' => '\d+']
+        ));
+
+        // Contact
+        $this->routes->add('contact', new Route(
+            '/contact',
+            ['_controller' => 'controller.contact', '_method' => 'index']
+        ));
+
+        $this->routes->add('contact_send', new Route(
+            '/contact/send',
+            ['_controller' => 'controller.contact', '_method' => 'send']
+        ));
     }
 } 

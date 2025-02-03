@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ translations.property.list_title }} - Industrial Properties{% endblock %}
+
+{% block stylesheets %}
+<link href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" rel="stylesheet">
+<style>
+    .property-card {
+        transition: transform 0.3s ease;
+    }
+    .property-card:hover {
+        transform: translateY(-5px);
+    }
+    .property-image {
+        height: 250px;
+        object-fit: cover;
+    }
+    .property-features {
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-5">
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">{{ translations.property.filter.type }}</label>
+                            <select name="type" class="form-select">
+                                <option value="">{{ translations.property.filter.all_types }}</option>
+                                {% for type, label in property_types %}
+                                    <option value="{{ type }}" {% if criteria.type == type %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ translations.property.filter.area }}</label>
+                            <div class="input-group">
+                                <input type="number" name="min_area" class="form-control" placeholder="Min" value="{{ criteria.min_area }}">
+                                <input type="number" name="max_area" class="form-control" placeholder="Max" value="{{ criteria.max_area }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ translations.property.filter.price }}</label>
+                            <div class="input-group">
+                                <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ criteria.min_price }}">
+                                <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ criteria.max_price }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>{{ translations.property.filter.search }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Properties Grid -->
+    <div class="row g-4">
+        {% for property in properties %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm property-card">
+                    <img src="{{ property.mainImage }}" class="card-img-top property-image" alt="{{ property.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ property.title }}</h5>
+                        <div class="property-features d-flex justify-content-between mb-3">
+                            <span><i class="fas fa-ruler-combined me-2"></i>{{ property.area }} м²</span>
+                            <span><i class="fas fa-map-marker-alt me-2"></i>{{ property.location }}</span>
+                            <span><i class="fas fa-building me-2"></i>{{ property.type }}</span>
+                        </div>
+                        <p class="card-text text-truncate">{{ property.description }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0">{{ property.price|number_format(0, '.', ' ') }} €</span>
+                            <a href="{{ path('property_show', {id: property.id}) }}" class="btn btn-outline-primary">
+                                {{ translations.property.view_details }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% for i in 1..total_pages %}
+                        <li class="page-item {% if i == current_page %}active{% endif %}">
+                            <a class="page-link" href="?page={{ i }}{% for key, value in criteria %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                {{ i }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+{% endblock %} 

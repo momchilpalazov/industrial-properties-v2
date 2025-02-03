@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ post.title }} - Industrial Properties{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .blog-header-image {
+        height: 400px;
+        object-fit: cover;
+        width: 100%;
+        border-radius: 8px;
+    }
+    .blog-meta {
+        font-size: 0.9rem;
+    }
+    .blog-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+    }
+    .blog-content img {
+        max-width: 100%;
+        height: auto;
+        margin: 2rem 0;
+        border-radius: 8px;
+    }
+    .blog-content h2,
+    .blog-content h3 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    .blog-content p {
+        margin-bottom: 1.5rem;
+    }
+    .share-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+    .share-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        transition: opacity 0.3s ease;
+    }
+    .share-button:hover {
+        opacity: 0.8;
+    }
+    .share-facebook { background-color: #3b5998; }
+    .share-twitter { background-color: #1da1f2; }
+    .share-linkedin { background-color: #0077b5; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Заглавие и мета информация -->
+            <h1 class="mb-3">{{ post.title }}</h1>
+            <div class="blog-meta text-muted mb-4">
+                <span class="me-3">
+                    <i class="fas fa-calendar-alt me-2"></i>
+                    {{ post.createdAt|date('d.m.Y') }}
+                </span>
+                {% if post.author %}
+                    <span class="me-3">
+                        <i class="fas fa-user me-2"></i>
+                        {{ post.author }}
+                    </span>
+                {% endif %}
+                {% if post.category %}
+                    <span>
+                        <i class="fas fa-folder me-2"></i>
+                        {{ post.category }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Главна снимка -->
+            {% if post.image %}
+                <img src="{{ post.image }}" 
+                     alt="{{ post.title }}"
+                     class="blog-header-image mb-4">
+            {% endif %}
+
+            <!-- Съдържание -->
+            <div class="blog-content">
+                {{ post.content|raw }}
+            </div>
+
+            <!-- Споделяне -->
+            <div class="mt-5">
+                <h5 class="mb-3">{{ translations.blog.share }}</h5>
+                <div class="share-buttons">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ app.request.uri|url_encode }}" 
+                       target="_blank"
+                       class="share-button share-facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url={{ app.request.uri|url_encode }}&text={{ post.title|url_encode }}" 
+                       target="_blank"
+                       class="share-button share-twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ app.request.uri|url_encode }}&title={{ post.title|url_encode }}" 
+                       target="_blank"
+                       class="share-button share-linkedin">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Подобни постове -->
+            {% if related_posts|length > 0 %}
+            <div class="mt-5">
+                <h3 class="mb-4">{{ translations.blog.related_posts }}</h3>
+                <div class="row g-4">
+                    {% for related in related_posts %}
+                        <div class="col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                {% if related.image %}
+                                    <img src="{{ related.image }}" 
+                                         class="card-img-top" 
+                                         alt="{{ related.title }}"
+                                         style="height: 200px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ related.title }}</h5>
+                                    <p class="card-text text-muted">
+                                        {{ related.excerpt }}
+                                    </p>
+                                    <a href="{{ path('blog_show', {slug: related.slug}) }}" 
+                                       class="btn btn-outline-primary">
+                                        {{ translations.blog.read_more }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Странична лента -->
+        <div class="col-lg-4">
+            <!-- Категории -->
+            {% if categories|length > 0 %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ translations.blog.categories }}</h5>
+                    <ul class="list-unstyled mb-0">
+                        {% for category in categories %}
+                            <li class="mb-2">
+                                <a href="{{ path('blog_index', {category: category.slug}) }}" 
+                                   class="text-decoration-none">
+                                    {{ category.name }}
+                                    <span class="badge bg-secondary float-end">
+                                        {{ category.count }}
+                                    </span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Последни постове -->
+            {% if latest_posts|length > 0 %}
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ translations.blog.latest_posts }}</h5>
+                    {% for latest in latest_posts %}
+                        <div class="mb-3 {% if not loop.last %}border-bottom pb-3{% endif %}">
+                            <a href="{{ path('blog_show', {slug: latest.slug}) }}" 
+                               class="text-decoration-none">
+                                <h6 class="mb-1">{{ latest.title }}</h6>
+                            </a>
+                            <small class="text-muted">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                {{ latest.createdAt|date('d.m.Y') }}
+                            </small>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

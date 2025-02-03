@@ -1,0 +1,270 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ property.title }} - Industrial Properties{% endblock %}
+
+{% block stylesheets %}
+<link href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" rel="stylesheet">
+<style>
+    .gallery-thumbnail {
+        cursor: pointer;
+        transition: opacity 0.3s ease;
+        height: 200px;
+        object-fit: cover;
+        width: 100%;
+    }
+    .gallery-thumbnail:hover {
+        opacity: 0.9;
+    }
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding: 15px;
+    }
+    .gallery-item {
+        aspect-ratio: 4/3;
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    @media print {
+        header, footer, .inquiry-form, .print-button, .share-button {
+            display: none !important;
+        }
+        .printable-content {
+            display: block !important;
+        }
+        .card {
+            box-shadow: none !important;
+            border: none !important;
+        }
+        img {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+        body {
+            color: #000 !important;
+            background: #fff !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-5">
+    <div class="row g-4">
+        <!-- Галерия със снимки -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <a href="{{ property.mainImage }}" 
+                       data-fancybox="property-gallery"
+                       data-caption="{{ property.title }}">
+                        <img src="{{ property.mainImage }}" 
+                             alt="{{ property.title }}"
+                             class="img-fluid w-100">
+                    </a>
+                    
+                    {% if property.images|length > 1 %}
+                    <div class="gallery-grid">
+                        {% for image in property.images %}
+                            {% if not loop.first %}
+                            <div class="gallery-item">
+                                <a href="{{ image.path }}"
+                                   data-fancybox="property-gallery"
+                                   data-caption="{{ property.title }}">
+                                    <img src="{{ image.path }}" 
+                                         alt="{{ property.title }}"
+                                         class="gallery-thumbnail">
+                                </a>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Информация за имота -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h1 class="h2 mb-0">{{ property.title }}</h1>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary print-button" onclick="window.print()">
+                            <i class="fas fa-print"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary share-button" onclick="share()">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="printable-content">
+                        <div class="row g-4">
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-ruler-combined fs-4 text-primary me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">{{ translations.property.area }}</small>
+                                        <strong>{{ property.area }} м²</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-map-marker-alt fs-4 text-primary me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">{{ translations.property.location }}</small>
+                                        <strong>{{ property.location }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-building fs-4 text-primary me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">{{ translations.property.type }}</small>
+                                        <strong>{{ property.type }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-euro-sign fs-4 text-primary me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">{{ translations.property.price }}</small>
+                                        <strong>{{ property.price|number_format(0, '.', ' ') }} €</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h5>{{ translations.property.description }}</h5>
+                            <div class="property-description">
+                                {{ property.description|raw }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Форма за запитване -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm inquiry-form">
+                <div class="card-body">
+                    <h5 class="card-title">{{ translations.property.inquiry.title }}</h5>
+                    <form id="inquiryForm" onsubmit="return submitInquiry(event)">
+                        <div class="mb-3">
+                            <label class="form-label">{{ translations.property.inquiry.name }}</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{ translations.property.inquiry.email }}</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{ translations.property.inquiry.phone }}</label>
+                            <input type="tel" class="form-control" name="phone">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{ translations.property.inquiry.message }}</label>
+                            <textarea class="form-control" name="message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            {{ translations.property.inquiry.submit }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {% if similar_properties|length > 0 %}
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ translations.property.similar }}</h5>
+                    {% for similar in similar_properties %}
+                        <div class="card mb-3">
+                            <div class="row g-0">
+                                <div class="col-4">
+                                    <img src="{{ similar.mainImage }}" 
+                                         class="img-fluid rounded-start" 
+                                         alt="{{ similar.title }}"
+                                         style="height: 100%; object-fit: cover;">
+                                </div>
+                                <div class="col-8">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ similar.title }}</h6>
+                                        <p class="card-text">
+                                            <small class="text-muted">
+                                                {{ similar.area }} м² | {{ similar.price|number_format(0, '.', ' ') }} €
+                                            </small>
+                                        </p>
+                                        <a href="{{ path('property_show', {id: similar.id}) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            {{ translations.property.view_details }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<script>
+function submitInquiry(event) {
+    event.preventDefault();
+    const form = event.target;
+    const data = new FormData(form);
+    
+    fetch('{{ path('property_contact', {id: property.id}) }}', {
+        method: 'POST',
+        body: JSON.stringify(Object.fromEntries(data)),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+        } else {
+            alert('{{ translations.property.inquiry.success }}');
+            form.reset();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('{{ translations.property.inquiry.error }}');
+    });
+    
+    return false;
+}
+
+function share() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ property.title }}',
+            url: window.location.href
+        });
+    } else {
+        // Fallback
+        const dummy = document.createElement('input');
+        document.body.appendChild(dummy);
+        dummy.value = window.location.href;
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        alert('{{ translations.property.share.copied }}');
+    }
+}
+</script>
+{% endblock %} 
