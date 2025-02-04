@@ -1,5 +1,10 @@
-
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+###< symfony/framework-bundle ###
