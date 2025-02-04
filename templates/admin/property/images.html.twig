@@ -102,7 +102,7 @@
                                     Основна
                                 </div>
                             {% endif %}
-                            <img src="{{ asset('uploads/properties/' ~ image.path) }}" 
+                            <img src="{{ image_cache('uploads/properties/' ~ image.path, 200, 150) }}" 
                                  alt="{{ property.titleBg }}"
                                  class="mb-2">
                             <div class="image-actions">

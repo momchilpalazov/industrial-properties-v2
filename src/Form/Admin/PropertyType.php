@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class PropertyType extends AbstractType
 {
@@ -35,34 +36,38 @@ class PropertyType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('descriptionBg', TextareaType::class, [
+            ->add('descriptionBg', CKEditorType::class, [
                 'label' => 'Описание (BG)',
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 5
+                'config' => [
+                    'toolbar' => 'full',
+                    'language' => 'bg',
+                    'height' => 400
                 ]
             ])
-            ->add('descriptionEn', TextareaType::class, [
+            ->add('descriptionEn', CKEditorType::class, [
                 'label' => 'Описание (EN)',
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 5
+                'config' => [
+                    'toolbar' => 'full',
+                    'language' => 'en',
+                    'height' => 400
                 ]
             ])
-            ->add('descriptionDe', TextareaType::class, [
+            ->add('descriptionDe', CKEditorType::class, [
                 'label' => 'Описание (DE)',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 5
+                'config' => [
+                    'toolbar' => 'full',
+                    'language' => 'de',
+                    'height' => 400
                 ]
             ])
-            ->add('descriptionRu', TextareaType::class, [
+            ->add('descriptionRu', CKEditorType::class, [
                 'label' => 'Описание (RU)',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 5
+                'config' => [
+                    'toolbar' => 'full',
+                    'language' => 'ru',
+                    'height' => 400
                 ]
             ])
             ->add('locationBg', TextType::class, [

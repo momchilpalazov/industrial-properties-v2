@@ -2,67 +2,79 @@
 
 namespace App\Twig;
 
+use App\Service\TranslationService;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 class TranslationExtension extends AbstractExtension
 {
-    private RequestStack $requestStack;
+    private $translationService;
+    private $requestStack;
 
-    public function __construct(RequestStack $requestStack)
-    {
+    public function __construct(
+        TranslationService $translationService,
+        RequestStack $requestStack
+    ) {
+        $this->translationService = $translationService;
         $this->requestStack = $requestStack;
     }
 
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('current_language', [$this, 'getCurrentLanguage']),
-            new TwigFunction('language_name', [$this, 'getLanguageName']),
-            new TwigFunction('available_languages', [$this, 'getAvailableLanguages']),
+            new TwigFunction('get_locale', [$this, 'getCurrentLocale']),
+            new TwigFunction('get_locale_name', [$this, 'getLocaleName']),
+            new TwigFunction('get_supported_locales', [$this, 'getSupportedLocales']),
+            new TwigFunction('get_locale_names', [$this, 'getLocaleNames']),
+            new TwigFunction('get_localized_url', [$this, 'getLocalizedUrl']),
+            new TwigFunction('translate_to_all', [$this, 'translateToAll']),
         ];
     }
 
-    public function getCurrentLanguage(): string
-    {
-        return $this->requestStack->getCurrentRequest()->getLocale();
-    }
-
-    public function getLanguageName(string $code): string
-    {
-        return match ($code) {
-            'bg' => 'Български',
-            'en' => 'English',
-            'de' => 'Deutsch',
-            'ru' => 'Русский',
-            default => $code,
-        };
-    }
-
-    public function getAvailableLanguages(): array
+    public function getFilters(): array
     {
         return [
-            'bg' => [
-                'code' => 'bg',
-                'name' => 'Български',
-                'flag' => '🇧🇬'
-            ],
-            'en' => [
-                'code' => 'en',
-                'name' => 'English',
-                'flag' => '🇬🇧'
-            ],
-            'de' => [
-                'code' => 'de',
-                'name' => 'Deutsch',
-                'flag' => '🇩🇪'
-            ],
-            'ru' => [
-                'code' => 'ru',
-                'name' => 'Русский',
-                'flag' => '🇷🇺'
-            ]
+            new TwigFilter('locale_name', [$this, 'getLocaleName']),
         ];
+    }
+
+    public function getCurrentLocale(): string
+    {
+        return $this->translationService->getCurrentLocale();
+    }
+
+    public function getLocaleName(string $locale): string
+    {
+        return $this->translationService->getLocaleNames()[$locale] ?? $locale;
+    }
+
+    public function getSupportedLocales(): array
+    {
+        return $this->translationService->getSupportedLocales();
+    }
+
+    public function getLocaleNames(): array
+    {
+        return $this->translationService->getLocaleNames();
+    }
+
+    public function getLocalizedUrl(string $targetLocale): string
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        if (!$request) {
+            return '';
+        }
+
+        return $this->translationService->getLocalizedUrl(
+            $request->getRequestUri(),
+            $targetLocale
+        );
+    }
+
+    public function translateToAll(string $key, array $parameters = [], string $domain = null): array
+    {
+        return $this->translationService->translateToAll($key, $parameters, $domain);
     }
 } 

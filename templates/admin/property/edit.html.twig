@@ -1,166 +1,103 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Редактиране на имот{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <div class="container-fluid px-4">
-        <h1 class="mt-4">Редактиране на имот</h1>
-        
-        <div class="card mb-4">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <i class="bi bi-pencil-square me-1"></i>
-                        Редактиране на имот
-                    </div>
-                    <div>
-                        <a href="{{ path('admin_property_index') }}" class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-arrow-left me-1"></i>
-                            Назад към списъка
-                        </a>
-                    </div>
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">{{ title }}</h1>
+        <a href="{{ path('admin_property_list') }}" class="btn btn-secondary">Назад към списъка</a>
+    </div>
+
+    {{ form_start(form, {'attr': {'class': 'card'}}) }}
+    <div class="card-body">
+        <ul class="nav nav-tabs mb-4" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#bg">Български</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#en">English</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#de">Deutsch</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#ru">Русский</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="bg">
+                {{ form_row(form.titleBg) }}
+                {{ form_row(form.descriptionBg) }}
+                {{ form_row(form.locationBg) }}
+            </div>
+            <div class="tab-pane fade" id="en">
+                {{ form_row(form.titleEn) }}
+                {{ form_row(form.descriptionEn) }}
+                {{ form_row(form.locationEn) }}
+            </div>
+            <div class="tab-pane fade" id="de">
+                {{ form_row(form.titleDe) }}
+                {{ form_row(form.descriptionDe) }}
+                {{ form_row(form.locationDe) }}
+            </div>
+            <div class="tab-pane fade" id="ru">
+                {{ form_row(form.titleRu) }}
+                {{ form_row(form.descriptionRu) }}
+                {{ form_row(form.locationRu) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.type) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.area) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.price) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-check mb-3">
+                    {{ form_widget(form.isActive) }}
+                    {{ form_label(form.isActive) }}
                 </div>
             </div>
-            <div class="card-body">
-                {{ form_start(form) }}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5 class="mb-3">Основна информация</h5>
-                            
-                            <div class="mb-3">
-                                {{ form_row(form.type) }}
-                            </div>
-                            
-                            <div class="mb-3">
-                                {{ form_row(form.price) }}
-                            </div>
-                            
-                            <div class="mb-3">
-                                {{ form_row(form.area) }}
-                            </div>
-
-                            <div class="mb-3">
-                                <div class="form-check form-switch">
-                                    {{ form_widget(form.isActive) }}
-                                    {{ form_label(form.isActive) }}
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <div class="form-check form-switch">
-                                    {{ form_widget(form.isFeatured) }}
-                                    {{ form_label(form.isFeatured) }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <h5 class="mb-3">Преводи</h5>
-                            
-                            <nav>
-                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#nav-bg" type="button">
-                                        Български
-                                    </button>
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-en" type="button">
-                                        English
-                                    </button>
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-de" type="button">
-                                        Deutsch
-                                    </button>
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-ru" type="button">
-                                        Русский
-                                    </button>
-                                </div>
-                            </nav>
-                            
-                            <div class="tab-content pt-3" id="nav-tabContent">
-                                <div class="tab-pane fade show active" id="nav-bg">
-                                    <div class="mb-3">
-                                        {{ form_row(form.titleBg) }}
-                                    </div>
-                                    <div class="mb-3">
-                                        {{ form_row(form.descriptionBg) }}
-                                    </div>
-                                    <div class="mb-3">
-                                        {{ form_row(form.locationBg) }}
-                                    </div>
-                                </div>
-                                
-                                <div class="tab-pane fade" id="nav-en">
-                                    <div class="mb-3">
-                                        {{ form_row(form.titleEn) }}
-                                    </div>
-                                    <div class="mb-3">
-                                        {{ form_row(form.descriptionEn) }}
-                                    </div>
-                                    <div class="mb-3">
-                                        {{ form_row(form.locationEn) }}
-                                    </div>
-                                </div>
-                                
-                                <div class="tab-pane fade" id="nav-de">
-                                    <div class="mb-3">
-                                        {{ form_row(form.titleDe) }}
-                                    </div>
-                                    <div class="mb-3">
-                                        {{ form_row(form.descriptionDe) }}
-                                    </div>
-                                    <div class="mb-3">
-                                        {{ form_row(form.locationDe) }}
-                                    </div>
-                                </div>
-                                
-                                <div class="tab-pane fade" id="nav-ru">
-                                    <div class="mb-3">
-                                        {{ form_row(form.titleRu) }}
-                                    </div>
-                                    <div class="mb-3">
-                                        {{ form_row(form.descriptionRu) }}
-                                    </div>
-                                    <div class="mb-3">
-                                        {{ form_row(form.locationRu) }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-lg me-1"></i>
-                            Запази промените
-                        </button>
-                        
-                        <a href="{{ path('admin_property_index') }}" class="btn btn-outline-secondary">
-                            Отказ
-                        </a>
-                    </div>
-                {{ form_end(form) }}
+            <div class="col-md-6">
+                <div class="form-check mb-3">
+                    {{ form_widget(form.isFeatured) }}
+                    {{ form_label(form.isFeatured) }}
+                </div>
             </div>
         </div>
     </div>
+    <div class="card-footer">
+        <button type="submit" class="btn btn-primary">Запази</button>
+    </div>
+    {{ form_end(form) }}
+</div>
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');
-            tabButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const target = document.querySelector(this.dataset.bsTarget);
-                    document.querySelectorAll('.tab-pane').forEach(pane => {
-                        pane.classList.remove('show', 'active');
-                    });
-                    target.classList.add('show', 'active');
-                });
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editors = ['descriptionBg', 'descriptionEn', 'descriptionDe', 'descriptionRu'];
+    
+    editors.forEach(function(editorId) {
+        ClassicEditor
+            .create(document.querySelector('#property_' + editorId), {
+                toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+                language: editorId.slice(-2).toLowerCase()
+            })
+            .catch(error => {
+                console.error(error);
             });
-        });
-    </script>
+    });
+});
+</script>
 {% endblock %} 

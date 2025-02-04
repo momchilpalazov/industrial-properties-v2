@@ -1,0 +1,13 @@
+fos_ck_editor:
+    configs:
+        full_config:
+            toolbar: full
+            height: 400
+            language: '%locale%'
+            uiColor: '#ffffff'
+            removePlugins: 'elementspath,resize'
+            extraPlugins: 'justify,font,colorbutton,uploadimage,uploadfile'
+            filebrowserUploadMethod: 'form'
+            removeButtons: null
+            contentsCss:
+                - '/build/styles/ckeditor.css' 

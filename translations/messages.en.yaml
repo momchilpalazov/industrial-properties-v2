@@ -5,7 +5,7 @@ nav:
     contact: 'Contact'
 
 footer:
-    description: 'Your trusted partner in industrial properties'
+    description: 'Your reliable partner in industrial properties'
     quick_links: 'Quick Links'
     contact_us: 'Contact Us'
     rights: 'All rights reserved'
@@ -43,7 +43,17 @@ property:
         production: 'Production'
         office: 'Office'
         retail: 'Retail'
-        mixed: 'Mixed Use'
+        mixed: 'Mixed'
+        industrial_land: 'Industrial Land'
+        industrial_building: 'Industrial Building'
+        logistics_center: 'Logistics Center'
+        production_facility: 'Production Facility'
+    sort:
+        newest: 'Newest'
+        price_asc: 'Price (ascending)'
+        price_desc: 'Price (descending)'
+        area_asc: 'Area (ascending)'
+        area_desc: 'Area (descending)'
 
 blog:
     title: 'Blog'
@@ -61,7 +71,7 @@ contact:
     email: 'Email'
     working_hours: 'Working Hours'
     follow_us: 'Follow Us'
-    form_title: 'Send us a Message'
+    form_title: 'Send us a message'
     form:
         name: 'Name'
         email: 'Email'
@@ -70,4 +80,55 @@ contact:
         message: 'Message'
         submit: 'Send'
         success: 'Your message has been sent successfully!'
-        error: 'An error occurred while sending your message.' 
+        error: 'An error occurred while sending your message.'
+
+properties:
+    list:
+        title: 'Industrial Properties'
+        heading: 'Find Your Industrial Property'
+        description: 'Browse our selection of industrial properties, warehouses, and logistics centers'
+        no_results: 'No properties found'
+        try_different_filters: 'Try different search criteria'
+    filter:
+        search: 'Search'
+        type: 'Property Type'
+        area: 'Area'
+        price: 'Price'
+        location: 'Location'
+        sort: 'Sort by'
+    types:
+        industrial_land: 'Industrial Land'
+        industrial_building: 'Industrial Building'
+        logistics_center: 'Logistics Center'
+        warehouse: 'Warehouse'
+        production_facility: 'Production Facility'
+    sort:
+        newest: 'Newest'
+        price_asc: 'Price (ascending)'
+        price_desc: 'Price (descending)'
+        area_asc: 'Area (ascending)'
+        area_desc: 'Area (descending)'
+
+property:
+    featured: 'Featured'
+    details: 'Details'
+    contact: 'Contact Us'
+    similar: 'Similar Properties'
+    description: 'Description'
+    specifications: 'Specifications'
+    location: 'Location'
+    area: 'Area'
+    price: 'Price'
+    type: 'Type'
+    created_at: 'Published on'
+    share: 'Share'
+    print: 'Print'
+    inquiry:
+        title: 'Send Inquiry'
+        name: 'Name'
+        email: 'Email'
+        phone: 'Phone'
+        message: 'Message'
+        submit: 'Send'
+        success: 'Your inquiry has been sent successfully'
+        error: 'An error occurred while sending your inquiry' 

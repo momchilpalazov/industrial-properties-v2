@@ -1,7 +1,7 @@
 parameters:
-    upload_directory: '%kernel.project_dir%/public/uploads'
     locale: 'bg'
     app_locales: ['bg', 'en', 'de', 'ru']
+    upload_directory: '%kernel.project_dir%/public/uploads'
 
 services:
     _defaults:

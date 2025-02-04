@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: PropertyRepository::class)]
+#[ORM\Table(name: 'properties')]
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(fields: ['slug'], message: 'Вече съществува имот с това заглавие')]
 class Property
@@ -30,7 +31,7 @@ class Property
     )]
     private ?string $titleBg = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank(message: 'Моля въведете заглавие на английски')]
     #[Assert\Length(
         min: 3,
@@ -54,20 +55,10 @@ class Property
     )]
     private ?string $titleRu = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'Моля въведете описание на български')]
-    #[Assert\Length(
-        min: 10,
-        minMessage: 'Описанието трябва да бъде поне {{ limit }} символа'
-    )]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $descriptionBg = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'Моля въведете описание на английски')]
-    #[Assert\Length(
-        min: 10,
-        minMessage: 'Описанието трябва да бъде поне {{ limit }} символа'
-    )]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $descriptionEn = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -86,12 +77,9 @@ class Property
     )]
     private ?string $locationBg = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Моля въведете локация на английски')]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(
-        min: 2,
         max: 255,
-        minMessage: 'Локацията трябва да бъде поне {{ limit }} символа',
         maxMessage: 'Локацията не може да бъде повече от {{ limit }} символа'
     )]
     private ?string $locationEn = null;
@@ -110,23 +98,11 @@ class Property
     )]
     private ?string $locationRu = null;
 
-    #[ORM\Column]
-    #[Assert\NotBlank(message: 'Моля въведете площ')]
-    #[Assert\Positive(message: 'Площта трябва да бъде положително число')]
-    #[Assert\LessThan(
-        value: 1000000,
-        message: 'Площта не може да бъде повече от {{ compared_value }} кв.м.'
-    )]
-    private ?float $area = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $area = null;
 
-    #[ORM\Column]
-    #[Assert\NotBlank(message: 'Моля въведете цена')]
-    #[Assert\Positive(message: 'Цената трябва да бъде положително число')]
-    #[Assert\LessThan(
-        value: 1000000000,
-        message: 'Цената не може да бъде повече от {{ compared_value }} €'
-    )]
-    private ?float $price = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $price = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'Моля изберете тип имот')]
@@ -146,6 +122,15 @@ class Property
     #[Assert\Valid]
     private Collection $images;
 
+    #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyFeature::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $features;
+
+    #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyPdfFile::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $pdfFiles;
+
+    #[ORM\OneToMany(mappedBy: 'property', targetEntity: Inquiry::class)]
+    private Collection $inquiries;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -158,6 +143,16 @@ class Property
     public function __construct()
     {
         $this->images = new ArrayCollection();
+        $this->features = new ArrayCollection();
+        $this->pdfFiles = new ArrayCollection();
+        $this->inquiries = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }
@@ -335,23 +330,23 @@ class Property
         };
     }
 
-    public function getArea(): ?float
+    public function getArea(): ?string
     {
         return $this->area;
     }
 
-    public function setArea(float $area): self
+    public function setArea(string $area): self
     {
         $this->area = $area;
         return $this;
     }
 
-    public function getPrice(): ?float
+    public function getPrice(): ?string
     {
         return $this->price;
     }
 
-    public function setPrice(float $price): self
+    public function setPrice(string $price): self
     {
         $this->price = $price;
         return $this;
@@ -425,6 +420,87 @@ class Property
             }
         }
         return $this->images->first() ?: null;
+    }
+
+    /**
+     * @return Collection<int, PropertyFeature>
+     */
+    public function getFeatures(): Collection
+    {
+        return $this->features;
+    }
+
+    public function addFeature(PropertyFeature $feature): self
+    {
+        if (!$this->features->contains($feature)) {
+            $this->features->add($feature);
+            $feature->setProperty($this);
+        }
+        return $this;
+    }
+
+    public function removeFeature(PropertyFeature $feature): self
+    {
+        if ($this->features->removeElement($feature)) {
+            if ($feature->getProperty() === $this) {
+                $feature->setProperty(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PropertyPdfFile>
+     */
+    public function getPdfFiles(): Collection
+    {
+        return $this->pdfFiles;
+    }
+
+    public function addPdfFile(PropertyPdfFile $pdfFile): self
+    {
+        if (!$this->pdfFiles->contains($pdfFile)) {
+            $this->pdfFiles->add($pdfFile);
+            $pdfFile->setProperty($this);
+        }
+        return $this;
+    }
+
+    public function removePdfFile(PropertyPdfFile $pdfFile): self
+    {
+        if ($this->pdfFiles->removeElement($pdfFile)) {
+            if ($pdfFile->getProperty() === $this) {
+                $pdfFile->setProperty(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Inquiry>
+     */
+    public function getInquiries(): Collection
+    {
+        return $this->inquiries;
+    }
+
+    public function addInquiry(Inquiry $inquiry): self
+    {
+        if (!$this->inquiries->contains($inquiry)) {
+            $this->inquiries->add($inquiry);
+            $inquiry->setProperty($this);
+        }
+        return $this;
+    }
+
+    public function removeInquiry(Inquiry $inquiry): self
+    {
+        if ($this->inquiries->removeElement($inquiry)) {
+            if ($inquiry->getProperty() === $this) {
+                $inquiry->setProperty(null);
+            }
+        }
+        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable

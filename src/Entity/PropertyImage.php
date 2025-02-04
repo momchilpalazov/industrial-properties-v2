@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PropertyImageRepository::class)]
+#[ORM\Table(name: 'property_images')]
+#[ORM\HasLifecycleCallbacks]
 class PropertyImage
 {
     #[ORM\Id]
@@ -21,7 +23,7 @@ class PropertyImage
     private ?Property $property = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Пътят до файла е задължителен')]
+    #[Assert\NotBlank(message: 'property_image.path.not_blank')]
     #[Assert\Length(
         max: 255,
         maxMessage: 'Пътят до файла не може да бъде повече от {{ limit }} символа'
@@ -32,7 +34,7 @@ class PropertyImage
     private bool $isMain = false;
 
     #[ORM\Column]
-    private int $position = 0;
+    private int $sortOrder = 0;
 
     #[Assert\File(
         maxSize: '5M',
@@ -50,7 +52,8 @@ class PropertyImage
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    public function __construct()
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
     {
         $this->createdAt = new \DateTimeImmutable();
     }
@@ -93,14 +96,14 @@ class PropertyImage
         return $this;
     }
 
-    public function getPosition(): int
+    public function getSortOrder(): int
     {
-        return $this->position;
+        return $this->sortOrder;
     }
 
-    public function setPosition(int $position): self
+    public function setSortOrder(int $sortOrder): self
     {
-        $this->position = $position;
+        $this->sortOrder = $sortOrder;
         return $this;
     }
 
