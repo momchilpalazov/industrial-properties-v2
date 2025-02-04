@@ -1,0 +1,41 @@
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/property-gallery.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css">
+{% endblock %}
+
+<div class="property-gallery">
+    <div class="property-main-image-container">
+        {% if property.images is not empty %}
+            <a href="{{ vich_uploader_asset(property.images[0], 'imageFile') }}" 
+               data-fancybox="property-gallery">
+                <img src="{{ vich_uploader_asset(property.images[0], 'imageFile') }}" 
+                     alt="{{ property.title }}"
+                     class="property-main-image">
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="property-thumbnails">
+        {% for image in property.images %}
+            <div class="property-thumbnail {% if loop.first %}active{% endif %}"
+                 data-large="{{ vich_uploader_asset(image, 'imageFile') }}">
+                <img src="{{ vich_uploader_asset(image, 'imageFile') }}" 
+                     alt="{{ property.title }} - {{ loop.index }}">
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="property-actions">
+    <button class="property-print-button">
+        <i class="bi bi-printer"></i>
+        {{ 'property.print'|trans }}
+    </button>
+    
+    {% include 'property/_share.html.twig' %}
+</div>
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+    <script src="{{ asset('js/property-gallery.js') }}"></script>
+{% endblock %} 

@@ -1,0 +1,17 @@
+<!-- Language Switcher -->
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+        <i class="bi bi-globe"></i> {{ app.request.locale|upper }}
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end">
+        {% for locale in app_locales %}
+            <li>
+                <a class="dropdown-item {% if app.request.locale == locale %}active{% endif %}"
+                   href="{{ path(app.request.get('_route', 'app_home'),
+                          app.request.get('_route_params', [])|merge({'_locale': locale})) }}">
+                    {{ ('languages.' ~ locale)|trans }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</li> 

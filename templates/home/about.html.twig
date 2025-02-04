@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}За нас{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .about-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('images/about-bg.jpg') }}') no-repeat center center;
+            background-size: cover;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+            margin-top: 56px;
+        }
+        .team-member-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Header -->
+    <section class="about-header">
+        <div class="container">
+            <h1 class="display-4">За нас</h1>
+            <p class="lead">Вашият надежден партньор в света на индустриалните имоти</p>
+        </div>
+    </section>
+
+    <!-- About Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="mb-4">Нашата история</h2>
+                    <p>Industrial Properties е водеща компания в сферата на индустриалните имоти в България. С над 10 години опит на пазара, ние предлагаме професионални услуги в областта на покупко-продажбата и отдаването под наем на индустриални имоти.</p>
+                    <p>Нашият екип от експерти познава в детайли спецификите на индустриалния пазар и може да ви предложи най-подходящите решения за вашия бизнес.</p>
+                </div>
+                <div class="col-md-6">
+                    <img src="{{ asset('images/about-company.jpg') }}" alt="Our Company" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Values -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Нашите ценности</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="bi bi-star fs-1 text-primary mb-3"></i>
+                        <h4>Качество</h4>
+                        <p class="text-muted">Стремим се към най-високо качество във всичко, което правим</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="bi bi-shield-check fs-1 text-primary mb-3"></i>
+                        <h4>Надеждност</h4>
+                        <p class="text-muted">Изграждаме дългосрочни отношения, базирани на доверие</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="bi bi-graph-up fs-1 text-primary mb-3"></i>
+                        <h4>Развитие</h4>
+                        <p class="text-muted">Постоянно се развиваме и следим новостите в бранша</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Team -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Нашият екип</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <img src="{{ asset('images/team/member1.jpg') }}" alt="Team Member" class="team-member-img mb-3">
+                        <h4>Иван Иванов</h4>
+                        <p class="text-muted">Управител</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <img src="{{ asset('images/team/member2.jpg') }}" alt="Team Member" class="team-member-img mb-3">
+                        <h4>Мария Петрова</h4>
+                        <p class="text-muted">Брокер индустриални имоти</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <img src="{{ asset('images/team/member3.jpg') }}" alt="Team Member" class="team-member-img mb-3">
+                        <h4>Георги Димитров</h4>
+                        <p class="text-muted">Брокер индустриални имоти</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container text-center">
+            <h2 class="mb-4">Готови ли сте да започнем заедно?</h2>
+            <p class="lead mb-4">Свържете се с нас за професионална консултация</p>
+            <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Свържете се с нас</a>
+        </div>
+    </section>
+{% endblock %} 

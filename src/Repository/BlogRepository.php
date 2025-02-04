@@ -5,81 +5,90 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use Doctrine\DBAL\Connection;
+use App\Entity\Blog;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
-class BlogRepository extends AbstractRepository
+class BlogRepository extends ServiceEntityRepository
 {
-    public function __construct(Connection $connection)
+    private Connection $connection;
+
+    public function __construct(ManagerRegistry $registry, Connection $connection)
     {
-        parent::__construct($connection);
-        $this->table = 'blog_posts';
+        parent::__construct($registry, Blog::class);
+        $this->connection = $connection;
+    }
+
+    public function create(object $entity): void
+    {
+        $this->_em->persist($entity);
+        $this->_em->flush();
+    }
+
+    public function update(object $entity): void
+    {
+        $this->_em->flush();
+    }
+
+    public function delete(object $entity): void
+    {
+        $this->_em->remove($entity);
+        $this->_em->flush();
     }
 
     public function searchPosts(array $criteria): array
     {
-        $qb = $this->createQueryBuilder()
-            ->select('p.*, pi.image_path')
-            ->from($this->table, 'p')
-            ->leftJoin(
-                'p',
-                'blog_images',
-                'pi',
-                'p.id = pi.post_id AND pi.is_main = 1'
-            )
-            ->where('p.status = :status')
+        $qb = $this->createQueryBuilder('b')
+            ->select('b')
+            ->where('b.status = :status')
             ->setParameter('status', 'published');
 
         if (!empty($criteria['category'])) {
-            $qb->innerJoin(
-                'p',
-                'blog_post_categories',
-                'pc',
-                'p.id = pc.post_id'
-            )
-            ->andWhere('pc.category_id = :category_id')
-            ->setParameter('category_id', $criteria['category']);
+            $qb->innerJoin('b.categories', 'c')
+               ->andWhere('c.id = :category_id')
+               ->setParameter('category_id', $criteria['category']);
         }
 
         if (!empty($criteria['tag'])) {
-            $qb->innerJoin(
-                'p',
-                'blog_post_tags',
-                'pt',
-                'p.id = pt.post_id'
-            )
-            ->andWhere('pt.tag_id = :tag_id')
-            ->setParameter('tag_id', $criteria['tag']);
+            $qb->innerJoin('b.tags', 't')
+               ->andWhere('t.id = :tag_id')
+               ->setParameter('tag_id', $criteria['tag']);
         }
 
         if (!empty($criteria['language'])) {
-            $qb->andWhere('p.language = :language')
+            $qb->andWhere('b.language = :language')
                ->setParameter('language', $criteria['language']);
         }
 
-        $qb->orderBy('p.created_at', 'DESC');
+        $qb->orderBy('b.createdAt', 'DESC');
 
-        return $qb->executeQuery()->fetchAllAssociative();
+        return $qb->getQuery()->getResult();
     }
 
-    public function getPostBySlug(string $slug, string $language): ?array
+    public function getPostBySlug(string $slug, string $language): ?Blog
     {
-        $qb = $this->createQueryBuilder()
-            ->select('p.*, pi.image_path')
-            ->from($this->table, 'p')
-            ->leftJoin(
-                'p',
-                'blog_images',
-                'pi',
-                'p.id = pi.post_id AND pi.is_main = 1'
-            )
-            ->where('p.slug = :slug')
-            ->andWhere('p.language = :language')
-            ->andWhere('p.status = :status')
+        return $this->createQueryBuilder('b')
+            ->where('b.slug = :slug')
+            ->andWhere('b.language = :language')
+            ->andWhere('b.status = :status')
             ->setParameter('slug', $slug)
             ->setParameter('language', $language)
-            ->setParameter('status', 'published');
+            ->setParameter('status', 'published')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
-        $result = $qb->executeQuery()->fetchAssociative();
-        return $result ?: null;
+    public function getLatestPosts(int $limit, string $language): array
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.status = :status')
+            ->andWhere('b.language = :language')
+            ->setParameter('status', 'published')
+            ->setParameter('language', $language)
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 
     public function getAllCategories(string $language): array

@@ -1,8 +1,13 @@
+app:
+    title: 'Industrial Properties'
+    tagline: 'Industrial Properties in Bulgaria'
+
 nav:
+    home: 'Home'
     properties: 'Properties'
-    blog: 'Blog'
     about: 'About'
     contact: 'Contact'
+    language: 'Language'
 
 footer:
     description: 'Your reliable partner in industrial properties'
@@ -25,6 +30,15 @@ property:
     description: 'Description'
     view_details: 'View Details'
     similar: 'Similar Properties'
+    featured: 'Featured'
+    details: 'Details'
+    contact: 'Contact Us'
+    specifications: 'Specifications'
+    created_at: 'Published on'
+    share:
+        title: 'Share'
+        copied: 'Link copied to clipboard'
+    print: 'Print'
     inquiry:
         title: 'Property Inquiry'
         name: 'Name'
@@ -34,8 +48,6 @@ property:
         submit: 'Send Inquiry'
         success: 'Your inquiry has been sent successfully!'
         error: 'An error occurred while sending your inquiry.'
-    share:
-        copied: 'Link copied to clipboard'
     types:
         industrial: 'Industrial'
         warehouse: 'Warehouse'
@@ -54,6 +66,20 @@ property:
         price_desc: 'Price (descending)'
         area_asc: 'Area (ascending)'
         area_desc: 'Area (descending)'
+    features:
+        area: 'Area'
+        price: 'Price'
+        location: 'Location'
+        type: 'Type'
+    status:
+        available: 'Available'
+        unavailable: 'Unavailable'
+    actions:
+        view: 'Details'
+        contact: 'Inquiry'
+        search: 'Search'
+        filter: 'Filter'
+        clear: 'Clear'
 
 blog:
     title: 'Blog'
@@ -109,26 +135,29 @@ properties:
         area_asc: 'Area (ascending)'
         area_desc: 'Area (descending)'
 
-property:
-    featured: 'Featured'
-    details: 'Details'
-    contact: 'Contact Us'
-    similar: 'Similar Properties'
-    description: 'Description'
-    specifications: 'Specifications'
-    location: 'Location'
-    area: 'Area'
-    price: 'Price'
-    type: 'Type'
-    created_at: 'Published on'
-    share: 'Share'
-    print: 'Print'
-    inquiry:
-        title: 'Send Inquiry'
+home:
+    hero:
+        title: 'Industrial Properties in Bulgaria'
+        subtitle: 'Find the perfect location for your business'
+        cta: 'View all properties'
+    sections:
+        types: 'Property Types'
+        featured: 'Featured Properties'
+        cta:
+            title: 'Looking for a specific property?'
+            text: 'Contact us and we will help you find exactly what you need'
+            button: 'Contact Us'
+
+form:
+    labels:
         name: 'Name'
         email: 'Email'
         phone: 'Phone'
         message: 'Message'
         submit: 'Send'
-        success: 'Your inquiry has been sent successfully'
-        error: 'An error occurred while sending your inquiry' 
+    placeholders:
+        search: 'Search by location, type...'
+        min_price: 'Minimum price'
+        max_price: 'Maximum price'
+        min_area: 'Minimum area'
+        max_area: 'Maximum area' 

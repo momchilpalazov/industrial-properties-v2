@@ -1,103 +1,207 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ translations.home.title }} - Industrial Properties{% endblock %}
+{% block title %}Industrial Properties - Индустриални имоти{% endblock %}
 
-{% block content %}
-<!-- Hero Section -->
-<section class="hero-section py-5 bg-light">
-    <div class="container-fluid px-4">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h1 class="title display-4 mb-0">{{ translations.home.hero_title }}</h1>
-                <div class="heading-divider"></div>
-                <p class="lead mb-4">{{ translations.home.hero_text }}</p>
-                <a href="/properties" class="btn btn-primary btn-lg">
-                    {{ translations.home.view_all }}
-                </a>
-            </div>
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ asset('images/hero-bg.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            padding: 8rem 0;
+            margin-top: 56px;
+            color: white;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .property-types {
+            padding: 5rem 0;
+            background: #f8f9fa;
+        }
+        
+        .type-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .type-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .type-icon {
+            font-size: 3rem;
+            color: var(--bs-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .featured-properties {
+            padding: 5rem 0;
+        }
+        
+        .property-card {
+            height: 100%;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .property-image {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .property-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+        
+        .property-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .cta-section {
+            padding: 5rem 0;
+            background: var(--bs-primary);
+            color: white;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
 
-            <div class="col-md-6">
-                <!-- Search Form -->
-                <div class="card shadow">
-                    <div class="card-body p-4">
-                        <h5 class="card-title mb-0">{{ translations.search.title }}</h5>
-                        <div class="heading-divider"></div>
-                        <form action="/properties" method="get">
-                            <div class="mb-3">
-                                <select name="type" class="form-select form-select-lg">
-                                    <option value="">{{ translations.search.all_types }}</option>
-                                    {% for key, value in translations.property.type %}
-                                        <option value="{{ key }}">{{ value }}</option>
-                                    {% endfor %}
-                                </select>
+{% block body %}
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="hero-title">Индустриални имоти в България</h1>
+            <p class="hero-subtitle">Намерете перфектното място за вашия бизнес</p>
+            <a href="{{ path('app_property_index') }}" class="btn btn-primary btn-lg">
+                Разгледайте всички имоти
+            </a>
+        </div>
+    </section>
+
+    <!-- Property Types -->
+    <section class="property-types">
+        <div class="container">
+            <h2 class="text-center mb-5">Видове имоти</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <a href="{{ path('app_property_index', {'type': 'industrial_land'}) }}" class="text-decoration-none">
+                        <div class="type-card">
+                            <div class="type-icon">
+                                <i class="bi bi-map"></i>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-6">
-                                    <input type="number" name="min_area" class="form-control form-control-lg" 
-                                           placeholder="{{ translations.search.min_area }}">
-                                </div>
-                                <div class="col-6">
-                                    <input type="number" name="max_area" class="form-control form-control-lg" 
-                                           placeholder="{{ translations.search.max_area }}">
-                                </div>
+                            <h3 class="h5">Индустриални терени</h3>
+                            <p class="text-muted mb-0">Парцели за вашите бизнес нужди</p>
+                            {% if property_stats['industrial_land'] is defined %}
+                                <div class="badge bg-primary mt-2">{{ property_stats['industrial_land'] }} имота</div>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{{ path('app_property_index', {'type': 'logistics_center'}) }}" class="text-decoration-none">
+                        <div class="type-card">
+                            <div class="type-icon">
+                                <i class="bi bi-box-seam"></i>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-6">
-                                    <input type="number" name="min_price" class="form-control form-control-lg" 
-                                           placeholder="{{ translations.search.min_price }}">
-                                </div>
-                                <div class="col-6">
-                                    <input type="number" name="max_price" class="form-control form-control-lg" 
-                                           placeholder="{{ translations.search.max_price }}">
-                                </div>
+                            <h3 class="h5">Логистични центрове</h3>
+                            <p class="text-muted mb-0">Складове и дистрибуционни центрове</p>
+                            {% if property_stats['logistics_center'] is defined %}
+                                <div class="badge bg-primary mt-2">{{ property_stats['logistics_center'] }} имота</div>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{{ path('app_property_index', {'type': 'production_facility'}) }}" class="text-decoration-none">
+                        <div class="type-card">
+                            <div class="type-icon">
+                                <i class="bi bi-building"></i>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg w-100">
-                                {{ translations.search.submit }}
-                            </button>
-                        </form>
-                    </div>
+                            <h3 class="h5">Производствени бази</h3>
+                            <p class="text-muted mb-0">Помещения за производство</p>
+                            {% if property_stats['production_facility'] is defined %}
+                                <div class="badge bg-primary mt-2">{{ property_stats['production_facility'] }} имота</div>
+                            {% endif %}
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Featured Properties -->
-<section class="featured-properties py-5">
-    <div class="container-fluid px-4">
-        <h2 class="title display-5 mb-0">{{ translations.home.featured_properties }}</h2>
-        <div class="heading-divider"></div>
-        <div class="row g-4">
-            {% for property in featured_properties %}
-                {% include 'property/_card.html.twig' with {property: property} %}
-            {% endfor %}
+    <!-- Featured Properties -->
+    <section class="featured-properties">
+        <div class="container">
+            <h2 class="text-center mb-5">Избрани имоти</h2>
+            <div class="row g-4">
+                {% for property in featured_properties %}
+                    <div class="col-md-4">
+                        <div class="card property-card h-100">
+                            {% if property.mainImage %}
+                                <img src="{{ asset('uploads/properties/' ~ property.mainImage.filename) }}"
+                                     class="card-img-top property-image"
+                                     alt="{{ property.title }}">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ property.title }}</h5>
+                                <p class="card-text text-muted mb-2">
+                                    <i class="bi bi-geo-alt"></i> {{ property.location }}
+                                </p>
+                                <div class="property-features mb-3">
+                                    <div class="property-feature">
+                                        <i class="bi bi-rulers"></i>
+                                        {{ property.area }} м²
+                                    </div>
+                                    <div class="property-feature">
+                                        <i class="bi bi-currency-euro"></i>
+                                        {{ property.price|number_format(0, '.', ' ') }}
+                                    </div>
+                                </div>
+                                <a href="{{ path('app_property_show', {id: property.id}) }}" 
+                                   class="btn btn-outline-primary">Детайли</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Latest Properties -->
-<section class="latest-properties py-5 bg-light">
-    <div class="container-fluid px-4">
-        <h2 class="title display-5 mb-0">{{ translations.home.latest_properties }}</h2>
-        <div class="heading-divider"></div>
-        <div class="row g-4">
-            {% for property in latest_properties %}
-                {% include 'property/_card.html.twig' with {property: property} %}
-            {% endfor %}
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="mb-4">Търсите специфичен имот?</h2>
+            <p class="mb-4">Свържете се с нас и ще ви помогнем да намерите точно това, от което се нуждаете</p>
+            <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Свържете се с нас</a>
         </div>
-    </div>
-</section>
-
-<!-- Blog Posts -->
-<section class="blog-posts py-5">
-    <div class="container-fluid px-4">
-        <h2 class="title display-5 mb-0">{{ translations.home.latest_posts }}</h2>
-        <div class="heading-divider"></div>
-        <div class="row g-4">
-            {% for post in latest_posts %}
-                {% include 'blog/_card.html.twig' with {post: post} %}
-            {% endfor %}
-        </div>
-    </div>
-</section>
+    </section>
 {% endblock %} 

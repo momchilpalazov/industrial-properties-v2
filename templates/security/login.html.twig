@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Вход{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-header h1 {
+            font-size: 1.75rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .login-form .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        .login-form .btn-primary {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .alert {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Вход в системата</h1>
+                <p class="text-muted">Моля, въведете вашите данни за достъп</p>
+            </div>
+
+            {% if error %}
+                <div class="alert alert-danger">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            <form class="login-form" method="post">
+                <div class="mb-3">
+                    <label for="_username" class="form-label">Имейл</label>
+                    <input type="email" 
+                           class="form-control" 
+                           id="_username" 
+                           name="_username" 
+                           value="{{ last_username }}" 
+                           required 
+                           autofocus>
+                </div>
+
+                <div class="mb-3">
+                    <label for="_password" class="form-label">Парола</label>
+                    <input type="password" 
+                           class="form-control" 
+                           id="_password" 
+                           name="_password" 
+                           required>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" 
+                               type="checkbox" 
+                               id="remember_me" 
+                               name="_remember_me" 
+                               checked>
+                        <label class="form-check-label" for="remember_me">
+                            Запомни ме
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Вход</button>
+            </form>
+        </div>
+    </div>
+{% endblock %} 

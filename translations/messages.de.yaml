@@ -1,8 +1,14 @@
+app:
+    title: 'Industrial Properties'
+    tagline: 'Industrieimmobilien in Bulgarien'
+
 nav:
+    home: 'Startseite'
     properties: 'Immobilien'
     blog: 'Blog'
     about: 'Über uns'
     contact: 'Kontakt'
+    language: 'Sprache'
 
 footer:
     description: 'Ihr vertrauenswürdiger Partner für Industrieimmobilien'
@@ -38,12 +44,30 @@ property:
         copied: 'Link in die Zwischenablage kopiert'
     types:
         industrial: 'Industriell'
-        warehouse: 'Lager'
+        warehouse: 'Lagerhaus'
         logistics: 'Logistikzentrum'
         production: 'Produktion'
         office: 'Büro'
         retail: 'Einzelhandel'
         mixed: 'Gemischt'
+        industrial_land: 'Industriegrundstück'
+        logistics_center: 'Logistikzentrum'
+        production_facility: 'Produktionsanlage'
+        industrial_building: 'Industriegebäude'
+    features:
+        area: 'Fläche'
+        price: 'Preis'
+        location: 'Standort'
+        type: 'Typ'
+    status:
+        available: 'Verfügbar'
+        unavailable: 'Nicht verfügbar'
+    actions:
+        view: 'Details'
+        contact: 'Anfrage'
+        search: 'Suchen'
+        filter: 'Filter'
+        clear: 'Zurücksetzen'
 
 blog:
     title: 'Blog'
@@ -70,4 +94,31 @@ contact:
         message: 'Nachricht'
         submit: 'Senden'
         success: 'Ihre Nachricht wurde erfolgreich gesendet!'
-        error: 'Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten.' 
+        error: 'Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten.'
+
+home:
+    hero:
+        title: 'Industrieimmobilien in Bulgarien'
+        subtitle: 'Finden Sie den perfekten Standort für Ihr Unternehmen'
+        cta: 'Alle Immobilien ansehen'
+    sections:
+        types: 'Immobilientypen'
+        featured: 'Ausgewählte Immobilien'
+        cta:
+            title: 'Suchen Sie eine bestimmte Immobilie?'
+            text: 'Kontaktieren Sie uns und wir helfen Ihnen, genau das zu finden, was Sie brauchen'
+            button: 'Kontaktieren Sie uns'
+
+form:
+    labels:
+        name: 'Name'
+        email: 'E-Mail'
+        phone: 'Telefon'
+        message: 'Nachricht'
+        submit: 'Senden'
+    placeholders:
+        search: 'Suche nach Standort, Typ...'
+        min_price: 'Mindestpreis'
+        max_price: 'Höchstpreis'
+        min_area: 'Mindestfläche'
+        max_area: 'Maximale Fläche' 

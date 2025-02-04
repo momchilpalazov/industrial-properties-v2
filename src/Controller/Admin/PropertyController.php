@@ -27,14 +27,13 @@ class PropertyController extends AbstractController
         private PaginatorInterface $paginator
     ) {}
 
-    #[Route('', name: 'admin_property_index', methods: ['GET'])]
+    #[Route('/', name: 'admin_property_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        $queryBuilder = $this->propertyRepository->createQueryBuilder('p')
-            ->orderBy('p.createdAt', 'DESC');
+        $properties = $this->propertyRepository->findBy([], ['createdAt' => 'DESC']);
 
         $pagination = $this->paginator->paginate(
-            $queryBuilder,
+            $properties,
             $request->query->getInt('page', 1),
             10
         );
@@ -48,13 +47,15 @@ class PropertyController extends AbstractController
     public function new(Request $request): Response
     {
         $property = new Property();
+
         $form = $this->createForm(PropertyType::class, $property);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->propertyService->create($property);
+            $this->propertyRepository->save($property);
 
-            $this->addFlash('success', 'Имотът беше създаден успешно.');
+            $this->addFlash('success', 'Имотът беше създаден успешно');
+
             return $this->redirectToRoute('admin_property_index');
         }
 
@@ -71,9 +72,10 @@ class PropertyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->propertyService->update($property);
+            $this->propertyRepository->save($property);
 
-            $this->addFlash('success', 'Имотът беше обновен успешно.');
+            $this->addFlash('success', 'Имотът беше редактиран успешно');
+
             return $this->redirectToRoute('admin_property_index');
         }
 
@@ -83,12 +85,12 @@ class PropertyController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'admin_property_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'admin_property_delete', methods: ['POST'])]
     public function delete(Request $request, Property $property): Response
     {
         if ($this->isCsrfTokenValid('delete'.$property->getId(), $request->request->get('_token'))) {
-            $this->propertyService->delete($property);
-            $this->addFlash('success', 'Имотът беше изтрит успешно.');
+            $this->propertyRepository->remove($property);
+            $this->addFlash('success', 'Имотът беше изтрит успешно');
         }
 
         return $this->redirectToRoute('admin_property_index');
@@ -98,24 +100,18 @@ class PropertyController extends AbstractController
     public function toggleFeatured(Property $property): Response
     {
         $property->setIsFeatured(!$property->isFeatured());
-        $this->entityManager->flush();
+        $this->propertyRepository->save($property);
 
-        return $this->json([
-            'success' => true,
-            'isFeatured' => $property->isFeatured()
-        ]);
+        return $this->json(['featured' => $property->isFeatured()]);
     }
 
-    #[Route('/{id}/toggle-active', name: 'admin_property_toggle_active', methods: ['POST'])]
-    public function toggleActive(Property $property): Response
+    #[Route('/{id}/toggle-available', name: 'admin_property_toggle_available', methods: ['POST'])]
+    public function toggleAvailable(Property $property): Response
     {
-        $property->setIsActive(!$property->isActive());
-        $this->entityManager->flush();
+        $property->setIsAvailable(!$property->isAvailable());
+        $this->propertyRepository->save($property);
 
-        return $this->json([
-            'success' => true,
-            'isActive' => $property->isActive()
-        ]);
+        return $this->json(['available' => $property->isAvailable()]);
     }
 
     #[Route('/{id}/images', name: 'admin_property_images', methods: ['GET', 'POST'])]

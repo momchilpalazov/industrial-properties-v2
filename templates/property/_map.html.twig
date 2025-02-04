@@ -1,0 +1,21 @@
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@3.0.0/Control.FullScreen.css">
+    <link rel="stylesheet" href="{{ asset('css/property-map.css') }}">
+{% endblock %}
+
+<div class="property-map-container">
+    <h2>{{ 'property.location'|trans }}</h2>
+    
+    <div id="property-map"
+         data-lat="{{ property.latitude }}"
+         data-lng="{{ property.longitude }}"
+         data-title="{{ property.title }}">
+    </div>
+</div>
+
+{% block javascripts %}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.fullscreen@3.0.0/Control.FullScreen.js"></script>
+    <script src="{{ asset('js/property-map.js') }}"></script>
+{% endblock %} 

@@ -46,13 +46,16 @@ class PropertyRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Намира избраните имоти
+     */
     public function findFeatured(int $limit = 6): array
     {
         return $this->createQueryBuilder('p')
-            ->where('p.isActive = :active')
-            ->andWhere('p.isFeatured = :featured')
-            ->setParameter('active', true)
+            ->where('p.isFeatured = :featured')
+            ->andWhere('p.isActive = :active')
             ->setParameter('featured', true)
+            ->setParameter('active', true)
             ->orderBy('p.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
@@ -77,6 +80,9 @@ class PropertyRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Намира имоти по зададени критерии
+     */
     public function findByFilters(array $filters): array
     {
         $qb = $this->createQueryBuilder('p')
@@ -89,52 +95,33 @@ class PropertyRepository extends ServiceEntityRepository
         }
 
         if (!empty($filters['min_price'])) {
-            $qb->andWhere('p.price >= :minPrice')
-               ->setParameter('minPrice', $filters['min_price']);
+            $qb->andWhere('p.price >= :min_price')
+               ->setParameter('min_price', $filters['min_price']);
         }
 
         if (!empty($filters['max_price'])) {
-            $qb->andWhere('p.price <= :maxPrice')
-               ->setParameter('maxPrice', $filters['max_price']);
+            $qb->andWhere('p.price <= :max_price')
+               ->setParameter('max_price', $filters['max_price']);
         }
 
         if (!empty($filters['min_area'])) {
-            $qb->andWhere('p.area >= :minArea')
-               ->setParameter('minArea', $filters['min_area']);
+            $qb->andWhere('p.area >= :min_area')
+               ->setParameter('min_area', $filters['min_area']);
         }
 
         if (!empty($filters['max_area'])) {
-            $qb->andWhere('p.area <= :maxArea')
-               ->setParameter('maxArea', $filters['max_area']);
+            $qb->andWhere('p.area <= :max_area')
+               ->setParameter('max_area', $filters['max_area']);
         }
 
         if (!empty($filters['location'])) {
-            $qb->andWhere('p.locationBg LIKE :location OR p.locationEn LIKE :location')
+            $qb->andWhere('p.location LIKE :location')
                ->setParameter('location', '%' . $filters['location'] . '%');
         }
 
-        if (!empty($filters['sort'])) {
-            switch ($filters['sort']) {
-                case 'price_asc':
-                    $qb->orderBy('p.price', 'ASC');
-                    break;
-                case 'price_desc':
-                    $qb->orderBy('p.price', 'DESC');
-                    break;
-                case 'area_asc':
-                    $qb->orderBy('p.area', 'ASC');
-                    break;
-                case 'area_desc':
-                    $qb->orderBy('p.area', 'DESC');
-                    break;
-                default:
-                    $qb->orderBy('p.createdAt', 'DESC');
-            }
-        } else {
-            $qb->orderBy('p.createdAt', 'DESC');
-        }
-
-        return $qb->getQuery()->getResult();
+        return $qb->orderBy('p.createdAt', 'DESC')
+                 ->getQuery()
+                 ->getResult();
     }
 
     public function getStats(): array
@@ -150,14 +137,51 @@ class PropertyRepository extends ServiceEntityRepository
         ];
     }
 
-    public function getTypeStats(): array
+    /**
+     * Връща статистика за броя имоти по тип
+     */
+    public function getPropertyTypeStats(): array
     {
-        return $this->createQueryBuilder('p')
+        $stats = $this->createQueryBuilder('p')
             ->select('p.type, COUNT(p.id) as count')
             ->where('p.isActive = :active')
             ->setParameter('active', true)
             ->groupBy('p.type')
             ->getQuery()
             ->getResult();
+
+        $result = [];
+        foreach ($stats as $stat) {
+            $result[$stat['type']] = $stat['count'];
+        }
+
+        return $result;
+    }
+
+    public function searchByQuery(string $query): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.title LIKE :query')
+            ->orWhere('p.titleEn LIKE :query')
+            ->orWhere('p.location LIKE :query')
+            ->orWhere('p.type LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Връща списък с всички типове имоти
+     */
+    public function getPropertyTypes(): array
+    {
+        return [
+            'industrial_land' => 'property.types.industrial_land',
+            'industrial_building' => 'property.types.industrial_building',
+            'logistics_center' => 'property.types.logistics_center',
+            'warehouse' => 'property.types.warehouse',
+            'production_facility' => 'property.types.production_facility'
+        ];
     }
 } 

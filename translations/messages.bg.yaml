@@ -1,8 +1,13 @@
+app:
+    title: 'Industrial Properties'
+    tagline: 'Индустриални имоти в България'
+
 nav:
+    home: 'Начало'
     properties: 'Имоти'
-    blog: 'Блог'
     about: 'За нас'
     contact: 'Контакти'
+    language: 'Език'
 
 footer:
     description: 'Вашият надежден партньор в индустриалните имоти'
@@ -25,6 +30,15 @@ property:
     description: 'Описание'
     view_details: 'Детайли'
     similar: 'Подобни имоти'
+    featured: 'Препоръчан'
+    details: 'Детайли'
+    contact: 'Свържете се с нас'
+    specifications: 'Спецификации'
+    created_at: 'Публикуван на'
+    share:
+        title: 'Сподели'
+        copied: 'Линкът е копиран в клипборда'
+    print: 'Принтирай'
     inquiry:
         title: 'Запитване за имота'
         name: 'Име'
@@ -34,8 +48,6 @@ property:
         submit: 'Изпрати запитване'
         success: 'Вашето запитване беше изпратено успешно!'
         error: 'Възникна грешка при изпращане на запитването.'
-    share:
-        copied: 'Линкът е копиран в клипборда'
     types:
         industrial: 'Индустриален'
         warehouse: 'Склад'
@@ -54,6 +66,20 @@ property:
         price_desc: 'Цена (низходящо)'
         area_asc: 'Площ (възходящо)'
         area_desc: 'Площ (низходящо)'
+    features:
+        area: 'Площ'
+        price: 'Цена'
+        location: 'Локация'
+        type: 'Тип'
+    status:
+        available: 'Свободен'
+        unavailable: 'Зает'
+    actions:
+        view: 'Детайли'
+        contact: 'Запитване'
+        search: 'Търси'
+        filter: 'Филтрирай'
+        clear: 'Изчисти'
 
 blog:
     title: 'Блог'
@@ -109,26 +135,16 @@ properties:
         area_asc: 'Площ (възходящо)'
         area_desc: 'Площ (низходящо)'
 
-property:
-    featured: 'Препоръчан'
-    details: 'Детайли'
-    contact: 'Свържете се с нас'
-    similar: 'Подобни имоти'
-    description: 'Описание'
-    specifications: 'Спецификации'
-    location: 'Локация'
-    area: 'Площ'
-    price: 'Цена'
-    type: 'Тип'
-    created_at: 'Публикуван на'
-    share: 'Сподели'
-    print: 'Принтирай'
-    inquiry:
-        title: 'Изпратете запитване'
+form:
+    labels:
         name: 'Име'
         email: 'Имейл'
         phone: 'Телефон'
         message: 'Съобщение'
         submit: 'Изпрати'
-        success: 'Вашето запитване беше изпратено успешно'
-        error: 'Възникна грешка при изпращане на запитването' 
+    placeholders:
+        search: 'Търсене по локация, тип...'
+        min_price: 'Минимална цена'
+        max_price: 'Максимална цена'
+        min_area: 'Минимална площ'
+        max_area: 'Максимална площ' 

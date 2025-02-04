@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 
-#[Route('/{_locale}')]
 class PropertyController extends AbstractController
 {
     public function __construct(
@@ -24,43 +23,61 @@ class PropertyController extends AbstractController
     #[Route('/properties', name: 'app_property_index')]
     public function index(Request $request): Response
     {
-        $form = $this->createForm(PropertyFilterType::class);
-        $form->handleRequest($request);
+        $filters = [
+            'type' => $request->query->get('type'),
+            'min_price' => $request->query->get('min_price'),
+            'max_price' => $request->query->get('max_price'),
+            'min_area' => $request->query->get('min_area'),
+            'max_area' => $request->query->get('max_area'),
+            'location' => $request->query->get('location'),
+        ];
 
-        $filters = $form->isSubmitted() && $form->isValid() 
-            ? $form->getData() 
-            : [];
+        $properties = $this->propertyRepository->findByFilters($filters);
 
-        $queryBuilder = $this->propertyRepository->createQueryBuilderWithFilters($filters);
-        
         $pagination = $this->paginator->paginate(
-            $queryBuilder,
+            $properties,
             $request->query->getInt('page', 1),
-            12
+            9
         );
 
         return $this->render('property/index.html.twig', [
             'properties' => $pagination,
-            'form' => $form->createView(),
+            'filters' => $filters,
+            'types' => $this->propertyRepository->getPropertyTypes(),
         ]);
     }
 
-    #[Route('/property/{slug}', name: 'app_property_show')]
-    public function show(Property $property): Response
+    #[Route('/properties/{id}', name: 'app_property_show', methods: ['GET'])]
+    public function show(int $id): Response
     {
-        if (!$property->isActive()) {
-            throw $this->createNotFoundException('Property not found');
-        }
+        $property = $this->propertyRepository->find($id);
 
-        $similarProperties = $this->propertyRepository->findSimilar($property);
+        if (!$property) {
+            throw $this->createNotFoundException('Имотът не е намерен');
+        }
 
         return $this->render('property/show.html.twig', [
             'property' => $property,
-            'similar_properties' => $similarProperties,
         ]);
     }
 
-    #[Route('/featured-properties', name: 'app_property_featured')]
+    #[Route('/properties/{id}/inquiry', name: 'app_property_inquiry', methods: ['POST'])]
+    public function inquiry(Request $request, int $id): Response
+    {
+        $property = $this->propertyRepository->find($id);
+
+        if (!$property) {
+            throw $this->createNotFoundException('Имотът не е намерен');
+        }
+
+        // TODO: Обработка на запитването
+
+        $this->addFlash('success', 'Вашето запитване беше изпратено успешно');
+
+        return $this->redirectToRoute('app_property_show', ['id' => $id]);
+    }
+
+    #[Route('/properties/featured', name: 'app_property_featured')]
     public function featured(): Response
     {
         $properties = $this->propertyRepository->findFeatured();

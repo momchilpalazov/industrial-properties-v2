@@ -5,100 +5,114 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use Doctrine\DBAL\Connection;
+use App\Entity\Contact;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
-class ContactRepository extends AbstractRepository
+class ContactRepository extends ServiceEntityRepository
 {
-    public function __construct(Connection $connection)
+    public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($connection);
-        $this->table = 'contact_messages';
+        parent::__construct($registry, Contact::class);
     }
 
-    public function saveMessage(array $data): int
+    public function create(object $entity): void
     {
-        $this->connection->insert($this->table, [
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
-            'subject' => $data['subject'],
-            'message' => $data['message'],
-            'ip_address' => $data['ip_address'] ?? null,
-            'created_at' => date('Y-m-d H:i:s'),
-            'status' => 'new'
-        ]);
+        $this->_em->persist($entity);
+        $this->_em->flush();
+    }
 
-        return (int) $this->connection->lastInsertId();
+    public function update(object $entity): void
+    {
+        $this->_em->flush();
+    }
+
+    public function delete(object $entity): void
+    {
+        $this->_em->remove($entity);
+        $this->_em->flush();
+    }
+
+    public function saveMessage(array $data): Contact
+    {
+        $contact = new Contact();
+        $contact->setName($data['name']);
+        $contact->setEmail($data['email']);
+        $contact->setPhone($data['phone'] ?? null);
+        $contact->setSubject($data['subject']);
+        $contact->setMessage($data['message']);
+        $contact->setIpAddress($data['ip_address'] ?? null);
+        $contact->setStatus('new');
+
+        $this->create($contact);
+
+        return $contact;
     }
 
     public function getUnreadMessagesCount(): int
     {
-        $qb = $this->createQueryBuilder()
-            ->select('COUNT(*)')
-            ->from($this->table)
-            ->where('status = :status')
-            ->setParameter('status', 'new');
-
-        return (int) $qb->executeQuery()->fetchOne();
+        return $this->count(['status' => 'new']);
     }
 
     public function markAsRead(int $id): bool
     {
-        return (bool) $this->connection->update(
-            $this->table,
-            ['status' => 'read'],
-            ['id' => $id]
-        );
+        $contact = $this->find($id);
+        if (!$contact) {
+            return false;
+        }
+
+        $contact->setStatus('read');
+        $this->update($contact);
+        return true;
     }
 
     public function getLatestMessages(int $limit = 10): array
     {
-        $qb = $this->createQueryBuilder()
-            ->select('*')
-            ->from($this->table)
-            ->orderBy('created_at', 'DESC')
-            ->setMaxResults($limit);
-
-        return $qb->executeQuery()->fetchAllAssociative();
+        return $this->createQueryBuilder('c')
+            ->orderBy('c.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 
     public function searchMessages(array $criteria): array
     {
-        $qb = $this->createQueryBuilder()
-            ->select('*')
-            ->from($this->table);
+        $qb = $this->createQueryBuilder('c');
 
         if (!empty($criteria['status'])) {
-            $qb->andWhere('status = :status')
+            $qb->andWhere('c.status = :status')
                ->setParameter('status', $criteria['status']);
         }
 
         if (!empty($criteria['email'])) {
-            $qb->andWhere('email LIKE :email')
+            $qb->andWhere('c.email LIKE :email')
                ->setParameter('email', '%' . $criteria['email'] . '%');
         }
 
         if (!empty($criteria['date_from'])) {
-            $qb->andWhere('created_at >= :date_from')
+            $qb->andWhere('c.createdAt >= :date_from')
                ->setParameter('date_from', $criteria['date_from']);
         }
 
         if (!empty($criteria['date_to'])) {
-            $qb->andWhere('created_at <= :date_to')
+            $qb->andWhere('c.createdAt <= :date_to')
                ->setParameter('date_to', $criteria['date_to']);
         }
 
-        $qb->orderBy('created_at', 'DESC');
+        $qb->orderBy('c.createdAt', 'DESC');
 
-        return $qb->executeQuery()->fetchAllAssociative();
+        return $qb->getQuery()->getResult();
     }
 
     public function deleteOldMessages(int $daysOld = 90): int
     {
         $date = new \DateTime("-{$daysOld} days");
         
-        return $this->connection->executeStatement(
-            'DELETE FROM ' . $this->table . ' WHERE created_at < ?',
-            [$date->format('Y-m-d H:i:s')]
-        );
+        return $this->createQueryBuilder('c')
+            ->delete()
+            ->where('c.createdAt < :date')
+            ->setParameter('date', $date->format('Y-m-d H:i:s'))
+            ->getQuery()
+            ->execute();
     }
 } 

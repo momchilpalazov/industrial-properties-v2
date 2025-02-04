@@ -1,29 +1,41 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Управление на снимки - {{ property.titleBg }}{% endblock %}
+{% block title %}Изображения - {{ property.title }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
     <style>
+        .dropzone {
+            border: 2px dashed #0087F7;
+            border-radius: 5px;
+            background: white;
+        }
+        .dropzone .dz-message {
+            font-weight: 400;
+        }
+        .dropzone .dz-message .note {
+            font-size: 0.8em;
+            font-weight: 200;
+            display: block;
+            margin-top: 1.4rem;
+        }
         .property-images {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 1rem;
-            padding: 1rem;
+            margin-top: 2rem;
         }
         .image-card {
             position: relative;
-            border: 1px solid #dee2e6;
-            border-radius: 0.25rem;
-            padding: 0.5rem;
-            background: #fff;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .image-card img {
             width: 100%;
             height: 150px;
             object-fit: cover;
-            border-radius: 0.25rem;
         }
         .image-actions {
             position: absolute;
@@ -32,181 +44,124 @@
             display: flex;
             gap: 0.5rem;
         }
+        .image-actions button {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            border: none;
+            background: rgba(255,255,255,0.9);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .image-actions button:hover {
+            background: white;
+        }
         .main-image-badge {
             position: absolute;
             top: 0.5rem;
             left: 0.5rem;
-            background: rgba(25, 135, 84, 0.9);
+            background: var(--bs-primary);
             color: white;
             padding: 0.25rem 0.5rem;
             border-radius: 0.25rem;
-            font-size: 0.875rem;
-        }
-        .dropzone {
-            border: 2px dashed #dee2e6;
-            border-radius: 0.5rem;
-            background: #f8f9fa;
-            min-height: 150px;
-            padding: 1rem;
+            font-size: 0.8rem;
         }
     </style>
 {% endblock %}
 
 {% block body %}
-    <div class="container-fluid px-4">
-        <h1 class="mt-4">Управление на снимки</h1>
-        <h2 class="h5 text-muted mb-4">{{ property.titleBg }}</h2>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Изображения - {{ property.title }}</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ path('admin_property_edit', {'id': property.id}) }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Назад към имота
+            </a>
+        </div>
+    </div>
 
-        <div class="card mb-4">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <i class="bi bi-images me-1"></i>
-                        Качване на нови снимки
-                    </div>
-                    <div>
-                        <a href="{{ path('admin_property_edit', {'id': property.id}) }}" class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-arrow-left me-1"></i>
-                            Назад към редактиране
-                        </a>
-                    </div>
+    <!-- Dropzone за качване на изображения -->
+    <form action="{{ path('admin_property_image_upload', {'id': property.id}) }}" class="dropzone" id="propertyImages">
+        <div class="dz-message" data-dz-message>
+            <span>Пуснете файлове тук или кликнете за да качите</span>
+            <span class="note">(Позволени формати: JPG, PNG, GIF, WEBP. Максимален размер: 5MB)</span>
+        </div>
+    </form>
+
+    <!-- Списък със съществуващи изображения -->
+    <div class="property-images">
+        {% for image in property.images %}
+            <div class="image-card" data-image-id="{{ image.id }}">
+                {% if image.isMain %}
+                    <span class="main-image-badge">Основно</span>
+                {% endif %}
+                <img src="{{ asset('uploads/properties/' ~ image.filename) }}" alt="{{ property.title }}">
+                <div class="image-actions">
+                    {% if not image.isMain %}
+                        <button type="button" class="set-main-image" title="Задай като основно">
+                            <i class="bi bi-star"></i>
+                        </button>
+                    {% endif %}
+                    <button type="button" class="delete-image text-danger" title="Изтрий">
+                        <i class="bi bi-trash"></i>
+                    </button>
                 </div>
             </div>
-            <div class="card-body">
-                {% for message in app.flashes('success') %}
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-
-                <form action="{{ path('admin_property_images', {'id': property.id}) }}" 
-                      class="dropzone" 
-                      id="property-images-dropzone">
-                </form>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <i class="bi bi-grid me-1"></i>
-                Текущи снимки
-            </div>
-            <div class="card-body">
-                <div class="property-images" id="sortable-images">
-                    {% for image in property.images %}
-                        <div class="image-card" data-image-id="{{ image.id }}">
-                            {% if image.isMain %}
-                                <div class="main-image-badge">
-                                    <i class="bi bi-star-fill me-1"></i>
-                                    Основна
-                                </div>
-                            {% endif %}
-                            <img src="{{ image_cache('uploads/properties/' ~ image.path, 200, 150) }}" 
-                                 alt="{{ property.titleBg }}"
-                                 class="mb-2">
-                            <div class="image-actions">
-                                <button type="button" 
-                                        class="btn btn-sm btn-outline-success set-main-image" 
-                                        data-image-id="{{ image.id }}"
-                                        {% if image.isMain %}disabled{% endif %}
-                                        title="Задай като основна">
-                                    <i class="bi bi-star"></i>
-                                </button>
-                                <button type="button" 
-                                        class="btn btn-sm btn-outline-danger delete-image" 
-                                        data-image-id="{{ image.id }}"
-                                        title="Изтрий">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="text-center py-5">
-                            <p class="text-muted mb-0">Все още няма качени снимки</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
-        Dropzone.autoDiscover = false;
+        Dropzone.options.propertyImages = {
+            paramName: "file",
+            maxFilesize: 5,
+            acceptedFiles: "image/*",
+            init: function() {
+                this.on("success", function(file, response) {
+                    if (response.success) {
+                        location.reload();
+                    }
+                });
+            }
+        };
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация на Dropzone
-            new Dropzone("#property-images-dropzone", {
-                url: "{{ path('admin_property_images', {'id': property.id}) }}",
-                paramName: "images[]",
-                maxFilesize: 5, // MB
-                acceptedFiles: "image/*",
-                addRemoveLinks: true,
-                dictDefaultMessage: "Пуснете снимки тук или кликнете за да изберете",
-                dictRemoveFile: "Премахни",
-                dictFileTooBig: "Файлът е твърде голям ({{filesize}}MB). Максимален размер: {{maxFilesize}}MB.",
-                dictInvalidFileType: "Невалиден тип файл.",
-                init: function() {
-                    this.on("success", function() {
-                        window.location.reload();
-                    });
-                }
-            });
-
-            // Инициализация на Sortable за пренареждане на снимките
-            new Sortable(document.getElementById('sortable-images'), {
-                animation: 150,
-                onEnd: function() {
-                    const images = document.querySelectorAll('.image-card');
-                    const positions = {};
-                    
-                    images.forEach((image, index) => {
-                        positions[image.dataset.imageId] = index;
-                    });
-
-                    fetch("{{ path('admin_property_reorder_images', {'id': property.id}) }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(positions)
-                    });
-                }
-            });
-
-            // Задаване на основна снимка
+            // Задаване на основно изображение
             document.querySelectorAll('.set-main-image').forEach(button => {
                 button.addEventListener('click', function() {
-                    const imageId = this.dataset.imageId;
-                    fetch("{{ path('admin_property_images', {'id': property.id}) }}", {
+                    const imageId = this.closest('.image-card').dataset.imageId;
+                    fetch(`{{ path('admin_property_image_set_main', {'id': property.id}) }}/${imageId}`, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: `main_image=${imageId}`
-                    }).then(() => {
-                        window.location.reload();
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        }
                     });
                 });
             });
 
-            // Изтриване на снимка
+            // Изтриване на изображение
             document.querySelectorAll('.delete-image').forEach(button => {
                 button.addEventListener('click', function() {
-                    if (confirm('Сигурни ли сте, че искате да изтриете тази снимка?')) {
-                        const imageId = this.dataset.imageId;
-                        fetch("{{ path('admin_property_delete_image', {
-                            'id': property.id,
-                            'imageId': '__imageId__'
-                        })|replace({'__imageId__': ''}) }}" + imageId, {
-                            method: 'POST'
-                        }).then(() => {
-                            window.location.reload();
+                    if (confirm('Сигурни ли сте, че искате да изтриете това изображение?')) {
+                        const imageId = this.closest('.image-card').dataset.imageId;
+                        fetch(`{{ path('admin_property_image_delete', {'id': property.id}) }}/${imageId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.closest('.image-card').remove();
+                            }
                         });
                     }
                 });

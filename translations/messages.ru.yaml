@@ -1,8 +1,14 @@
+app:
+    title: 'Industrial Properties'
+    tagline: 'Промышленная недвижимость в Болгарии'
+
 nav:
+    home: 'Главная'
     properties: 'Недвижимость'
     blog: 'Блог'
     about: 'О нас'
     contact: 'Контакты'
+    language: 'Язык'
 
 footer:
     description: 'Ваш надежный партнер в сфере промышленной недвижимости'
@@ -44,6 +50,24 @@ property:
         office: 'Офис'
         retail: 'Торговый'
         mixed: 'Смешанный'
+        industrial_land: 'Промышленный участок'
+        logistics_center: 'Логистический центр'
+        production_facility: 'Производственный объект'
+        industrial_building: 'Промышленное здание'
+    features:
+        area: 'Площадь'
+        price: 'Цена'
+        location: 'Расположение'
+        type: 'Тип'
+    status:
+        available: 'Доступно'
+        unavailable: 'Недоступно'
+    actions:
+        view: 'Подробнее'
+        contact: 'Запрос'
+        search: 'Поиск'
+        filter: 'Фильтр'
+        clear: 'Очистить'
 
 blog:
     title: 'Блог'
@@ -70,4 +94,23 @@ contact:
         message: 'Сообщение'
         submit: 'Отправить'
         success: 'Ваше сообщение успешно отправлено!'
-        error: 'При отправке сообщения произошла ошибка.' 
+        error: 'При отправке сообщения произошла ошибка.'
+    placeholders:
+        search: 'Поиск по расположению, типу...'
+        min_price: 'Минимальная цена'
+        max_price: 'Максимальная цена'
+        min_area: 'Минимальная площадь'
+        max_area: 'Максимальная площадь'
+
+home:
+    hero:
+        title: 'Промышленная недвижимость в Болгарии'
+        subtitle: 'Найдите идеальное место для вашего бизнеса'
+        cta: 'Посмотреть все объекты'
+    sections:
+        types: 'Типы недвижимости'
+        featured: 'Избранные объекты'
+        cta:
+            title: 'Ищете конкретный объект?'
+            text: 'Свяжитесь с нами, и мы поможем вам найти именно то, что вам нужно'
+            button: 'Связаться с нами' 

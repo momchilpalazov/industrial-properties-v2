@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Контакти{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .contact-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('images/contact-bg.jpg') }}') no-repeat center center;
+            background-size: cover;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+            margin-top: 56px;
+        }
+        .contact-info i {
+            font-size: 2rem;
+            color: var(--bs-primary);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Header -->
+    <section class="contact-header">
+        <div class="container">
+            <h1 class="display-4">Свържете се с нас</h1>
+            <p class="lead">Ние сме тук, за да отговорим на всички ваши въпроси</p>
+        </div>
+    </section>
+
+    <!-- Contact Info -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="text-center contact-info">
+                        <i class="bi bi-geo-alt mb-3"></i>
+                        <h4>Адрес</h4>
+                        <p class="text-muted">ул. Примерна 123<br>София 1000, България</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center contact-info">
+                        <i class="bi bi-telephone mb-3"></i>
+                        <h4>Телефон</h4>
+                        <p class="text-muted">+359 2 123 4567<br>+359 888 123 456</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center contact-info">
+                        <i class="bi bi-envelope mb-3"></i>
+                        <h4>Имейл</h4>
+                        <p class="text-muted">office@industrial-properties.bg<br>info@industrial-properties.bg</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card border-0 shadow">
+                        <div class="card-body p-5">
+                            <h2 class="text-center mb-4">Изпратете ни съобщение</h2>
+                            
+                            {% for label, messages in app.flashes %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+
+                            <form method="post">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="name" class="form-label">Име</label>
+                                        <input type="text" class="form-control" id="name" name="name" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label">Имейл</label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="subject" class="form-label">Относно</label>
+                                        <input type="text" class="form-control" id="subject" name="subject" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="message" class="form-label">Съобщение</label>
+                                        <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary w-100">Изпрати съобщение</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map -->
+    <section class="map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2932.7247167138396!2d23.321661315445367!3d42.69769797916543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40aa8682cb317bf5%3A0x400a01269bf5e60!2z0KHQvtGE0LjRjw!5e0!3m2!1sbg!2sbg!4v1635944243000!5m2!1sbg!2sbg" 
+                width="100%" 
+                height="450" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy">
+        </iframe>
+    </section>
+{% endblock %} 

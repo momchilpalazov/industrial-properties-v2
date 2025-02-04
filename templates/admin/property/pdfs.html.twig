@@ -1,0 +1,215 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}PDF Файлове - {{ property.title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
+    <style>
+        .dropzone {
+            border: 2px dashed #0087F7;
+            border-radius: 5px;
+            background: white;
+            margin-bottom: 2rem;
+        }
+        .dropzone .dz-message {
+            font-weight: 400;
+        }
+        .dropzone .dz-message .note {
+            font-size: 0.8em;
+            font-weight: 200;
+            display: block;
+            margin-top: 1.4rem;
+        }
+        .pdf-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .pdf-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .pdf-icon {
+            font-size: 2rem;
+            color: #dc3545;
+            margin-right: 1rem;
+        }
+        .pdf-info {
+            flex-grow: 1;
+        }
+        .pdf-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        .pdf-date {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+        .pdf-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .pdf-actions button {
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.25rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pdf-actions button:hover {
+            background: rgba(0,0,0,0.05);
+        }
+        .pdf-actions .delete-pdf {
+            color: #dc3545;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">PDF Файлове - {{ property.title }}</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ path('admin_property_edit', {'id': property.id}) }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Назад към имота
+            </a>
+        </div>
+    </div>
+
+    <!-- Dropzone за качване на PDF файлове -->
+    <form action="{{ path('admin_property_pdf_upload', {'id': property.id}) }}" class="dropzone" id="propertyPdfs">
+        <div class="dz-message" data-dz-message>
+            <span>Пуснете PDF файлове тук или кликнете за да качите</span>
+            <span class="note">(Максимален размер: 10MB)</span>
+        </div>
+    </form>
+
+    <!-- Форма за добавяне на заглавие -->
+    <div class="modal fade" id="pdfTitleModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавяне на заглавие</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="pdfTitle" class="form-label">Заглавие (BG)</label>
+                        <input type="text" class="form-control" id="pdfTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="pdfTitleEn" class="form-label">Заглавие (EN)</label>
+                        <input type="text" class="form-control" id="pdfTitleEn" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
+                    <button type="button" class="btn btn-primary" id="savePdfTitle">Запази</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Списък с PDF файлове -->
+    <ul class="pdf-list">
+        {% for pdf in property.pdfs %}
+            <li class="pdf-item" data-pdf-id="{{ pdf.id }}">
+                <div class="pdf-icon">
+                    <i class="bi bi-file-pdf"></i>
+                </div>
+                <div class="pdf-info">
+                    <div class="pdf-title">{{ pdf.title }}</div>
+                    <div class="pdf-date">Качен на: {{ pdf.createdAt|date('d.m.Y H:i') }}</div>
+                </div>
+                <div class="pdf-actions">
+                    <a href="{{ asset('uploads/properties/pdfs/' ~ pdf.filename) }}" 
+                       class="btn btn-sm btn-outline-primary" 
+                       target="_blank" 
+                       title="Преглед">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <button type="button" 
+                            class="delete-pdf" 
+                            title="Изтрий">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+    <script>
+        let currentFile = null;
+        const titleModal = new bootstrap.Modal(document.getElementById('pdfTitleModal'));
+
+        Dropzone.options.propertyPdfs = {
+            paramName: "file",
+            maxFilesize: 10,
+            acceptedFiles: "application/pdf",
+            autoProcessQueue: false,
+            init: function() {
+                const dropzone = this;
+
+                this.on("addedfile", function(file) {
+                    currentFile = file;
+                    document.getElementById('pdfTitle').value = '';
+                    document.getElementById('pdfTitleEn').value = '';
+                    titleModal.show();
+                });
+
+                this.on("success", function(file, response) {
+                    if (response.success) {
+                        location.reload();
+                    }
+                });
+
+                document.getElementById('savePdfTitle').addEventListener('click', function() {
+                    const title = document.getElementById('pdfTitle').value;
+                    const titleEn = document.getElementById('pdfTitleEn').value;
+
+                    if (title && titleEn) {
+                        dropzone.options.params = {
+                            title: title,
+                            titleEn: titleEn
+                        };
+                        dropzone.processFile(currentFile);
+                        titleModal.hide();
+                    }
+                });
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Изтриване на PDF
+            document.querySelectorAll('.delete-pdf').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (confirm('Сигурни ли сте, че искате да изтриете този PDF файл?')) {
+                        const pdfId = this.closest('.pdf-item').dataset.pdfId;
+                        fetch(`{{ path('admin_property_pdf_delete', {'id': property.id}) }}/${pdfId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.closest('.pdf-item').remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %} 

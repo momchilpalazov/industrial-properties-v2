@@ -3,268 +3,235 @@
 {% block title %}{{ property.title }} - Industrial Properties{% endblock %}
 
 {% block stylesheets %}
-<link href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" rel="stylesheet">
-<style>
-    .gallery-thumbnail {
-        cursor: pointer;
-        transition: opacity 0.3s ease;
-        height: 200px;
-        object-fit: cover;
-        width: 100%;
-    }
-    .gallery-thumbnail:hover {
-        opacity: 0.9;
-    }
-    .gallery-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        padding: 15px;
-    }
-    .gallery-item {
-        aspect-ratio: 4/3;
-        overflow: hidden;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    @media print {
-        header, footer, .inquiry-form, .print-button, .share-button {
-            display: none !important;
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
+    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <style>
+        .property-header {
+            background: #f8f9fa;
+            padding: 2rem 0;
+            margin-top: 56px;
         }
-        .printable-content {
-            display: block !important;
+        .property-price {
+            font-size: 2rem;
+            color: var(--bs-primary);
         }
-        .card {
-            box-shadow: none !important;
-            border: none !important;
+        .property-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
-        img {
-            max-width: 100% !important;
-            height: auto !important;
+        .property-features li {
+            margin-bottom: 0.5rem;
+            color: #6c757d;
         }
-        body {
-            color: #000 !important;
-            background: #fff !important;
+        .property-features li i {
+            margin-right: 0.5rem;
+            color: var(--bs-primary);
         }
-    }
-</style>
+        .gallery-image {
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .gallery-image:hover {
+            transform: scale(1.05);
+        }
+        .pdf-file {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            text-decoration: none;
+            color: inherit;
+            transition: background-color 0.3s;
+        }
+        .pdf-file:hover {
+            background: #e9ecef;
+        }
+        .pdf-file i {
+            font-size: 2rem;
+            color: var(--bs-danger);
+            margin-right: 1rem;
+        }
+        @media print {
+            header, footer, .inquiry-form, .print-button, .share-button {
+                display: none !important;
+            }
+            .printable-content {
+                display: block !important;
+            }
+            .card {
+                box-shadow: none !important;
+                border: none !important;
+            }
+            img {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+            body {
+                color: #000 !important;
+                background: #fff !important;
+            }
+        }
+        #propertyMap {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .H_ib_body {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .H_ib_close {
+            display: none;
+        }
+        
+        .property-location {
+            margin-bottom: 2rem;
+        }
+        
+        .property-location h4 {
+            margin-bottom: 1rem;
+        }
+    </style>
 {% endblock %}
 
-{% block content %}
-<div class="container-fluid px-4 py-5">
-    <div class="row g-4">
-        <!-- Галерия със снимки -->
-        <div class="col-lg-8">
-            <div class="card shadow-sm">
-                <div class="card-body p-0">
-                    <a href="{{ property.mainImage }}" 
-                       data-fancybox="property-gallery"
-                       data-caption="{{ property.title }}">
-                        <img src="{{ property.mainImage }}" 
-                             alt="{{ property.title }}"
-                             class="img-fluid w-100">
-                    </a>
-                    
-                    {% if property.images|length > 1 %}
-                    <div class="gallery-grid">
-                        {% for image in property.images %}
-                            {% if not loop.first %}
-                            <div class="gallery-item">
-                                <a href="{{ image.path }}"
-                                   data-fancybox="property-gallery"
-                                   data-caption="{{ property.title }}">
-                                    <img src="{{ image.path }}" 
-                                         alt="{{ property.title }}"
-                                         class="gallery-thumbnail">
-                                </a>
-                            </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+{% block body %}
+    <div class="container mt-5 pt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">{{ 'nav.home'|trans }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans }}</a></li>
+                <li class="breadcrumb-item active">{{ property.title }}</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="property-images mb-4">
+                    {% if property.mainImage %}
+                        <img src="{{ asset('uploads/properties/' ~ property.mainImage) }}" class="img-fluid rounded" alt="{{ property.title }}">
+                    {% else %}
+                        <img src="{{ asset('images/no-image.jpg') }}" class="img-fluid rounded" alt="No image">
                     {% endif %}
                 </div>
-            </div>
 
-            <!-- Информация за имота -->
-            <div class="card shadow-sm mt-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h1 class="h2 mb-0">{{ property.title }}</h1>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary print-button" onclick="window.print()">
-                            <i class="fas fa-print"></i>
-                        </button>
-                        <button class="btn btn-outline-secondary share-button" onclick="share()">
-                            <i class="fas fa-share-alt"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="printable-content">
-                        <div class="row g-4">
-                            <div class="col-sm-6 col-lg-3">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-ruler-combined fs-4 text-primary me-2"></i>
-                                    <div>
-                                        <small class="text-muted d-block">{{ translations.property.area }}</small>
-                                        <strong>{{ property.area }} м²</strong>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-lg-3">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-map-marker-alt fs-4 text-primary me-2"></i>
-                                    <div>
-                                        <small class="text-muted d-block">{{ translations.property.location }}</small>
-                                        <strong>{{ property.location }}</strong>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-lg-3">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-building fs-4 text-primary me-2"></i>
-                                    <div>
-                                        <small class="text-muted d-block">{{ translations.property.type }}</small>
-                                        <strong>{{ property.type }}</strong>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-lg-3">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-euro-sign fs-4 text-primary me-2"></i>
-                                    <div>
-                                        <small class="text-muted d-block">{{ translations.property.price }}</small>
-                                        <strong>{{ property.price|number_format(0, '.', ' ') }} €</strong>
-                                    </div>
-                                </div>
-                            </div>
+                <h1 class="mb-4">{{ property.title }}</h1>
+
+                <div class="property-details mb-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><i class="bi bi-geo-alt"></i> <strong>{{ 'property.location'|trans }}:</strong> {{ property.location }}</p>
+                            <p><i class="bi bi-arrows-angle-expand"></i> <strong>{{ 'property.area'|trans }}:</strong> {{ property.area }} m²</p>
                         </div>
-                        
-                        <div class="mt-4">
-                            <h5>{{ translations.property.description }}</h5>
-                            <div class="property-description">
-                                {{ property.description|raw }}
-                            </div>
+                        <div class="col-md-6">
+                            <p><i class="bi bi-building"></i> <strong>{{ 'property.type'|trans }}:</strong> {{ property.type }}</p>
+                            {% if property.price %}
+                                <p><i class="bi bi-tag"></i> <strong>{{ 'property.price'|trans }}:</strong> {{ property.price|number_format(0, '.', ' ') }} €</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Форма за запитване -->
-        <div class="col-lg-4">
-            <div class="card shadow-sm inquiry-form">
-                <div class="card-body">
-                    <h5 class="card-title">{{ translations.property.inquiry.title }}</h5>
-                    <form id="inquiryForm" onsubmit="return submitInquiry(event)">
-                        <div class="mb-3">
-                            <label class="form-label">{{ translations.property.inquiry.name }}</label>
-                            <input type="text" class="form-control" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">{{ translations.property.inquiry.email }}</label>
-                            <input type="email" class="form-control" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">{{ translations.property.inquiry.phone }}</label>
-                            <input type="tel" class="form-control" name="phone">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">{{ translations.property.inquiry.message }}</label>
-                            <textarea class="form-control" name="message" rows="4" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">
-                            {{ translations.property.inquiry.submit }}
-                        </button>
-                    </form>
+                <div class="property-description mb-4">
+                    <h2>{{ 'property.description'|trans }}</h2>
+                    {{ property.description|raw }}
                 </div>
             </div>
 
-            {% if similar_properties|length > 0 %}
-            <div class="card shadow-sm mt-4">
-                <div class="card-body">
-                    <h5 class="card-title">{{ translations.property.similar }}</h5>
-                    {% for similar in similar_properties %}
-                        <div class="card mb-3">
-                            <div class="row g-0">
-                                <div class="col-4">
-                                    <img src="{{ similar.mainImage }}" 
-                                         class="img-fluid rounded-start" 
-                                         alt="{{ similar.title }}"
-                                         style="height: 100%; object-fit: cover;">
-                                </div>
-                                <div class="col-8">
-                                    <div class="card-body">
-                                        <h6 class="card-title">{{ similar.title }}</h6>
-                                        <p class="card-text">
-                                            <small class="text-muted">
-                                                {{ similar.area }} м² | {{ similar.price|number_format(0, '.', ' ') }} €
-                                            </small>
-                                        </p>
-                                        <a href="{{ path('property_show', {id: similar.id}) }}" 
-                                           class="btn btn-sm btn-outline-primary">
-                                            {{ translations.property.view_details }}
-                                        </a>
-                                    </div>
-                                </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ 'property.contact'|trans }}</h5>
+                        <form>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">{{ 'property.inquiry.name'|trans }}</label>
+                                <input type="text" class="form-control" id="name" required>
                             </div>
-                        </div>
-                    {% endfor %}
+                            <div class="mb-3">
+                                <label for="email" class="form-label">{{ 'property.inquiry.email'|trans }}</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">{{ 'property.inquiry.phone'|trans }}</label>
+                                <input type="tel" class="form-control" id="phone">
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">{{ 'property.inquiry.message'|trans }}</label>
+                                <textarea class="form-control" id="message" rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">{{ 'property.inquiry.send'|trans }}</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-            {% endif %}
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block javascripts %}
-<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-<script>
-function submitInquiry(event) {
-    event.preventDefault();
-    const form = event.target;
-    const data = new FormData(form);
-    
-    fetch('{{ path('property_contact', {id: property.id}) }}', {
-        method: 'POST',
-        body: JSON.stringify(Object.fromEntries(data)),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            alert(data.error);
-        } else {
-            alert('{{ translations.property.inquiry.success }}');
-            form.reset();
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('{{ translations.property.inquiry.error }}');
-    });
-    
-    return false;
-}
-
-function share() {
-    if (navigator.share) {
-        navigator.share({
-            title: '{{ property.title }}',
-            url: window.location.href
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <script>
+        // Fancybox configuration
+        Fancybox.bind("[data-fancybox]", {
+            // Custom options
         });
-    } else {
-        // Fallback
-        const dummy = document.createElement('input');
-        document.body.appendChild(dummy);
-        dummy.value = window.location.href;
-        dummy.select();
-        document.execCommand('copy');
-        document.body.removeChild(dummy);
-        alert('{{ translations.property.share.copied }}');
-    }
-}
-</script>
+
+        // Here Maps initialization
+        const platform = new H.service.Platform({
+            'apikey': '{{ here_maps_api_key }}'
+        });
+
+        const defaultLayers = platform.createDefaultLayers();
+        
+        // Initialize the map
+        const map = new H.Map(
+            document.getElementById('propertyMap'),
+            defaultLayers.vector.normal.map,
+            {
+                zoom: 15,
+                center: { lat: {{ property.latitude }}, lng: {{ property.longitude }} }
+            }
+        );
+
+        // Add window resize handler
+        window.addEventListener('resize', () => map.getViewPort().resize());
+
+        // Enable map interaction (pan, zoom, etc.)
+        const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+        // Add UI components (zoom, etc.)
+        const ui = H.ui.UI.createDefault(map, defaultLayers);
+
+        // Add marker for property location
+        const marker = new H.map.Marker({ lat: {{ property.latitude }}, lng: {{ property.longitude }} });
+        map.addObject(marker);
+
+        // Add info bubble
+        const bubble = new H.ui.InfoBubble(
+            { lat: {{ property.latitude }}, lng: {{ property.longitude }} },
+            {
+                content: '<div class="H_ib_body">' +
+                         '<h6>{{ property.title }}</h6>' +
+                         '<p class="mb-0">{{ property.location }}</p>' +
+                         '</div>'
+            }
+        );
+        ui.addBubble(bubble);
+    </script>
 {% endblock %} 

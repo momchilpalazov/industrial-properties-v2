@@ -2,22 +2,21 @@
 
 namespace App\Entity;
 
-use App\Repository\PropertyImageRepository;
+use App\Repository\PropertyPdfRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: PropertyImageRepository::class)]
-#[ORM\Table(name: 'property_images')]
+#[ORM\Entity(repositoryClass: PropertyPdfRepository::class)]
+#[ORM\Table(name: 'property_pdf_files')]
 #[ORM\HasLifecycleCallbacks]
-class PropertyImage
+class PropertyPdf
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'images')]
+    #[ORM\ManyToOne(inversedBy: 'pdfFiles')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Property $property = null;
 
@@ -25,24 +24,11 @@ class PropertyImage
     #[Assert\NotBlank]
     private ?string $filename = null;
 
-    #[ORM\Column]
-    private bool $isMain = false;
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
 
-    #[ORM\Column]
-    private ?int $position = null;
-
-    #[Assert\File(
-        maxSize: '5M',
-        mimeTypes: [
-            'image/jpeg',
-            'image/png',
-            'image/gif',
-            'image/webp'
-        ],
-        mimeTypesMessage: 'Моля качете валидна снимка (JPEG, PNG, GIF или WEBP)',
-        maxSizeMessage: 'Снимката не може да бъде по-голяма от {{ limit }}{{ suffix }}'
-    )]
-    private $file;
+    #[ORM\Column(length: 255)]
+    private ?string $titleEn = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -80,36 +66,25 @@ class PropertyImage
         return $this;
     }
 
-    public function isMain(): bool
+    public function getTitle(): ?string
     {
-        return $this->isMain;
+        return $this->title;
     }
 
-    public function setIsMain(bool $isMain): self
+    public function setTitle(string $title): self
     {
-        $this->isMain = $isMain;
+        $this->title = $title;
         return $this;
     }
 
-    public function getPosition(): ?int
+    public function getTitleEn(): ?string
     {
-        return $this->position;
+        return $this->titleEn;
     }
 
-    public function setPosition(int $position): self
+    public function setTitleEn(string $titleEn): self
     {
-        $this->position = $position;
-        return $this;
-    }
-
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    public function setFile($file): self
-    {
-        $this->file = $file;
+        $this->titleEn = $titleEn;
         return $this;
     }
 

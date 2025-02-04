@@ -19,7 +19,7 @@ class ImageCacheService
     ) {
         $this->params = $params;
         $this->filesystem = $filesystem;
-        $this->imageManager = new ImageManager(['driver' => 'gd']);
+        $this->imageManager = new ImageManager(\Intervention\Image\Drivers\Gd\Driver::class);
         $this->cacheDir = $this->params->get('kernel.project_dir') . '/public/cache/images';
         
         if (!$this->filesystem->exists($this->cacheDir)) {

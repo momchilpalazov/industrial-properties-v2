@@ -1,0 +1,242 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ property.id ? 'Редактиране на имот' : 'Нов имот' }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <style>
+        .features-collection {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .remove-feature {
+            color: var(--bs-danger);
+            cursor: pointer;
+        }
+        #locationMap {
+            width: 100%;
+            height: 400px;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .coordinates-wrapper {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .coordinates-wrapper .form-group {
+            flex: 1;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">{{ property.id ? 'Редактиране на имот' : 'Нов имот' }}</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ path('admin_property_index') }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Назад
+            </a>
+        </div>
+    </div>
+
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="row g-3">
+                    <!-- Основна информация -->
+                    <div class="col-md-6">
+                        {{ form_row(form.title) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.titleEn) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.description) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.descriptionEn) }}
+                    </div>
+                    <div class="col-12">
+                        <h5 class="mb-3">Локация</h5>
+                        {{ form_row(form.location) }}
+                        
+                        <div id="locationMap"></div>
+                        
+                        <div class="coordinates-wrapper">
+                            <div class="form-group">
+                                {{ form_row(form.latitude) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_row(form.longitude) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.type) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.price) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.area) }}
+                    </div>
+
+                    <!-- Характеристики -->
+                    <div class="col-12">
+                        <label class="form-label">{{ form_label(form.features) }}</label>
+                        <div class="features-wrapper mb-3">
+                            <ul class="features-collection" 
+                                data-prototype="{{ form_widget(form.features.vars.prototype)|e('html_attr') }}">
+                                {% for feature in form.features %}
+                                    <li class="feature-item">
+                                        {{ form_widget(feature) }}
+                                        <i class="bi bi-x-circle remove-feature"></i>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <button type="button" class="btn btn-outline-secondary btn-sm add-feature">
+                                <i class="bi bi-plus"></i> Добави характеристика
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Статус -->
+                    <div class="col-md-6">
+                        {{ form_row(form.isFeatured) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.isAvailable) }}
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> {{ property.id ? 'Запази промените' : 'Създай имот' }}
+                </button>
+            </div>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const featuresCollection = document.querySelector('.features-collection');
+            const addFeatureButton = document.querySelector('.add-feature');
+            let featureIndex = featuresCollection.children.length;
+
+            // Add new feature
+            addFeatureButton.addEventListener('click', function() {
+                const prototype = featuresCollection.dataset.prototype;
+                const newFeature = prototype.replace(/__name__/g, featureIndex);
+                const li = document.createElement('li');
+                li.className = 'feature-item';
+                li.innerHTML = newFeature + 
+                    '<i class="bi bi-x-circle remove-feature"></i>';
+                featuresCollection.appendChild(li);
+                featureIndex++;
+            });
+
+            // Remove feature
+            featuresCollection.addEventListener('click', function(e) {
+                if (e.target.matches('.remove-feature')) {
+                    e.target.closest('.feature-item').remove();
+                }
+            });
+
+            // Form validation
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
+
+            // Here Maps initialization
+            const platform = new H.service.Platform({
+                'apikey': '{{ here_maps_api_key }}'
+            });
+
+            const defaultLayers = platform.createDefaultLayers();
+            
+            // Initialize map with default or existing coordinates
+            const latitude = document.getElementById('{{ form.latitude.vars.id }}').value || 42.6977;
+            const longitude = document.getElementById('{{ form.longitude.vars.id }}').value || 23.3219;
+            
+            const map = new H.Map(
+                document.getElementById('locationMap'),
+                defaultLayers.vector.normal.map,
+                {
+                    zoom: 13,
+                    center: { lat: parseFloat(latitude), lng: parseFloat(longitude) }
+                }
+            );
+
+            // Enable map interaction
+            const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+            const ui = H.ui.UI.createDefault(map, defaultLayers);
+
+            // Add marker
+            let marker = new H.map.Marker({ lat: parseFloat(latitude), lng: parseFloat(longitude) });
+            map.addObject(marker);
+
+            // Update marker and coordinates on map click
+            map.addEventListener('tap', function(evt) {
+                const coords = map.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY);
+                
+                // Update marker position
+                map.removeObject(marker);
+                marker = new H.map.Marker(coords);
+                map.addObject(marker);
+
+                // Update form fields
+                document.getElementById('{{ form.latitude.vars.id }}').value = coords.lat.toFixed(6);
+                document.getElementById('{{ form.longitude.vars.id }}').value = coords.lng.toFixed(6);
+            });
+
+            // Geocoding service
+            const locationInput = document.getElementById('{{ form.location.vars.id }}');
+            const geocoder = platform.getSearchService();
+            
+            locationInput.addEventListener('change', function() {
+                geocoder.geocode({
+                    q: this.value
+                }, (result) => {
+                    if (result.items.length > 0) {
+                        const coords = result.items[0].position;
+                        
+                        // Update map center and marker
+                        map.setCenter(coords);
+                        map.removeObject(marker);
+                        marker = new H.map.Marker(coords);
+                        map.addObject(marker);
+
+                        // Update form fields
+                        document.getElementById('{{ form.latitude.vars.id }}').value = coords.lat.toFixed(6);
+                        document.getElementById('{{ form.longitude.vars.id }}').value = coords.lng.toFixed(6);
+                    }
+                }, alert);
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', () => map.getViewPort().resize());
+        });
+    </script>
+{% endblock %} 

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ property.title }}</title>
+    <style>
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #007bff;
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        
+        .property-images {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .property-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        
+        .property-info {
+            margin: 30px 0;
+        }
+        
+        .property-info h2 {
+            color: #007bff;
+            font-size: 20px;
+            margin: 0 0 15px 0;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .info-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .description {
+            margin: 30px 0;
+            text-align: justify;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            padding-top: 20px;
+        }
+        
+        .contact-info {
+            margin-top: 30px;
+            text-align: center;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ property.title }}</h1>
+        <div>{{ property.location }}</div>
+    </div>
+    
+    {% if images is not empty %}
+        <div class="property-images">
+            <img src="data:image/jpeg;base64,{{ images[0] }}" 
+                 alt="{{ property.title }}"
+                 class="property-image">
+        </div>
+    {% endif %}
+    
+    <div class="property-info">
+        <h2>{{ 'property.details'|trans }}</h2>
+        
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">{{ 'property.type'|trans }}:</span>
+                <span>{{ property.type }}</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">{{ 'property.area'|trans }}:</span>
+                <span>{{ property.area }} m²</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">{{ 'property.price'|trans }}:</span>
+                <span>{{ property.price }} €</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">{{ 'property.location'|trans }}:</span>
+                <span>{{ property.location }}</span>
+            </div>
+        </div>
+        
+        <div class="description">
+            <h2>{{ 'property.description'|trans }}</h2>
+            {{ locale == 'bg' ? property.description : property.descriptionEn }}
+        </div>
+    </div>
+    
+    <div class="contact-info">
+        <h2>{{ 'property.contact.title'|trans }}</h2>
+        <div>{{ 'property.contact.phone'|trans }}: +359 888 123 456</div>
+        <div>{{ 'property.contact.email'|trans }}: contact@example.com</div>
+    </div>
+    
+    <div class="footer">
+        <div>© {{ 'now'|date('Y') }} Industrial Properties</div>
+        <div>{{ 'property.brochure.generated_at'|trans }}: {{ 'now'|date('d.m.Y H:i') }}</div>
+    </div>
+</body>
+</html> 
