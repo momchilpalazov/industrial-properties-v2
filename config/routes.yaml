@@ -1,5 +1,43 @@
+# Homepage redirect (must be first)
+homepage:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction
+    defaults:
+        path: /bg
+        permanent: true
+
+# Admin routes
+admin:
+    resource:
+        path: ../src/Controller/Admin/
+        namespace: App\Controller\Admin
+    type: attribute
+    prefix: /admin
+    defaults:
+        _locale: bg
+
+# Authentication routes
+app_login:
+    path: /admin/login
+    controller: App\Controller\SecurityController::login
+    defaults:
+        _locale: bg
+
+app_logout:
+    path: /admin/logout
+    controller: App\Controller\SecurityController::logout
+    defaults:
+        _locale: bg
+
+# Localized public routes
 controllers:
     resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute 
+        path: ../src/Controller/Public/
+        namespace: App\Controller\Public
+    type: attribute
+    prefix: /{_locale}
+    requirements:
+        _locale: '%app_locales%'
+    defaults:
+        _locale: bg
+    exclude: '../src/Controller/Admin/|../src/Controller/SecurityController.php' 

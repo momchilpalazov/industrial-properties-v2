@@ -1,6 +1,7 @@
 parameters:
     locale: 'bg'
-    app_locales: ['bg', 'en', 'de', 'ru']
+    app_locales: 'bg|en'
+    app.default_locale: 'bg'
     upload_directory: '%kernel.project_dir%/public/uploads'
 
 services:
@@ -14,6 +15,14 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    App\Controller\Public\:
+        resource: '../src/Controller/Public/'
+        tags: ['controller.service_arguments']
 
     App\Service\FileUploadService:
         arguments:

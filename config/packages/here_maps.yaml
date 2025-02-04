@@ -1,0 +1,6 @@
+parameters:
+    here_maps_api_key: '%env(HERE_MAPS_API_KEY)%'
+
+twig:
+    globals:
+        here_maps_api_key: '%here_maps_api_key%' 

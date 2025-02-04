@@ -1,0 +1,27 @@
+{
+    "name": "industrial-properties",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production --progress"
+    },
+    "dependencies": {
+        "@popperjs/core": "^2.11.8",
+        "bootstrap": "^5.3.2"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.23.7",
+        "@babel/preset-env": "^7.23.8",
+        "@symfony/webpack-encore": "^5.0.1",
+        "core-js": "^3.35.0",
+        "file-loader": "^6.2.0",
+        "sass": "^1.69.7",
+        "sass-loader": "^13.3.3",
+        "webpack": "^5.97.1",
+        "webpack-cli": "^5.1.4",
+        "webpack-notifier": "^1.15.0"
+    }
+}

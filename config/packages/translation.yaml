@@ -4,6 +4,9 @@ framework:
         default_path: '%kernel.project_dir%/translations'
         fallbacks:
             - bg
+        enabled: true
         paths:
             - '%kernel.project_dir%/translations'
-        enabled: true 
+        
+parameters:
+    app_locales: ['bg', 'en', 'de', 'ru'] 
