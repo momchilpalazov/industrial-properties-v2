@@ -63,9 +63,9 @@
         </table>
     </div>
 
-    {% if posts.haveToPaginate is defined %}
-        <div class="d-flex justify-content-center mt-4">
+    <div class="d-flex justify-content-center mt-4">
+        {% if posts.getTotalItemCount > 10 %}
             {{ knp_pagination_render(posts) }}
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
 {% endblock %} 

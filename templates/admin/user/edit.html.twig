@@ -1,0 +1,48 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Редактиране на потребител{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Редактиране на потребител</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ path('admin_user_index') }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Назад
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.name) }}
+                        {{ form_row(form.email) }}
+                        {{ form_row(form.plainPassword) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.roles) }}
+                        {{ form_row(form.isActive) }}
+
+                        <div class="mb-3">
+                            <label class="form-label">Информация</label>
+                            <div class="list-group">
+                                <div class="list-group-item">
+                                    <small class="d-block text-muted">Създаден на</small>
+                                    {{ user.createdAt|date('d.m.Y H:i') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg"></i> Запази промените
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %} 

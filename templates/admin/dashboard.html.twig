@@ -7,11 +7,11 @@
         <h1 class="h2">Табло</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
-                <a href="#" class="btn btn-sm btn-outline-primary">
+                <a href="{{ path('admin_property_new') }}" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-building-add"></i>
                     Нов имот
                 </a>
-                <a href="#" class="btn btn-sm btn-outline-primary">
+                <a href="{{ path('admin_blog_new') }}" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-file-earmark-plus"></i>
                     Нова статия
                 </a>
@@ -30,7 +30,7 @@
                         </div>
                         <div>
                             <h6 class="card-title mb-1">Имоти</h6>
-                            <h2 class="mb-0">0</h2>
+                            <h2 class="mb-0">{{ stats.properties }}</h2>
                         </div>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
                         </div>
                         <div>
                             <h6 class="card-title mb-1">Запитвания</h6>
-                            <h2 class="mb-0">0</h2>
+                            <h2 class="mb-0">{{ stats.inquiries }}</h2>
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                         </div>
                         <div>
                             <h6 class="card-title mb-1">Статии</h6>
-                            <h2 class="mb-0">0</h2>
+                            <h2 class="mb-0">{{ stats.posts }}</h2>
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                         </div>
                         <div>
                             <h6 class="card-title mb-1">Потребители</h6>
-                            <h2 class="mb-0">0</h2>
+                            <h2 class="mb-0">{{ stats.users }}</h2>
                         </div>
                     </div>
                 </div>
@@ -91,7 +91,22 @@
                     <h5 class="card-title mb-0">Последни имоти</h5>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted text-center mb-0">Все още няма добавени имоти</p>
+                    {% if latest_properties is empty %}
+                        <p class="text-muted text-center mb-0">Все още няма добавени имоти</p>
+                    {% else %}
+                        <div class="list-group list-group-flush">
+                            {% for property in latest_properties %}
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ property.titleBg }}</h6>
+                                        <small class="text-muted">{{ property.createdAt|date('d.m.Y') }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ property.type }} - {{ property.area }}m²</p>
+                                    <small class="text-muted">{{ property.locationBg }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -101,7 +116,22 @@
                     <h5 class="card-title mb-0">Последни запитвания</h5>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted text-center mb-0">Все още няма получени запитвания</p>
+                    {% if latest_inquiries is empty %}
+                        <p class="text-muted text-center mb-0">Все още няма получени запитвания</p>
+                    {% else %}
+                        <div class="list-group list-group-flush">
+                            {% for inquiry in latest_inquiries %}
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ inquiry.name }}</h6>
+                                        <small class="text-muted">{{ inquiry.createdAt|date('d.m.Y') }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ inquiry.email }}</p>
+                                    <small class="text-muted">За имот: {{ inquiry.property.titleBg }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

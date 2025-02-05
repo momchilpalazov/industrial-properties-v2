@@ -1,0 +1,61 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Настройки{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Настройки</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Основни настройки</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('admin_settings_save') }}">
+                        <div class="mb-3">
+                            <label for="site_name" class="form-label">Име на сайта</label>
+                            <input type="text" class="form-control" id="site_name" name="site_name" 
+                                   value="{{ settings.site_name|default('Industrial Properties') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="admin_email" class="form-label">Административен имейл</label>
+                            <input type="email" class="form-control" id="admin_email" name="admin_email" 
+                                   value="{{ settings.admin_email|default('admin@example.com') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="items_per_page" class="form-label">Брой елементи на страница</label>
+                            <input type="number" class="form-control" id="items_per_page" name="items_per_page" 
+                                   value="{{ settings.items_per_page|default(10) }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Запази промените
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">API Настройки</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('admin_settings_api') }}">
+                        <div class="mb-3">
+                            <label for="here_maps_api_key" class="form-label">HERE Maps API Key</label>
+                            <input type="text" class="form-control" id="here_maps_api_key" name="here_maps_api_key" 
+                                   value="{{ settings.here_maps_api_key|default('') }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Запази API настройките
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

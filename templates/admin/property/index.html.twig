@@ -64,6 +64,17 @@
             background-color: rgba(0,0,0,0.5);
             color: white;
         }
+        .pagination {
+            margin-top: 2rem;
+            justify-content: center;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: var(--bs-primary);
+            border-color: var(--bs-primary);
+        }
+        .pagination .page-link {
+            color: var(--bs-primary);
+        }
     </style>
 {% endblock %}
 
@@ -71,7 +82,7 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
         <h1 class="h2">Имоти</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="{{ path('admin_property_index') }}" class="btn btn-sm btn-primary">
+            <a href="{{ path('admin_property_new') }}" class="btn btn-sm btn-primary">
                 <i class="bi bi-plus-lg"></i> Нов имот
             </a>
         </div>
@@ -85,20 +96,20 @@
                     <label for="type" class="form-label">Тип имот</label>
                     <select name="type" id="type" class="form-select">
                         <option value="">Всички</option>
-                        <option value="industrial" {% if app.request.query.get('type') == 'industrial' %}selected{% endif %}>
-                            Производствено помещение
+                        <option value="industrial_land" {% if app.request.query.get('type') == 'industrial_land' %}selected{% endif %}>
+                            Индустриален парцел
                         </option>
-                        <option value="logistics" {% if app.request.query.get('type') == 'logistics' %}selected{% endif %}>
+                        <option value="industrial_building" {% if app.request.query.get('type') == 'industrial_building' %}selected{% endif %}>
+                            Индустриална сграда
+                        </option>
+                        <option value="logistics_center" {% if app.request.query.get('type') == 'logistics_center' %}selected{% endif %}>
                             Логистичен център
                         </option>
-                        <option value="office" {% if app.request.query.get('type') == 'office' %}selected{% endif %}>
-                            Офис сграда
+                        <option value="warehouse" {% if app.request.query.get('type') == 'warehouse' %}selected{% endif %}>
+                            Склад
                         </option>
-                        <option value="retail" {% if app.request.query.get('type') == 'retail' %}selected{% endif %}>
-                            Търговски площи
-                        </option>
-                        <option value="land" {% if app.request.query.get('type') == 'land' %}selected{% endif %}>
-                            Парцел
+                        <option value="production_facility" {% if app.request.query.get('type') == 'production_facility' %}selected{% endif %}>
+                            Производствена база
                         </option>
                     </select>
                 </div>
@@ -140,7 +151,7 @@
                     <div class="position-relative">
                         <img src="{{ property.mainImage ? asset('uploads/properties/' ~ property.mainImage.filename) : asset('images/no-image.jpg') }}"
                              class="property-image w-100"
-                             alt="{{ property.title }}">
+                             alt="{{ property.titleBg }}">
                         
                         <div class="property-status {{ property.status == 'available' ? 'status-available' : 'status-unavailable' }}">
                             {{ property.status == 'available' ? 'Свободен' : 'Зает' }}
@@ -161,15 +172,16 @@
                         </div>
 
                         <div class="property-actions">
-                            <a href="{{ path('admin_property_index') }}"
+                            <a href="{{ path('admin_property_edit', {'id': property.id}) }}"
                                class="btn btn-sm btn-light"
                                title="Редактирай">
                                 <i class="bi bi-pencil"></i>
                             </a>
                             <form method="post" 
-                                  action="{{ path('admin_property_index') }}"
+                                  action="{{ path('admin_property_delete', {'id': property.id}) }}"
                                   class="d-inline"
                                   onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този имот?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ property.id) }}">
                                 <button type="submit" 
                                         class="btn btn-sm btn-light text-danger"
                                         title="Изтрий">
@@ -209,11 +221,10 @@
     </div>
 
     <!-- Пагинация -->
-    {% if properties.haveToPaginate is defined %}
-        <div class="d-flex justify-content-center mt-4">
-            {{ knp_pagination_render(properties) }}
-        </div>
-    {% endif %}
+    <div class="d-flex justify-content-center mt-4">
+        {{ knp_pagination_render(properties) }}
+    </div>
+
 {% endblock %}
 
 {% block javascripts %}

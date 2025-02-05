@@ -65,11 +65,9 @@
         </table>
     </div>
 
-    {% if inquiries.haveToPaginate %}
-        <div class="d-flex justify-content-center mt-4">
-            {{ knp_pagination_render(inquiries) }}
-        </div>
-    {% endif %}
+    <div class="d-flex justify-content-center mt-4">
+        {{ knp_pagination_render(inquiries) }}
+    </div>
 {% endblock %}
 
 {% block javascripts %}

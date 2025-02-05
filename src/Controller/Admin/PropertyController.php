@@ -30,12 +30,29 @@ class PropertyController extends AbstractController
     #[Route('/', name: 'admin_property_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        $properties = $this->propertyRepository->findBy([], ['createdAt' => 'DESC']);
+        $queryBuilder = $this->propertyRepository->createQueryBuilder('p')
+            ->orderBy('p.createdAt', 'DESC');
+
+        // Прилагане на филтрите
+        if ($type = $request->query->get('type')) {
+            $queryBuilder->andWhere('p.type = :type')
+                ->setParameter('type', $type);
+        }
+
+        if ($location = $request->query->get('location')) {
+            $queryBuilder->andWhere('p.locationBg LIKE :location')
+                ->setParameter('location', '%' . $location . '%');
+        }
+
+        if ($status = $request->query->get('status')) {
+            $queryBuilder->andWhere('p.status = :status')
+                ->setParameter('status', $status);
+        }
 
         $pagination = $this->paginator->paginate(
-            $properties,
+            $queryBuilder,
             $request->query->getInt('page', 1),
-            10
+            9 // брой имоти на страница
         );
 
         return $this->render('admin/property/index.html.twig', [
