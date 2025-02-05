@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Knp\Component\Pager\PaginatorInterface;
 
-#[Route('/admin/inquiries')]
+#[Route('/inquiries')]
 #[IsGranted('ROLE_ADMIN')]
 class InquiryController extends AbstractController
 {
