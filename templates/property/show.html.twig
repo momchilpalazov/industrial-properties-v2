@@ -120,7 +120,7 @@
             <div class="col-md-8">
                 <div class="property-images mb-4">
                     {% if property.mainImage %}
-                        <img src="{{ asset('uploads/properties/' ~ property.mainImage) }}" class="img-fluid rounded" alt="{{ property.title }}">
+                        <img src="{{ asset('uploads/properties/' ~ property.mainImage.filename) }}" class="img-fluid rounded" alt="{{ property.title }}">
                     {% else %}
                         <img src="{{ asset('images/no-image.jpg') }}" class="img-fluid rounded" alt="No image">
                     {% endif %}

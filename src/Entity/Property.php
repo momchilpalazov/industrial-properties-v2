@@ -9,6 +9,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Entity\PropertyPdf;
+use App\Entity\PropertyInquiry;
 
 #[ORM\Entity(repositoryClass: PropertyRepository::class)]
 #[ORM\Table(name: 'properties')]
@@ -104,6 +106,15 @@ class Property
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $price = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $pricePerSqm = null;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $yearBuilt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $availableFrom = null;
+
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'Моля изберете тип имот')]
     #[Assert\Choice(
@@ -111,6 +122,10 @@ class Property
         message: 'Моля изберете валиден тип имот'
     )]
     private ?string $type = null;
+
+    #[ORM\Column(length: 20)]
+    #[Assert\Choice(choices: ['available', 'sold', 'reserved'], message: 'Моля изберете валиден статус')]
+    private ?string $status = 'available';
 
     #[ORM\Column]
     private bool $isActive = true;
@@ -125,10 +140,10 @@ class Property
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyFeature::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $features;
 
-    #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyPdfFile::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyPdf::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $pdfFiles;
 
-    #[ORM\OneToMany(mappedBy: 'property', targetEntity: Inquiry::class)]
+    #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyInquiry::class)]
     private Collection $inquiries;
 
     #[ORM\Column]
@@ -358,6 +373,39 @@ class Property
         return $this;
     }
 
+    public function getPricePerSqm(): ?string
+    {
+        return $this->pricePerSqm;
+    }
+
+    public function setPricePerSqm(?string $pricePerSqm): self
+    {
+        $this->pricePerSqm = $pricePerSqm;
+        return $this;
+    }
+
+    public function getYearBuilt(): ?int
+    {
+        return $this->yearBuilt;
+    }
+
+    public function setYearBuilt(?int $yearBuilt): self
+    {
+        $this->yearBuilt = $yearBuilt;
+        return $this;
+    }
+
+    public function getAvailableFrom(): ?\DateTimeImmutable
+    {
+        return $this->availableFrom;
+    }
+
+    public function setAvailableFrom(?\DateTimeImmutable $availableFrom): self
+    {
+        $this->availableFrom = $availableFrom;
+        return $this;
+    }
+
     public function getType(): ?string
     {
         return $this->type;
@@ -366,6 +414,17 @@ class Property
     public function setType(string $type): self
     {
         $this->type = $type;
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
         return $this;
     }
 
@@ -456,14 +515,14 @@ class Property
     }
 
     /**
-     * @return Collection<int, PropertyPdfFile>
+     * @return Collection<int, PropertyPdf>
      */
     public function getPdfFiles(): Collection
     {
         return $this->pdfFiles;
     }
 
-    public function addPdfFile(PropertyPdfFile $pdfFile): self
+    public function addPdfFile(PropertyPdf $pdfFile): self
     {
         if (!$this->pdfFiles->contains($pdfFile)) {
             $this->pdfFiles->add($pdfFile);
@@ -472,7 +531,7 @@ class Property
         return $this;
     }
 
-    public function removePdfFile(PropertyPdfFile $pdfFile): self
+    public function removePdfFile(PropertyPdf $pdfFile): self
     {
         if ($this->pdfFiles->removeElement($pdfFile)) {
             if ($pdfFile->getProperty() === $this) {
@@ -483,14 +542,14 @@ class Property
     }
 
     /**
-     * @return Collection<int, Inquiry>
+     * @return Collection<int, PropertyInquiry>
      */
     public function getInquiries(): Collection
     {
         return $this->inquiries;
     }
 
-    public function addInquiry(Inquiry $inquiry): self
+    public function addInquiry(PropertyInquiry $inquiry): self
     {
         if (!$this->inquiries->contains($inquiry)) {
             $this->inquiries->add($inquiry);
@@ -499,7 +558,7 @@ class Property
         return $this;
     }
 
-    public function removeInquiry(Inquiry $inquiry): self
+    public function removeInquiry(PropertyInquiry $inquiry): self
     {
         if ($this->inquiries->removeElement($inquiry)) {
             if ($inquiry->getProperty() === $this) {

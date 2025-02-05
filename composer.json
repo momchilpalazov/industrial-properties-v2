@@ -43,9 +43,11 @@
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^4.0",
+        "fakerphp/faker": "*",
         "phpunit/phpunit": "^10.0",
-        "symfony/var-dumper": "^6.0",
-        "symfony/maker-bundle": "^1.52"
+        "symfony/maker-bundle": "^1.52",
+        "symfony/var-dumper": "^6.0"
     },
     "config": {
         "allow-plugins": {

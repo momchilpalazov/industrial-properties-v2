@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 
-#[Route('/', name: 'app_property_')]
+#[Route('/property', name: 'app_property_')]
 class PropertyController extends AbstractController
 {
     private const PROPERTY_TYPES = [
@@ -34,7 +34,7 @@ class PropertyController extends AbstractController
         $this->paginator = $paginator;
     }
 
-    #[Route('properties', name: 'index')]
+    #[Route('', name: 'index')]
     public function index(Request $request): Response
     {
         $queryBuilder = $this->propertyRepository->createQueryBuilder('p')
@@ -91,7 +91,7 @@ class PropertyController extends AbstractController
         ]);
     }
 
-    #[Route('property/{id}', name: 'show')]
+    #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
     public function show(int $id): Response
     {
         $property = $this->propertyRepository->find($id);
