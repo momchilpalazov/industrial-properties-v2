@@ -69,7 +69,29 @@
             <div class="row">
                 <div class="col-md-4">
                     <h5>Industrial Properties</h5>
-                    <p class="text-muted">{{ 'footer.description'|trans }}</p>
+                    <p class="text-muted">{{ footer_settings.description|default('Вашият надежден партньор в индустриалните имоти') }}</p>
+                    <div class="social-links mt-3">
+                        {% if footer_settings.social_links.facebook|default %}
+                            <a href="{{ footer_settings.social_links.facebook }}" class="text-light me-3" target="_blank">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                        {% endif %}
+                        {% if footer_settings.social_links.linkedin|default %}
+                            <a href="{{ footer_settings.social_links.linkedin }}" class="text-light me-3" target="_blank">
+                                <i class="bi bi-linkedin"></i>
+                            </a>
+                        {% endif %}
+                        {% if footer_settings.social_links.instagram|default %}
+                            <a href="{{ footer_settings.social_links.instagram }}" class="text-light me-3" target="_blank">
+                                <i class="bi bi-instagram"></i>
+                            </a>
+                        {% endif %}
+                        {% if footer_settings.social_links.youtube|default %}
+                            <a href="{{ footer_settings.social_links.youtube }}" class="text-light" target="_blank">
+                                <i class="bi bi-youtube"></i>
+                            </a>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <h5>{{ 'footer.quick_links'|trans }}</h5>
@@ -83,9 +105,9 @@
                 <div class="col-md-4">
                     <h5>{{ 'footer.contact_us'|trans }}</h5>
                     <ul class="list-unstyled text-muted">
-                        <li><i class="bi bi-geo-alt"></i> София, България</li>
-                        <li><i class="bi bi-telephone"></i> +359 2 123 4567</li>
-                        <li><i class="bi bi-envelope"></i> office@industrial-properties.bg</li>
+                        <li><i class="bi bi-geo-alt"></i> {{ footer_settings.address|default('София, България') }}</li>
+                        <li><i class="bi bi-telephone"></i> {{ footer_settings.phone|default('+359 2 123 4567') }}</li>
+                        <li><i class="bi bi-envelope"></i> {{ footer_settings.email|default('office@industrial-properties.bg') }}</li>
                     </ul>
                 </div>
             </div>

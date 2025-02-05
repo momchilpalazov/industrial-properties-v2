@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}За нас{% endblock %}
+{% block title %}{{ settings.metaTitleBg }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -28,8 +28,8 @@
     <!-- Header -->
     <section class="about-header">
         <div class="container">
-            <h1 class="display-4">За нас</h1>
-            <p class="lead">Вашият надежден партньор в света на индустриалните имоти</p>
+            <h1 class="display-4">{{ settings.titleBg }}</h1>
+            <p class="lead">{{ settings.subtitleBg }}</p>
         </div>
     </section>
 
@@ -39,11 +39,14 @@
             <div class="row">
                 <div class="col-md-6">
                     <h2 class="mb-4">Нашата история</h2>
-                    <p>Industrial Properties е водеща компания в сферата на индустриалните имоти в България. С над 10 години опит на пазара, ние предлагаме професионални услуги в областта на покупко-продажбата и отдаването под наем на индустриални имоти.</p>
-                    <p>Нашият екип от експерти познава в детайли спецификите на индустриалния пазар и може да ви предложи най-подходящите решения за вашия бизнес.</p>
+                    {{ settings.contentBg|raw }}
                 </div>
                 <div class="col-md-6">
-                    <img src="{{ asset('images/about-company.jpg') }}" alt="Our Company" class="img-fluid rounded shadow">
+                    {% if settings.companyImage %}
+                        <img src="{{ asset('uploads/about/' ~ settings.companyImage) }}" alt="Our Company" class="img-fluid rounded shadow">
+                    {% else %}
+                        <img src="{{ asset('images/about-company.jpg') }}" alt="Our Company" class="img-fluid rounded shadow">
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -54,27 +57,15 @@
         <div class="container">
             <h2 class="text-center mb-5">Нашите ценности</h2>
             <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="text-center">
-                        <i class="bi bi-star fs-1 text-primary mb-3"></i>
-                        <h4>Качество</h4>
-                        <p class="text-muted">Стремим се към най-високо качество във всичко, което правим</p>
+                {% for key, value in settings.valuesBg %}
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="bi bi-star fs-1 text-primary mb-3"></i>
+                            <h4>{{ value.title }}</h4>
+                            <p class="text-muted">{{ value.description }}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="text-center">
-                        <i class="bi bi-shield-check fs-1 text-primary mb-3"></i>
-                        <h4>Надеждност</h4>
-                        <p class="text-muted">Изграждаме дългосрочни отношения, базирани на доверие</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="text-center">
-                        <i class="bi bi-graph-up fs-1 text-primary mb-3"></i>
-                        <h4>Развитие</h4>
-                        <p class="text-muted">Постоянно се развиваме и следим новостите в бранша</p>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
@@ -84,27 +75,19 @@
         <div class="container">
             <h2 class="text-center mb-5">Нашият екип</h2>
             <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="text-center">
-                        <img src="{{ asset('images/team/member1.jpg') }}" alt="Team Member" class="team-member-img mb-3">
-                        <h4>Иван Иванов</h4>
-                        <p class="text-muted">Управител</p>
+                {% for member in settings.team %}
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            {% if member.image %}
+                                <img src="{{ asset('uploads/team/' ~ member.image) }}" alt="{{ member.name }}" class="team-member-img mb-3">
+                            {% else %}
+                                <img src="{{ asset('images/team/default-avatar.jpg') }}" alt="{{ member.name }}" class="team-member-img mb-3">
+                            {% endif %}
+                            <h4>{{ member.name }}</h4>
+                            <p class="text-muted">{{ member.position }}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="text-center">
-                        <img src="{{ asset('images/team/member2.jpg') }}" alt="Team Member" class="team-member-img mb-3">
-                        <h4>Мария Петрова</h4>
-                        <p class="text-muted">Брокер индустриални имоти</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="text-center">
-                        <img src="{{ asset('images/team/member3.jpg') }}" alt="Team Member" class="team-member-img mb-3">
-                        <h4>Георги Димитров</h4>
-                        <p class="text-muted">Брокер индустриални имоти</p>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>

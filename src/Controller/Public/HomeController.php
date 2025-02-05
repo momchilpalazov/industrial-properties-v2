@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\PropertyRepository;
+use App\Repository\AboutSettingsRepository;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
@@ -17,15 +18,18 @@ class HomeController extends AbstractController
     private PropertyService $propertyService;
     private BlogService $blogService;
     private PropertyRepository $propertyRepository;
+    private AboutSettingsRepository $aboutSettingsRepository;
 
     public function __construct(
         PropertyService $propertyService,
         BlogService $blogService,
-        PropertyRepository $propertyRepository
+        PropertyRepository $propertyRepository,
+        AboutSettingsRepository $aboutSettingsRepository
     ) {
         $this->propertyService = $propertyService;
         $this->blogService = $blogService;
         $this->propertyRepository = $propertyRepository;
+        $this->aboutSettingsRepository = $aboutSettingsRepository;
     }
 
     #[Route('/', name: 'app_home', defaults: ['_locale' => 'bg'])]
@@ -50,7 +54,11 @@ class HomeController extends AbstractController
     #[Route('/about', name: 'app_about', defaults: ['_locale' => 'bg'])]
     public function about(): Response
     {
-        return $this->render('home/about.html.twig');
+        $settings = $this->aboutSettingsRepository->getSettings();
+        
+        return $this->render('home/about.html.twig', [
+            'settings' => $settings
+        ]);
     }
 
     #[Route('/contact', name: 'app_contact', defaults: ['_locale' => 'bg'])]

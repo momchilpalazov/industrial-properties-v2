@@ -3,6 +3,7 @@ parameters:
     app_locales: 'bg|en'
     app.default_locale: 'bg'
     upload_directory: '%kernel.project_dir%/public/uploads'
+    uploads_directory: '%kernel.project_dir%/public/uploads/about'
 
 services:
     _defaults:
@@ -30,6 +31,7 @@ services:
             $inquiryRepository: '@App\Repository\PropertyInquiryRepository'
             $blogPostRepository: '@App\Repository\BlogPostRepository'
             $userRepository: '@App\Repository\UserRepository'
+            $footerSettingsRepository: '@App\Repository\FooterSettingsRepository'
 
     App\Service\FileUploadService:
         arguments:

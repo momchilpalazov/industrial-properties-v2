@@ -1,0 +1,73 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Управление на футъра{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Управление на футъра</h1>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post" action="{{ path('admin_footer_save') }}">
+                <div class="mb-3">
+                    <label for="description" class="form-label">Описание</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ footer_settings.description }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Адрес</label>
+                    <input type="text" class="form-control" id="address" name="address" value="{{ footer_settings.address }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Телефон</label>
+                    <input type="text" class="form-control" id="phone" name="phone" value="{{ footer_settings.phone }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Имейл</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ footer_settings.email }}">
+                </div>
+
+                <h5 class="mt-4 mb-3">Социални мрежи</h5>
+
+                <div class="mb-3">
+                    <label for="facebook" class="form-label">
+                        <i class="bi bi-facebook"></i> Facebook URL
+                    </label>
+                    <input type="url" class="form-control" id="facebook" name="social_links[facebook]" 
+                           value="{{ footer_settings.social_links.facebook }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="linkedin" class="form-label">
+                        <i class="bi bi-linkedin"></i> LinkedIn URL
+                    </label>
+                    <input type="url" class="form-control" id="linkedin" name="social_links[linkedin]" 
+                           value="{{ footer_settings.social_links.linkedin }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="instagram" class="form-label">
+                        <i class="bi bi-instagram"></i> Instagram URL
+                    </label>
+                    <input type="url" class="form-control" id="instagram" name="social_links[instagram]" 
+                           value="{{ footer_settings.social_links.instagram }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="youtube" class="form-label">
+                        <i class="bi bi-youtube"></i> YouTube URL
+                    </label>
+                    <input type="url" class="form-control" id="youtube" name="social_links[youtube]" 
+                           value="{{ footer_settings.social_links.youtube }}">
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Запази промените
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %} 
