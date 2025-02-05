@@ -1,0 +1,107 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Запитвания{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Запитвания за имоти</h1>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Имот</th>
+                    <th>Име</th>
+                    <th>Имейл</th>
+                    <th>Телефон</th>
+                    <th>Статус</th>
+                    <th>Дата</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inquiry in inquiries %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('admin_property_show', {'id': inquiry.property.id}) }}">
+                                {{ inquiry.property.titleBg }}
+                            </a>
+                        </td>
+                        <td>{{ inquiry.name }}</td>
+                        <td>{{ inquiry.email }}</td>
+                        <td>{{ inquiry.phone }}</td>
+                        <td>
+                            <span class="badge bg-{{ inquiry.isRead ? 'success' : 'warning' }}">
+                                {{ inquiry.isRead ? 'Прочетено' : 'Непрочетено' }}
+                            </span>
+                        </td>
+                        <td>{{ inquiry.createdAt|date('d.m.Y H:i') }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" 
+                                        class="btn btn-sm btn-outline-primary toggle-read-btn"
+                                        data-url="{{ path('admin_property_inquiry_toggle_read', {'id': inquiry.id}) }}"
+                                        title="{{ inquiry.isRead ? 'Маркирай като непрочетено' : 'Маркирай като прочетено' }}">
+                                    <i class="bi bi-check2-circle"></i>
+                                </button>
+                                <form method="post" 
+                                      action="{{ path('admin_property_inquiry_delete', {'id': inquiry.id}) }}"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Сигурни ли сте, че искате да изтриете това запитване?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">Няма намерени запитвания.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if inquiries.haveToPaginate %}
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(inquiries) }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.toggle-read-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const url = this.dataset.url;
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const badge = this.closest('tr').querySelector('.badge');
+                        if (data.isRead) {
+                            badge.classList.remove('bg-warning');
+                            badge.classList.add('bg-success');
+                            badge.textContent = 'Прочетено';
+                            this.title = 'Маркирай като непрочетено';
+                        } else {
+                            badge.classList.remove('bg-success');
+                            badge.classList.add('bg-warning');
+                            badge.textContent = 'Непрочетено';
+                            this.title = 'Маркирай като прочетено';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %} 

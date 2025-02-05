@@ -1,0 +1,95 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ property.titleBg }} - Детайли{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">{{ property.titleBg }}</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group me-2">
+                <a href="{{ path('admin_property_edit', {'id': property.id}) }}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-pencil"></i> Редактирай
+                </a>
+                <a href="{{ path('admin_property_images', {'id': property.id}) }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-images"></i> Снимки
+                </a>
+            </div>
+            <a href="{{ path('admin_property_index') }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Назад
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            {% if property.mainImage %}
+                <img src="{{ asset('uploads/properties/' ~ property.mainImage.filename) }}" 
+                     class="img-fluid rounded mb-4" 
+                     alt="{{ property.titleBg }}">
+            {% endif %}
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Основна информация</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Локация:</strong> {{ property.locationBg }}</p>
+                            <p><strong>Площ:</strong> {{ property.area }} m²</p>
+                            <p><strong>Тип:</strong> {{ property.type }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Статус:</strong> 
+                                <span class="badge bg-{{ property.status == 'available' ? 'success' : 'warning' }}">
+                                    {{ property.status == 'available' ? 'Свободен' : 'Зает' }}
+                                </span>
+                            </p>
+                            {% if property.price %}
+                                <p><strong>Цена:</strong> {{ property.price|number_format(0, '.', ' ') }} €</p>
+                            {% endif %}
+                            <p><strong>Създаден на:</strong> {{ property.createdAt|date('d.m.Y H:i') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Описание</h5>
+                    <div class="mt-3">
+                        {{ property.descriptionBg|raw }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Характеристики</h5>
+                    <ul class="list-unstyled">
+                        {% for feature in property.features %}
+                            <li><i class="bi bi-check-circle text-success"></i> {{ feature }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            {% if property.images|length > 0 %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Галерия</h5>
+                        <div class="row g-2">
+                            {% for image in property.images %}
+                                <div class="col-6">
+                                    <img src="{{ asset('uploads/properties/' ~ image.filename) }}" 
+                                         class="img-fluid rounded" 
+                                         alt="Снимка {{ loop.index }}">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %} 

@@ -1,0 +1,71 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Блог{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Блог публикации</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ path('admin_blog_new') }}" class="btn btn-sm btn-primary">
+                <i class="bi bi-plus-lg"></i> Нова публикация
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Заглавие</th>
+                    <th>Език</th>
+                    <th>Статус</th>
+                    <th>Преглеждания</th>
+                    <th>Създадена на</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                    <tr>
+                        <td>{{ post.title }}</td>
+                        <td>{{ post.language|upper }}</td>
+                        <td>
+                            <span class="badge bg-{{ post.status == 'published' ? 'success' : 'warning' }}">
+                                {{ post.status == 'published' ? 'Публикувана' : 'Чернова' }}
+                            </span>
+                        </td>
+                        <td>{{ post.views }}</td>
+                        <td>{{ post.createdAt|date('d.m.Y H:i') }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="{{ path('admin_blog_edit', {'id': post.id}) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form method="post" 
+                                      action="{{ path('admin_blog_delete', {'id': post.id}) }}"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Сигурни ли сте, че искате да изтриете тази публикация?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">Няма намерени публикации.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if posts.haveToPaginate is defined %}
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(posts) }}
+        </div>
+    {% endif %}
+{% endblock %} 

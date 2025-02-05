@@ -1,17 +1,18 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Entity;
 
-use App\Repository\BlogRepository;
+use App\Repository\BlogPostRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-#[ORM\Entity(repositoryClass: BlogRepository::class)]
+#[ORM\Entity(repositoryClass: BlogPostRepository::class)]
 #[ORM\Table(name: 'blog_posts')]
 #[ORM\HasLifecycleCallbacks]
-class Blog
+#[UniqueEntity(fields: ['slug'], message: 'Вече съществува публикация с това заглавие')]
+class BlogPost
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,47 +20,45 @@ class Blog
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: 'Моля въведете заглавие')]
     private ?string $title = null;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'Моля въведете съдържание')]
     private ?string $content = null;
 
     #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
     #[ORM\Column(length: 2)]
+    #[Assert\NotBlank(message: 'Моля изберете език')]
+    #[Assert\Choice(choices: ['bg', 'en'], message: 'Моля изберете валиден език')]
     private ?string $language = null;
 
     #[ORM\Column(length: 20)]
+    #[Assert\NotBlank(message: 'Моля изберете статус')]
+    #[Assert\Choice(choices: ['draft', 'published'], message: 'Моля изберете валиден статус')]
     private ?string $status = 'draft';
 
     #[ORM\Column]
     private int $views = 0;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTime $createdAt = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?\DateTime $updatedAt = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
-    }
-
-    #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
-    {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
     }
 
     #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -133,12 +132,18 @@ class Blog
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function incrementViews(): self
+    {
+        $this->views++;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;
     }

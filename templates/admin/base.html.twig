@@ -101,35 +101,35 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if app.request.get('_route') starts with 'admin_property' %}active{% endif %}" 
-                               href="#">
+                               href="{{ path('admin_property_index') }}">
                                 <i class="bi bi-building"></i>
                                 Имоти
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if app.request.get('_route') starts with 'admin_inquiry' %}active{% endif %}" 
-                               href="#">
+                               href="{{ path('admin_property_inquiries') }}">
                                 <i class="bi bi-envelope"></i>
                                 Запитвания
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if app.request.get('_route') starts with 'admin_blog' %}active{% endif %}" 
-                               href="#">
+                               href="{{ path('admin_blog_index') }}">
                                 <i class="bi bi-file-text"></i>
                                 Блог
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if app.request.get('_route') starts with 'admin_user' %}active{% endif %}" 
-                               href="#">
+                               href="{{ path('admin_user_index') }}">
                                 <i class="bi bi-people"></i>
                                 Потребители
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if app.request.get('_route') starts with 'admin_settings' %}active{% endif %}" 
-                               href="#">
+                               href="{{ path('admin_settings') }}">
                                 <i class="bi bi-gear"></i>
                                 Настройки
                             </a>

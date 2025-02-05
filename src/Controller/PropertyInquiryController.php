@@ -61,28 +61,4 @@ class PropertyInquiryController extends AbstractController
             'property' => $property
         ]);
     }
-
-    #[Route('/admin/inquiries', name: 'admin_property_inquiries')]
-    public function list(EntityManagerInterface $entityManager): Response
-    {
-        $inquiries = $entityManager->getRepository(PropertyInquiry::class)
-            ->findBy([], ['createdAt' => 'DESC']);
-        
-        return $this->render('admin/property/inquiries.html.twig', [
-            'inquiries' => $inquiries
-        ]);
-    }
-
-    #[Route('/admin/inquiry/{id}/toggle-read', name: 'admin_property_inquiry_toggle_read', methods: ['POST'])]
-    public function toggleRead(
-        PropertyInquiry $inquiry,
-        EntityManagerInterface $entityManager
-    ): Response {
-        $inquiry->setIsRead(!$inquiry->isRead());
-        $entityManager->flush();
-        
-        return $this->json([
-            'isRead' => $inquiry->isRead()
-        ]);
-    }
 } 

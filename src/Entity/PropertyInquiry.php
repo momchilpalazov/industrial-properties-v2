@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PropertyInquiryRepository::class)]
+#[ORM\Table(name: 'property_inquiry')]
 #[ORM\HasLifecycleCallbacks]
 class PropertyInquiry
 {
@@ -15,13 +16,8 @@ class PropertyInquiry
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'inquiries')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Property $property = null;
-
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Assert\Length(max: 255)]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
@@ -30,7 +26,6 @@ class PropertyInquiry
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Length(max: 255)]
     private ?string $phone = null;
 
     #[ORM\Column(type: 'text')]
@@ -38,15 +33,28 @@ class PropertyInquiry
     private ?string $message = null;
 
     #[ORM\Column]
+    private bool $isRead = false;
+
+    #[ORM\ManyToOne(targetEntity: Property::class, inversedBy: 'inquiries')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Property $property = null;
+
+    #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    private bool $isRead = false;
+    private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
+    public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -54,23 +62,12 @@ class PropertyInquiry
         return $this->id;
     }
 
-    public function getProperty(): ?Property
-    {
-        return $this->property;
-    }
-
-    public function setProperty(?Property $property): static
-    {
-        $this->property = $property;
-        return $this;
-    }
-
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
@@ -81,7 +78,7 @@ class PropertyInquiry
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
         return $this;
@@ -92,7 +89,7 @@ class PropertyInquiry
         return $this->phone;
     }
 
-    public function setPhone(?string $phone): static
+    public function setPhone(?string $phone): self
     {
         $this->phone = $phone;
         return $this;
@@ -103,9 +100,31 @@ class PropertyInquiry
         return $this->message;
     }
 
-    public function setMessage(string $message): static
+    public function setMessage(string $message): self
     {
         $this->message = $message;
+        return $this;
+    }
+
+    public function isRead(): bool
+    {
+        return $this->isRead;
+    }
+
+    public function setIsRead(bool $isRead): self
+    {
+        $this->isRead = $isRead;
+        return $this;
+    }
+
+    public function getProperty(): ?Property
+    {
+        return $this->property;
+    }
+
+    public function setProperty(?Property $property): self
+    {
+        $this->property = $property;
         return $this;
     }
 
@@ -114,14 +133,8 @@ class PropertyInquiry
         return $this->createdAt;
     }
 
-    public function isRead(): bool
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->isRead;
-    }
-
-    public function setIsRead(bool $isRead): static
-    {
-        $this->isRead = $isRead;
-        return $this;
+        return $this->updatedAt;
     }
 } 

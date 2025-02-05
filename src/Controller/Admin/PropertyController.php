@@ -43,6 +43,14 @@ class PropertyController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/show', name: 'admin_property_show', methods: ['GET'])]
+    public function show(Property $property): Response
+    {
+        return $this->render('admin/property/show.html.twig', [
+            'property' => $property,
+        ]);
+    }
+
     #[Route('/new', name: 'admin_property_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {

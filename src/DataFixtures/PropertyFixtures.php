@@ -8,7 +8,7 @@ use App\Entity\PropertyImage;
 use App\Entity\PropertyPdf;
 use App\Entity\Contact;
 use App\Entity\User;
-use App\Entity\Blog;
+use App\Entity\BlogPost;
 use App\Entity\PropertyInquiry;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -202,7 +202,7 @@ class PropertyFixtures extends Fixture
 
         // Create blog posts
         for ($i = 0; $i < 5; $i++) {
-            $blog = new Blog();
+            $blog = new BlogPost();
             $blog->setTitle($faker->sentence())
                 ->setContent($faker->paragraphs(5, true))
                 ->setSlug($faker->slug())
