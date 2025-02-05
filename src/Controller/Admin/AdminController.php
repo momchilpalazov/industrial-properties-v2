@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Process\Process;
 
 #[Route('', name: 'admin_')]
 #[IsGranted('ROLE_ADMIN')]
@@ -82,5 +83,21 @@ class AdminController extends AbstractController
         return $this->render('admin/profile.html.twig', [
             'user' => $this->getUser()
         ]);
+    }
+
+    #[Route('/cache/clear', name: 'cache_clear', methods: ['POST'])]
+    public function clearCache(): Response
+    {
+        $process = new Process(['php', 'bin/console', 'cache:clear', '--env=prod']);
+        $process->setWorkingDirectory($this->getParameter('kernel.project_dir'));
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            $this->addFlash('error', 'Възникна грешка при изчистването на кеша: ' . $process->getErrorOutput());
+        } else {
+            $this->addFlash('success', 'Кешът беше изчистен успешно');
+        }
+
+        return $this->redirectToRoute('admin_settings');
     }
 } 
