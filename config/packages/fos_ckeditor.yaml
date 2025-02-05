@@ -1,0 +1,7 @@
+fos_ck_editor:
+    configs:
+        main_config:
+            toolbar: full
+            language: bg
+    base_path: "build/ckeditor"
+    js_path:   "build/ckeditor/ckeditor.js" 

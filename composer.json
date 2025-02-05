@@ -24,6 +24,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^2.17",
         "dompdf/dompdf": "*",
+        "friendsofsymfony/ckeditor-bundle": "2.4",
         "intervention/image": "*",
         "knplabs/knp-paginator-bundle": "*",
         "symfony/asset": "6.4.*",
@@ -75,7 +76,8 @@
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "ckeditor:install": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"

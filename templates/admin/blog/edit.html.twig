@@ -2,11 +2,6 @@
 
 {% block title %}Редактиране на публикация{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('ckeditor') }}
-{% endblock %}
-
 {% block body %}
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
         <h1 class="h2">Редактиране на публикация</h1>
@@ -61,5 +56,16 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('ckeditor') }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            ClassicEditor
+                .create(document.querySelector('#blog_post_content'), {
+                    toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+                    language: document.querySelector('#blog_post_language').value
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+    </script>
 {% endblock %} 
