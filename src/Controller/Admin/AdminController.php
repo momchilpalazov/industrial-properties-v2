@@ -171,6 +171,25 @@ class AdminController extends AbstractController
         ]);
     }
 
+    private function setFilePermissions(string $filePath): void
+    {
+        if (PHP_OS_FAMILY === 'Windows') {
+            // За Windows, даваме пълни права на Everyone група
+            $cmd = sprintf('icacls "%s" /grant "Everyone":(OI)(CI)F /T', $filePath);
+            exec($cmd);
+            
+            // Даваме права и на IUSR потребителя
+            $cmd = sprintf('icacls "%s" /grant "IUSR":(OI)(CI)F /T', $filePath);
+            exec($cmd);
+            
+            // Даваме права на IIS_IUSRS групата
+            $cmd = sprintf('icacls "%s" /grant "IIS_IUSRS":(OI)(CI)F /T', $filePath);
+            exec($cmd);
+        } else {
+            chmod($filePath, 0777);
+        }
+    }
+
     #[Route('/about/save', name: 'about_save', methods: ['POST'])]
     public function saveAbout(Request $request): Response
     {
@@ -196,12 +215,23 @@ class AdminController extends AbstractController
         if ($request->files->has('company_image')) {
             $file = $request->files->get('company_image');
             if ($file) {
+                // Изтриваме старата снимка
+                if ($settings->getCompanyImage()) {
+                    $oldImagePath = $this->getParameter('kernel.project_dir') . $settings->getCompanyImage();
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                    }
+                }
+                
                 $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-                $file->move(
-                    $this->getParameter('uploads_directory') . '/about',
-                    $fileName
-                );
-                $settings->setCompanyImage('/uploads/about/' . $fileName);
+                $uploadDir = $this->getParameter('upload_directory') . '/about/company';
+                $file->move($uploadDir, $fileName);
+                
+                // Задаваме правилните права на директорията и файла
+                $this->setFilePermissions($uploadDir);
+                $this->setFilePermissions($uploadDir . '/' . $fileName);
+                
+                $settings->setCompanyImage('/img/about/company/' . $fileName);
             }
         }
 
@@ -213,20 +243,55 @@ class AdminController extends AbstractController
 
         // Екип
         $team = $request->request->all()['team'] ?? [];
+        $currentTeam = $settings->getTeam() ?? [];
+        $deleteTeamImages = $request->request->all()['delete_team_image'] ?? [];
+        
+        // Обработваме изтриването на снимки
+        foreach ($deleteTeamImages as $key => $shouldDelete) {
+            if ($shouldDelete === "1" && isset($currentTeam[$key]['image'])) {
+                $oldImagePath = $this->getParameter('kernel.project_dir') . $currentTeam[$key]['image'];
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+                unset($currentTeam[$key]['image']);
+            }
+        }
+        
+        // Запазваме съществуващите снимки
+        foreach ($team as $key => $member) {
+            if (!isset($deleteTeamImages[$key]) || $deleteTeamImages[$key] !== "1") {
+                if (isset($currentTeam[$key]['image'])) {
+                    $team[$key]['image'] = $currentTeam[$key]['image'];
+                }
+            }
+        }
+
+        // Обработваме новите снимки
         if ($request->files->has('team_images')) {
             $teamImages = $request->files->get('team_images');
             foreach ($teamImages as $key => $file) {
                 if ($file) {
-                    $originalExtension = $file->getClientOriginalExtension();
-                    $fileName = md5(uniqid()) . '.' . $originalExtension;
-                    $file->move(
-                        $this->getParameter('upload_directory') . '/team',
-                        $fileName
-                    );
-                    $team[$key]['image'] = $fileName;
+                    // Изтриваме старата снимка
+                    if (isset($currentTeam[$key]['image'])) {
+                        $oldImagePath = $this->getParameter('kernel.project_dir') . $currentTeam[$key]['image'];
+                        if (file_exists($oldImagePath)) {
+                            unlink($oldImagePath);
+                        }
+                    }
+
+                    $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                    $uploadDir = $this->getParameter('upload_directory') . '/about/team';
+                    $file->move($uploadDir, $fileName);
+                    
+                    // Задаваме правилните права на директорията и файла
+                    $this->setFilePermissions($uploadDir);
+                    $this->setFilePermissions($uploadDir . '/' . $fileName);
+                    
+                    $team[$key]['image'] = '/img/about/team/' . $fileName;
                 }
             }
         }
+
         $settings->setTeam($team);
 
         // Meta данни
@@ -239,5 +304,49 @@ class AdminController extends AbstractController
         
         $this->addFlash('success', 'Съдържанието на страницата беше запазено успешно');
         return $this->redirectToRoute('admin_about');
+    }
+
+    #[Route('/about/delete-image', name: 'about_delete_image', methods: ['POST'])]
+    public function deleteAboutImage(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        
+        if (!$this->isCsrfTokenValid('delete-image', $request->headers->get('X-CSRF-TOKEN'))) {
+            return new Response('Invalid CSRF token', Response::HTTP_FORBIDDEN);
+        }
+
+        $settings = $this->aboutSettingsRepository->getSettings();
+        $success = false;
+        
+        if ($data['type'] === 'company') {
+            // Изтриване на снимката на компанията
+            if ($settings->getCompanyImage()) {
+                $oldImagePath = $this->getParameter('kernel.project_dir') . $settings->getCompanyImage();
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+                $settings->setCompanyImage(null);
+                $success = true;
+            }
+        } elseif ($data['type'] === 'team' && isset($data['key'])) {
+            // Изтриване на снимка на член от екипа
+            $team = $settings->getTeam();
+            if (isset($team[$data['key']]['image'])) {
+                $oldImagePath = $this->getParameter('kernel.project_dir') . $team[$data['key']]['image'];
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+                unset($team[$data['key']]['image']);
+                $settings->setTeam($team);
+                $success = true;
+            }
+        }
+
+        if ($success) {
+            $this->aboutSettingsRepository->save($settings, true);
+            return new Response(json_encode(['success' => true]), Response::HTTP_OK, ['Content-Type' => 'application/json']);
+        }
+        
+        return new Response(json_encode(['success' => false]), Response::HTTP_BAD_REQUEST, ['Content-Type' => 'application/json']);
     }
 } 

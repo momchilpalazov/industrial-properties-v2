@@ -43,7 +43,7 @@
                 </div>
                 <div class="col-md-6">
                     {% if settings.companyImage %}
-                        <img src="{{ asset('uploads/about/' ~ settings.companyImage) }}" alt="Our Company" class="img-fluid rounded shadow">
+                        <img src="{{ asset(settings.companyImage) }}" alt="Our Company" class="img-fluid rounded shadow">
                     {% else %}
                         <img src="{{ asset('images/about-company.jpg') }}" alt="Our Company" class="img-fluid rounded shadow">
                     {% endif %}
@@ -79,7 +79,7 @@
                     <div class="col-md-4">
                         <div class="text-center">
                             {% if member.image %}
-                                <img src="{{ asset('uploads/team/' ~ member.image) }}" alt="{{ member.name }}" class="team-member-img mb-3">
+                                <img src="{{ asset(member.image) }}" alt="{{ member.name }}" class="team-member-img mb-3">
                             {% else %}
                                 <img src="{{ asset('images/team/default-avatar.jpg') }}" alt="{{ member.name }}" class="team-member-img mb-3">
                             {% endif %}

@@ -2,6 +2,56 @@
 
 {% block title %}Управление на страница "За нас"{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .image-preview {
+            position: relative;
+            display: inline-block;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            background: #fff;
+        }
+        .image-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            object-fit: contain;
+            display: block;
+        }
+        .delete-image {
+            position: absolute !important;
+            top: -12px !important;
+            right: -12px !important;
+            width: 25px !important;
+            height: 25px !important;
+            background-color: #dc3545 !important;
+            color: #ffffff !important;
+            border: 2px solid #ffffff !important;
+            border-radius: 50% !important;
+            font-size: 18px !important;
+            line-height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            cursor: pointer !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+            z-index: 1000 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: background-color 0.2s !important;
+        }
+        .delete-image:hover {
+            background-color: #c82333 !important;
+        }
+        .image-upload-container {
+            margin-top: 10px;
+            position: relative;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
         <h1 class="h2">Управление на страница "За нас"</h1>
@@ -222,12 +272,16 @@
                 <h4 class="mb-3 mt-4">Снимки</h4>
                 <div class="mb-3">
                     <label for="company_image" class="form-label">Снимка на компанията</label>
-                    {% if settings.company_image %}
-                        <div class="mb-2">
-                            <img src="{{ settings.company_image }}" alt="Company Image" class="img-thumbnail" style="max-width: 200px;">
-                        </div>
-                    {% endif %}
-                    <input type="file" class="form-control" id="company_image" name="company_image" accept="image/*">
+                    <div class="image-upload-container">
+                        {% if settings.company_image %}
+                            <div class="image-preview">
+                                <img src="{{ asset(settings.company_image) }}" alt="Company Image" class="img-thumbnail">
+                                <button type="button" class="btn delete-image" onclick="deleteCompanyImage(this)" title="Изтрий снимката">&times;</button>
+                                <input type="hidden" name="delete_company_image" value="0">
+                            </div>
+                        {% endif %}
+                        <input type="file" class="form-control mt-2" id="company_image" name="company_image" accept="image/*">
+                    </div>
                 </div>
 
                 <h4 class="mb-3 mt-4">Екип</h4>
@@ -248,13 +302,17 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Снимка</label>
-                                {% if member.image %}
-                                    <div class="mb-2">
-                                        <img src="{{ member.image }}" alt="{{ member.name }}" class="img-thumbnail" style="max-width: 150px;">
-                                    </div>
-                                {% endif %}
-                                <input type="file" class="form-control" 
-                                       name="team_images[{{ key }}]" accept="image/*">
+                                <div class="image-upload-container">
+                                    {% if member.image %}
+                                        <div class="image-preview">
+                                            <img src="{{ asset(member.image) }}" alt="{{ member.name }}" class="img-thumbnail">
+                                            <button type="button" class="btn delete-image" onclick="deleteTeamImage(this, {{ key }})" title="Изтрий снимката">&times;</button>
+                                            <input type="hidden" name="delete_team_image[{{ key }}]" value="0">
+                                        </div>
+                                    {% endif %}
+                                    <input type="file" class="form-control mt-2" 
+                                           name="team_images[{{ key }}]" accept="image/*">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -271,7 +329,74 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+        async function deleteCompanyImage(button) {
+            if (confirm('Сигурни ли сте, че искате да изтриете тази снимка?')) {
+                try {
+                    const response = await fetch('{{ path('admin_about_delete_image') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token('delete-image') }}'
+                        },
+                        body: JSON.stringify({
+                            type: 'company'
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Възникна грешка при изтриването на снимката');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Възникна грешка при изтриването на снимката');
+                }
+            }
+        }
+
+        async function deleteTeamImage(button, key) {
+            if (confirm('Сигурни ли сте, че искате да изтриете тази снимка?')) {
+                try {
+                    const response = await fetch('{{ path('admin_about_delete_image') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token('delete-image') }}'
+                        },
+                        body: JSON.stringify({
+                            type: 'team',
+                            key: key
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Възникна грешка при изтриването на снимката');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Възникна грешка при изтриването на снимката');
+                }
+            }
+        }
+
+        function initializeDeleteButtons() {
+            const deleteButtons = document.querySelectorAll('.delete-image');
+            deleteButtons.forEach(button => {
+                button.style.display = 'flex';
+                button.innerHTML = '&times;';
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            initializeDeleteButtons();
+
             const editors = ['content_bg', 'content_en', 'content_de', 'content_ru'];
             
             editors.forEach(function(editorId) {
