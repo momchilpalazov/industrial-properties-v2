@@ -97,9 +97,15 @@
                     <div class="col-md-4 mb-4">
                         <div class="card h-100">
                             {% if property.mainImage %}
-                                <img src="{{ asset('uploads/properties/' ~ property.mainImage.filename) }}" class="card-img-top" alt="{{ property.title }}">
+                                <img src="{{ asset('img/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}" 
+                                     class="card-img-top" 
+                                     alt="{{ property.title(app.request.locale) }}"
+                                     style="height: 200px; object-fit: cover;">
                             {% else %}
-                                <img src="{{ asset('images/no-image.jpg') }}" class="card-img-top" alt="No image">
+                                <img src="{{ asset('img/no-image.jpg') }}" 
+                                     class="card-img-top" 
+                                     alt="No image"
+                                     style="height: 200px; object-fit: cover;">
                             {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title">{{ property.title }}</h5>

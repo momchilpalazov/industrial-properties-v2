@@ -24,7 +24,8 @@ class PropertyType extends AbstractType
             ])
             ->add('titleEn', TextType::class, [
                 'label' => 'Заглавие (EN)',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'required' => false
             ])
             ->add('titleDe', TextType::class, [
                 'label' => 'Заглавие (DE)',
@@ -36,38 +37,36 @@ class PropertyType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('descriptionBg', CKEditorType::class, [
+            ->add('descriptionBg', TextareaType::class, [
                 'label' => 'Описание (BG)',
-                'config' => [
-                    'toolbar' => 'full',
-                    'language' => 'bg',
-                    'height' => 400
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 10
                 ]
             ])
-            ->add('descriptionEn', CKEditorType::class, [
+            ->add('descriptionEn', TextareaType::class, [
                 'label' => 'Описание (EN)',
-                'config' => [
-                    'toolbar' => 'full',
-                    'language' => 'en',
-                    'height' => 400
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 10
                 ]
             ])
-            ->add('descriptionDe', CKEditorType::class, [
+            ->add('descriptionDe', TextareaType::class, [
                 'label' => 'Описание (DE)',
                 'required' => false,
-                'config' => [
-                    'toolbar' => 'full',
-                    'language' => 'de',
-                    'height' => 400
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 10
                 ]
             ])
-            ->add('descriptionRu', CKEditorType::class, [
+            ->add('descriptionRu', TextareaType::class, [
                 'label' => 'Описание (RU)',
                 'required' => false,
-                'config' => [
-                    'toolbar' => 'full',
-                    'language' => 'ru',
-                    'height' => 400
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 10
                 ]
             ])
             ->add('locationBg', TextType::class, [
@@ -76,7 +75,8 @@ class PropertyType extends AbstractType
             ])
             ->add('locationEn', TextType::class, [
                 'label' => 'Локация (EN)',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'required' => false
             ])
             ->add('locationDe', TextType::class, [
                 'label' => 'Локация (DE)',
@@ -90,10 +90,12 @@ class PropertyType extends AbstractType
             ])
             ->add('area', NumberType::class, [
                 'label' => 'Площ (м²)',
+                'required' => false,
                 'attr' => ['class' => 'form-control']
             ])
             ->add('price', NumberType::class, [
                 'label' => 'Цена (€)',
+                'required' => false,
                 'attr' => ['class' => 'form-control']
             ])
             ->add('type', ChoiceType::class, [

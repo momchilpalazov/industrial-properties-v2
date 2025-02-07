@@ -75,6 +75,25 @@
         .pagination .page-link {
             color: var(--bs-primary);
         }
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        .form-switch {
+            padding-left: 2.5em;
+        }
+        .form-switch .form-check-input {
+            width: 3em;
+        }
+        .btn-group {
+            gap: 0.25rem;
+        }
+        .dropdown-toggle::after {
+            display: none;
+        }
     </style>
 {% endblock %}
 
@@ -144,80 +163,116 @@
     </div>
 
     <!-- Списък с имоти -->
-    <div class="row g-4">
-        {% for property in properties %}
-            <div class="col-md-6 col-lg-4">
-                <div class="card property-card">
-                    <div class="position-relative">
-                        <img src="{{ property.mainImage ? asset('uploads/properties/' ~ property.mainImage.filename) : asset('images/no-image.jpg') }}"
-                             class="property-image w-100"
-                             alt="{{ property.titleBg }}">
-                        
-                        <div class="property-status {{ property.status == 'available' ? 'status-available' : 'status-unavailable' }}">
-                            {{ property.status == 'available' ? 'Свободен' : 'Зает' }}
-                        </div>
-                        
-                        <div class="property-type">
-                            {% if property.type == 'industrial_land' %}
-                                Индустриален парцел
-                            {% elseif property.type == 'industrial_building' %}
-                                Индустриална сграда
-                            {% elseif property.type == 'logistics_center' %}
-                                Логистичен център
-                            {% elseif property.type == 'warehouse' %}
-                                Склад
-                            {% else %}
-                                Производствена база
-                            {% endif %}
-                        </div>
-
-                        <div class="property-actions">
-                            <a href="{{ path('admin_property_edit', {'id': property.id}) }}"
-                               class="btn btn-sm btn-light"
-                               title="Редактирай">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <form method="post" 
-                                  action="{{ path('admin_property_delete', {'id': property.id}) }}"
-                                  class="d-inline"
-                                  onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този имот?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ property.id) }}">
-                                <button type="submit" 
-                                        class="btn btn-sm btn-light text-danger"
-                                        title="Изтрий">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <div class="card-body">
-                        <h5 class="card-title mb-2">{{ property.titleBg }}</h5>
-                        <p class="card-text text-muted mb-2">
-                            <i class="bi bi-geo-alt"></i> {{ property.locationBg }}
-                        </p>
-                        <div class="property-features">
-                            <div class="property-feature">
-                                <i class="bi bi-rulers"></i>
-                                {{ property.area }} м²
-                            </div>
-                            {% if property.price %}
-                            <div class="property-feature">
-                                <i class="bi bi-currency-euro"></i>
-                                {{ property.price|number_format(0, '.', ' ') }}
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="selectAll">
+                                </div>
+                            </th>
+                            <th style="width: 50px">ID</th>
+                            <th style="width: 120px">Снимка</th>
+                            <th>Заглавие</th>
+                            <th>Референция</th>
+                            <th>Категория</th>
+                            <th>Цена без ДДС</th>
+                            <th>Цена с ДДС</th>
+                            <th>Количество</th>
+                            <th style="width: 100px">Статус</th>
+                            <th style="width: 120px">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for property in properties %}
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="{{ property.id }}">
+                                    </div>
+                                </td>
+                                <td>{{ property.id }}</td>
+                                <td>
+                                    {% if property.mainImage %}
+                                        <img src="{{ asset('img/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}" 
+                                             alt="{{ property.titleBg }}"
+                                             style="width: 100px; height: 60px; object-fit: cover;"
+                                             class="rounded">
+                                    {% else %}
+                                        <img src="{{ asset('img/no-image.jpg') }}" 
+                                             alt="No image"
+                                             style="width: 100px; height: 60px; object-fit: cover;"
+                                             class="rounded">
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div>{{ property.titleBg }}</div>
+                                    <small class="text-muted">
+                                        <i class="bi bi-geo-alt"></i> {{ property.locationBg }}
+                                    </small>
+                                </td>
+                                <td>{{ property.id }}</td>
+                                <td>{{ property.type }}</td>
+                                <td>{{ property.price ? property.price|number_format(2, '.', ' ') : '-' }}</td>
+                                <td>{{ property.price ? (property.price * 1.2)|number_format(2, '.', ' ') : '-' }}</td>
+                                <td>{{ property.area ? property.area|number_format(0) : '-' }}</td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" 
+                                               {% if property.isActive %}checked{% endif %}
+                                               data-property-id="{{ property.id }}"
+                                               onchange="togglePropertyStatus(this)">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ path('admin_property_edit', {'id': property.id}) }}" 
+                                           class="btn btn-sm btn-outline-primary"
+                                           title="Редактирай">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{{ path('admin_property_images', {'id': property.id}) }}" 
+                                           class="btn btn-sm btn-outline-info"
+                                           title="Снимки">
+                                            <i class="bi bi-images"></i>
+                                        </a>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <form action="{{ path('admin_property_delete', {'id': property.id}) }}" 
+                                                      method="post" 
+                                                      onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този имот?');">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ property.id) }}">
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="bi bi-trash"></i> Изтрий
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="11" class="text-center py-4">
+                                    <div class="alert alert-info mb-0">
+                                        Няма намерени имоти.
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-        {% else %}
-            <div class="col-12">
-                <div class="alert alert-info mb-0">
-                    Няма намерени имоти.
-                </div>
-            </div>
-        {% endfor %}
+        </div>
     </div>
 
     <!-- Пагинация -->
@@ -255,6 +310,41 @@
             ].some(param => new URLSearchParams(window.location.search).has(param));
 
             clearFilters.style.display = hasActiveFilters ? 'block' : 'none';
+
+            // Select All функционалност
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const itemCheckboxes = document.querySelectorAll('tbody .form-check-input');
+
+            selectAllCheckbox.addEventListener('change', function() {
+                itemCheckboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+            });
         });
+
+        function togglePropertyStatus(element) {
+            const propertyId = element.dataset.propertyId;
+            const isActive = element.checked;
+
+            fetch(`/admin/properties/${propertyId}/toggle-active`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ isActive })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    element.checked = !isActive;
+                    alert('Възникна грешка при промяна на статуса');
+                }
+            })
+            .catch(error => {
+                element.checked = !isActive;
+                alert('Възникна грешка при промяна на статуса');
+            });
+        }
     </script>
 {% endblock %} 

@@ -9,6 +9,15 @@
         <a href="{{ path('admin_property_index') }}" class="btn btn-secondary">Назад към списъка</a>
     </div>
 
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
     {{ form_start(form, {'attr': {'class': 'card'}}) }}
     <div class="card-body">
         <ul class="nav nav-tabs mb-4" role="tablist">
@@ -84,20 +93,60 @@
 {% endblock %}
 
 {% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const editors = ['descriptionBg', 'descriptionEn', 'descriptionDe', 'descriptionRu'];
     
     editors.forEach(function(editorId) {
-        ClassicEditor
-            .create(document.querySelector('#property_' + editorId), {
-                toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
-                language: editorId.slice(-2).toLowerCase()
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        const element = document.querySelector('#property_' + editorId);
+        if (element) {
+            ClassicEditor
+                .create(element, {
+                    toolbar: [
+                        'heading',
+                        '|',
+                        'bold',
+                        'italic',
+                        'link',
+                        'bulletedList',
+                        'numberedList',
+                        '|',
+                        'undo',
+                        'redo'
+                    ],
+                    heading: {
+                        options: [
+                            { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                            { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                            { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+                        ]
+                    }
+                })
+                .then(editor => {
+                    // Запазваме референция към редактора
+                    window[`editor_${editorId}`] = editor;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
     });
+
+    // Синхронизираме съдържанието при submit
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            editors.forEach(function(editorId) {
+                const editor = window[`editor_${editorId}`];
+                if (editor) {
+                    const element = document.querySelector('#property_' + editorId);
+                    element.value = editor.getData();
+                }
+            });
+        });
+    }
 });
 </script>
 {% endblock %} 

@@ -1,6 +1,6 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Изображения - {{ property.title }}{% endblock %}
+{% block title %}Изображения - {{ property.titleBg }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -10,6 +10,7 @@
             border: 2px dashed #0087F7;
             border-radius: 5px;
             background: white;
+            margin-bottom: 1rem;
         }
         .dropzone .dz-message {
             font-weight: 400;
@@ -24,7 +25,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 1rem;
-            margin-top: 2rem;
+            margin-top: 1rem;
         }
         .image-card {
             position: relative;
@@ -69,43 +70,47 @@
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2">Изображения - {{ property.title }}</h1>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="{{ path('admin_property_edit', {'id': property.id}) }}" class="btn btn-sm btn-outline-secondary">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">Снимки - {{ property.titleBg }}</h1>
+            <a href="{{ path('admin_property_edit', {'id': property.id}) }}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Назад към имота
             </a>
         </div>
-    </div>
 
-    <!-- Dropzone за качване на изображения -->
-    <form action="{{ path('admin_property_image_upload', {'id': property.id}) }}" class="dropzone" id="propertyImages">
-        <div class="dz-message" data-dz-message>
-            <span>Пуснете файлове тук или кликнете за да качите</span>
-            <span class="note">(Позволени формати: JPG, PNG, GIF, WEBP. Максимален размер: 5MB)</span>
-        </div>
-    </form>
+        <div class="card">
+            <div class="card-body">
+                <form action="{{ path('admin_property_image_upload', {'id': property.id}) }}" class="dropzone" id="propertyImages">
+                    <div class="dz-message" data-dz-message>
+                        <span>Пуснете файлове тук или кликнете за да качите</span>
+                        <span class="note">(Позволени формати: JPG, PNG, GIF, WEBP. Максимален размер: 5MB)</span>
+                    </div>
+                </form>
 
-    <!-- Списък със съществуващи изображения -->
-    <div class="property-images">
-        {% for image in property.images %}
-            <div class="image-card" data-image-id="{{ image.id }}">
-                {% if image.isMain %}
-                    <span class="main-image-badge">Основно</span>
-                {% endif %}
-                <img src="{{ asset('uploads/properties/' ~ image.filename) }}" alt="{{ property.title }}">
-                <div class="image-actions">
-                    {% if not image.isMain %}
-                        <button type="button" class="set-main-image" title="Задай като основно">
-                            <i class="bi bi-star"></i>
-                        </button>
-                    {% endif %}
-                    <button type="button" class="delete-image text-danger" title="Изтрий">
-                        <i class="bi bi-trash"></i>
-                    </button>
+                <div class="property-images">
+                    {% for image in property.images %}
+                        <div class="image-card" data-image-id="{{ image.id }}">
+                            {% if image.isMain %}
+                                <span class="main-image-badge">Основна</span>
+                            {% endif %}
+                            <img src="{{ asset('img/properties/' ~ property.id ~ '/' ~ image.filename) }}" alt="{{ property.titleBg }}">
+                            <div class="image-actions">
+                                {% if not image.isMain %}
+                                    <button type="button" class="set-main-image" title="Задай като основна" 
+                                            onclick="setMainImage({{ property.id }}, {{ image.id }})">
+                                        <i class="bi bi-star"></i>
+                                    </button>
+                                {% endif %}
+                                <button type="button" class="text-danger" title="Изтрий" 
+                                        onclick="deleteImage({{ property.id }}, {{ image.id }})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
-        {% endfor %}
+        </div>
     </div>
 {% endblock %}
 
@@ -121,51 +126,50 @@
                 this.on("success", function(file, response) {
                     if (response.success) {
                         location.reload();
+                    } else {
+                        alert('Грешка при качване на файла: ' + response.error);
                     }
+                });
+                this.on("error", function(file, errorMessage) {
+                    alert('Грешка при качване на файла: ' + errorMessage);
                 });
             }
         };
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Задаване на основно изображение
-            document.querySelectorAll('.set-main-image').forEach(button => {
-                button.addEventListener('click', function() {
-                    const imageId = this.closest('.image-card').dataset.imageId;
-                    fetch(`{{ path('admin_property_image_set_main', {'id': property.id}) }}/${imageId}`, {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            location.reload();
-                        }
-                    });
-                });
+        function setMainImage(propertyId, imageId) {
+            fetch(`/admin/properties/${propertyId}/image/${imageId}/set-main`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Грешка при задаване на основна снимка: ' + data.error);
+                }
             });
+        }
 
-            // Изтриване на изображение
-            document.querySelectorAll('.delete-image').forEach(button => {
-                button.addEventListener('click', function() {
-                    if (confirm('Сигурни ли сте, че искате да изтриете това изображение?')) {
-                        const imageId = this.closest('.image-card').dataset.imageId;
-                        fetch(`{{ path('admin_property_image_delete', {'id': property.id}) }}/${imageId}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                this.closest('.image-card').remove();
-                            }
-                        });
+        function deleteImage(propertyId, imageId) {
+            if (confirm('Сигурни ли сте, че искате да изтриете тази снимка?')) {
+                fetch(`/admin/properties/${propertyId}/delete-image/${imageId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.querySelector(`[data-image-id="${imageId}"]`).remove();
+                    } else {
+                        alert('Грешка при изтриване на снимката: ' + data.error);
                     }
                 });
-            });
-        });
+            }
+        }
     </script>
 {% endblock %} 

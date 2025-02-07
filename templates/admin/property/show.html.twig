@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-md-8">
             {% if property.mainImage %}
-                <img src="{{ asset('uploads/properties/' ~ property.mainImage.filename) }}" 
+                <img src="{{ asset('img/properties/' ~ property.mainImage.filename) }}" 
                      class="img-fluid rounded mb-4" 
                      alt="{{ property.titleBg }}">
             {% endif %}
@@ -81,7 +81,7 @@
                         <div class="row g-2">
                             {% for image in property.images %}
                                 <div class="col-6">
-                                    <img src="{{ asset('uploads/properties/' ~ image.filename) }}" 
+                                    <img src="{{ asset('img/properties/' ~ image.filename) }}" 
                                          class="img-fluid rounded" 
                                          alt="Снимка {{ loop.index }}">
                                 </div>

@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Property;
+use App\Entity\PropertyImage;
 use App\Form\Admin\PropertyType;
 use App\Repository\PropertyRepository;
 use App\Service\FileUploadService;
@@ -77,11 +78,15 @@ class PropertyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->propertyRepository->save($property);
-
-            $this->addFlash('success', 'Имотът беше създаден успешно');
-
-            return $this->redirectToRoute('admin_property_index');
+            try {
+                $this->propertyService->create($property);
+                
+                $this->addFlash('success', 'Имотът беше създаден успешно. Сега можете да добавите снимки.');
+                
+                return $this->redirectToRoute('admin_property_images', ['id' => $property->getId()]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Възникна грешка при създаването на имота: ' . $e->getMessage());
+            }
         }
 
         return $this->render('admin/property/new.html.twig', [
@@ -97,7 +102,7 @@ class PropertyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->propertyRepository->save($property);
+            $this->propertyRepository->save($property, true);
 
             $this->addFlash('success', 'Имотът беше редактиран успешно');
 
@@ -114,8 +119,12 @@ class PropertyController extends AbstractController
     public function delete(Request $request, Property $property): Response
     {
         if ($this->isCsrfTokenValid('delete'.$property->getId(), $request->request->get('_token'))) {
-            $this->propertyRepository->remove($property);
-            $this->addFlash('success', 'Имотът беше изтрит успешно');
+            try {
+                $this->propertyService->delete($property);
+                $this->addFlash('success', 'Имотът беше изтрит успешно');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Възникна грешка при изтриването на имота: ' . $e->getMessage());
+            }
         }
 
         return $this->redirectToRoute('admin_property_index');
@@ -125,7 +134,7 @@ class PropertyController extends AbstractController
     public function toggleFeatured(Property $property): Response
     {
         $property->setIsFeatured(!$property->isFeatured());
-        $this->propertyRepository->save($property);
+        $this->propertyRepository->save($property, true);
 
         return $this->json(['featured' => $property->isFeatured()]);
     }
@@ -134,7 +143,7 @@ class PropertyController extends AbstractController
     public function toggleAvailable(Property $property): Response
     {
         $property->setIsAvailable(!$property->isAvailable());
-        $this->propertyRepository->save($property);
+        $this->propertyRepository->save($property, true);
 
         return $this->json(['available' => $property->isAvailable()]);
     }
@@ -162,11 +171,18 @@ class PropertyController extends AbstractController
     #[Route('/{id}/delete-image/{imageId}', name: 'admin_property_delete_image', methods: ['POST'])]
     public function deleteImage(Property $property, int $imageId): Response
     {
-        $this->propertyService->deleteImage($property, $imageId);
-        
-        return $this->json([
-            'success' => true
-        ]);
+        try {
+            $this->propertyService->deleteImage($property, $imageId);
+            return $this->json([
+                'success' => true,
+                'message' => 'Снимката беше изтрита успешно'
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     #[Route('/{id}/reorder-images', name: 'admin_property_reorder_images', methods: ['POST'])]
@@ -178,5 +194,55 @@ class PropertyController extends AbstractController
         return $this->json([
             'success' => true
         ]);
+    }
+
+    #[Route('/{id}/image/upload', name: 'admin_property_image_upload', methods: ['POST'])]
+    public function uploadImage(Request $request, Property $property): Response
+    {
+        $file = $request->files->get('file');
+        
+        if (!$file) {
+            return $this->json(['success' => false, 'error' => 'No file uploaded'], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            // Използваме PropertyService за качване на снимката
+            $this->propertyService->handleImages($property, [$file]);
+            
+            // Взимаме последно качената снимка
+            $lastImage = $property->getImages()->last();
+            
+            if (!$lastImage) {
+                throw new \Exception('Грешка при запазване на изображението');
+            }
+            
+            return $this->json([
+                'success' => true,
+                'image' => [
+                    'id' => $lastImage->getId(),
+                    'filename' => $lastImage->getFilename(),
+                    'path' => $this->fileUploadService->getPublicPath($lastImage->getFilename(), $property->getId())
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    #[Route('/{id}/image/{imageId}/set-main', name: 'admin_property_image_set_main', methods: ['POST'])]
+    public function setMainImage(Property $property, int $imageId): Response
+    {
+        try {
+            $this->propertyService->setMainImage($property, $imageId);
+            return $this->json(['success' => true]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 } 

@@ -107,24 +107,38 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container mt-5 pt-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">{{ 'nav.home'|trans }}</a></li>
-                <li class="breadcrumb-item"><a href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans }}</a></li>
-                <li class="breadcrumb-item active">{{ property.title }}</li>
-            </ol>
-        </nav>
-
+    <div class="container mt-4">
         <div class="row">
             <div class="col-md-8">
-                <div class="property-images mb-4">
-                    {% if property.mainImage %}
-                        <img src="{{ asset('uploads/properties/' ~ property.mainImage.filename) }}" class="img-fluid rounded" alt="{{ property.title }}">
-                    {% else %}
-                        <img src="{{ asset('images/no-image.jpg') }}" class="img-fluid rounded" alt="No image">
-                    {% endif %}
-                </div>
+                {% if property.images|length > 0 %}
+                    <div id="propertyCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for image in property.images %}
+                                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                    <img src="{{ asset('img/properties/' ~ property.id ~ '/' ~ image.filename) }}" 
+                                         class="d-block w-100" 
+                                         alt="{{ property.title(app.request.locale) }}"
+                                         style="height: 400px; object-fit: cover;">
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% if property.images|length > 1 %}
+                            <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <img src="{{ asset('img/no-image.jpg') }}" 
+                         class="img-fluid mb-4" 
+                         alt="No image"
+                         style="height: 400px; width: 100%; object-fit: cover;">
+                {% endif %}
 
                 <h1 class="mb-4">{{ property.title }}</h1>
 

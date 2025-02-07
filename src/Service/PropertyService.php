@@ -18,17 +18,20 @@ class PropertyService
     private FileUploadService $fileUploadService;
     private EntityManagerInterface $entityManager;
     private SluggerInterface $slugger;
+    private string $uploadDir;
 
     public function __construct(
         PropertyRepository $propertyRepository,
         FileUploadService $fileUploadService,
         EntityManagerInterface $entityManager,
-        SluggerInterface $slugger
+        SluggerInterface $slugger,
+        string $uploadDir
     ) {
         $this->propertyRepository = $propertyRepository;
         $this->fileUploadService = $fileUploadService;
         $this->entityManager = $entityManager;
         $this->slugger = $slugger;
+        $this->uploadDir = $uploadDir;
     }
 
     public function getFeaturedProperties(int $limit = 6): array
@@ -122,33 +125,30 @@ class PropertyService
         // Генериране на slug
         $property->setSlug($this->generateSlug($property));
         
-        // Задаване на timestamp
-        $now = new \DateTimeImmutable();
-        $property->setCreatedAt($now);
-        $property->setUpdatedAt($now);
-
+        // Първо записваме имота за да получим ID
         $this->entityManager->persist($property);
         $this->entityManager->flush();
+
+        // След като имаме ID, създаваме директорията за снимки
+        $propertyDir = $this->uploadDir . '/properties/' . $property->getId();
+        if (!is_dir($propertyDir)) {
+            mkdir($propertyDir, 0777, true);
+            $this->fileUploadService->setFilePermissions($propertyDir);
+        }
     }
 
     public function update(Property $property): void
     {
         // Обновяване на slug ако е променено заглавието
         $property->setSlug($this->generateSlug($property));
-        
-        // Обновяване на timestamp
-        $property->setUpdatedAt(new \DateTimeImmutable());
 
         $this->entityManager->flush();
     }
 
     public function delete(Property $property): void
     {
-        // Изтриване на всички снимки
-        foreach ($property->getImages() as $image) {
-            $this->fileUploadService->remove($image->getPath());
-            $this->entityManager->remove($image);
-        }
+        // Изтриване на всички снимки и директорията на имота
+        $this->fileUploadService->removePropertyDirectory($property->getId());
 
         $this->entityManager->remove($property);
         $this->entityManager->flush();
@@ -159,14 +159,27 @@ class PropertyService
         // Качване на нови снимки
         foreach ($uploadedFiles as $file) {
             if ($file instanceof UploadedFile) {
-                $filename = $this->fileUploadService->upload($file, 'properties');
-                
-                $image = new PropertyImage();
-                $image->setProperty($property);
-                $image->setPath($filename);
-                $image->setIsMain(false);
-                
-                $this->entityManager->persist($image);
+                try {
+                    $filename = $this->fileUploadService->upload($file, 'properties', $property->getId());
+                    
+                    // Намираме последната позиция
+                    $lastPosition = 0;
+                    foreach ($property->getImages() as $existingImage) {
+                        $lastPosition = max($lastPosition, $existingImage->getPosition());
+                    }
+                    
+                    $image = new PropertyImage();
+                    $image->setProperty($property);
+                    $image->setFilename(basename($filename));
+                    $image->setIsMain(false);
+                    $image->setPosition($lastPosition + 1);
+                    
+                    $property->addImage($image);
+                    $this->entityManager->persist($image);
+                    $this->entityManager->flush();
+                } catch (\Exception $e) {
+                    throw new \Exception('Грешка при качване на снимка: ' . $e->getMessage());
+                }
             }
         }
 
@@ -179,10 +192,9 @@ class PropertyService
             $firstImage = $property->getImages()->first();
             if ($firstImage) {
                 $firstImage->setIsMain(true);
+                $this->entityManager->flush();
             }
         }
-
-        $this->entityManager->flush();
     }
 
     public function deleteImage(Property $property, int $imageId): void
@@ -200,7 +212,10 @@ class PropertyService
                 }
             }
 
-            $this->fileUploadService->remove($image->getPath());
+            // Изтриваме физическия файл
+            $this->fileUploadService->remove($image->getFilename(), $property->getId());
+            
+            // Изтриваме записа от базата данни
             $this->entityManager->remove($image);
             $this->entityManager->flush();
         }
@@ -220,17 +235,22 @@ class PropertyService
 
     public function setMainImage(Property $property, int $imageId): void
     {
-        // Премахване на основна снимка от всички снимки
+        // Първо премахваме флага за основна снимка от всички снимки на имота
         foreach ($property->getImages() as $image) {
             $image->setIsMain(false);
         }
 
-        // Задаване на новата основна снимка
-        $mainImage = $this->entityManager->getRepository(PropertyImage::class)->find($imageId);
-        if ($mainImage && $mainImage->getProperty() === $property) {
-            $mainImage->setIsMain(true);
-            $this->entityManager->flush();
+        // Намираме избраната снимка и я задаваме като основна
+        $mainImage = $property->getImages()->filter(function($image) use ($imageId) {
+            return $image->getId() === $imageId;
+        })->first();
+
+        if (!$mainImage) {
+            throw new \Exception('Image not found');
         }
+
+        $mainImage->setIsMain(true);
+        $this->entityManager->flush();
     }
 
     private function generateSlug(Property $property): string
@@ -238,14 +258,14 @@ class PropertyService
         $slug = $this->slugger->slug($property->getTitleBg())->lower();
         
         // Проверка за уникалност на slug
-        $originalSlug = $slug;
+        $originalSlug = $slug->toString();
         $counter = 1;
         
-        while ($this->slugExists($slug, $property->getId())) {
-            $slug = $originalSlug . '-' . $counter++;
+        while ($this->slugExists($originalSlug)) {
+            $originalSlug = $slug->toString() . '-' . $counter++;
         }
         
-        return $slug;
+        return $originalSlug;
     }
 
     private function slugExists(string $slug, ?int $excludeId = null): bool

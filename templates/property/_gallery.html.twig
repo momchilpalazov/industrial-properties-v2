@@ -6,9 +6,9 @@
 <div class="property-gallery">
     <div class="property-main-image-container">
         {% if property.images is not empty %}
-            <a href="{{ vich_uploader_asset(property.images[0], 'imageFile') }}" 
+            <a href="{{ asset('img/properties/' ~ property.images[0].filename) }}" 
                data-fancybox="property-gallery">
-                <img src="{{ vich_uploader_asset(property.images[0], 'imageFile') }}" 
+                <img src="{{ asset('img/properties/' ~ property.images[0].filename) }}" 
                      alt="{{ property.title }}"
                      class="property-main-image">
             </a>
@@ -18,8 +18,8 @@
     <div class="property-thumbnails">
         {% for image in property.images %}
             <div class="property-thumbnail {% if loop.first %}active{% endif %}"
-                 data-large="{{ vich_uploader_asset(image, 'imageFile') }}">
-                <img src="{{ vich_uploader_asset(image, 'imageFile') }}" 
+                 data-large="{{ asset('img/properties/' ~ image.filename) }}">
+                <img src="{{ asset('img/properties/' ~ image.filename) }}" 
                      alt="{{ property.title }} - {{ loop.index }}">
             </div>
         {% endfor %}

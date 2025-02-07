@@ -4,6 +4,8 @@ parameters:
     app.default_locale: 'bg'
     upload_directory: '%kernel.project_dir%/img'
     uploads_directory: '%kernel.project_dir%/img'
+    image.width: 800
+    image.height: 600
 
 services:
     _defaults:
@@ -36,12 +38,15 @@ services:
     App\Service\FileUploadService:
         arguments:
             $uploadDir: '%upload_directory%'
+            $imageWidth: '%image.width%'
+            $imageHeight: '%image.height%'
 
     App\Service\PropertyService:
         arguments:
             $entityManager: '@doctrine.orm.entity_manager'
             $fileUploadService: '@App\Service\FileUploadService'
             $slugger: '@slugger'
+            $uploadDir: '%upload_directory%'
 
     slugger:
         class: Symfony\Component\String\Slugger\AsciiSlugger

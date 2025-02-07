@@ -17,7 +17,7 @@ class PropertyRepository extends ServiceEntityRepository
         parent::__construct($registry, Property::class);
     }
 
-    public function save(Property $property, bool $flush = false): void
+    public function save(Property $property, bool $flush = true): void
     {
         $this->getEntityManager()->persist($property);
 
