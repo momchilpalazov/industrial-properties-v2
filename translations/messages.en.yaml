@@ -27,6 +27,7 @@ property:
     location: 'Location'
     type: 'Type'
     price: 'Price'
+    reference: 'Reference Number'
     description: 'Description'
     view_details: 'View Details'
     similar: 'Similar Properties'
@@ -46,6 +47,7 @@ property:
         phone: 'Phone'
         message: 'Message'
         submit: 'Send Inquiry'
+        send: 'Send Inquiry'
         success: 'Your inquiry has been sent successfully!'
         error: 'An error occurred while sending your inquiry.'
     types:

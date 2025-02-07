@@ -161,6 +161,9 @@ class Property
     #[ORM\Column(type: 'decimal', precision: 11, scale: 8, nullable: true)]
     private ?string $longitude = null;
 
+    #[ORM\Column(length: 20, unique: true)]
+    private ?string $referenceNumber = null;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
@@ -176,6 +179,10 @@ class Property
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
+        
+        if (!$this->referenceNumber) {
+            $this->generateReferenceNumber();
+        }
     }
 
     #[ORM\PreUpdate]
@@ -609,5 +616,34 @@ class Property
     {
         $this->longitude = $longitude;
         return $this;
+    }
+
+    public function getReferenceNumber(): ?string
+    {
+        return $this->referenceNumber;
+    }
+
+    public function setReferenceNumber(string $referenceNumber): self
+    {
+        $this->referenceNumber = $referenceNumber;
+        return $this;
+    }
+
+    private function generateReferenceNumber(): void
+    {
+        // Формат: IP-{ТИП}-{ГОДИНА}{МЕСЕЦ}-{СЛУЧАЕН_КОД}
+        $typeMap = [
+            'industrial_land' => 'IL',
+            'industrial_building' => 'IB',
+            'logistics_center' => 'LC',
+            'warehouse' => 'WH',
+            'production_facility' => 'PF'
+        ];
+
+        $typeCode = $typeMap[$this->type] ?? 'XX';
+        $date = date('ym');
+        $random = strtoupper(substr(uniqid(), -4));
+
+        $this->referenceNumber = "IP-{$typeCode}-{$date}-{$random}";
     }
 } 

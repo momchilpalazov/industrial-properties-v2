@@ -175,6 +175,7 @@
                                 </div>
                             </th>
                             <th style="width: 50px">ID</th>
+                            <th style="width: 150px">Референтен номер</th>
                             <th style="width: 120px">Снимка</th>
                             <th>Заглавие</th>
                             <th>Референция</th>
@@ -195,6 +196,7 @@
                                     </div>
                                 </td>
                                 <td>{{ property.id }}</td>
+                                <td>{{ property.referenceNumber }}</td>
                                 <td>
                                     {% if property.mainImage %}
                                         <img src="{{ asset('img/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}" 

@@ -18,6 +18,14 @@ class PropertyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('referenceNumber', TextType::class, [
+                'label' => 'Референтен номер',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Ще се генерира автоматично ако е празно'
+                ]
+            ])
             ->add('titleBg', TextType::class, [
                 'label' => 'Заглавие (BG)',
                 'attr' => ['class' => 'form-control']

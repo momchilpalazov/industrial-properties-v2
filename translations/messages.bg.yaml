@@ -27,6 +27,7 @@ property:
     location: 'Локация'
     type: 'Тип'
     price: 'Цена'
+    reference: 'Референтен номер'
     description: 'Описание'
     view_details: 'Детайли'
     similar: 'Подобни имоти'
@@ -46,6 +47,7 @@ property:
         phone: 'Телефон'
         message: 'Съобщение'
         submit: 'Изпрати запитване'
+        send: 'Изпрати запитване'
         success: 'Вашето запитване беше изпратено успешно!'
         error: 'Възникна грешка при изпращане на запитването.'
     types:
