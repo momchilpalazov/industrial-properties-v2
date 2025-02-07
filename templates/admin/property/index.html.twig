@@ -98,6 +98,16 @@
 {% endblock %}
 
 {% block body %}
+    <!-- Toast нотификация -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
         <h1 class="h2">Имоти</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
@@ -169,16 +179,15 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead>
                         <tr>
-                            <th style="width: 40px">
+                            <th>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="selectAll">
                                 </div>
                             </th>
-                            <th style="width: 50px">ID</th>
-                            <th style="width: 150px">Референтен номер</th>
-                            <th style="width: 120px">Снимка</th>
+                            <th>ID</th>
+                            <th>Референтен номер</th>
+                            <th>Снимка</th>
                             <th>Заглавие</th>
-                            <th>Референция</th>
                             <th>Категория</th>
                             <th>Цена без ДДС</th>
                             <th>Цена с ДДС</th>
@@ -216,49 +225,33 @@
                                         <i class="bi bi-geo-alt"></i> {{ property.locationBg }}
                                     </small>
                                 </td>
-                                <td>{{ property.id }}</td>
                                 <td>{{ property.type }}</td>
                                 <td>{{ property.price ? property.price|number_format(2, '.', ' ') : '-' }}</td>
                                 <td>{{ property.price ? (property.price * 1.2)|number_format(2, '.', ' ') : '-' }}</td>
                                 <td>{{ property.area ? property.area|number_format(0) : '-' }}</td>
                                 <td>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" role="switch" 
+                                        <input class="form-check-input toggle-active" 
+                                               type="checkbox" 
+                                               role="switch" 
                                                {% if property.isActive %}checked{% endif %}
                                                data-property-id="{{ property.id }}"
-                                               onchange="togglePropertyStatus(this)">
+                                               title="{% if property.isActive %}Деактивиране{% else %}Активиране{% endif %}">
                                     </div>
                                 </td>
-                                <td>
+                                <td style="width: 120px">
                                     <div class="btn-group">
-                                        <a href="{{ path('admin_property_edit', {'id': property.id}) }}" 
-                                           class="btn btn-sm btn-outline-primary"
-                                           title="Редактирай">
+                                        <a href="{{ path('admin_property_edit', {'id': property.id}) }}" class="btn btn-sm btn-primary" title="Редактиране">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <a href="{{ path('admin_property_images', {'id': property.id}) }}" 
-                                           class="btn btn-sm btn-outline-info"
+                                           class="btn btn-sm btn-info" 
                                            title="Снимки">
                                             <i class="bi bi-images"></i>
                                         </a>
-                                        <button type="button" 
-                                                class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false">
-                                            <i class="bi bi-three-dots-vertical"></i>
+                                        <button type="button" class="btn btn-sm btn-danger delete-property" data-id="{{ property.id }}" title="Изтриване">
+                                            <i class="bi bi-trash"></i>
                                         </button>
-                                        <ul class="dropdown-menu dropdown-menu-end">
-                                            <li>
-                                                <form action="{{ path('admin_property_delete', {'id': property.id}) }}" 
-                                                      method="post" 
-                                                      onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този имот?');">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ property.id) }}">
-                                                    <button type="submit" class="dropdown-item text-danger">
-                                                        <i class="bi bi-trash"></i> Изтрий
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        </ul>
                                     </div>
                                 </td>
                             </tr>
@@ -288,65 +281,83 @@
     {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Изчистване на филтрите
-            const clearFilters = document.createElement('button');
-            clearFilters.type = 'button';
-            clearFilters.className = 'btn btn-outline-secondary w-100';
-            clearFilters.innerHTML = '<i class="bi bi-x-lg"></i> Изчисти филтрите';
-            clearFilters.addEventListener('click', function() {
-                window.location.href = '{{ path('admin_property_index') }}';
-            });
-
-            const filterForm = document.querySelector('form');
-            const formRow = filterForm.querySelector('.row');
-            const clearFiltersCol = document.createElement('div');
-            clearFiltersCol.className = 'col-12 mt-2';
-            clearFiltersCol.appendChild(clearFilters);
-            formRow.appendChild(clearFiltersCol);
-
-            // Показване на бутона само ако има активни филтри
-            const hasActiveFilters = [
-                'type',
-                'location',
-                'status'
-            ].some(param => new URLSearchParams(window.location.search).has(param));
-
-            clearFilters.style.display = hasActiveFilters ? 'block' : 'none';
+            console.log('DOM Content Loaded');
 
             // Select All функционалност
             const selectAllCheckbox = document.getElementById('selectAll');
-            const itemCheckboxes = document.querySelectorAll('tbody .form-check-input');
+            if (selectAllCheckbox) {
+                const itemCheckboxes = document.querySelectorAll('tbody .form-check-input');
+                selectAllCheckbox.addEventListener('change', function() {
+                    itemCheckboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                });
+            }
 
-            selectAllCheckbox.addEventListener('change', function() {
-                itemCheckboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
+            // Обработка на статус бутона
+            const statusSwitches = document.querySelectorAll('.toggle-active');
+            console.log('Found status switches:', statusSwitches.length);
+
+            statusSwitches.forEach(function(switchEl) {
+                console.log('Adding event listener to switch:', switchEl);
+                
+                switchEl.addEventListener('change', function(event) {
+                    console.log('Switch changed');
+                    const propertyId = this.getAttribute('data-property-id');
+                    const isActive = this.checked;
+                    console.log('Property ID:', propertyId, 'Is Active:', isActive);
+
+                    fetch(`/admin/properties/${propertyId}/toggle-active`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => {
+                        console.log('Response received:', response);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Data received:', data);
+                        if (data.success) {
+                            // Показваме съобщение
+                            const toast = new bootstrap.Toast(document.getElementById('toast'));
+                            document.querySelector('#toast .toast-body').textContent = data.message;
+                            toast.show();
+                        } else {
+                            this.checked = !isActive;
+                            alert('Възникна грешка при промяна на статуса');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        this.checked = !isActive;
+                        alert('Възникна грешка при промяна на статуса');
+                    });
+                });
+            });
+
+            // Обработка на бутона за изтриване
+            document.querySelectorAll('.delete-property').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (confirm('Сигурни ли сте, че искате да изтриете този имот?')) {
+                        const propertyId = this.dataset.id;
+                        
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = `/admin/properties/${propertyId}`;
+                        
+                        const tokenInput = document.createElement('input');
+                        tokenInput.type = 'hidden';
+                        tokenInput.name = '_token';
+                        tokenInput.value = '{{ csrf_token('delete' ~ property.id) }}';
+                        
+                        form.appendChild(tokenInput);
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
                 });
             });
         });
-
-        function togglePropertyStatus(element) {
-            const propertyId = element.dataset.propertyId;
-            const isActive = element.checked;
-
-            fetch(`/admin/properties/${propertyId}/toggle-active`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({ isActive })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (!data.success) {
-                    element.checked = !isActive;
-                    alert('Възникна грешка при промяна на статуса');
-                }
-            })
-            .catch(error => {
-                element.checked = !isActive;
-                alert('Възникна грешка при промяна на статуса');
-            });
-        }
     </script>
 {% endblock %} 

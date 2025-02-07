@@ -64,4 +64,76 @@ function submitForm(formId, successCallback) {
             }
         });
     });
-} 
+}
+
+// Handle property status toggle
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализираме всички toast елементи
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+    var toastList = toastElList.map(function(toastEl) {
+        return new bootstrap.Toast(toastEl, {
+            autohide: true,
+            delay: 3000
+        });
+    });
+
+    // Обработка на бутона за активиране/деактивиране
+    $(document).on('change', '.toggle-active', function(e) {
+        const button = $(this);
+        const propertyId = button.attr('data-property-id');
+        const isActive = button.prop('checked');
+        const token = $('meta[name="csrf-token"]').attr('content');
+
+        console.log('Toggle button clicked:', {
+            propertyId: propertyId,
+            isActive: isActive,
+            hasToken: !!token
+        });
+
+        if (!propertyId) {
+            console.error('Missing property ID');
+            button.prop('checked', !isActive);
+            alert('Грешка: Липсва ID на имота');
+            return;
+        }
+
+        $.ajax({
+            url: `/admin/properties/${propertyId}/toggle-active`,
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': token,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                console.log('Success response:', response);
+                if (response.success) {
+                    // Показваме съобщение
+                    $('#toast .toast-body').text(response.message);
+                    var toast = bootstrap.Toast.getInstance($('#toast')[0]);
+                    if (!toast) {
+                        toast = new bootstrap.Toast($('#toast')[0]);
+                    }
+                    toast.show();
+                } else {
+                    console.error('Server returned success: false');
+                    button.prop('checked', !isActive);
+                    alert('Възникна грешка при промяна на статуса');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error details:', {
+                    status: status,
+                    error: error,
+                    response: xhr.responseText,
+                    url: `/admin/properties/${propertyId}/toggle-active`,
+                    headers: {
+                        'X-CSRF-TOKEN': token ? 'present' : 'missing',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                button.prop('checked', !isActive);
+                alert('Възникна грешка при промяна на статуса. Моля, проверете конзолата за повече информация.');
+            }
+        });
+    });
+}); 

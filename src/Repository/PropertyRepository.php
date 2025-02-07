@@ -161,10 +161,9 @@ class PropertyRepository extends ServiceEntityRepository
     public function searchByQuery(string $query): array
     {
         return $this->createQueryBuilder('p')
-            ->where('p.title LIKE :query')
-            ->orWhere('p.titleEn LIKE :query')
-            ->orWhere('p.location LIKE :query')
-            ->orWhere('p.type LIKE :query')
+            ->where('p.isActive = :active')
+            ->andWhere('(p.titleBg LIKE :query OR p.titleEn LIKE :query OR p.locationBg LIKE :query OR p.type LIKE :query)')
+            ->setParameter('active', true)
             ->setParameter('query', '%' . $query . '%')
             ->setMaxResults(10)
             ->getQuery()

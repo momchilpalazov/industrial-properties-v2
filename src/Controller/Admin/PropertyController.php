@@ -148,6 +148,19 @@ class PropertyController extends AbstractController
         return $this->json(['available' => $property->isAvailable()]);
     }
 
+    #[Route('/{id}/toggle-active', name: 'admin_property_toggle_active', methods: ['POST'])]
+    public function toggleActive(Property $property): Response
+    {
+        $property->setIsActive(!$property->isActive());
+        $this->propertyRepository->save($property, true);
+
+        return $this->json([
+            'success' => true,
+            'active' => $property->isActive(),
+            'message' => $property->isActive() ? 'Имотът е активиран' : 'Имотът е деактивиран'
+        ]);
+    }
+
     #[Route('/{id}/images', name: 'admin_property_images', methods: ['GET', 'POST'])]
     public function manageImages(Request $request, Property $property): Response
     {

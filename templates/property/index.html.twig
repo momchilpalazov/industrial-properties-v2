@@ -94,37 +94,45 @@
 
             <div class="row">
                 {% for property in properties %}
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100">
-                            {% if property.mainImage %}
-                                <img src="{{ asset('img/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}" 
-                                     class="card-img-top" 
-                                     alt="{{ property.title(app.request.locale) }}"
-                                     style="height: 200px; object-fit: cover;">
-                            {% else %}
-                                <img src="{{ asset('img/no-image.jpg') }}" 
-                                     class="card-img-top" 
-                                     alt="No image"
-                                     style="height: 200px; object-fit: cover;">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title">{{ property.title(app.request.locale) }}</h5>
-                                <p class="card-text">
-                                    <small class="text-muted d-block mb-2">
-                                        <i class="bi bi-upc-scan"></i> {{ property.referenceNumber }}
-                                    </small>
-                                    <small class="text-muted">
-                                        <i class="bi bi-geo-alt"></i> {{ property.location(app.request.locale) }}<br>
-                                        <i class="bi bi-arrows-angle-expand"></i> {{ property.area }} m²<br>
-                                        {% if property.price %}
-                                            <i class="bi bi-tag"></i> {{ property.price|number_format(0, '.', ' ') }} €
-                                        {% endif %}
-                                    </small>
-                                </p>
-                                <a href="{{ path('app_property_show', {id: property.id}) }}" class="btn btn-primary">
-                                    {{ 'property.view_details'|trans }}
-                                </a>
+                    {% if property.isActive %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                {% if property.mainImage %}
+                                    <img src="{{ asset('img/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}" 
+                                         class="card-img-top" 
+                                         alt="{{ property.title(app.request.locale) }}"
+                                         style="height: 200px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{{ asset('img/no-image.jpg') }}" 
+                                         class="card-img-top" 
+                                         alt="No image"
+                                         style="height: 200px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ property.title(app.request.locale) }}</h5>
+                                    <p class="card-text">
+                                        <small class="text-muted d-block mb-2">
+                                            <i class="bi bi-upc-scan"></i> {{ property.referenceNumber }}
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="bi bi-geo-alt"></i> {{ property.location(app.request.locale) }}<br>
+                                            <i class="bi bi-arrows-angle-expand"></i> {{ property.area }} m²<br>
+                                            {% if property.price %}
+                                                <i class="bi bi-tag"></i> {{ property.price|number_format(0, '.', ' ') }} €
+                                            {% endif %}
+                                        </small>
+                                    </p>
+                                    <a href="{{ path('app_property_show', {id: property.id}) }}" class="btn btn-primary">
+                                        {{ 'property.view_details'|trans }}
+                                    </a>
+                                </div>
                             </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            {{ 'properties.list.no_results'|trans }}
                         </div>
                     </div>
                 {% endfor %}

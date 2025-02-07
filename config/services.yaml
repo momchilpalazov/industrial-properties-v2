@@ -48,6 +48,13 @@ services:
             $slugger: '@slugger'
             $uploadDir: '%upload_directory%'
 
+    App\Controller\PropertyController:
+        arguments:
+            $propertyRepository: '@App\Repository\PropertyRepository'
+            $paginator: '@knp_paginator'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $connection: '@doctrine.dbal.default_connection'
+
     slugger:
         class: Symfony\Component\String\Slugger\AsciiSlugger
         arguments: ['%locale%'] 
