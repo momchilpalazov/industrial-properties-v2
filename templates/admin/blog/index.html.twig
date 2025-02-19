@@ -12,12 +12,6 @@
         .blog-card:hover {
             transform: translateY(-5px);
         }
-        .blog-image {
-            height: 200px;
-            object-fit: cover;
-            border-top-left-radius: calc(0.375rem - 1px);
-            border-top-right-radius: calc(0.375rem - 1px);
-        }
         .blog-meta {
             display: flex;
             gap: 1rem;
@@ -96,16 +90,6 @@
         {% for post in posts %}
             <div class="col-md-6 col-lg-4">
                 <div class="card blog-card">
-                    {% if post.image %}
-                        <img src="{{ asset('img/blog/' ~ post.image) }}" 
-                             class="blog-image" 
-                             alt="{{ post.getTitle(app.request.locale) }}">
-                    {% else %}
-                        <img src="{{ asset('img/blog-placeholder.jpg') }}" 
-                             class="blog-image" 
-                             alt="Blog placeholder">
-                    {% endif %}
-
                     <div class="blog-actions">
                         <div class="btn-group">
                             <a href="{{ path('admin_blog_edit', {'id': post.id}) }}" 
@@ -163,20 +147,57 @@
     <div class="d-flex justify-content-center mt-4">
         {{ knp_pagination_render(posts) }}
     </div>
+
+    <!-- Модален прозорец за изтриване -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ 'blog.admin.confirm_delete'|trans }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    {{ 'blog.admin.confirm_delete_message'|trans }}
+                </div>
+                <div class="modal-footer">
+                    <form method="post" id="deleteForm">
+                        <input type="hidden" name="_token" value="">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {{ 'blog.admin.cancel'|trans }}
+                        </button>
+                        <button type="submit" class="btn btn-danger">
+                            {{ 'blog.admin.delete'|trans }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Обработка на статус бутона
-            const publishSwitches = document.querySelectorAll('.toggle-published');
-            publishSwitches.forEach(function(switchEl) {
-                switchEl.addEventListener('change', function() {
-                    const postId = this.getAttribute('data-post-id');
-                    const isPublished = this.checked;
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            const deleteForm = document.getElementById('deleteForm');
+            const tokenInput = deleteForm.querySelector('input[name="_token"]');
 
-                    fetch(`/admin/blog/${postId}/toggle-published`, {
+            // Обработка на бутоните за изтриване
+            document.querySelectorAll('.delete-post').forEach(button => {
+                button.addEventListener('click', function() {
+                    const postId = this.dataset.id;
+                    deleteForm.action = `{{ path('admin_blog_delete', {'id': 'POST_ID'}) }}`.replace('POST_ID', postId);
+                    tokenInput.value = `{{ csrf_token('delete') }}${postId}`;
+                    deleteModal.show();
+                });
+            });
+
+            // Обработка на превключвателите за публикуване
+            document.querySelectorAll('.toggle-published').forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    const postId = this.dataset.postId;
+                    fetch(`{{ path('admin_blog_toggle_published', {'id': 'POST_ID'}) }}`.replace('POST_ID', postId), {
                         method: 'POST',
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest'
@@ -185,47 +206,17 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            const toast = new bootstrap.Toast(document.getElementById('toast'));
-                            document.querySelector('#toast .toast-body').textContent = data.message;
-                            toast.show();
-
-                            // Обновяваме статус баджа
-                            const statusBadge = this.closest('.card').querySelector('.blog-status');
-                            statusBadge.classList.toggle('status-published');
-                            statusBadge.classList.toggle('status-draft');
-                            statusBadge.textContent = isPublished ? 'Публикувана' : 'Чернова';
-                        } else {
-                            this.checked = !isPublished;
-                            alert('Възникна грешка при промяна на статуса');
+                            const status = this.closest('.card').querySelector('.blog-status');
+                            status.textContent = data.published ? '{{ 'blog.admin.published'|trans }}' : '{{ 'blog.admin.draft'|trans }}';
+                            status.classList.toggle('status-published');
+                            status.classList.toggle('status-draft');
+                            this.title = data.published ? 'Скрий' : 'Публикувай';
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        this.checked = !isPublished;
-                        alert('Възникна грешка при промяна на статуса');
+                        this.checked = !this.checked;
                     });
-                });
-            });
-
-            // Обработка на бутона за изтриване
-            document.querySelectorAll('.delete-post').forEach(button => {
-                button.addEventListener('click', function() {
-                    if (confirm('{{ 'blog.admin.confirm_delete'|trans }}')) {
-                        const postId = this.dataset.id;
-                        
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = `/admin/blog/${postId}`;
-                        
-                        const tokenInput = document.createElement('input');
-                        tokenInput.type = 'hidden';
-                        tokenInput.name = '_token';
-                        tokenInput.value = '{{ csrf_token('delete') }}';
-                        
-                        form.appendChild(tokenInput);
-                        document.body.appendChild(form);
-                        form.submit();
-                    }
                 });
             });
         });

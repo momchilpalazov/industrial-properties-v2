@@ -62,9 +62,14 @@ class BlogController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Уверяваме се, че slug е генериран
-            if (empty($post->getSlug())) {
-                $post->updateSlug();
+            // Генерираме slug преди записване
+            $post->updateSlug();
+            
+            // Проверяваме дали slug е уникален
+            $existingPost = $this->blogPostRepository->findOneBy(['slug' => $post->getSlug()]);
+            if ($existingPost) {
+                // Ако съществува, добавяме уникален идентификатор
+                $post->setSlug($post->getSlug() . '-' . uniqid());
             }
 
             $this->blogPostRepository->save($post);
@@ -87,6 +92,16 @@ class BlogController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Генерираме slug преди записване
+            $post->updateSlug();
+            
+            // Проверяваме дали slug е уникален (изключваме текущия пост)
+            $existingPost = $this->blogPostRepository->findOneBy(['slug' => $post->getSlug()]);
+            if ($existingPost && $existingPost->getId() !== $post->getId()) {
+                // Ако съществува, добавяме уникален идентификатор
+                $post->setSlug($post->getSlug() . '-' . uniqid());
+            }
+
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Статията беше редактирана успешно');
