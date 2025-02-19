@@ -1,53 +1,146 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Нова публикация{% endblock %}
+{% block title %}{{ 'blog.admin.new_post'|trans }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .nav-tabs .nav-link {
+            color: #6c757d;
+        }
+        .nav-tabs .nav-link.active {
+            color: var(--bs-primary);
+            font-weight: 500;
+        }
+        .tab-content {
+            padding: 1.5rem;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2">Нова публикация</h1>
+        <h1 class="h2">{{ 'blog.admin.new_post'|trans }}</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="{{ path('admin_blog_index') }}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Назад
+                <i class="bi bi-arrow-left"></i> {{ 'blog.admin.cancel'|trans }}
             </a>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+        <!-- Навигация между езиците -->
+        <ul class="nav nav-tabs mb-3" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" 
+                        id="bulgarian-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#bulgarian" 
+                        type="button" 
+                        role="tab">
+                    Български
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" 
+                        id="english-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#english" 
+                        type="button" 
+                        role="tab">
+                    English
+                </button>
+            </li>
+        </ul>
+
+        <!-- Съдържание на табовете -->
+        <div class="tab-content">
+            <!-- Български -->
+            <div class="tab-pane fade show active" id="bulgarian" role="tabpanel">
                 <div class="row">
                     <div class="col-md-8">
-                        {{ form_row(form.title) }}
-                        {{ form_row(form.content) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.language) }}
-                        {{ form_row(form.status) }}
+                        {{ form_row(form.titleBg) }}
+                        {{ form_row(form.excerptBg) }}
+                        {{ form_row(form.contentBg) }}
                     </div>
                 </div>
+            </div>
 
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-lg"></i> Създай
-                    </button>
+            <!-- English -->
+            <div class="tab-pane fade" id="english" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form_row(form.titleEn) }}
+                        {{ form_row(form.excerptEn) }}
+                        {{ form_row(form.contentEn) }}
+                    </div>
                 </div>
-            {{ form_end(form) }}
+            </div>
         </div>
-    </div>
+
+        <!-- Общи настройки -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                {{ form_row(form.category) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(form.publishedAt) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(form.isPublished) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(form.language) }}
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">
+                {{ 'blog.admin.save'|trans }}
+            </button>
+            <a href="{{ path('admin_blog_index') }}" class="btn btn-outline-secondary">
+                {{ 'blog.admin.cancel'|trans }}
+            </a>
+        </div>
+    {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            ClassicEditor
-                .create(document.querySelector('#blog_post_content'), {
-                    toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
-                    language: document.querySelector('#blog_post_language').value
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            // Инициализация на CKEditor
+            document.querySelectorAll('.ckeditor').forEach(function(element) {
+                ClassicEditor
+                    .create(element, {
+                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+                        heading: {
+                            options: [
+                                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                            ]
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
+
+            // Валидация на формата
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
         });
     </script>
 {% endblock %} 

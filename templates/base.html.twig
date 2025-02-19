@@ -14,6 +14,50 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{{ asset('css/style.css') }}?v=1.0.1" rel="stylesheet">
+    <style>
+        .footer {
+            background-color: #212529;
+            color: #fff;
+            padding: 3rem 0;
+            margin-top: 3rem;
+        }
+        .footer h5 {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        .footer .list-unstyled li {
+            margin-bottom: 0.5rem;
+        }
+        .footer .list-unstyled a {
+            color: #fff !important;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer .list-unstyled a:hover {
+            color: #0d6efd !important;
+        }
+        .footer .contact-info li {
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        .footer .contact-info i {
+            margin-right: 0.5rem;
+            color: #0d6efd;
+        }
+        .footer .social-links a {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #fff;
+            transition: color 0.3s;
+        }
+        .footer .social-links a:hover {
+            color: #0d6efd;
+        }
+        .footer hr {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
@@ -33,6 +77,14 @@
                     <li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') starts with 'app_property' %}active{% endif %}" 
                            href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'app_services' %}active{% endif %}" 
+                           href="{{ path('app_services') }}">{{ 'nav.services'|trans }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') starts with 'app_blog' %}active{% endif %}" 
+                           href="{{ path('app_blog_index') }}">{{ 'nav.blog'|trans }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') == 'app_about' %}active{% endif %}" 
@@ -67,30 +119,30 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer mt-auto py-3 bg-dark text-light">
+    <footer class="footer">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
                     <h5>Industrial Properties</h5>
-                    <p class="text-muted">{{ footer_settings.description|default('Вашият надежден партньор в индустриалните имоти') }}</p>
+                    <p>{{ footer_settings.description|default('Вашият надежден партньор в индустриалните имоти') }}</p>
                     <div class="social-links mt-3">
                         {% if footer_settings.social_links.facebook|default %}
-                            <a href="{{ footer_settings.social_links.facebook }}" class="text-light me-3" target="_blank">
+                            <a href="{{ footer_settings.social_links.facebook }}" target="_blank">
                                 <i class="bi bi-facebook"></i>
                             </a>
                         {% endif %}
                         {% if footer_settings.social_links.linkedin|default %}
-                            <a href="{{ footer_settings.social_links.linkedin }}" class="text-light me-3" target="_blank">
+                            <a href="{{ footer_settings.social_links.linkedin }}" target="_blank">
                                 <i class="bi bi-linkedin"></i>
                             </a>
                         {% endif %}
                         {% if footer_settings.social_links.instagram|default %}
-                            <a href="{{ footer_settings.social_links.instagram }}" class="text-light me-3" target="_blank">
+                            <a href="{{ footer_settings.social_links.instagram }}" target="_blank">
                                 <i class="bi bi-instagram"></i>
                             </a>
                         {% endif %}
                         {% if footer_settings.social_links.youtube|default %}
-                            <a href="{{ footer_settings.social_links.youtube }}" class="text-light" target="_blank">
+                            <a href="{{ footer_settings.social_links.youtube }}" target="_blank">
                                 <i class="bi bi-youtube"></i>
                             </a>
                         {% endif %}
@@ -99,15 +151,15 @@
                 <div class="col-md-4">
                     <h5>{{ 'footer.quick_links'|trans }}</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ path('app_home') }}" class="text-muted">{{ 'nav.home'|trans }}</a></li>
-                        <li><a href="{{ path('app_property_index') }}" class="text-muted">{{ 'nav.properties'|trans }}</a></li>
-                        <li><a href="{{ path('app_about') }}" class="text-muted">{{ 'nav.about'|trans }}</a></li>
-                        <li><a href="{{ path('app_contact') }}" class="text-muted">{{ 'nav.contact'|trans }}</a></li>
+                        <li><a href="{{ path('app_home') }}">{{ 'nav.home'|trans }}</a></li>
+                        <li><a href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans }}</a></li>
+                        <li><a href="{{ path('app_about') }}">{{ 'nav.about'|trans }}</a></li>
+                        <li><a href="{{ path('app_contact') }}">{{ 'nav.contact'|trans }}</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h5>{{ 'footer.contact_us'|trans }}</h5>
-                    <ul class="list-unstyled text-muted">
+                    <ul class="list-unstyled contact-info">
                         <li><i class="bi bi-geo-alt"></i> {{ footer_settings.address|default('София, България') }}</li>
                         <li><i class="bi bi-telephone"></i> {{ footer_settings.phone|default('+359 2 123 4567') }}</li>
                         <li><i class="bi bi-envelope"></i> {{ footer_settings.email|default('office@industrial-properties.bg') }}</li>

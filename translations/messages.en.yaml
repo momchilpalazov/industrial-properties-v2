@@ -5,6 +5,7 @@ app:
 nav:
     home: 'Home'
     properties: 'Properties'
+    services: 'Services'
     about: 'About'
     contact: 'Contact'
     language: 'Language'
@@ -162,4 +163,38 @@ form:
         min_price: 'Minimum price'
         max_price: 'Maximum price'
         min_area: 'Minimum area'
-        max_area: 'Maximum area' 
+        max_area: 'Maximum area'
+
+services:
+    page_title: 'Our Services'
+    hero:
+        title: 'Our Services'
+        subtitle: 'We offer a complete range of industrial property services'
+    section:
+        title: 'How We Can Help'
+        subtitle: 'Our team of experts is ready to assist you at every stage of managing your industrial properties'
+    contact_button: 'Contact Us'
+    market_analysis:
+        title: 'Market Analysis'
+        description: 'In-depth analysis of the industrial property market, trends, and investment opportunities'
+    property_management:
+        title: 'Property Management'
+        description: 'Comprehensive management of your industrial properties, including maintenance and optimization'
+    cost_optimization:
+        title: 'Cost Optimization'
+        description: 'Analysis and optimization of operational costs for maximum efficiency'
+    legal:
+        title: 'Legal Services'
+        description: 'Legal assistance with industrial property transactions, contracts, and documentation'
+    hr:
+        title: 'HR Services'
+        description: 'Professional recruitment of qualified personnel for your industrial facilities'
+    international:
+        title: 'International Clients'
+        description: 'Specialized services for international clients, including language support'
+    financial:
+        title: 'Financial Consulting'
+        description: 'Expert financial consulting for optimizing investments in industrial properties'
+    consulting:
+        title: 'Business Consulting'
+        description: 'Strategic consulting for developing and optimizing your business' 

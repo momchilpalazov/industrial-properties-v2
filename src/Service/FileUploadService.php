@@ -10,14 +10,22 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class FileUploadService
 {
-    private ImageManager $imageManager;
+    private $uploadDir;
+    private $imageWidth;
+    private $imageHeight;
+    private $slugger;
+    private $imageManager;
 
     public function __construct(
-        private string $uploadDir,
-        private SluggerInterface $slugger,
-        private int $imageWidth = 800,
-        private int $imageHeight = 600
+        string $uploadDir,
+        int $imageWidth,
+        int $imageHeight,
+        SluggerInterface $slugger
     ) {
+        $this->uploadDir = $uploadDir;
+        $this->imageWidth = $imageWidth;
+        $this->imageHeight = $imageHeight;
+        $this->slugger = $slugger;
         $this->imageManager = new ImageManager(new Driver());
     }
 
@@ -32,73 +40,45 @@ class FileUploadService
         $image->save($path, quality: 80);
     }
 
-    public function upload(UploadedFile $file, string $subdirectory = '', ?int $propertyId = null): string
+    public function upload(UploadedFile $file, string $subdirectory = ''): string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
         $fileName = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
 
-        // Конструираме пътя спрямо propertyId
-        $relativePath = 'properties';
-        if ($propertyId) {
-            $relativePath .= '/' . $propertyId;
+        $targetDirectory = $this->uploadDir;
+        if ($subdirectory) {
+            $targetDirectory .= '/' . trim($subdirectory, '/');
         }
-
-        $targetDirectory = $this->getTargetDirectory($relativePath);
-        $targetPath = $targetDirectory . '/' . $fileName;
 
         try {
-            // Преоразмеряваме изображението преди да го преместим
-            if (in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/gif', 'image/webp'])) {
-                // Създаваме временно копие на файла
-                $tempPath = $file->getPathname();
-                $image = $this->imageManager->read($tempPath);
-                $image->cover($this->imageWidth, $this->imageHeight);
-                
-                // Запазваме преоразмереното изображение директно в целевата директория
-                $image->save($targetPath, quality: 80);
-            } else {
-                // Ако не е изображение, просто го преместваме
-                $file->move($targetDirectory, $fileName);
+            $file->move($targetDirectory, $fileName);
+
+            // Оптимизиране на изображението
+            if (in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/webp'])) {
+                $this->resizeImage($targetDirectory . '/' . $fileName);
             }
-            
-            // След качване на файла, задаваме правилните права
-            $this->setFilePermissions($targetPath);
-            
         } catch (FileException $e) {
-            throw new \Exception('Възникна грешка при качването на файла: ' . $e->getMessage());
+            throw new FileException('Възникна грешка при качването на файла');
         }
 
-        return $propertyId ? $propertyId . '/' . $fileName : $fileName;
+        return $fileName;
     }
 
-    public function remove(string $filename, ?int $propertyId = null): void
+    public function remove(string $filename, string $subdirectory = ''): bool
     {
-        // Вземаме само името на файла, без път
-        $filename = basename($filename);
-        
-        // Конструираме пълния път до файла
-        $filepath = $this->uploadDir . '/properties/';
-        if ($propertyId) {
-            $filepath .= $propertyId . '/';
+        $targetDirectory = $this->uploadDir;
+        if ($subdirectory) {
+            $targetDirectory .= '/' . trim($subdirectory, '/');
         }
-        $filepath .= $filename;
-        
+
+        $filepath = $targetDirectory . '/' . $filename;
+
         if (file_exists($filepath)) {
-            try {
-                unlink($filepath);
-                
-                // Ако директорията е празна и това е директория на имот, изтриваме я
-                if ($propertyId) {
-                    $dir = dirname($filepath);
-                    if (is_dir($dir) && count(scandir($dir)) <= 2) { // . и ..
-                        rmdir($dir);
-                    }
-                }
-            } catch (\Exception $e) {
-                throw new \Exception('Грешка при изтриване на файла: ' . $e->getMessage());
-            }
+            return unlink($filepath);
         }
+
+        return false;
     }
 
     private function getTargetDirectory(string $subdirectory = ''): string

@@ -18,24 +18,23 @@ class BlogService
 
     public function searchPosts(array $criteria): array
     {
-        return $this->blogRepository->findBy($criteria);
+        $language = $criteria['language'] ?? 'bg';
+        unset($criteria['language']);
+        
+        return $this->blogRepository->findBy(array_merge($criteria, ['language' => $language]));
     }
 
-    public function getLatestPosts(int $limit, string $language): array
+    public function getLatestPosts(int $limit, string $language = 'bg'): array
     {
-        return $this->blogRepository->findBy(
-            ['language' => $language, 'status' => 'published'],
-            ['createdAt' => 'DESC'],
-            $limit
-        );
+        return $this->blogRepository->findLatest($limit, $language);
     }
 
-    public function getPostBySlug(string $slug, string $language): ?BlogPost
+    public function getPostBySlug(string $slug, string $language = 'bg'): ?BlogPost
     {
         return $this->blogRepository->findOneBy([
             'slug' => $slug,
             'language' => $language,
-            'status' => 'published'
+            'isPublished' => true
         ]);
     }
 
@@ -45,10 +44,10 @@ class BlogService
         $this->blogRepository->save($post);
     }
 
-    public function getPopularPosts(string $language, int $limit = 5): array
+    public function getPopularPosts(string $language = 'bg', int $limit = 5): array
     {
         return $this->blogRepository->findBy(
-            ['language' => $language, 'status' => 'published'],
+            ['language' => $language, 'isPublished' => true],
             ['views' => 'DESC'],
             $limit
         );

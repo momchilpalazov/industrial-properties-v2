@@ -1,196 +1,256 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ post.title }} - Industrial Properties{% endblock %}
+{% block title %}{{ post.title(app.request.locale) }}{% endblock %}
 
 {% block stylesheets %}
-<style>
-    .blog-header-image {
-        height: 400px;
-        object-fit: cover;
-        width: 100%;
-        border-radius: 8px;
-    }
-    .blog-meta {
-        font-size: 0.9rem;
-    }
-    .blog-content {
-        font-size: 1.1rem;
-        line-height: 1.8;
-    }
-    .blog-content img {
-        max-width: 100%;
-        height: auto;
-        margin: 2rem 0;
-        border-radius: 8px;
-    }
-    .blog-content h2,
-    .blog-content h3 {
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-    }
-    .blog-content p {
-        margin-bottom: 1.5rem;
-    }
-    .share-buttons {
-        display: flex;
-        gap: 1rem;
-    }
-    .share-button {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        text-decoration: none;
-        transition: opacity 0.3s ease;
-    }
-    .share-button:hover {
-        opacity: 0.8;
-    }
-    .share-facebook { background-color: #3b5998; }
-    .share-twitter { background-color: #1da1f2; }
-    .share-linkedin { background-color: #0077b5; }
-</style>
+    {{ parent() }}
+    <style>
+        .blog-header {
+            background: #f8f9fa;
+            padding: 2rem 0;
+            margin-top: 56px;
+        }
+
+        .blog-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .blog-meta {
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+
+        .blog-meta span {
+            margin-right: 1.5rem;
+        }
+
+        .blog-meta i {
+            margin-right: 0.5rem;
+        }
+
+        .blog-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #212529;
+        }
+
+        .blog-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .blog-content h2,
+        .blog-content h3 {
+            margin: 2rem 0 1rem;
+        }
+
+        .blog-sidebar {
+            position: sticky;
+            top: 6rem;
+        }
+
+        .blog-sidebar .card {
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            margin-bottom: 2rem;
+        }
+
+        .blog-sidebar .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .latest-post {
+            display: flex;
+            align-items: start;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .latest-post:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .latest-post-content {
+            flex: 1;
+        }
+
+        .latest-post-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .latest-post-date {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .share-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .share-button:hover {
+            opacity: 0.9;
+            color: white;
+        }
+
+        .share-button i {
+            margin-right: 0.5rem;
+        }
+
+        .share-facebook {
+            background-color: #1877f2;
+        }
+
+        .share-linkedin {
+            background-color: #0077b5;
+        }
+
+        .share-twitter {
+            background-color: #1da1f2;
+        }
+
+        @media (max-width: 768px) {
+            .blog-title {
+                font-size: 2rem;
+            }
+
+            .blog-content {
+                font-size: 1rem;
+            }
+
+            .blog-sidebar {
+                margin-top: 3rem;
+            }
+        }
+    </style>
 {% endblock %}
 
-{% block content %}
-<div class="container-fluid px-4 py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <!-- Заглавие и мета информация -->
-            <h1 class="mb-3">{{ post.title }}</h1>
-            <div class="blog-meta text-muted mb-4">
-                <span class="me-3">
-                    <i class="fas fa-calendar-alt me-2"></i>
-                    {{ post.createdAt|date('d.m.Y') }}
-                </span>
-                {% if post.author %}
-                    <span class="me-3">
-                        <i class="fas fa-user me-2"></i>
-                        {{ post.author }}
-                    </span>
-                {% endif %}
-                {% if post.category %}
-                    <span>
-                        <i class="fas fa-folder me-2"></i>
-                        {{ post.category }}
-                    </span>
-                {% endif %}
-            </div>
-
-            <!-- Главна снимка -->
-            {% if post.image %}
-                <img src="{{ post.image }}" 
-                     alt="{{ post.title }}"
-                     class="blog-header-image mb-4">
-            {% endif %}
-
-            <!-- Съдържание -->
-            <div class="blog-content">
-                {{ post.content|raw }}
-            </div>
-
-            <!-- Споделяне -->
-            <div class="mt-5">
-                <h5 class="mb-3">{{ translations.blog.share }}</h5>
-                <div class="share-buttons">
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ app.request.uri|url_encode }}" 
-                       target="_blank"
-                       class="share-button share-facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="https://twitter.com/intent/tweet?url={{ app.request.uri|url_encode }}&text={{ post.title|url_encode }}" 
-                       target="_blank"
-                       class="share-button share-twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ app.request.uri|url_encode }}&title={{ post.title|url_encode }}" 
-                       target="_blank"
-                       class="share-button share-linkedin">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
+{% block body %}
+    <!-- Blog Header -->
+    <header class="blog-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="blog-title">{{ post.title(app.request.locale) }}</h1>
+                    <div class="blog-meta">
+                        <span>
+                            <i class="bi bi-calendar"></i>
+                            {{ post.publishedAt|date('d.m.Y') }}
+                        </span>
+                        <span>
+                            <i class="bi bi-folder"></i>
+                            {{ categories[post.category]|trans }}
+                        </span>
+                    </div>
                 </div>
             </div>
+        </div>
+    </header>
 
-            <!-- Подобни постове -->
-            {% if related_posts|length > 0 %}
-            <div class="mt-5">
-                <h3 class="mb-4">{{ translations.blog.related_posts }}</h3>
-                <div class="row g-4">
-                    {% for related in related_posts %}
-                        <div class="col-md-6">
-                            <div class="card h-100 shadow-sm">
-                                {% if related.image %}
-                                    <img src="{{ related.image }}" 
-                                         class="card-img-top" 
-                                         alt="{{ related.title }}"
-                                         style="height: 200px; object-fit: cover;">
-                                {% endif %}
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ related.title }}</h5>
-                                    <p class="card-text text-muted">
-                                        {{ related.excerpt }}
-                                    </p>
-                                    <a href="{{ path('blog_show', {slug: related.slug}) }}" 
-                                       class="btn btn-outline-primary">
-                                        {{ translations.blog.read_more }}
-                                    </a>
+    <!-- Main Content -->
+    <main class="py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Blog Content -->
+                <div class="col-lg-8">
+                    <article class="blog-content">
+                        {{ post.content(app.request.locale)|raw }}
+                    </article>
+
+                    <!-- Share Buttons -->
+                    <div class="mt-5">
+                        <h3>{{ 'blog.meta.share'|trans }}</h3>
+                        <div class="share-buttons">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ url('app_blog_show', {'slug': post.slug})|url_encode }}" 
+                               class="share-button share-facebook" 
+                               target="_blank">
+                                <i class="bi bi-facebook"></i>
+                                {{ 'blog.social.facebook'|trans }}
+                            </a>
+                            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ url('app_blog_show', {'slug': post.slug})|url_encode }}&title={{ post.title(app.request.locale)|url_encode }}" 
+                               class="share-button share-linkedin" 
+                               target="_blank">
+                                <i class="bi bi-linkedin"></i>
+                                {{ 'blog.social.linkedin'|trans }}
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url={{ url('app_blog_show', {'slug': post.slug})|url_encode }}&text={{ post.title(app.request.locale)|url_encode }}" 
+                               class="share-button share-twitter" 
+                               target="_blank">
+                                <i class="bi bi-twitter"></i>
+                                {{ 'blog.social.twitter'|trans }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <aside class="blog-sidebar">
+                        <!-- Latest Posts -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">{{ 'blog.latest_posts'|trans }}</h3>
+                                {% for latestPost in latestPosts %}
+                                    {% if latestPost.id != post.id %}
+                                        <div class="latest-post">
+                                            <div class="latest-post-content">
+                                                <a href="{{ path('app_blog_show', {'slug': latestPost.slug}) }}" 
+                                                   class="latest-post-title text-decoration-none text-dark">
+                                                    {{ latestPost.title(app.request.locale) }}
+                                                </a>
+                                                <div class="latest-post-date">
+                                                    {{ latestPost.publishedAt|date('d.m.Y') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Categories -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">{{ 'blog.categories.all'|trans }}</h3>
+                                <div class="list-group list-group-flush">
+                                    {% for key, label in categories %}
+                                        <a href="{{ path('app_blog_index', {'category': key}) }}" 
+                                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            {{ label|trans }}
+                                            <span class="badge bg-primary rounded-pill">
+                                                {# TODO: Add count of posts in category #}
+                                                0
+                                            </span>
+                                        </a>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
+                    </aside>
                 </div>
             </div>
-            {% endif %}
         </div>
-
-        <!-- Странична лента -->
-        <div class="col-lg-4">
-            <!-- Категории -->
-            {% if categories|length > 0 %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">{{ translations.blog.categories }}</h5>
-                    <ul class="list-unstyled mb-0">
-                        {% for category in categories %}
-                            <li class="mb-2">
-                                <a href="{{ path('blog_index', {category: category.slug}) }}" 
-                                   class="text-decoration-none">
-                                    {{ category.name }}
-                                    <span class="badge bg-secondary float-end">
-                                        {{ category.count }}
-                                    </span>
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Последни постове -->
-            {% if latest_posts|length > 0 %}
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">{{ translations.blog.latest_posts }}</h5>
-                    {% for latest in latest_posts %}
-                        <div class="mb-3 {% if not loop.last %}border-bottom pb-3{% endif %}">
-                            <a href="{{ path('blog_show', {slug: latest.slug}) }}" 
-                               class="text-decoration-none">
-                                <h6 class="mb-1">{{ latest.title }}</h6>
-                            </a>
-                            <small class="text-muted">
-                                <i class="fas fa-calendar-alt me-2"></i>
-                                {{ latest.createdAt|date('d.m.Y') }}
-                            </small>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-</div>
+    </main>
 {% endblock %} 
