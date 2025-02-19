@@ -9,6 +9,9 @@ nav:
     about: 'About'
     contact: 'Contact'
     language: 'Language'
+    faq: 'FAQ'
+    admin:
+        faq: FAQ - Frequently Asked Questions
 
 footer:
     description: 'Your reliable partner in industrial properties'
@@ -197,4 +200,31 @@ services:
         description: 'Expert financial consulting for optimizing investments in industrial properties'
     consulting:
         title: 'Business Consulting'
-        description: 'Strategic consulting for developing and optimizing your business' 
+        description: 'Strategic consulting for developing and optimizing your business'
+
+faq:
+    title: Frequently Asked Questions
+    subtitle: Answers to the most common questions that will help you make an informed decision.
+    categories:
+        all: All Questions
+        general: General Questions
+        property_info: Property Information
+        legal: Legal Questions
+        rent_sale: Rent and Sale Conditions
+    search:
+        placeholder: Search questions...
+        submit: Search
+        no_results: No questions found
+    admin:
+        title: Frequently Asked Questions
+        new: New Question
+        edit: Edit Question
+        save: Save
+        cancel: Cancel
+        delete: Delete
+        confirm_delete: Delete Confirmation
+        confirm_delete_message: Are you sure you want to delete this question?
+        active: Active
+        inactive: Inactive
+        reorder: Reorder
+        no_items: No questions found
