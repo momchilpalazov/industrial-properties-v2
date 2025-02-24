@@ -156,10 +156,19 @@
                     <select name="status" id="status" class="form-select">
                         <option value="">Всички</option>
                         <option value="available" {% if app.request.query.get('status') == 'available' %}selected{% endif %}>
-                            Свободен
+                            {{ 'property.status.available'|trans }}
                         </option>
-                        <option value="unavailable" {% if app.request.query.get('status') == 'unavailable' %}selected{% endif %}>
-                            Зает
+                        <option value="sold" {% if app.request.query.get('status') == 'sold' %}selected{% endif %}>
+                            {{ 'property.status.sold'|trans }}
+                        </option>
+                        <option value="reserved" {% if app.request.query.get('status') == 'reserved' %}selected{% endif %}>
+                            {{ 'property.status.reserved'|trans }}
+                        </option>
+                        <option value="rented" {% if app.request.query.get('status') == 'rented' %}selected{% endif %}>
+                            {{ 'property.status.rented'|trans }}
+                        </option>
+                        <option value="pending" {% if app.request.query.get('status') == 'pending' %}selected{% endif %}>
+                            {{ 'property.status.pending'|trans }}
                         </option>
                     </select>
                 </div>

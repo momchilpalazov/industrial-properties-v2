@@ -103,6 +103,24 @@
         .property-location h4 {
             margin-bottom: 1rem;
         }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .status-icon {
+            display: inline-block;
+            animation: pulse 2s infinite ease-in-out;
+        }
     </style>
 {% endblock %}
 
@@ -148,6 +166,19 @@
                             <p><i class="bi bi-upc-scan"></i> <strong>{{ 'property.reference'|trans }}:</strong> {{ property.referenceNumber }}</p>
                             <p><i class="bi bi-geo-alt"></i> <strong>{{ 'property.location'|trans }}:</strong> {{ property.location }}</p>
                             <p><i class="bi bi-arrows-angle-expand"></i> <strong>{{ 'property.area'|trans }}:</strong> {{ property.area }} m²</p>
+                            <p>
+                                <i class="bi bi-circle-fill status-icon text-{{ property.status == 'available' ? 'success' : 
+                                    property.status == 'sold' ? 'danger' : 
+                                    property.status == 'reserved' ? 'warning' : 
+                                    property.status == 'rented' ? 'info' : 'secondary' }}"></i>
+                                <strong>{{ 'property.status.label'|trans }}:</strong>
+                                <span class="text-{{ property.status == 'available' ? 'success' : 
+                                    property.status == 'sold' ? 'danger' : 
+                                    property.status == 'reserved' ? 'warning' : 
+                                    property.status == 'rented' ? 'info' : 'secondary' }}">
+                                    {{ ('property.status.' ~ property.status)|trans }}
+                                </span>
+                            </p>
                         </div>
                         <div class="col-md-6">
                             <p><i class="bi bi-building"></i> <strong>{{ 'property.type'|trans }}:</strong> {{ property.type }}</p>

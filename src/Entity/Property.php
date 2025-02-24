@@ -18,6 +18,12 @@ use App\Entity\PropertyInquiry;
 #[UniqueEntity(fields: ['slug'], message: 'Вече съществува имот с това заглавие')]
 class Property
 {
+    public const STATUS_AVAILABLE = 'available';
+    public const STATUS_SOLD = 'sold';
+    public const STATUS_RESERVED = 'reserved';
+    public const STATUS_RENTED = 'rented';
+    public const STATUS_PENDING = 'pending';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -124,8 +130,8 @@ class Property
     private ?string $type = null;
 
     #[ORM\Column(length: 20)]
-    #[Assert\Choice(choices: ['available', 'sold', 'reserved'], message: 'Моля изберете валиден статус')]
-    private ?string $status = 'available';
+    #[Assert\Choice(choices: ['available', 'sold', 'reserved', 'rented', 'pending'], message: 'Моля изберете валиден статус')]
+    private ?string $status = self::STATUS_AVAILABLE;
 
     #[ORM\Column]
     private bool $isActive = true;

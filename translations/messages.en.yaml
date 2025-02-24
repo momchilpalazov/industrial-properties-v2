@@ -79,7 +79,10 @@ property:
         type: 'Type'
     status:
         available: 'Available'
-        unavailable: 'Unavailable'
+        sold: 'Sold'
+        reserved: 'Reserved'
+        rented: 'Rented'
+        pending: 'Pending Finalization'
     actions:
         view: 'Details'
         contact: 'Inquiry'

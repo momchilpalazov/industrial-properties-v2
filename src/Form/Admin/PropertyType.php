@@ -117,6 +117,17 @@ class PropertyType extends AbstractType
                 ],
                 'attr' => ['class' => 'form-select']
             ])
+            ->add('status', ChoiceType::class, [
+                'label' => 'Статус',
+                'choices' => [
+                    'Свободен' => Property::STATUS_AVAILABLE,
+                    'Продаден' => Property::STATUS_SOLD,
+                    'Резервиран' => Property::STATUS_RESERVED,
+                    'Отдаден под наем' => Property::STATUS_RENTED,
+                    'Очаква финализиране' => Property::STATUS_PENDING
+                ],
+                'attr' => ['class' => 'form-select']
+            ])
             ->add('isActive', CheckboxType::class, [
                 'label' => 'Активен',
                 'required' => false,

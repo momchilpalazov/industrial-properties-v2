@@ -8,7 +8,7 @@ use App\Entity\PropertyImage;
 use App\Entity\PropertyPdf;
 use App\Entity\Contact;
 use App\Entity\User;
-use App\Entity\BlogPost;
+use App\Entity\Blog;
 use App\Entity\PropertyInquiry;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -16,90 +16,10 @@ use Faker\Factory;
 
 class PropertyFixtures extends Fixture
 {
-    private array $propertyImages = [
-        'industrial_land' => [
-            'industrial-land-1.jpg',
-            'industrial-land-2.jpg',
-            'industrial-land-3.jpg'
-        ],
-        'industrial_building' => [
-            'industrial-building-1.jpg',
-            'industrial-building-2.jpg',
-            'industrial-building-3.jpg'
-        ],
-        'logistics_center' => [
-            'logistics-center-1.jpg',
-            'logistics-center-2.jpg',
-            'logistics-center-3.jpg'
-        ],
-        'warehouse' => [
-            'warehouse-1.jpg',
-            'warehouse-2.jpg',
-            'warehouse-3.jpg'
-        ],
-        'production_facility' => [
-            'production-facility-1.jpg',
-            'production-facility-2.jpg',
-            'production-facility-3.jpg'
-        ]
-    ];
-
-    private function ensureDirectoriesExist(): void
-    {
-        $paths = [
-            __DIR__ . '/../../assets/images/properties/',
-            __DIR__ . '/../../public/uploads/properties/'
-        ];
-
-        foreach ($paths as $path) {
-            if (!file_exists($path)) {
-                mkdir($path, 0777, true);
-            }
-        }
-    }
-
-    private function createSampleImage(string $filename, string $type, int $index): void
-    {
-        $assetsPath = __DIR__ . '/../../assets/images/properties/';
-        $publicPath = __DIR__ . '/../../public/uploads/properties/';
-
-        // Create a sample image
-        $width = 800;
-        $height = 600;
-        $image = imagecreatetruecolor($width, $height);
-        
-        // Fill with a random color
-        $color = imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255));
-        imagefill($image, 0, 0, $color);
-        
-        // Add some text
-        $textColor = imagecolorallocate($image, 255, 255, 255);
-        $text = "{$type} #{$index}";
-        imagestring($image, 5, ($width - strlen($text) * 8) / 2, ($height - 16) / 2, $text, $textColor);
-        
-        // Save to assets
-        imagejpeg($image, $assetsPath . $filename);
-        
-        // Copy to public
-        copy($assetsPath . $filename, $publicPath . $filename);
-        
-        imagedestroy($image);
-    }
-
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('bg_BG');
         $faker->addProvider(new Provider\BulgarianProvider($faker));
-
-        // Ensure directories exist
-        $this->ensureDirectoriesExist();
-
-        // Create sample images
-        foreach ($this->propertyImages as $type => $images) {
-            foreach ($images as $index => $filename) {
-                $this->createSampleImage($filename, $type, $index + 1);
-            }
-        }
 
         // Create property statuses
         $statuses = ['available', 'sold', 'reserved'];
@@ -118,7 +38,7 @@ class PropertyFixtures extends Fixture
         $admin->setEmail('admin@example.com')
             ->setName('Admin User')
             ->setRoles(['ROLE_ADMIN'])
-            ->setPassword('$2y$13$FglNBX5tdkg8I28/gXxwce558rQW5oEyUb7AYpAJn5917c8/WeJLm')  // Hashed password for 'admin123'
+            ->setPassword('$2y$13$...')  // Use your password hasher service
             ->setIsActive(true);
         $manager->persist($admin);
 
@@ -164,17 +84,6 @@ class PropertyFixtures extends Fixture
                 ->setYearBuilt($faker->numberBetween(1990, 2023))
                 ->setAvailableFrom(\DateTimeImmutable::createFromMutable($faker->dateTimeBetween('now', '+6 months')));
 
-            // Add images
-            $typeImages = $this->propertyImages[$type];
-            for ($k = 0; $k < count($typeImages); $k++) {
-                $image = new PropertyImage();
-                $image->setFilename($typeImages[$k])
-                    ->setIsMain($k === 0)
-                    ->setPosition($k)
-                    ->setProperty($property);
-                $manager->persist($image);
-            }
-
             // Add features
             for ($j = 0; $j < 5; $j++) {
                 $feature = new PropertyFeature();
@@ -184,6 +93,16 @@ class PropertyFixtures extends Fixture
                     ->setFeatureRu($faker->word())
                     ->setProperty($property);
                 $manager->persist($feature);
+            }
+
+            // Add images
+            for ($k = 0; $k < 3; $k++) {
+                $image = new PropertyImage();
+                $image->setFilename($faker->uuid() . '.jpg')
+                    ->setIsMain($k === 0)
+                    ->setPosition($k)
+                    ->setProperty($property);
+                $manager->persist($image);
             }
 
             // Add PDF files
@@ -202,7 +121,7 @@ class PropertyFixtures extends Fixture
 
         // Create blog posts
         for ($i = 0; $i < 5; $i++) {
-            $blog = new BlogPost();
+            $blog = new Blog();
             $blog->setTitle($faker->sentence())
                 ->setContent($faker->paragraphs(5, true))
                 ->setSlug($faker->slug())

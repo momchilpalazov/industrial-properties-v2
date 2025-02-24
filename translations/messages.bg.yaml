@@ -41,6 +41,13 @@ property:
     contact: 'Свържете се с нас'
     specifications: 'Спецификации'
     created_at: 'Публикуван на'
+    status:
+        label: 'Статус'
+        available: 'Свободен'
+        sold: 'Продаден'
+        reserved: 'Резервиран'
+        rented: 'Отдаден под наем'
+        pending: 'Очаква финализиране'
     share:
         title: 'Сподели'
         copied: 'Линкът е копиран в клипборда'
@@ -78,9 +85,6 @@ property:
         price: 'Цена'
         location: 'Локация'
         type: 'Тип'
-    status:
-        available: 'Свободен'
-        unavailable: 'Зает'
     actions:
         view: 'Детайли'
         contact: 'Запитване'

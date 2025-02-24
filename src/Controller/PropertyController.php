@@ -43,12 +43,18 @@ class PropertyController extends AbstractController
             'min_area' => $request->query->get('min_area'),
             'max_area' => $request->query->get('max_area'),
             'location' => $request->query->get('location'),
+            'status' => $request->query->get('status'),
         ];
 
         // Използваме QueryBuilder вместо директна SQL заявка
         $qb = $this->propertyRepository->createQueryBuilder('p')
             ->where('p.isActive = :active')
             ->setParameter('active', true);
+
+        if (!empty($filters['status'])) {
+            $qb->andWhere('p.status = :status')
+               ->setParameter('status', $filters['status']);
+        }
 
         if (!empty($filters['type'])) {
             $qb->andWhere('p.type = :type')

@@ -39,8 +39,11 @@
                         </div>
                         <div class="col-md-6">
                             <p><strong>Статус:</strong> 
-                                <span class="badge bg-{{ property.status == 'available' ? 'success' : 'warning' }}">
-                                    {{ property.status == 'available' ? 'Свободен' : 'Зает' }}
+                                <span class="badge bg-{{ property.status == 'available' ? 'success' : 
+                                    property.status == 'sold' ? 'danger' : 
+                                    property.status == 'reserved' ? 'warning' : 
+                                    property.status == 'rented' ? 'info' : 'secondary' }}">
+                                    {{ ('property.status.' ~ property.status)|trans }}
                                 </span>
                             </p>
                             {% if property.price %}
