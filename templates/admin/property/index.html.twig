@@ -125,57 +125,38 @@
                     <label for="type" class="form-label">Тип имот</label>
                     <select name="type" id="type" class="form-select">
                         <option value="">Всички</option>
-                        <option value="industrial_land" {% if app.request.query.get('type') == 'industrial_land' %}selected{% endif %}>
-                            Индустриален парцел
-                        </option>
-                        <option value="industrial_building" {% if app.request.query.get('type') == 'industrial_building' %}selected{% endif %}>
-                            Индустриална сграда
-                        </option>
-                        <option value="logistics_center" {% if app.request.query.get('type') == 'logistics_center' %}selected{% endif %}>
-                            Логистичен център
-                        </option>
-                        <option value="warehouse" {% if app.request.query.get('type') == 'warehouse' %}selected{% endif %}>
-                            Склад
-                        </option>
-                        <option value="production_facility" {% if app.request.query.get('type') == 'production_facility' %}selected{% endif %}>
-                            Производствена база
-                        </option>
+                        {% for type in property_types %}
+                            <option value="{{ type.id }}" {% if app.request.query.get('type') == type.id %}selected{% endif %}>
+                                {{ type.name }}
+                            </option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="col-md-3">
                     <label for="location" class="form-label">Локация</label>
-                    <input type="text" 
-                           class="form-control" 
-                           id="location" 
-                           name="location" 
-                           value="{{ app.request.query.get('location') }}"
-                           placeholder="Търси по локация">
+                    <input type="text" name="location" id="location" class="form-control" value="{{ app.request.query.get('location') }}">
                 </div>
                 <div class="col-md-3">
                     <label for="status" class="form-label">Статус</label>
                     <select name="status" id="status" class="form-select">
                         <option value="">Всички</option>
-                        <option value="available" {% if app.request.query.get('status') == 'available' %}selected{% endif %}>
-                            {{ 'property.status.available'|trans }}
-                        </option>
-                        <option value="sold" {% if app.request.query.get('status') == 'sold' %}selected{% endif %}>
-                            {{ 'property.status.sold'|trans }}
-                        </option>
-                        <option value="reserved" {% if app.request.query.get('status') == 'reserved' %}selected{% endif %}>
-                            {{ 'property.status.reserved'|trans }}
-                        </option>
-                        <option value="rented" {% if app.request.query.get('status') == 'rented' %}selected{% endif %}>
-                            {{ 'property.status.rented'|trans }}
-                        </option>
-                        <option value="pending" {% if app.request.query.get('status') == 'pending' %}selected{% endif %}>
-                            {{ 'property.status.pending'|trans }}
-                        </option>
+                        <option value="available" {% if app.request.query.get('status') == 'available' %}selected{% endif %}>Свободен</option>
+                        <option value="sold" {% if app.request.query.get('status') == 'sold' %}selected{% endif %}>Продаден</option>
+                        <option value="reserved" {% if app.request.query.get('status') == 'reserved' %}selected{% endif %}>Резервиран</option>
+                        <option value="rented" {% if app.request.query.get('status') == 'rented' %}selected{% endif %}>Под наем</option>
+                        <option value="pending" {% if app.request.query.get('status') == 'pending' %}selected{% endif %}>В процес</option>
                     </select>
                 </div>
-                <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-search"></i> Търси
-                    </button>
+                <div class="col-md-3">
+                    <label class="form-label">&nbsp;</label>
+                    <div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Търсене
+                        </button>
+                        <a href="{{ path('admin_property_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Изчисти
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>

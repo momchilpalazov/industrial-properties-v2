@@ -2,6 +2,8 @@
 
 namespace App\Form;
 
+use App\Entity\PropertyType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -10,6 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Property;
+use Doctrine\ORM\EntityRepository;
 
 class PropertyFilterType extends AbstractType
 {
@@ -29,50 +32,44 @@ class PropertyFilterType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-select']
             ])
-            ->add('type', ChoiceType::class, [
-                'label' => 'Тип имот',
-                'choices' => [
-                    'Склад' => 'warehouse',
-                    'Производствено помещение' => 'manufacturing',
-                    'Логистичен център' => 'logistics',
-                    'Офис сграда' => 'office',
-                    'Търговски площи' => 'retail',
-                    'Парцел' => 'land'
-                ],
+            ->add('type', EntityType::class, [
+                'class' => PropertyType::class,
+                'choice_label' => 'name',
+                'required' => false,
                 'placeholder' => 'Всички типове',
-                'required' => false
+                'label' => 'Тип имот'
             ])
             ->add('min_price', NumberType::class, [
-                'label' => 'Минимална цена (EUR)',
                 'required' => false,
+                'label' => 'Минимална цена',
                 'attr' => [
                     'placeholder' => 'Минимална цена'
                 ]
             ])
             ->add('max_price', NumberType::class, [
-                'label' => 'Максимална цена (EUR)',
                 'required' => false,
+                'label' => 'Максимална цена',
                 'attr' => [
                     'placeholder' => 'Максимална цена'
                 ]
             ])
             ->add('min_area', NumberType::class, [
-                'label' => 'Минимална площ (кв.м)',
                 'required' => false,
+                'label' => 'Минимална площ',
                 'attr' => [
                     'placeholder' => 'Минимална площ'
                 ]
             ])
             ->add('max_area', NumberType::class, [
-                'label' => 'Максимална площ (кв.м)',
                 'required' => false,
+                'label' => 'Максимална площ',
                 'attr' => [
                     'placeholder' => 'Максимална площ'
                 ]
             ])
             ->add('location', TextType::class, [
-                'label' => 'Локация',
                 'required' => false,
+                'label' => 'Локация',
                 'attr' => [
                     'placeholder' => 'Търсене по локация'
                 ]
@@ -87,7 +84,8 @@ class PropertyFilterType extends AbstractType
                     'Площ (низходящо)' => 'area_desc'
                 ],
                 'placeholder' => 'Изберете подреждане',
-                'required' => false
+                'required' => false,
+                'attr' => ['class' => 'form-select']
             ]);
     }
 

@@ -1,0 +1,61 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Управление на типове имоти{% endblock %}
+
+{% block body %}
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Типове имоти</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-table me-1"></i>
+                        Списък с типове имоти
+                    </div>
+                    <a href="{{ path('admin_property_type_new') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Добави нов тип
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Име</th>
+                            <th>Описание</th>
+                            <th>Брой имоти</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for property_type in property_types %}
+                        <tr>
+                            <td>{{ property_type.id }}</td>
+                            <td>{{ property_type.name }}</td>
+                            <td>{{ property_type.description|default('-') }}</td>
+                            <td>{{ property_type.properties|length }}</td>
+                            <td>
+                                <a href="{{ path('admin_property_type_edit', {'id': property_type.id}) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form method="post" action="{{ path('admin_property_type_delete', {'id': property_type.id}) }}" style="display: inline-block" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този тип имот?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ property_type.id) }}">
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">Няма намерени типове имоти</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

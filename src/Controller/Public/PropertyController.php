@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Public;
 
+use App\Form\PropertyFilterType;
 use App\Repository\PropertyRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,57 +38,58 @@ class PropertyController extends AbstractController
     #[Route('', name: 'index')]
     public function index(Request $request): Response
     {
+        $form = $this->createForm(PropertyFilterType::class);
+        $form->handleRequest($request);
+
         $queryBuilder = $this->propertyRepository->createQueryBuilder('p')
+            ->where('p.isActive = :active')
+            ->setParameter('active', true)
             ->orderBy('p.createdAt', 'DESC');
 
-        // Прилагане на филтрите
-        if ($type = $request->query->get('type')) {
-            $queryBuilder->andWhere('p.type = :type')
-                ->setParameter('type', $type);
-        }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $filters = $form->getData();
 
-        if ($minPrice = $request->query->get('min_price')) {
-            $queryBuilder->andWhere('p.price >= :minPrice')
-                ->setParameter('minPrice', $minPrice);
-        }
+            if (!empty($filters['type'])) {
+                $queryBuilder->andWhere('p.type = :type')
+                    ->setParameter('type', $filters['type']);
+            }
 
-        if ($maxPrice = $request->query->get('max_price')) {
-            $queryBuilder->andWhere('p.price <= :maxPrice')
-                ->setParameter('maxPrice', $maxPrice);
-        }
+            if (!empty($filters['min_price'])) {
+                $queryBuilder->andWhere('p.price >= :minPrice')
+                    ->setParameter('minPrice', $filters['min_price']);
+            }
 
-        if ($minArea = $request->query->get('min_area')) {
-            $queryBuilder->andWhere('p.area >= :minArea')
-                ->setParameter('minArea', $minArea);
-        }
+            if (!empty($filters['max_price'])) {
+                $queryBuilder->andWhere('p.price <= :maxPrice')
+                    ->setParameter('maxPrice', $filters['max_price']);
+            }
 
-        if ($maxArea = $request->query->get('max_area')) {
-            $queryBuilder->andWhere('p.area <= :maxArea')
-                ->setParameter('maxArea', $maxArea);
-        }
+            if (!empty($filters['min_area'])) {
+                $queryBuilder->andWhere('p.area >= :minArea')
+                    ->setParameter('minArea', $filters['min_area']);
+            }
 
-        if ($location = $request->query->get('location')) {
-            $queryBuilder->andWhere('p.location LIKE :location')
-                ->setParameter('location', '%' . $location . '%');
+            if (!empty($filters['max_area'])) {
+                $queryBuilder->andWhere('p.area <= :maxArea')
+                    ->setParameter('maxArea', $filters['max_area']);
+            }
+
+            if (!empty($filters['location'])) {
+                $queryBuilder->andWhere('p.locationBg LIKE :location OR p.locationEn LIKE :location')
+                    ->setParameter('location', '%' . $filters['location'] . '%');
+            }
         }
 
         $pagination = $this->paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
-            9 // брой имоти на страница
+            9
         );
 
         return $this->render('property/index.html.twig', [
             'properties' => $pagination,
             'types' => self::PROPERTY_TYPES,
-            'filters' => [
-                'type' => $request->query->get('type'),
-                'min_price' => $request->query->get('min_price'),
-                'max_price' => $request->query->get('max_price'),
-                'min_area' => $request->query->get('min_area'),
-                'max_area' => $request->query->get('max_area'),
-                'location' => $request->query->get('location'),
-            ]
+            'form' => $form->createView()
         ]);
     }
 
@@ -96,8 +98,8 @@ class PropertyController extends AbstractController
     {
         $property = $this->propertyRepository->find($id);
 
-        if (!$property) {
-            throw $this->createNotFoundException('Property not found');
+        if (!$property || !$property->isActive()) {
+            throw $this->createNotFoundException('Имотът не е намерен');
         }
 
         return $this->render('property/show.html.twig', [

@@ -6,6 +6,7 @@ use App\Entity\Property;
 use App\Entity\PropertyImage;
 use App\Form\Admin\PropertyType;
 use App\Repository\PropertyRepository;
+use App\Repository\PropertyTypeRepository;
 use App\Service\FileUploadService;
 use App\Service\PropertyService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,13 +17,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Knp\Component\Pager\PaginatorInterface;
 
-#[Route('/properties')]
+#[Route('/admin/properties')]
 #[IsGranted('ROLE_ADMIN')]
 class PropertyController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
         private PropertyRepository $propertyRepository,
+        private PropertyTypeRepository $propertyTypeRepository,
         private PropertyService $propertyService,
         private FileUploadService $fileUploadService,
         private PaginatorInterface $paginator
@@ -32,11 +34,12 @@ class PropertyController extends AbstractController
     public function index(Request $request): Response
     {
         $queryBuilder = $this->propertyRepository->createQueryBuilder('p')
+            ->leftJoin('p.type', 'pt')
             ->orderBy('p.createdAt', 'DESC');
 
         // Прилагане на филтрите
         if ($type = $request->query->get('type')) {
-            $queryBuilder->andWhere('p.type = :type')
+            $queryBuilder->andWhere('pt.id = :type')
                 ->setParameter('type', $type);
         }
 
@@ -53,11 +56,12 @@ class PropertyController extends AbstractController
         $pagination = $this->paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
-            9 // брой имоти на страница
+            10
         );
 
         return $this->render('admin/property/index.html.twig', [
             'properties' => $pagination,
+            'property_types' => $this->propertyTypeRepository->findAll()
         ]);
     }
 

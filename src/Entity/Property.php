@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Entity\PropertyPdf;
 use App\Entity\PropertyInquiry;
+use App\Entity\PropertyType;
 
 #[ORM\Entity(repositoryClass: PropertyRepository::class)]
 #[ORM\Table(name: 'properties')]
@@ -121,13 +122,10 @@ class Property
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $availableFrom = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'Моля изберете тип имот')]
-    #[Assert\Choice(
-        choices: ['industrial_land', 'industrial_building', 'logistics_center', 'warehouse', 'production_facility'],
-        message: 'Моля изберете валиден тип имот'
-    )]
-    private ?string $type = null;
+    #[ORM\ManyToOne(targetEntity: PropertyType::class, inversedBy: 'properties')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Моля изберете тип имот')]
+    private ?PropertyType $type = null;
 
     #[ORM\Column(length: 20)]
     #[Assert\Choice(choices: ['available', 'sold', 'reserved', 'rented', 'pending'], message: 'Моля изберете валиден статус')]
@@ -419,12 +417,12 @@ class Property
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): ?PropertyType
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(?PropertyType $type): self
     {
         $this->type = $type;
         return $this;
@@ -646,7 +644,7 @@ class Property
             'production_facility' => 'PF'
         ];
 
-        $typeCode = $typeMap[$this->type] ?? 'XX';
+        $typeCode = $typeMap[$this->type?->getType()] ?? 'XX';
         $date = date('ym');
         $random = strtoupper(substr(uniqid(), -4));
 

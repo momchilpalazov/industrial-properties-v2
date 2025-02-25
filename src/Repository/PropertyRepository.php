@@ -143,10 +143,11 @@ class PropertyRepository extends ServiceEntityRepository
     public function getPropertyTypeStats(): array
     {
         $stats = $this->createQueryBuilder('p')
-            ->select('p.type, COUNT(p.id) as count')
+            ->select('pt.name as type, COUNT(p.id) as count')
+            ->join('p.type', 'pt')
             ->where('p.isActive = :active')
             ->setParameter('active', true)
-            ->groupBy('p.type')
+            ->groupBy('pt.id', 'pt.name')
             ->getQuery()
             ->getResult();
 
@@ -161,8 +162,9 @@ class PropertyRepository extends ServiceEntityRepository
     public function searchByQuery(string $query): array
     {
         return $this->createQueryBuilder('p')
+            ->leftJoin('p.type', 'pt')
             ->where('p.isActive = :active')
-            ->andWhere('(p.titleBg LIKE :query OR p.titleEn LIKE :query OR p.locationBg LIKE :query OR p.type LIKE :query)')
+            ->andWhere('(p.titleBg LIKE :query OR p.titleEn LIKE :query OR p.locationBg LIKE :query OR pt.name LIKE :query)')
             ->setParameter('active', true)
             ->setParameter('query', '%' . $query . '%')
             ->setMaxResults(10)

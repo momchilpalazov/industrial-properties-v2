@@ -103,10 +103,17 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_property' %}active{% endif %}" 
+                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_property' and not app.request.get('_route') starts with 'admin_property_type' %}active{% endif %}" 
                                href="{{ path('admin_property_index') }}">
                                 <i class="bi bi-building"></i>
                                 Имоти
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_property_type' %}active{% endif %}" 
+                               href="{{ path('admin_property_type_index') }}">
+                                <i class="bi bi-tags"></i>
+                                Типове имоти
                             </a>
                         </li>
                         <li class="nav-item">

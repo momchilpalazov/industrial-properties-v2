@@ -3,6 +3,8 @@
 namespace App\Form\Admin;
 
 use App\Entity\Property;
+use App\Entity\PropertyType as PropertyTypeEntity;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -11,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\EntityRepository;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class PropertyType extends AbstractType
@@ -45,36 +48,35 @@ class PropertyType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('descriptionBg', TextareaType::class, [
+            ->add('descriptionBg', CKEditorType::class, [
                 'label' => 'Описание (BG)',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 10
+                'attr' => ['rows' => 5],
+                'config' => [
+                    'language' => 'bg'
                 ]
             ])
-            ->add('descriptionEn', TextareaType::class, [
+            ->add('descriptionEn', CKEditorType::class, [
                 'label' => 'Описание (EN)',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 10
+                'attr' => ['rows' => 5],
+                'config' => [
+                    'language' => 'en'
                 ]
             ])
-            ->add('descriptionDe', TextareaType::class, [
+            ->add('descriptionDe', CKEditorType::class, [
                 'label' => 'Описание (DE)',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 10
+                'attr' => ['rows' => 5],
+                'config' => [
+                    'language' => 'de'
                 ]
             ])
-            ->add('descriptionRu', TextareaType::class, [
+            ->add('descriptionRu', CKEditorType::class, [
                 'label' => 'Описание (RU)',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 10
+                'attr' => ['rows' => 5],
+                'config' => [
+                    'language' => 'ru'
                 ]
             ])
             ->add('locationBg', TextType::class, [
@@ -83,8 +85,8 @@ class PropertyType extends AbstractType
             ])
             ->add('locationEn', TextType::class, [
                 'label' => 'Локация (EN)',
-                'attr' => ['class' => 'form-control'],
-                'required' => false
+                'required' => false,
+                'attr' => ['class' => 'form-control']
             ])
             ->add('locationDe', TextType::class, [
                 'label' => 'Локация (DE)',
@@ -106,15 +108,15 @@ class PropertyType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('type', ChoiceType::class, [
+            ->add('type', EntityType::class, [
+                'class' => PropertyTypeEntity::class,
+                'choice_label' => 'name',
                 'label' => 'Тип имот',
-                'choices' => [
-                    'Индустриален терен' => 'industrial_land',
-                    'Индустриална сграда' => 'industrial_building',
-                    'Логистичен център' => 'logistics_center',
-                    'Склад' => 'warehouse',
-                    'Производствена база' => 'production_facility'
-                ],
+                'placeholder' => 'Изберете тип имот',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('pt')
+                        ->orderBy('pt.name', 'ASC');
+                },
                 'attr' => ['class' => 'form-select']
             ])
             ->add('status', ChoiceType::class, [
@@ -134,9 +136,29 @@ class PropertyType extends AbstractType
                 'attr' => ['class' => 'form-check-input']
             ])
             ->add('isFeatured', CheckboxType::class, [
-                'label' => 'Featured',
+                'label' => 'Избран имот',
                 'required' => false,
                 'attr' => ['class' => 'form-check-input']
+            ])
+            ->add('latitude', NumberType::class, [
+                'label' => 'Географска ширина',
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Пример: 42.6977',
+                    'step' => 'any',
+                    'class' => 'form-control'
+                ],
+                'help' => 'Въведете географската ширина в десетичен формат'
+            ])
+            ->add('longitude', NumberType::class, [
+                'label' => 'Географска дължина',
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Пример: 23.3219',
+                    'step' => 'any',
+                    'class' => 'form-control'
+                ],
+                'help' => 'Въведете географската дължина в десетичен формат'
             ]);
     }
 
@@ -144,6 +166,9 @@ class PropertyType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Property::class,
+            'attr' => [
+                'novalidate' => 'novalidate'
+            ]
         ]);
     }
 } 
