@@ -1,0 +1,143 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Запитване от {{ inquiry.name }}{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Запитване за имот</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ path('admin_property_inquiries') }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Назад към списъка
+            </a>
+        </div>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Информация за запитването</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>Име:</strong> {{ inquiry.name }}</p>
+                            <p><strong>Имейл:</strong> <a href="mailto:{{ inquiry.email }}">{{ inquiry.email }}</a></p>
+                            {% if inquiry.phone %}
+                                <p><strong>Телефон:</strong> <a href="tel:{{ inquiry.phone }}">{{ inquiry.phone }}</a></p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Дата:</strong> {{ inquiry.createdAt|date('d.m.Y H:i') }}</p>
+                            <p>
+                                <strong>Статус:</strong>
+                                <span class="badge bg-{{ inquiry.isRead ? 'success' : 'warning' }}">
+                                    {{ inquiry.isRead ? 'Прочетено' : 'Непрочетено' }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <h6>Съобщение:</h6>
+                    <div class="p-3 bg-light rounded mb-4">
+                        {{ inquiry.message|nl2br }}
+                    </div>
+
+                    <h6>За имот:</h6>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    {% if inquiry.property.mainImage %}
+                                        <img src="{{ asset('img/properties/' ~ inquiry.property.id ~ '/' ~ inquiry.property.mainImage.filename) }}"
+                                             class="img-fluid rounded"
+                                             alt="{{ inquiry.property.titleBg }}">
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-8">
+                                    <h5 class="card-title">{{ inquiry.property.titleBg }}</h5>
+                                    <p class="card-text">
+                                        <strong>Локация:</strong> {{ inquiry.property.location }}<br>
+                                        <strong>Площ:</strong> {{ inquiry.property.area }} m²<br>
+                                        {% if inquiry.property.price %}
+                                            <strong>Цена:</strong> {{ inquiry.property.price|number_format(0, '.', ' ') }} €
+                                        {% endif %}
+                                    </p>
+                                    <a href="{{ path('admin_property_show', {'id': inquiry.property.id}) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> Виж имота
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if inquiry.response %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Изпратен отговор</h5>
+                        <div class="p-3 bg-light rounded">
+                            {{ inquiry.response|nl2br }}
+                        </div>
+                        <small class="text-muted">Записан на: {{ inquiry.updatedAt|date('d.m.Y H:i') }}</small>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Отговор на запитването</h5>
+                    <form action="{{ path('admin_property_inquiry_respond', {'id': inquiry.id}) }}" method="POST">
+                        <input type="hidden" name="_token" value="{{ csrf_token('inquiry_respond') }}">
+                        <div class="mb-3">
+                            <label for="response" class="form-label">Вашият отговор</label>
+                            <textarea class="form-control" id="response" name="response" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Запази отговор
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Бързи действия</h5>
+                    <div class="d-grid gap-2">
+                        <a href="mailto:{{ inquiry.email }}" class="btn btn-outline-primary">
+                            <i class="bi bi-envelope"></i> Изпрати имейл
+                        </a>
+                        {% if inquiry.phone %}
+                            <a href="tel:{{ inquiry.phone }}" class="btn btn-outline-success">
+                                <i class="bi bi-telephone"></i> Обади се
+                            </a>
+                        {% endif %}
+                        <form method="post" 
+                              action="{{ path('admin_property_inquiry_delete', {'id': inquiry.id}) }}"
+                              onsubmit="return confirm('Сигурни ли сте, че искате да изтриете това запитване?');">
+                            <button type="submit" class="btn btn-outline-danger w-100">
+                                <i class="bi bi-trash"></i> Изтрий запитването
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Knp\Component\Pager\PaginatorInterface;
 
-#[Route('/admin/properties')]
+#[Route('/properties')]
 #[IsGranted('ROLE_ADMIN')]
 class PropertyController extends AbstractController
 {

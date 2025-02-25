@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
-#[Route('/admin/blog')]
+#[Route('/blog')]
 #[IsGranted('ROLE_ADMIN')]
 class BlogController extends AbstractController
 {

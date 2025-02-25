@@ -12,6 +12,7 @@
             <thead>
                 <tr>
                     <th>Имот</th>
+                    <th>Реф. номер</th>
                     <th>Име</th>
                     <th>Имейл</th>
                     <th>Телефон</th>
@@ -24,10 +25,11 @@
                 {% for inquiry in inquiries %}
                     <tr>
                         <td>
-                            <a href="{{ path('admin_property_show', {'id': inquiry.property.id}) }}">
+                            <a href="{{ path('admin_property_inquiry_show', {'id': inquiry.id}) }}">
                                 {{ inquiry.property.titleBg }}
                             </a>
                         </td>
+                        <td>{{ inquiry.property.referenceNumber }}</td>
                         <td>{{ inquiry.name }}</td>
                         <td>{{ inquiry.email }}</td>
                         <td>{{ inquiry.phone }}</td>
@@ -58,7 +60,7 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="7" class="text-center">Няма намерени запитвания.</td>
+                        <td colspan="8" class="text-center">Няма намерени запитвания.</td>
                     </tr>
                 {% endfor %}
             </tbody>

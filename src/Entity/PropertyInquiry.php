@@ -35,6 +35,9 @@ class PropertyInquiry
     #[ORM\Column]
     private bool $isRead = false;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $response = null;
+
     #[ORM\ManyToOne(targetEntity: Property::class, inversedBy: 'inquiries')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Property $property = null;
@@ -114,6 +117,17 @@ class PropertyInquiry
     public function setIsRead(bool $isRead): self
     {
         $this->isRead = $isRead;
+        return $this;
+    }
+
+    public function getResponse(): ?string
+    {
+        return $this->response;
+    }
+
+    public function setResponse(?string $response): self
+    {
+        $this->response = $response;
         return $this;
     }
 

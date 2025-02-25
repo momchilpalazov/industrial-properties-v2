@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Knp\Component\Pager\PaginatorInterface;
 
-#[Route('/admin/faq')]
+#[Route('/faq')]
 #[IsGranted('ROLE_ADMIN')]
 class FaqController extends AbstractController
 {

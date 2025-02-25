@@ -207,23 +207,25 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">{{ 'property.contact'|trans }}</h5>
-                        <form>
+                        <form id="inquiryForm" method="POST" action="{{ path('property_inquiry_create', {'id': property.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('inquiry') }}">
                             <div class="mb-3">
                                 <label for="name" class="form-label">{{ 'property.inquiry.name'|trans }}</label>
-                                <input type="text" class="form-control" id="name" required>
+                                <input type="text" class="form-control" id="name" name="name" required>
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">{{ 'property.inquiry.email'|trans }}</label>
-                                <input type="email" class="form-control" id="email" required>
+                                <input type="email" class="form-control" id="email" name="email" required>
                             </div>
                             <div class="mb-3">
                                 <label for="phone" class="form-label">{{ 'property.inquiry.phone'|trans }}</label>
-                                <input type="tel" class="form-control" id="phone">
+                                <input type="tel" class="form-control" id="phone" name="phone">
                             </div>
                             <div class="mb-3">
                                 <label for="message" class="form-label">{{ 'property.inquiry.message'|trans }}</label>
-                                <textarea class="form-control" id="message" rows="4" required></textarea>
+                                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
                             </div>
+                            <input type="hidden" name="propertyId" value="{{ property.id }}">
                             <button type="submit" class="btn btn-primary w-100">{{ 'property.inquiry.send'|trans }}</button>
                         </form>
                     </div>
@@ -290,6 +292,34 @@
                 );
                 ui.addBubble(bubble);
             {% endif %}
+
+            // Form handling
+            const form = document.getElementById('inquiryForm');
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        alert('{{ 'property.inquiry.success'|trans }}');
+                        form.reset();
+                    } else {
+                        throw new Error(result.message || '{{ 'property.inquiry.error'|trans }}');
+                    }
+                } catch (error) {
+                    alert(error.message);
+                }
+            });
         });
     </script>
 {% endblock %} 
