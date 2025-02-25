@@ -10,30 +10,44 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <i class="fas fa-edit me-1"></i>
+                        <i class="bi bi-pencil-square me-1"></i>
                         Редактиране на тип имот
                     </div>
-                    <a href="{{ path('admin_property_type_index') }}" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-arrow-left"></i> Назад към списъка
+                    <a href="{{ path('admin_property_type_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Назад към списъка
                     </a>
                 </div>
             </div>
             <div class="card-body">
                 {{ form_start(form) }}
-                    <div class="mb-3">
-                        {{ form_label(form.name) }}
-                        {{ form_widget(form.name) }}
-                        {{ form_errors(form.name) }}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.name) }}
+                            {{ form_widget(form.name) }}
+                            {{ form_errors(form.name) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.nameEn) }}
+                            {{ form_widget(form.nameEn) }}
+                            {{ form_errors(form.nameEn) }}
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        {{ form_label(form.description) }}
-                        {{ form_widget(form.description) }}
-                        {{ form_errors(form.description) }}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.description) }}
+                            {{ form_widget(form.description) }}
+                            {{ form_errors(form.description) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.descriptionEn) }}
+                            {{ form_widget(form.descriptionEn) }}
+                            {{ form_errors(form.descriptionEn) }}
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Запази промените
+                        <i class="bi bi-save"></i> Запази промените
                     </button>
                 {{ form_end(form) }}
             </div>

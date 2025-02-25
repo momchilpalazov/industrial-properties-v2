@@ -10,31 +10,80 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <i class="fas fa-plus me-1"></i>
+                        <i class="bi bi-plus-circle me-1"></i>
                         Добавяне на нов тип имот
                     </div>
                     <a href="{{ path('admin_property_type_index') }}" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-arrow-left"></i> Назад към списъка
+                        <i class="bi bi-arrow-left me-1"></i> Назад към списъка
                     </a>
                 </div>
             </div>
             <div class="card-body">
-                {{ form_start(form) }}
-                    <div class="mb-3">
-                        {{ form_label(form.name) }}
-                        {{ form_widget(form.name) }}
-                        {{ form_errors(form.name) }}
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    <div class="row g-4">
+                        {# Bulgarian Fields #}
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-translate me-1"></i>
+                                        Информация на български
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form_label(form.name, 'Име (BG)', {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Въведете име на български'}}) }}
+                                        {{ form_errors(form.name, {'attr': {'class': 'invalid-feedback'}}) }}
+                                        <div class="form-text">Въведете името на типа имот на български език</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form_label(form.description, 'Описание (BG)', {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Въведете описание на български'}}) }}
+                                        {{ form_errors(form.description, {'attr': {'class': 'invalid-feedback'}}) }}
+                                        <div class="form-text">Въведете описание на типа имот на български език (незадължително)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# English Fields #}
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-translate me-1"></i>
+                                        Information in English
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form_label(form.nameEn, 'Name (EN)', {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.nameEn, {'attr': {'class': 'form-control', 'placeholder': 'Enter name in English'}}) }}
+                                        {{ form_errors(form.nameEn, {'attr': {'class': 'invalid-feedback'}}) }}
+                                        <div class="form-text">Enter the property type name in English</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form_label(form.descriptionEn, 'Description (EN)', {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.descriptionEn, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Enter description in English'}}) }}
+                                        {{ form_errors(form.descriptionEn, {'attr': {'class': 'invalid-feedback'}}) }}
+                                        <div class="form-text">Enter the property type description in English (optional)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        {{ form_label(form.description) }}
-                        {{ form_widget(form.description) }}
-                        {{ form_errors(form.description) }}
+                    <div class="mt-4 text-end">
+                        <a href="{{ path('admin_property_type_index') }}" class="btn btn-light me-2">
+                            <i class="bi bi-x-lg me-1"></i> Отказ
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg me-1"></i> Запази
+                        </button>
                     </div>
-
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Запази
-                    </button>
                 {{ form_end(form) }}
             </div>
         </div>

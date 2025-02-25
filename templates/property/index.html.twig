@@ -119,8 +119,18 @@
                                             <i class="bi bi-building"></i> {{ property.type.name }}<br>
                                             <i class="bi bi-arrows-angle-expand"></i> {{ property.area }} m²<br>
                                             {% if property.price %}
-                                                <i class="bi bi-currency-euro"></i> {{ property.price|number_format(0, '.', ' ') }}
+                                                <i class="bi bi-tag"></i> {{ property.price|number_format(0, '.', ' ') }} €<br>
                                             {% endif %}
+                                            <i class="bi bi-circle-fill status-icon text-{{ property.status == 'available' ? 'success' : 
+                                                property.status == 'sold' ? 'danger' : 
+                                                property.status == 'reserved' ? 'warning' : 
+                                                property.status == 'rented' ? 'info' : 'secondary' }}"></i>
+                                            <span class="text-{{ property.status == 'available' ? 'success' : 
+                                                property.status == 'sold' ? 'danger' : 
+                                                property.status == 'reserved' ? 'warning' : 
+                                                property.status == 'rented' ? 'info' : 'secondary' }}">
+                                                {{ ('property.status.' ~ property.status)|trans }}
+                                            </span>
                                         </small>
                                     </p>
                                 </div>

@@ -15,19 +15,36 @@ class PropertyTypeType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Име',
+                'label' => 'Име (BG)',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Въведете име на типа имот'
+                    'placeholder' => 'Въведете име на български'
+                ]
+            ])
+            ->add('nameEn', TextType::class, [
+                'label' => 'Име (EN)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Enter name in English'
                 ]
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Описание',
+                'label' => 'Описание (BG)',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 3,
-                    'placeholder' => 'Въведете описание (незадължително)'
+                    'placeholder' => 'Въведете описание на български'
+                ]
+            ])
+            ->add('descriptionEn', TextareaType::class, [
+                'label' => 'Описание (EN)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'Enter description in English'
                 ]
             ])
         ;

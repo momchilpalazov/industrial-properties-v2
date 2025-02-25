@@ -18,11 +18,17 @@ class PropertyType
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: 'Моля, въведете име на български')]
     private ?string $name = null;
+
+    #[ORM\Column(name: 'name_en', length: 255, nullable: true)]
+    private ?string $nameEn = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
+
+    #[ORM\Column(name: 'description_en', type: 'text', nullable: true)]
+    private ?string $descriptionEn = null;
 
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: Property::class)]
     private Collection $properties;
@@ -48,6 +54,17 @@ class PropertyType
         return $this;
     }
 
+    public function getNameEn(): ?string
+    {
+        return $this->nameEn;
+    }
+
+    public function setNameEn(?string $nameEn): static
+    {
+        $this->nameEn = $nameEn;
+        return $this;
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;
@@ -56,6 +73,17 @@ class PropertyType
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+        return $this;
+    }
+
+    public function getDescriptionEn(): ?string
+    {
+        return $this->descriptionEn;
+    }
+
+    public function setDescriptionEn(?string $descriptionEn): static
+    {
+        $this->descriptionEn = $descriptionEn;
         return $this;
     }
 
