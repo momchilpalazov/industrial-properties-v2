@@ -2,108 +2,403 @@
 
 {% block title %}Редактиране на имот{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <style>
+        .property-form {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .form-section {
+            background: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-section-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .nav-tabs {
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            padding: 0.75rem 1rem;
+            margin-bottom: -2px;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        #locationMap {
+            width: 100%;
+            height: 400px;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e9ecef;
+        }
+        
+        .coordinates-wrapper {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .coordinates-wrapper .form-group {
+            flex: 1;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .form-check-input:checked {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 <div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Редактиране на имот</h1>
-        <div>
-            <a href="{{ path('admin_property_images', {'id': property.id}) }}" class="btn btn-primary me-2">
-                <i class="bi bi-images"></i> Управление на снимки
+    <div class="property-form">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Редактиране на имот</h1>
+            <div>
+                <a href="{{ path('admin_property_images', {'id': property.id}) }}" class="btn btn-primary me-2">
+                    <i class="bi bi-images"></i> Управление на снимки
+                </a>
+                <a href="{{ path('admin_property_index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Назад към списъка
+                </a>
+            </div>
+        </div>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {{ form_start(form) }}
+        
+        <!-- Основна информация -->
+        <div class="form-section">
+            <h4 class="form-section-title">
+                <i class="bi bi-info-circle"></i> Основна информация
+            </h4>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    {{ form_row(form.type) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_row(form.area) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_row(form.price) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-check mb-3">
+                        {{ form_widget(form.isActive) }}
+                        {{ form_label(form.isActive) }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check mb-3">
+                        {{ form_widget(form.isFeatured) }}
+                        {{ form_label(form.isFeatured) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Описание на различни езици -->
+        <div class="form-section">
+            <h4 class="form-section-title">
+                <i class="bi bi-translate"></i> Описание на различни езици
+            </h4>
+            
+            <ul class="nav nav-tabs mb-4" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#bg">
+                        <i class="bi bi-globe"></i> Български
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#en">
+                        <i class="bi bi-globe"></i> English
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#de">
+                        <i class="bi bi-globe"></i> Deutsch
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#ru">
+                        <i class="bi bi-globe"></i> Русский
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="bg">
+                    {{ form_row(form.titleBg) }}
+                    {{ form_row(form.descriptionBg) }}
+                    {{ form_row(form.locationBg) }}
+                </div>
+                <div class="tab-pane fade" id="en">
+                    {{ form_row(form.titleEn) }}
+                    {{ form_row(form.descriptionEn) }}
+                    {{ form_row(form.locationEn) }}
+                </div>
+                <div class="tab-pane fade" id="de">
+                    {{ form_row(form.titleDe) }}
+                    {{ form_row(form.descriptionDe) }}
+                    {{ form_row(form.locationDe) }}
+                </div>
+                <div class="tab-pane fade" id="ru">
+                    {{ form_row(form.titleRu) }}
+                    {{ form_row(form.descriptionRu) }}
+                    {{ form_row(form.locationRu) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Локация -->
+        <div class="form-section">
+            <h4 class="form-section-title">
+                <i class="bi bi-geo-alt"></i> Локация
+            </h4>
+            
+            {{ form_row(form.address) }}
+            
+            <div class="mb-3">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="addressSearch" placeholder="Въведете точен адрес">
+                    <button class="btn btn-outline-primary" type="button" id="geocodeAddress">
+                        <i class="bi bi-search"></i> Намери координати
+                    </button>
+                </div>
+                <small class="form-text text-muted">
+                    <i class="bi bi-info-circle"></i> 
+                    Въведете точен адрес в Европа, за да получите автоматично координатите или въведете координатите ръчно
+                </small>
+            </div>
+
+            <div id="locationMap"></div>
+
+            <div class="coordinates-wrapper">
+                <div class="form-group">
+                    {{ form_row(form.latitude) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(form.longitude) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Бутони -->
+        <div class="d-flex justify-content-end gap-2 mb-4">
+            <a href="{{ path('admin_property_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x"></i> Отказ
             </a>
-            <a href="{{ path('admin_property_index') }}" class="btn btn-secondary">Назад към списъка</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i> Запази промените
+            </button>
         </div>
+
+        {{ form_end(form) }}
     </div>
-
-    {{ form_start(form, {'attr': {'class': 'card'}}) }}
-    <div class="card-body">
-        <ul class="nav nav-tabs mb-4" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#bg">Български</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#en">English</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#de">Deutsch</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#ru">Русский</a>
-            </li>
-        </ul>
-
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="bg">
-                {{ form_row(form.titleBg) }}
-                {{ form_row(form.descriptionBg) }}
-                {{ form_row(form.locationBg) }}
-            </div>
-            <div class="tab-pane fade" id="en">
-                {{ form_row(form.titleEn) }}
-                {{ form_row(form.descriptionEn) }}
-                {{ form_row(form.locationEn) }}
-            </div>
-            <div class="tab-pane fade" id="de">
-                {{ form_row(form.titleDe) }}
-                {{ form_row(form.descriptionDe) }}
-                {{ form_row(form.locationDe) }}
-            </div>
-            <div class="tab-pane fade" id="ru">
-                {{ form_row(form.titleRu) }}
-                {{ form_row(form.descriptionRu) }}
-                {{ form_row(form.locationRu) }}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                {{ form_row(form.type) }}
-            </div>
-            <div class="col-md-3">
-                {{ form_row(form.area) }}
-            </div>
-            <div class="col-md-3">
-                {{ form_row(form.price) }}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-check mb-3">
-                    {{ form_widget(form.isActive) }}
-                    {{ form_label(form.isActive) }}
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-check mb-3">
-                    {{ form_widget(form.isFeatured) }}
-                    {{ form_label(form.isFeatured) }}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card-footer">
-        <button type="submit" class="btn btn-primary">Запази</button>
-    </div>
-    {{ form_end(form) }}
 </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // CKEditor initialization
             const editors = ['descriptionBg', 'descriptionEn', 'descriptionDe', 'descriptionRu'];
             
             editors.forEach(function(editorId) {
-                ClassicEditor
-                    .create(document.querySelector('#property_' + editorId), {
-                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
-                        language: editorId.slice(-2).toLowerCase()
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
+                const element = document.querySelector('#property_' + editorId);
+                if (element) {
+                    ClassicEditor
+                        .create(element, {
+                            toolbar: [
+                                'heading',
+                                '|',
+                                'bold',
+                                'italic',
+                                'link',
+                                'bulletedList',
+                                'numberedList',
+                                '|',
+                                'undo',
+                                'redo'
+                            ],
+                            heading: {
+                                options: [
+                                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+                                ]
+                            }
+                        })
+                        .then(editor => {
+                            window[`editor_${editorId}`] = editor;
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                }
             });
+
+            // Here Maps initialization
+            const platform = new H.service.Platform({
+                'apikey': '{{ here_maps_api_key }}'
+            });
+
+            const defaultLayers = platform.createDefaultLayers();
+            
+            // Initialize map with default or existing coordinates
+            const latitude = document.getElementById('{{ form.latitude.vars.id }}').value || 42.6977;
+            const longitude = document.getElementById('{{ form.longitude.vars.id }}').value || 23.3219;
+            
+            const map = new H.Map(
+                document.getElementById('locationMap'),
+                defaultLayers.vector.normal.map,
+                {
+                    zoom: 13,
+                    center: { lat: parseFloat(latitude), lng: parseFloat(longitude) }
+                }
+            );
+
+            // Enable map interaction
+            const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+            const ui = H.ui.UI.createDefault(map, defaultLayers);
+
+            // Add marker
+            let marker = new H.map.Marker({ lat: parseFloat(latitude), lng: parseFloat(longitude) });
+            map.addObject(marker);
+
+            // Update marker and coordinates on map click
+            map.addEventListener('tap', function(evt) {
+                const coords = map.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY);
+                
+                // Update marker position
+                map.removeObject(marker);
+                marker = new H.map.Marker(coords);
+                map.addObject(marker);
+
+                // Update form fields
+                document.getElementById('{{ form.latitude.vars.id }}').value = coords.lat.toFixed(6);
+                document.getElementById('{{ form.longitude.vars.id }}').value = coords.lng.toFixed(6);
+            });
+
+            // Geocoding service
+            const geocoder = platform.getSearchService();
+            const geocodeButton = document.getElementById('geocodeAddress');
+            const addressInput = document.getElementById('addressSearch');
+            
+            geocodeButton.addEventListener('click', function() {
+                const address = addressInput.value;
+                if (!address) {
+                    alert('Моля, въведете адрес');
+                    return;
+                }
+
+                geocoder.geocode({
+                    q: address
+                }, (result) => {
+                    if (result.items && result.items.length > 0) {
+                        const coords = result.items[0].position;
+                        
+                        // Update map center and marker
+                        map.setCenter(coords);
+                        map.setZoom(15);
+                        map.removeObject(marker);
+                        marker = new H.map.Marker(coords);
+                        map.addObject(marker);
+
+                        // Update form fields
+                        document.getElementById('{{ form.latitude.vars.id }}').value = coords.lat.toFixed(6);
+                        document.getElementById('{{ form.longitude.vars.id }}').value = coords.lng.toFixed(6);
+                        document.getElementById('{{ form.address.vars.id }}').value = result.items[0].address.label;
+
+                        // Update location field if empty
+                        const locationInput = document.getElementById('{{ form.locationBg.vars.id }}');
+                        if (!locationInput.value) {
+                            locationInput.value = result.items[0].address.city || result.items[0].address.county || '';
+                        }
+                    } else {
+                        alert('Не можахме да намерим координатите за този адрес');
+                    }
+                }, (error) => {
+                    console.error('Грешка при геокодиране:', error);
+                    alert('Възникна грешка при търсенето на координати');
+                });
+            });
+
+            // Handle Enter key in address input
+            addressInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    geocodeButton.click();
+                }
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', () => map.getViewPort().resize());
+
+            // Синхронизираме съдържанието при submit
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    editors.forEach(function(editorId) {
+                        const editor = window[`editor_${editorId}`];
+                        if (editor) {
+                            const element = document.querySelector('#property_' + editorId);
+                            element.value = editor.getData();
+                        }
+                    });
+                });
+            }
         });
     </script>
 {% endblock %} 

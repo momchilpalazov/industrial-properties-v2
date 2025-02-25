@@ -80,13 +80,19 @@ class PropertyType extends AbstractType
                 ]
             ])
             ->add('locationBg', TextType::class, [
-                'label' => 'Локация (BG)',
-                'attr' => ['class' => 'form-control']
+                'label' => 'Локация (БГ)',
+                'attr' => [
+                    'placeholder' => 'Въведете локация на български',
+                    'class' => 'form-control'
+                ]
             ])
             ->add('locationEn', TextType::class, [
                 'label' => 'Локация (EN)',
                 'required' => false,
-                'attr' => ['class' => 'form-control']
+                'attr' => [
+                    'placeholder' => 'Enter location in English',
+                    'class' => 'form-control'
+                ]
             ])
             ->add('locationDe', TextType::class, [
                 'label' => 'Локация (DE)',
@@ -97,6 +103,14 @@ class PropertyType extends AbstractType
                 'label' => 'Локация (RU)',
                 'required' => false,
                 'attr' => ['class' => 'form-control']
+            ])
+            ->add('address', TextType::class, [
+                'label' => 'Точен адрес',
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Въведете точен адрес',
+                    'class' => 'form-control'
+                ]
             ])
             ->add('area', NumberType::class, [
                 'label' => 'Площ (м²)',

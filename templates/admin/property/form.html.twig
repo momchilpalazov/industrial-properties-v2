@@ -70,6 +70,17 @@
                         <h5 class="mb-3">Локация</h5>
                         {{ form_row(form.location) }}
                         
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Точен адрес (незадължително)</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="address" placeholder="Въведете точен адрес">
+                                <button class="btn btn-outline-secondary" type="button" id="geocodeAddress">
+                                    <i class="bi bi-search"></i> Намери координати
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">Въведете точен адрес в Европа, за да получите автоматично координатите или въведете координатите ръчно</small>
+                        </div>
+                        
                         <div id="locationMap"></div>
                         
                         <div class="coordinates-wrapper">
@@ -212,18 +223,26 @@
             });
 
             // Geocoding service
-            const locationInput = document.getElementById('{{ form.location.vars.id }}');
             const geocoder = platform.getSearchService();
+            const geocodeButton = document.getElementById('geocodeAddress');
+            const addressInput = document.getElementById('address');
             
-            locationInput.addEventListener('change', function() {
+            geocodeButton.addEventListener('click', function() {
+                const address = addressInput.value;
+                if (!address) {
+                    alert('Моля, въведете адрес');
+                    return;
+                }
+
                 geocoder.geocode({
-                    q: this.value
+                    q: address
                 }, (result) => {
-                    if (result.items.length > 0) {
+                    if (result.items && result.items.length > 0) {
                         const coords = result.items[0].position;
                         
                         // Update map center and marker
                         map.setCenter(coords);
+                        map.setZoom(15);
                         map.removeObject(marker);
                         marker = new H.map.Marker(coords);
                         map.addObject(marker);
@@ -231,8 +250,27 @@
                         // Update form fields
                         document.getElementById('{{ form.latitude.vars.id }}').value = coords.lat.toFixed(6);
                         document.getElementById('{{ form.longitude.vars.id }}').value = coords.lng.toFixed(6);
+
+                        // Update location field if empty
+                        const locationInput = document.getElementById('{{ form.location.vars.id }}');
+                        if (!locationInput.value) {
+                            locationInput.value = result.items[0].address.city || result.items[0].address.county || '';
+                        }
+                    } else {
+                        alert('Не можахме да намерим координатите за този адрес');
                     }
-                }, alert);
+                }, (error) => {
+                    console.error('Грешка при геокодиране:', error);
+                    alert('Възникна грешка при търсенето на координати');
+                });
+            });
+
+            // Handle Enter key in address input
+            addressInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    geocodeButton.click();
+                }
             });
 
             // Handle window resize

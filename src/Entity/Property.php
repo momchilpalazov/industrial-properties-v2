@@ -168,6 +168,9 @@ class Property
     #[ORM\Column(length: 20, unique: true)]
     private ?string $referenceNumber = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address = null;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
@@ -630,6 +633,17 @@ class Property
     public function setReferenceNumber(string $referenceNumber): self
     {
         $this->referenceNumber = $referenceNumber;
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): self
+    {
+        $this->address = $address;
         return $this;
     }
 

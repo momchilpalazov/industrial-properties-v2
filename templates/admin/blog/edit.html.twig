@@ -1,124 +1,193 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}{{ 'blog.admin.edit_post'|trans }}{% endblock %}
+{% block title %}Редактиране на статия{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        .nav-tabs .nav-link {
-            color: #6c757d;
+        .blog-form {
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .nav-tabs .nav-link.active {
-            color: var(--bs-primary);
-            font-weight: 500;
-        }
-        .tab-content {
-            padding: 1.5rem;
+        
+        .form-section {
             background: #fff;
-            border: 1px solid #dee2e6;
-            border-top: none;
-            border-bottom-left-radius: 0.5rem;
-            border-bottom-right-radius: 0.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-section-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .nav-tabs {
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            padding: 0.75rem 1rem;
+            margin-bottom: -2px;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .form-check-input:checked {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .tab-content {
+            padding: 1.5rem 0;
+            background: transparent;
+            border: none;
         }
     </style>
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2">{{ 'blog.admin.edit_post'|trans }}</h1>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="{{ path('admin_blog_index') }}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> {{ 'blog.admin.cancel'|trans }}
+<div class="container-fluid py-4">
+    <div class="blog-form">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Редактиране на статия</h1>
+            <a href="{{ path('admin_blog_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Отказ
             </a>
         </div>
-    </div>
 
-    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-        <!-- Навигация между езиците -->
-        <ul class="nav nav-tabs mb-3" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" 
-                        id="bulgarian-tab" 
-                        data-bs-toggle="tab" 
-                        data-bs-target="#bulgarian" 
-                        type="button" 
-                        role="tab">
-                    Български
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" 
-                        id="english-tab" 
-                        data-bs-toggle="tab" 
-                        data-bs-target="#english" 
-                        type="button" 
-                        role="tab">
-                    English
-                </button>
-            </li>
-        </ul>
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
 
-        <!-- Съдържание на табовете -->
-        <div class="tab-content">
-            <!-- Български -->
-            <div class="tab-pane fade show active" id="bulgarian" role="tabpanel">
-                <div class="row">
-                    <div class="col-md-8">
-                        {{ form_row(form.titleBg) }}
-                        {{ form_row(form.excerptBg) }}
-                        {{ form_row(form.contentBg) }}
+        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+            
+            <!-- Основна информация -->
+            <div class="form-section">
+                <h4 class="form-section-title">
+                    <i class="bi bi-info-circle"></i> Основна информация
+                </h4>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        {{ form_row(form.category) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.language) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.publishedAt) }}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check mt-4">
+                            {{ form_widget(form.isPublished) }}
+                            {{ form_label(form.isPublished) }}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- English -->
-            <div class="tab-pane fade" id="english" role="tabpanel">
-                <div class="row">
-                    <div class="col-md-8">
+            <!-- Съдържание на различни езици -->
+            <div class="form-section">
+                <h4 class="form-section-title">
+                    <i class="bi bi-translate"></i> Съдържание
+                </h4>
+                
+                <ul class="nav nav-tabs mb-4" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#bulgarian">
+                            <i class="bi bi-globe"></i> Български
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#english">
+                            <i class="bi bi-globe"></i> English
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <!-- Български -->
+                    <div class="tab-pane fade show active" id="bulgarian">
+                        {{ form_row(form.titleBg) }}
+                        {{ form_row(form.excerptBg) }}
+                        {{ form_row(form.contentBg) }}
+                    </div>
+
+                    <!-- English -->
+                    <div class="tab-pane fade" id="english">
                         {{ form_row(form.titleEn) }}
                         {{ form_row(form.excerptEn) }}
                         {{ form_row(form.contentEn) }}
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Общи настройки -->
-        <div class="row mt-4">
-            <div class="col-md-4">
-                {{ form_row(form.category) }}
+            <!-- Бутони -->
+            <div class="d-flex justify-content-end gap-2 mb-4">
+                <a href="{{ path('admin_blog_index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x"></i> Отказ
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg"></i> Запази промените
+                </button>
             </div>
-            <div class="col-md-4">
-                {{ form_row(form.publishedAt) }}
-            </div>
-            <div class="col-md-4">
-                {{ form_row(form.isPublished) }}
-            </div>
-            <div class="col-md-4">
-                {{ form_row(form.language) }}
-            </div>
-        </div>
 
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary">
-                {{ 'blog.admin.save'|trans }}
-            </button>
-            <a href="{{ path('admin_blog_index') }}" class="btn btn-outline-secondary">
-                {{ 'blog.admin.cancel'|trans }}
-            </a>
-        </div>
-    {{ form_end(form) }}
+        {{ form_end(form) }}
+    </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Инициализация на CKEditor
             document.querySelectorAll('.ckeditor').forEach(function(element) {
                 ClassicEditor
                     .create(element, {
-                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+                        toolbar: [
+                            'heading',
+                            '|',
+                            'bold',
+                            'italic',
+                            'link',
+                            'bulletedList',
+                            'numberedList',
+                            'blockQuote',
+                            '|',
+                            'undo',
+                            'redo'
+                        ],
                         heading: {
                             options: [
                                 { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },

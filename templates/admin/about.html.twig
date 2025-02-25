@@ -5,6 +5,68 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        .about-form {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .form-section {
+            background: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-section-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .nav-tabs {
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            padding: 0.75rem 1rem;
+            margin-bottom: -2px;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .form-check-input:checked {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .tab-content {
+            padding: 1.5rem 0;
+            background: transparent;
+            border: none;
+        }
+
         .image-preview {
             position: relative;
             display: inline-block;
@@ -14,12 +76,14 @@
             padding: 5px;
             background: #fff;
         }
+        
         .image-preview img {
             max-width: 200px;
             max-height: 200px;
             object-fit: contain;
             display: block;
         }
+        
         .delete-image {
             position: absolute !important;
             top: -12px !important;
@@ -42,9 +106,11 @@
             justify-content: center !important;
             transition: background-color 0.2s !important;
         }
+        
         .delete-image:hover {
             background-color: #c82333 !important;
         }
+        
         .image-upload-container {
             margin-top: 10px;
             position: relative;
@@ -53,223 +119,307 @@
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2">Управление на страница "За нас"</h1>
-    </div>
+<div class="container-fluid py-4">
+    <div class="about-form">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Управление на страница "За нас"</h1>
+        </div>
 
-    <div class="card">
-        <div class="card-body">
-            <form method="post" action="{{ path('admin_about_save') }}" enctype="multipart/form-data">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <form method="post" action="{{ path('admin_about_save') }}" enctype="multipart/form-data">
+            <!-- Съдържание на различни езици -->
+            <div class="form-section">
+                <h4 class="form-section-title">
+                    <i class="bi bi-translate"></i> Съдържание
+                </h4>
+                
                 <ul class="nav nav-tabs mb-4" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#bg">Български</a>
+                        <a class="nav-link active" data-bs-toggle="tab" href="#bg">
+                            <i class="bi bi-globe"></i> Български
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#en">English</a>
+                        <a class="nav-link" data-bs-toggle="tab" href="#en">
+                            <i class="bi bi-globe"></i> English
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#de">Deutsch</a>
+                        <a class="nav-link" data-bs-toggle="tab" href="#de">
+                            <i class="bi bi-globe"></i> Deutsch
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#ru">Русский</a>
+                        <a class="nav-link" data-bs-toggle="tab" href="#ru">
+                            <i class="bi bi-globe"></i> Русский
+                        </a>
                     </li>
                 </ul>
 
                 <div class="tab-content">
                     <!-- Български -->
                     <div class="tab-pane fade show active" id="bg">
-                        <h4 class="mb-3">Заглавна секция</h4>
-                        <div class="mb-3">
-                            <label for="title_bg" class="form-label">Заглавие (BG)</label>
-                            <input type="text" class="form-control" id="title_bg" name="title_bg" 
-                                   value="{{ settings.title_bg }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="subtitle_bg" class="form-label">Подзаглавие (BG)</label>
-                            <input type="text" class="form-control" id="subtitle_bg" name="subtitle_bg" 
-                                   value="{{ settings.subtitle_bg }}">
-                        </div>
-
-                        <h4 class="mb-3 mt-4">История</h4>
-                        <div class="mb-3">
-                            <label for="content_bg" class="form-label">Съдържание (BG)</label>
-                            <textarea class="form-control ckeditor" id="content_bg" name="content_bg" 
-                                      rows="10">{{ settings.content_bg }}</textarea>
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-type-h1"></i> Заглавна секция
+                            </h5>
+                            <div class="mb-3">
+                                <label for="title_bg" class="form-label">Заглавие (BG)</label>
+                                <input type="text" class="form-control" id="title_bg" name="title_bg" 
+                                       value="{{ settings.title_bg }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="subtitle_bg" class="form-label">Подзаглавие (BG)</label>
+                                <input type="text" class="form-control" id="subtitle_bg" name="subtitle_bg" 
+                                       value="{{ settings.subtitle_bg }}">
+                            </div>
                         </div>
 
-                        <h4 class="mb-3 mt-4">Ценности</h4>
-                        {% for key, value in settings.values_bg %}
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <label class="form-label">Заглавие</label>
-                                        <input type="text" class="form-control" 
-                                               name="values_bg[{{ key }}][title]" 
-                                               value="{{ value.title }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Описание</label>
-                                        <textarea class="form-control" 
-                                                  name="values_bg[{{ key }}][description]" 
-                                                  rows="2">{{ value.description }}</textarea>
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-file-text"></i> История
+                            </h5>
+                            <div class="mb-3">
+                                <label for="content_bg" class="form-label">Съдържание (BG)</label>
+                                <textarea class="form-control ckeditor" id="content_bg" name="content_bg" 
+                                          rows="10">{{ settings.content_bg }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-star"></i> Ценности
+                            </h5>
+                            {% for key, value in settings.values_bg %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Заглавие</label>
+                                            <input type="text" class="form-control" 
+                                                   name="values_bg[{{ key }}][title]" 
+                                                   value="{{ value.title }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Описание</label>
+                                            <textarea class="form-control" 
+                                                      name="values_bg[{{ key }}][description]" 
+                                                      rows="2">{{ value.description }}</textarea>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-
-                        <h4 class="mb-3 mt-4">Meta данни</h4>
-                        <div class="mb-3">
-                            <label for="meta_title_bg" class="form-label">Meta заглавие (BG)</label>
-                            <input type="text" class="form-control" id="meta_title_bg" name="meta_title_bg" 
-                                   value="{{ settings.meta_title_bg }}">
+                            {% endfor %}
                         </div>
-                        <div class="mb-3">
-                            <label for="meta_description_bg" class="form-label">Meta описание (BG)</label>
-                            <textarea class="form-control" id="meta_description_bg" name="meta_description_bg" 
-                                      rows="2">{{ settings.meta_description_bg }}</textarea>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-search"></i> Meta данни
+                            </h5>
+                            <div class="mb-3">
+                                <label for="meta_title_bg" class="form-label">Meta заглавие (BG)</label>
+                                <input type="text" class="form-control" id="meta_title_bg" name="meta_title_bg" 
+                                       value="{{ settings.meta_title_bg }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="meta_description_bg" class="form-label">Meta описание (BG)</label>
+                                <textarea class="form-control" id="meta_description_bg" name="meta_description_bg" 
+                                          rows="2">{{ settings.meta_description_bg }}</textarea>
+                            </div>
                         </div>
                     </div>
 
                     <!-- English -->
                     <div class="tab-pane fade" id="en">
-                        <h4 class="mb-3">Header Section</h4>
-                        <div class="mb-3">
-                            <label for="title_en" class="form-label">Title (EN)</label>
-                            <input type="text" class="form-control" id="title_en" name="title_en" 
-                                   value="{{ settings.title_en }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="subtitle_en" class="form-label">Subtitle (EN)</label>
-                            <input type="text" class="form-control" id="subtitle_en" name="subtitle_en" 
-                                   value="{{ settings.subtitle_en }}">
-                        </div>
-
-                        <h4 class="mb-3 mt-4">History</h4>
-                        <div class="mb-3">
-                            <label for="content_en" class="form-label">Content (EN)</label>
-                            <textarea class="form-control ckeditor" id="content_en" name="content_en" 
-                                      rows="10">{{ settings.content_en }}</textarea>
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-type-h1"></i> Header Section
+                            </h5>
+                            <div class="mb-3">
+                                <label for="title_en" class="form-label">Title (EN)</label>
+                                <input type="text" class="form-control" id="title_en" name="title_en" 
+                                       value="{{ settings.title_en }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="subtitle_en" class="form-label">Subtitle (EN)</label>
+                                <input type="text" class="form-control" id="subtitle_en" name="subtitle_en" 
+                                       value="{{ settings.subtitle_en }}">
+                            </div>
                         </div>
 
-                        <h4 class="mb-3 mt-4">Values</h4>
-                        {% for key, value in settings.values_en %}
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <label class="form-label">Title</label>
-                                        <input type="text" class="form-control" 
-                                               name="values_en[{{ key }}][title]" 
-                                               value="{{ value.title }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Description</label>
-                                        <textarea class="form-control" 
-                                                  name="values_en[{{ key }}][description]" 
-                                                  rows="2">{{ value.description }}</textarea>
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-file-text"></i> History
+                            </h5>
+                            <div class="mb-3">
+                                <label for="content_en" class="form-label">Content (EN)</label>
+                                <textarea class="form-control ckeditor" id="content_en" name="content_en" 
+                                          rows="10">{{ settings.content_en }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-star"></i> Values
+                            </h5>
+                            {% for key, value in settings.values_en %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Title</label>
+                                            <input type="text" class="form-control" 
+                                                   name="values_en[{{ key }}][title]" 
+                                                   value="{{ value.title }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Description</label>
+                                            <textarea class="form-control" 
+                                                      name="values_en[{{ key }}][description]" 
+                                                      rows="2">{{ value.description }}</textarea>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-
-                        <h4 class="mb-3 mt-4">Meta Data</h4>
-                        <div class="mb-3">
-                            <label for="meta_title_en" class="form-label">Meta title (EN)</label>
-                            <input type="text" class="form-control" id="meta_title_en" name="meta_title_en" 
-                                   value="{{ settings.meta_title_en }}">
+                            {% endfor %}
                         </div>
-                        <div class="mb-3">
-                            <label for="meta_description_en" class="form-label">Meta description (EN)</label>
-                            <textarea class="form-control" id="meta_description_en" name="meta_description_en" 
-                                      rows="2">{{ settings.meta_description_en }}</textarea>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-search"></i> Meta Data
+                            </h5>
+                            <div class="mb-3">
+                                <label for="meta_title_en" class="form-label">Meta title (EN)</label>
+                                <input type="text" class="form-control" id="meta_title_en" name="meta_title_en" 
+                                       value="{{ settings.meta_title_en }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="meta_description_en" class="form-label">Meta description (EN)</label>
+                                <textarea class="form-control" id="meta_description_en" name="meta_description_en" 
+                                          rows="2">{{ settings.meta_description_en }}</textarea>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Deutsch -->
                     <div class="tab-pane fade" id="de">
-                        <h4 class="mb-3">Kopfzeile</h4>
-                        <div class="mb-3">
-                            <label for="title_de" class="form-label">Titel (DE)</label>
-                            <input type="text" class="form-control" id="title_de" name="title_de" 
-                                   value="{{ settings.title_de }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="subtitle_de" class="form-label">Untertitel (DE)</label>
-                            <input type="text" class="form-control" id="subtitle_de" name="subtitle_de" 
-                                   value="{{ settings.subtitle_de }}">
-                        </div>
-
-                        <h4 class="mb-3 mt-4">Geschichte</h4>
-                        <div class="mb-3">
-                            <label for="content_de" class="form-label">Inhalt (DE)</label>
-                            <textarea class="form-control ckeditor" id="content_de" name="content_de" 
-                                      rows="10">{{ settings.content_de }}</textarea>
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-type-h1"></i> Kopfzeile
+                            </h5>
+                            <div class="mb-3">
+                                <label for="title_de" class="form-label">Titel (DE)</label>
+                                <input type="text" class="form-control" id="title_de" name="title_de" 
+                                       value="{{ settings.title_de }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="subtitle_de" class="form-label">Untertitel (DE)</label>
+                                <input type="text" class="form-control" id="subtitle_de" name="subtitle_de" 
+                                       value="{{ settings.subtitle_de }}">
+                            </div>
                         </div>
 
-                        <h4 class="mb-3 mt-4">Werte</h4>
-                        {% for key, value in settings.values_de %}
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <label class="form-label">Titel</label>
-                                        <input type="text" class="form-control" 
-                                               name="values_de[{{ key }}][title]" 
-                                               value="{{ value.title }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Beschreibung</label>
-                                        <textarea class="form-control" 
-                                                  name="values_de[{{ key }}][description]" 
-                                                  rows="2">{{ value.description }}</textarea>
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-file-text"></i> Geschichte
+                            </h5>
+                            <div class="mb-3">
+                                <label for="content_de" class="form-label">Inhalt (DE)</label>
+                                <textarea class="form-control ckeditor" id="content_de" name="content_de" 
+                                          rows="10">{{ settings.content_de }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-star"></i> Werte
+                            </h5>
+                            {% for key, value in settings.values_de %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Titel</label>
+                                            <input type="text" class="form-control" 
+                                                   name="values_de[{{ key }}][title]" 
+                                                   value="{{ value.title }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Beschreibung</label>
+                                            <textarea class="form-control" 
+                                                      name="values_de[{{ key }}][description]" 
+                                                      rows="2">{{ value.description }}</textarea>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
 
                     <!-- Русский -->
                     <div class="tab-pane fade" id="ru">
-                        <h4 class="mb-3">Заголовок</h4>
-                        <div class="mb-3">
-                            <label for="title_ru" class="form-label">Заглавие (RU)</label>
-                            <input type="text" class="form-control" id="title_ru" name="title_ru" 
-                                   value="{{ settings.title_ru }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="subtitle_ru" class="form-label">Подзаголовок (RU)</label>
-                            <input type="text" class="form-control" id="subtitle_ru" name="subtitle_ru" 
-                                   value="{{ settings.subtitle_ru }}">
-                        </div>
-
-                        <h4 class="mb-3 mt-4">История</h4>
-                        <div class="mb-3">
-                            <label for="content_ru" class="form-label">Содержание (RU)</label>
-                            <textarea class="form-control ckeditor" id="content_ru" name="content_ru" 
-                                      rows="10">{{ settings.content_ru }}</textarea>
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-type-h1"></i> Заголовок
+                            </h5>
+                            <div class="mb-3">
+                                <label for="title_ru" class="form-label">Заглавие (RU)</label>
+                                <input type="text" class="form-control" id="title_ru" name="title_ru" 
+                                       value="{{ settings.title_ru }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="subtitle_ru" class="form-label">Подзаголовок (RU)</label>
+                                <input type="text" class="form-control" id="subtitle_ru" name="subtitle_ru" 
+                                       value="{{ settings.subtitle_ru }}">
+                            </div>
                         </div>
 
-                        <h4 class="mb-3 mt-4">Ценности</h4>
-                        {% for key, value in settings.values_ru %}
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <label class="form-label">Заглавие</label>
-                                        <input type="text" class="form-control" 
-                                               name="values_ru[{{ key }}][title]" 
-                                               value="{{ value.title }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Описание</label>
-                                        <textarea class="form-control" 
-                                                  name="values_ru[{{ key }}][description]" 
-                                                  rows="2">{{ value.description }}</textarea>
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-file-text"></i> История
+                            </h5>
+                            <div class="mb-3">
+                                <label for="content_ru" class="form-label">Содержание (RU)</label>
+                                <textarea class="form-control ckeditor" id="content_ru" name="content_ru" 
+                                          rows="10">{{ settings.content_ru }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-star"></i> Ценности
+                            </h5>
+                            {% for key, value in settings.values_ru %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Заглавие</label>
+                                            <input type="text" class="form-control" 
+                                                   name="values_ru[{{ key }}][title]" 
+                                                   value="{{ value.title }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Описание</label>
+                                            <textarea class="form-control" 
+                                                      name="values_ru[{{ key }}][description]" 
+                                                      rows="2">{{ value.description }}</textarea>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <h4 class="mb-3 mt-4">Снимки</h4>
+            <!-- Снимки -->
+            <div class="form-section">
+                <h4 class="form-section-title">
+                    <i class="bi bi-image"></i> Снимки
+                </h4>
                 <div class="mb-3">
                     <label for="company_image" class="form-label">Снимка на компанията</label>
                     <div class="image-upload-container">
@@ -283,8 +433,13 @@
                         <input type="file" class="form-control mt-2" id="company_image" name="company_image" accept="image/*">
                     </div>
                 </div>
+            </div>
 
-                <h4 class="mb-3 mt-4">Екип</h4>
+            <!-- Екип -->
+            <div class="form-section">
+                <h4 class="form-section-title">
+                    <i class="bi bi-people"></i> Екип
+                </h4>
                 {% for key, member in settings.team %}
                     <div class="card mb-3">
                         <div class="card-body">
@@ -306,109 +461,81 @@
                                     {% if member.image %}
                                         <div class="image-preview">
                                             <img src="{{ asset(member.image) }}" alt="{{ member.name }}" class="img-thumbnail">
-                                            <button type="button" class="btn delete-image" onclick="deleteTeamImage(this, {{ key }})" title="Изтрий снимката">&times;</button>
-                                            <input type="hidden" name="delete_team_image[{{ key }}]" value="0">
+                                            <button type="button" class="btn delete-image" onclick="deleteTeamMemberImage(this, {{ key }})" title="Изтрий снимката">&times;</button>
+                                            <input type="hidden" name="delete_team_image_{{ key }}" value="0">
                                         </div>
                                     {% endif %}
-                                    <input type="file" class="form-control mt-2" 
-                                           name="team_images[{{ key }}]" accept="image/*">
+                                    <input type="file" class="form-control mt-2" name="team[{{ key }}][image]" accept="image/*">
                                 </div>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
+            </div>
 
+            <!-- Бутони -->
+            <div class="d-flex justify-content-end gap-2 mb-4">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save"></i> Запази промените
+                    <i class="bi bi-check-lg"></i> Запази промените
                 </button>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
     <script>
-        async function deleteCompanyImage(button) {
-            if (confirm('Сигурни ли сте, че искате да изтриете тази снимка?')) {
-                try {
-                    const response = await fetch('{{ path('admin_about_delete_image') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token('delete-image') }}'
-                        },
-                        body: JSON.stringify({
-                            type: 'company'
-                        })
-                    });
-
-                    const result = await response.json();
-
-                    if (result.success) {
-                        window.location.reload();
-                    } else {
-                        alert('Възникна грешка при изтриването на снимката');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Възникна грешка при изтриването на снимката');
-                }
-            }
-        }
-
-        async function deleteTeamImage(button, key) {
-            if (confirm('Сигурни ли сте, че искате да изтриете тази снимка?')) {
-                try {
-                    const response = await fetch('{{ path('admin_about_delete_image') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token('delete-image') }}'
-                        },
-                        body: JSON.stringify({
-                            type: 'team',
-                            key: key
-                        })
-                    });
-
-                    const result = await response.json();
-
-                    if (result.success) {
-                        window.location.reload();
-                    } else {
-                        alert('Възникна грешка при изтриването на снимката');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Възникна грешка при изтриването на снимката');
-                }
-            }
-        }
-
-        function initializeDeleteButtons() {
-            const deleteButtons = document.querySelectorAll('.delete-image');
-            deleteButtons.forEach(button => {
-                button.style.display = 'flex';
-                button.innerHTML = '&times;';
-            });
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
-            initializeDeleteButtons();
-
+            // Инициализация на CKEditor
             const editors = ['content_bg', 'content_en', 'content_de', 'content_ru'];
             
             editors.forEach(function(editorId) {
                 ClassicEditor
                     .create(document.querySelector('#' + editorId), {
-                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+                        toolbar: [
+                            'heading',
+                            '|',
+                            'bold',
+                            'italic',
+                            'link',
+                            'bulletedList',
+                            'numberedList',
+                            'blockQuote',
+                            '|',
+                            'undo',
+                            'redo'
+                        ],
+                        heading: {
+                            options: [
+                                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                            ]
+                        },
                         language: editorId.slice(-2).toLowerCase()
                     })
                     .catch(error => {
                         console.error(error);
                     });
             });
+
+            // Функции за изтриване на снимки
+            window.deleteCompanyImage = function(button) {
+                const preview = button.closest('.image-preview');
+                const deleteInput = preview.querySelector('input[name="delete_company_image"]');
+                deleteInput.value = "1";
+                preview.style.display = 'none';
+            };
+
+            window.deleteTeamMemberImage = function(button, key) {
+                const preview = button.closest('.image-preview');
+                const deleteInput = preview.querySelector(`input[name="delete_team_image_${key}"]`);
+                deleteInput.value = "1";
+                preview.style.display = 'none';
+            };
         });
     </script>
 {% endblock %} 

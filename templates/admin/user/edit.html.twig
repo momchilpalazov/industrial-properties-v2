@@ -2,20 +2,79 @@
 
 {% block title %}Редактиране на потребител{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .user-form {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .form-section {
+            background: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-section-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .form-check-input:checked {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2">Редактиране на потребител</h1>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="{{ path('admin_user_index') }}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Назад
+<div class="container-fluid py-4">
+    <div class="user-form">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Редактиране на потребител</h1>
+            <a href="{{ path('admin_user_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Отказ
             </a>
         </div>
-    </div>
 
-    <div class="card">
-        <div class="card-body">
-            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-                <div class="row">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+            
+            <!-- Основна информация -->
+            <div class="form-section">
+                <h4 class="form-section-title">
+                    <i class="bi bi-person"></i> Основна информация
+                </h4>
+                
+                <div class="row g-3">
                     <div class="col-md-6">
                         {{ form_row(form.name) }}
                         {{ form_row(form.email) }}
@@ -23,26 +82,33 @@
                     </div>
                     <div class="col-md-6">
                         {{ form_row(form.roles) }}
-                        {{ form_row(form.isActive) }}
+                        <div class="form-check mt-4">
+                            {{ form_widget(form.isActive) }}
+                            {{ form_label(form.isActive) }}
+                        </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Информация</label>
-                            <div class="list-group">
-                                <div class="list-group-item">
-                                    <small class="d-block text-muted">Създаден на</small>
-                                    {{ user.createdAt|date('d.m.Y H:i') }}
-                                </div>
+                        <div class="mt-4">
+                            <h5 class="mb-3">Информация</h5>
+                            <div class="text-muted">
+                                <small>Създаден на</small><br>
+                                {{ user.createdAt|date('d.m.Y H:i') }}
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-lg"></i> Запази промените
-                    </button>
-                </div>
-            {{ form_end(form) }}
-        </div>
+            <!-- Бутони -->
+            <div class="d-flex justify-content-end gap-2 mb-4">
+                <a href="{{ path('admin_user_index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x"></i> Отказ
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg"></i> Запази промените
+                </button>
+            </div>
+
+        {{ form_end(form) }}
     </div>
+</div>
 {% endblock %} 
