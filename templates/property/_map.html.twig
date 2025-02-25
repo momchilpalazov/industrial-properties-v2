@@ -1,21 +1,67 @@
 {% block stylesheets %}
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@3.0.0/Control.FullScreen.css">
-    <link rel="stylesheet" href="{{ asset('css/property-map.css') }}">
+    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <style>
+        #propertyMap {
+            width: 100%;
+            height: 400px;
+            margin-top: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+    </style>
 {% endblock %}
 
 <div class="property-map-container">
     <h2>{{ 'property.location'|trans }}</h2>
-    
-    <div id="property-map"
-         data-lat="{{ property.latitude }}"
-         data-lng="{{ property.longitude }}"
-         data-title="{{ property.title }}">
-    </div>
+    <div id="propertyMap"></div>
 </div>
 
 {% block javascripts %}
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.fullscreen@3.0.0/Control.FullScreen.js"></script>
-    <script src="{{ asset('js/property-map.js') }}"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize HERE Maps platform
+            const platform = new H.service.Platform({
+                'apikey': '{{ here_maps_api_key }}'
+            });
+
+            const defaultLayers = platform.createDefaultLayers();
+            
+            // Initialize map
+            const map = new H.Map(
+                document.getElementById('propertyMap'),
+                defaultLayers.vector.normal.map,
+                {
+                    zoom: 15,
+                    center: { lat: {{ property.latitude }}, lng: {{ property.longitude }} }
+                }
+            );
+
+            // Enable map interaction (pan, zoom, etc.)
+            const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+            const ui = H.ui.UI.createDefault(map, defaultLayers);
+
+            // Add marker for property location
+            const marker = new H.map.Marker({ lat: {{ property.latitude }}, lng: {{ property.longitude }} });
+            map.addObject(marker);
+
+            // Add info bubble
+            const bubble = new H.ui.InfoBubble(
+                { lat: {{ property.latitude }}, lng: {{ property.longitude }} },
+                {
+                    content: '<div class="p-2">' +
+                             '<h6>{{ property.title(app.request.locale) }}</h6>' +
+                             '<p class="mb-0">{{ property.location(app.request.locale) }}</p>' +
+                             '</div>'
+                }
+            );
+            ui.addBubble(bubble);
+
+            // Handle window resize
+            window.addEventListener('resize', () => map.getViewPort().resize());
+        });
+    </script>
 {% endblock %} 
