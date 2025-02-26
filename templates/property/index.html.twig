@@ -4,7 +4,6 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
     <style>
         .filter-section {
             background: #f8f9fa;
@@ -33,13 +32,6 @@
         }
         .property-features li i {
             margin-right: 0.5rem;
-        }
-        #propertiesMap {
-            width: 100%;
-            height: 500px;
-            margin-top: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         }
         @keyframes pulse {
             0% {
@@ -158,78 +150,10 @@
             <div class="d-flex justify-content-center mt-4">
                 {{ knp_pagination_render(properties) }}
             </div>
-
-            <!-- Properties Map -->
-            <div id="propertiesMap"></div>
         </div>
     </section>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize HERE Maps platform
-            const platform = new H.service.Platform({
-                'apikey': '{{ here_maps_api_key }}'
-            });
-
-            const defaultLayers = platform.createDefaultLayers();
-            
-            // Initialize map
-            const map = new H.Map(
-                document.getElementById('propertiesMap'),
-                defaultLayers.vector.normal.map,
-                {
-                    zoom: 7,
-                    center: { lat: 42.7339, lng: 25.4858 } // Center of Bulgaria
-                }
-            );
-
-            // Enable map interaction (pan, zoom, etc.)
-            const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-            const ui = H.ui.UI.createDefault(map, defaultLayers);
-
-            // Add markers for each property
-            {% for property in properties %}
-                {% if property.latitude and property.longitude %}
-                    const marker{{ property.id }} = new H.map.Marker({
-                        lat: {{ property.latitude }},
-                        lng: {{ property.longitude }}
-                    });
-
-                    // Create info bubble content
-                    const bubbleContent = `
-                        <div class="p-2">
-                            <h6 class="mb-1">{{ property.title(app.request.locale) }}</h6>
-                            <p class="mb-1"><small>{{ property.location(app.request.locale) }}</small></p>
-                            <a href="{{ path('app_property_show', {'id': property.id}) }}" class="btn btn-sm btn-primary">
-                                {{ 'property.actions.view'|trans }}
-                            </a>
-                        </div>
-                    `;
-
-                    // Add info bubble
-                    marker{{ property.id }}.addEventListener('tap', function(evt) {
-                        const bubble = new H.ui.InfoBubble(
-                            evt.target.getGeometry(),
-                            {
-                                content: bubbleContent
-                            }
-                        );
-                        ui.addBubble(bubble);
-                    });
-
-                    map.addObject(marker{{ property.id }});
-                {% endif %}
-            {% endfor %}
-
-            // Handle window resize
-            window.addEventListener('resize', () => map.getViewPort().resize());
-        });
-    </script>
 {% endblock %} 
