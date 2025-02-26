@@ -75,8 +75,9 @@
                                             <strong>Цена:</strong> {{ inquiry.property.price|number_format(0, '.', ' ') }} €
                                         {% endif %}
                                     </p>
-                                    <a href="{{ path('admin_property_show', {'id': inquiry.property.id}) }}" 
-                                       class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ path('app_property_show', {'id': inquiry.property.id}) }}" 
+                                       class="btn btn-sm btn-outline-primary"
+                                       target="_blank">
                                         <i class="bi bi-eye"></i> Виж имота
                                     </a>
                                 </div>
