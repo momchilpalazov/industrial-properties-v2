@@ -147,7 +147,7 @@
                         <div class="carousel-inner">
                             {% for image in property.images %}
                                 <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                    <img src="{{ asset('img/properties/' ~ property.id ~ '/' ~ image.filename) }}" 
+                                    <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ image.filename) }}" 
                                          class="d-block w-100" 
                                          alt="{{ property.title(app.request.locale) }}"
                                          style="height: 400px; object-fit: cover;">

@@ -1,6 +1,6 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Имоти{% endblock %}
+{% block title %}Управление на имоти{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -13,10 +13,9 @@
             transform: translateY(-5px);
         }
         .property-image {
-            height: 200px;
+            width: 100px;
+            height: 60px;
             object-fit: cover;
-            border-top-left-radius: calc(0.375rem - 1px);
-            border-top-right-radius: calc(0.375rem - 1px);
         }
         .property-features {
             display: flex;
@@ -108,217 +107,241 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2">Имоти</h1>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="{{ path('admin_property_new') }}" class="btn btn-sm btn-primary">
-                <i class="bi bi-plus-lg"></i> Нов имот
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">Имоти</h1>
+            <a href="{{ path('admin_property_new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Добави нов имот
             </a>
         </div>
-    </div>
 
-    <!-- Филтри -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-3">
-                    <label for="type" class="form-label">Тип имот</label>
-                    <select name="type" id="type" class="form-select">
-                        <option value="">Всички</option>
-                        {% for type in property_types %}
-                            <option value="{{ type.id }}" {% if app.request.query.get('type') == type.id %}selected{% endif %}>
-                                {{ type.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="location" class="form-label">Локация</label>
-                    <input type="text" name="location" id="location" class="form-control" value="{{ app.request.query.get('location') }}">
-                </div>
-                <div class="col-md-3">
-                    <label for="status" class="form-label">Статус</label>
-                    <select name="status" id="status" class="form-select">
-                        <option value="">Всички</option>
-                        <option value="available" {% if app.request.query.get('status') == 'available' %}selected{% endif %}>Свободен</option>
-                        <option value="sold" {% if app.request.query.get('status') == 'sold' %}selected{% endif %}>Продаден</option>
-                        <option value="reserved" {% if app.request.query.get('status') == 'reserved' %}selected{% endif %}>Резервиран</option>
-                        <option value="rented" {% if app.request.query.get('status') == 'rented' %}selected{% endif %}>Под наем</option>
-                        <option value="pending" {% if app.request.query.get('status') == 'pending' %}selected{% endif %}>В процес</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">&nbsp;</label>
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="type" class="form-label">Тип имот</label>
+                        <select name="type" id="type" class="form-select">
+                            <option value="">Всички</option>
+                            {% for type in property_types %}
+                                <option value="{{ type.id }}" {% if app.request.query.get('type') == type.id %}selected{% endif %}>
+                                    {{ type.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="location" class="form-label">Локация</label>
+                        <input type="text" name="location" id="location" class="form-control" value="{{ app.request.query.get('location') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">Статус</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">Всички</option>
+                            <option value="available" {% if app.request.query.get('status') == 'available' %}selected{% endif %}>Свободен</option>
+                            <option value="reserved" {% if app.request.query.get('status') == 'reserved' %}selected{% endif %}>Резервиран</option>
+                            <option value="sold" {% if app.request.query.get('status') == 'sold' %}selected{% endif %}>Продаден</option>
+                            <option value="rented" {% if app.request.query.get('status') == 'rented' %}selected{% endif %}>Под наем</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end w-100">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search"></i> Търсене
+                            </button>
+                            <a href="{{ path('admin_property_index') }}" class="btn btn-secondary">
+                                <i class="bi bi-x-lg"></i> Изчисти
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search"></i> Търсене
+                        <i class="bi bi-table me-1"></i>
+                        Списък с имоти
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-file-earmark-excel"></i> Експорт
                         </button>
-                        <a href="{{ path('admin_property_index') }}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Изчисти
-                        </a>
+                        <button type="button" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-printer"></i> Принтиране
+                        </button>
                     </div>
                 </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Списък с имоти -->
-    <div class="card">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="selectAll">
-                                </div>
-                            </th>
-                            <th>ID</th>
-                            <th>Референтен номер</th>
-                            <th>Снимка</th>
-                            <th>Заглавие</th>
-                            <th>Категория</th>
-                            <th>Цена без ДДС</th>
-                            <th>Цена с ДДС</th>
-                            <th>Количество</th>
-                            <th style="width: 100px">Статус</th>
-                            <th style="width: 120px">Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for property in properties %}
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
                             <tr>
-                                <td>
+                                <th>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="{{ property.id }}">
+                                        <input class="form-check-input" type="checkbox" id="selectAll">
                                     </div>
-                                </td>
-                                <td>{{ property.id }}</td>
-                                <td>{{ property.referenceNumber }}</td>
-                                <td>
-                                    {% if property.mainImage %}
-                                        <img src="{{ asset('img/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}" 
-                                             alt="{{ property.titleBg }}"
-                                             style="width: 100px; height: 60px; object-fit: cover;"
-                                             class="rounded">
-                                    {% else %}
-                                        <img src="{{ asset('img/no-image.jpg') }}" 
-                                             alt="No image"
-                                             style="width: 100px; height: 60px; object-fit: cover;"
-                                             class="rounded">
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <div>{{ property.titleBg }}</div>
-                                    <small class="text-muted">
-                                        <i class="bi bi-geo-alt"></i> {{ property.locationBg }}
-                                    </small>
-                                </td>
-                                <td>{{ property.type }}</td>
-                                <td>{{ property.price ? property.price|number_format(2, '.', ' ') : '-' }}</td>
-                                <td>{{ property.price ? (property.price * 1.2)|number_format(2, '.', ' ') : '-' }}</td>
-                                <td>{{ property.area ? property.area|number_format(0) : '-' }}</td>
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-active" 
-                                               type="checkbox" 
-                                               role="switch" 
-                                               {% if property.isActive %}checked{% endif %}
-                                               data-property-id="{{ property.id }}"
-                                               title="{% if property.isActive %}Деактивиране{% else %}Активиране{% endif %}">
-                                    </div>
-                                </td>
-                                <td style="width: 120px">
-                                    <div class="btn-group">
-                                        <a href="{{ path('admin_property_edit', {'id': property.id}) }}" class="btn btn-sm btn-primary" title="Редактиране">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="{{ path('admin_property_images', {'id': property.id}) }}" 
-                                           class="btn btn-sm btn-info" 
-                                           title="Снимки">
-                                            <i class="bi bi-images"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-danger delete-property" 
-                                                data-id="{{ property.id }}"
-                                                data-token="{{ csrf_token('delete' ~ property.id) }}">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
+                                </th>
+                                <th>ID</th>
+                                <th>Референтен номер</th>
+                                <th>Снимка</th>
+                                <th>Заглавие</th>
+                                <th>Категория</th>
+                                <th>Цена без ДДС</th>
+                                <th>Цена с ДДС</th>
+                                <th>Количество</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
                             </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="11" class="text-center py-4">
-                                    <div class="alert alert-info mb-0">
-                                        Няма намерени имоти.
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for property in properties %}
+                                <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="{{ property.id }}">
+                                        </div>
+                                    </td>
+                                    <td>{{ property.id }}</td>
+                                    <td>{{ property.referenceNumber }}</td>
+                                    <td>
+                                        {% if property.mainImage %}
+                                            <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}" 
+                                                 alt="{{ property.titleBg }}"
+                                                 style="width: 100px; height: 60px; object-fit: cover;"
+                                                 class="rounded">
+                                        {% else %}
+                                            <img src="{{ asset('img/no-image.jpg') }}" 
+                                                 alt="No image"
+                                                 style="width: 100px; height: 60px; object-fit: cover;"
+                                                 class="rounded">
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div>{{ property.titleBg }}</div>
+                                        <small class="text-muted">
+                                            <i class="bi bi-geo-alt"></i> {{ property.locationBg }}
+                                        </small>
+                                    </td>
+                                    <td>{{ property.type }}</td>
+                                    <td>{{ property.price ? property.price|number_format(2, '.', ' ') : '-' }}</td>
+                                    <td>{{ property.price ? (property.price * 1.2)|number_format(2, '.', ' ') : '-' }}</td>
+                                    <td>{{ property.area ? property.area|number_format(0) : '-' }}</td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input toggle-active" 
+                                                   type="checkbox" 
+                                                   role="switch" 
+                                                   {% if property.isActive %}checked{% endif %}
+                                                   data-property-id="{{ property.id }}"
+                                                   title="{% if property.isActive %}Деактивиране{% else %}Активиране{% endif %}">
+                                        </div>
+                                    </td>
+                                    <td style="width: 120px">
+                                        <div class="btn-group">
+                                            <a href="{{ path('admin_property_edit', {'id': property.id}) }}" class="btn btn-sm btn-primary" title="Редактиране">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{{ path('admin_property_images', {'id': property.id}) }}" 
+                                               class="btn btn-sm btn-info" 
+                                               title="Снимки">
+                                                <i class="bi bi-images"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-danger delete-property" 
+                                                    data-id="{{ property.id }}"
+                                                    data-token="{{ csrf_token('delete' ~ property.id) }}">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div>
+                        Показване на {{ properties.currentPageNumber }} от {{ properties.pageCount }} страници
+                        (общо {{ properties.totalItemCount }} записа)
+                    </div>
+                    <div class="pagination">
+                        {{ knp_pagination_render(properties) }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- Пагинация -->
-    <div class="d-flex justify-content-center mt-4">
-        {{ knp_pagination_render(properties) }}
-    </div>
-
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM Content Loaded');
-
-            // Select All функционалност
+            // Select All Checkbox
             const selectAllCheckbox = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('tbody .form-check-input');
+
             if (selectAllCheckbox) {
-                const itemCheckboxes = document.querySelectorAll('tbody .form-check-input');
                 selectAllCheckbox.addEventListener('change', function() {
-                    itemCheckboxes.forEach(checkbox => {
-                        checkbox.checked = this.checked;
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = selectAllCheckbox.checked;
                     });
                 });
             }
 
-            // Обработка на статус бутона
-            const statusSwitches = document.querySelectorAll('.toggle-active');
-            console.log('Found status switches:', statusSwitches.length);
+            // Delete Property
+            const deleteButtons = document.querySelectorAll('.delete-property');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (confirm('Сигурни ли сте, че искате да изтриете този имот?')) {
+                        const propertyId = this.dataset.id;
+                        const token = this.dataset.token;
 
-            statusSwitches.forEach(function(switchEl) {
-                console.log('Adding event listener to switch:', switchEl);
-                
-                switchEl.addEventListener('change', function(event) {
-                    console.log('Switch changed');
-                    const propertyId = this.getAttribute('data-property-id');
+                        fetch(`/admin/properties/${propertyId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `_token=${token}`
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.closest('tr').remove();
+                            } else {
+                                alert('Грешка при изтриване на имота');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Възникна грешка при изтриване на имота');
+                        });
+                    }
+                });
+            });
+
+            // Toggle Active Status
+            const toggleButtons = document.querySelectorAll('.toggle-active');
+            toggleButtons.forEach(button => {
+                button.addEventListener('change', function() {
+                    const propertyId = this.dataset.propertyId;
                     const isActive = this.checked;
-                    console.log('Property ID:', propertyId, 'Is Active:', isActive);
 
                     fetch(`/admin/properties/${propertyId}/toggle-active`, {
                         method: 'POST',
                         headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ isActive: isActive })
                     })
-                    .then(response => {
-                        console.log('Response received:', response);
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(data => {
-                        console.log('Data received:', data);
-                        if (data.success) {
-                            // Показваме съобщение
-                            const toast = new bootstrap.Toast(document.getElementById('toast'));
-                            document.querySelector('#toast .toast-body').textContent = data.message;
-                            toast.show();
-                        } else {
+                        if (!data.success) {
                             this.checked = !isActive;
-                            alert('Възникна грешка при промяна на статуса');
+                            alert('Грешка при промяна на статуса');
                         }
                     })
                     .catch(error => {
@@ -326,29 +349,6 @@
                         this.checked = !isActive;
                         alert('Възникна грешка при промяна на статуса');
                     });
-                });
-            });
-
-            // Обработка на бутона за изтриване
-            document.querySelectorAll('.delete-property').forEach(button => {
-                button.addEventListener('click', function() {
-                    if (confirm('Сигурни ли сте, че искате да изтриете този имот?')) {
-                        const propertyId = this.dataset.id;
-                        const token = this.dataset.token;
-                        
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = `/admin/properties/${propertyId}`;
-                        
-                        const tokenInput = document.createElement('input');
-                        tokenInput.type = 'hidden';
-                        tokenInput.name = '_token';
-                        tokenInput.value = token;
-                        
-                        form.appendChild(tokenInput);
-                        document.body.appendChild(form);
-                        form.submit();
-                    }
                 });
             });
         });

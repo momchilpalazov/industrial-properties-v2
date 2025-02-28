@@ -78,12 +78,38 @@ class PropertyController extends AbstractController
                 $queryBuilder->andWhere('p.locationBg LIKE :location OR p.locationEn LIKE :location')
                     ->setParameter('location', '%' . $filters['location'] . '%');
             }
+
+            if (!empty($filters['sort'])) {
+                switch ($filters['sort']) {
+                    case 'newest':
+                        $queryBuilder->orderBy('p.createdAt', 'DESC');
+                        break;
+                    case 'price_asc':
+                        $queryBuilder->orderBy('p.price', 'ASC');
+                        break;
+                    case 'price_desc':
+                        $queryBuilder->orderBy('p.price', 'DESC');
+                        break;
+                    case 'area_asc':
+                        $queryBuilder->orderBy('p.area', 'ASC');
+                        break;
+                    case 'area_desc':
+                        $queryBuilder->orderBy('p.area', 'DESC');
+                        break;
+                }
+            }
         }
 
         $pagination = $this->paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
-            9
+            9,
+            [
+                'defaultSortFieldName' => 'p.createdAt',
+                'defaultSortDirection' => 'desc',
+                'sortFieldParameterName' => 'sort',
+                'sortDirectionParameterName' => 'direction'
+            ]
         );
 
         return $this->render('property/index.html.twig', [

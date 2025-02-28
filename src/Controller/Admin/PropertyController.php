@@ -216,6 +216,10 @@ class PropertyController extends AbstractController
     #[Route('/{id}/image/upload', name: 'admin_property_image_upload', methods: ['POST'])]
     public function uploadImage(Request $request, Property $property): Response
     {
+        if (!$this->isCsrfTokenValid('upload', $request->request->get('_token'))) {
+            return $this->json(['success' => false, 'error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $file = $request->files->get('file');
         
         if (!$file) {
@@ -238,7 +242,7 @@ class PropertyController extends AbstractController
                 'image' => [
                     'id' => $lastImage->getId(),
                     'filename' => $lastImage->getFilename(),
-                    'path' => $this->fileUploadService->getPublicPath($lastImage->getFilename(), $property->getId())
+                    'path' => '/uploads/images/properties/' . $property->getId() . '/' . $lastImage->getFilename()
                 ]
             ]);
         } catch (\Exception $e) {

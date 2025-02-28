@@ -658,7 +658,7 @@ class Property
             'production_facility' => 'PF'
         ];
 
-        $typeCode = $typeMap[$this->type?->getType()] ?? 'XX';
+        $typeCode = $typeMap[strtolower($this->type?->getName() ?? '')] ?? 'XX';
         $date = date('ym');
         $random = strtoupper(substr(uniqid(), -4));
 

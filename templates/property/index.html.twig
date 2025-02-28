@@ -77,6 +77,15 @@
                 <div class="col-md-4">
                     {{ form_row(form.location, {'attr': {'class': 'form-control', 'placeholder': 'Търсене по локация'}}) }}
                 </div>
+                <div class="col-md-4">
+                    {{ form_row(form.status, {'attr': {'class': 'form-select'}}) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.sort, {'attr': {'class': 'form-select'}}) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.direction, {'attr': {'class': 'form-select'}}) }}
+                </div>
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-search"></i> Търсене
@@ -99,7 +108,7 @@
                             <a href="{{ path('app_property_show', {'id': property.id}) }}" class="text-decoration-none">
                                 <div class="position-relative">
                                     {% if property.mainImage %}
-                                        <img src="{{ asset('img/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}" 
+                                        <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}" 
                                              class="card-img-top property-image" 
                                              alt="{{ property.title(app.request.locale) }}">
                                     {% else %}

@@ -2,8 +2,7 @@ parameters:
     locale: 'bg'
     app_locales: 'bg|en'
     app.default_locale: 'bg'
-    upload_directory: '%kernel.project_dir%/public/uploads'
-    assets_directory: '%kernel.project_dir%/public/assets'
+    upload_directory: '%kernel.project_dir%/public'
     image.width: 800
     image.height: 600
 
@@ -11,11 +10,6 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-        bind:
-            $uploadDir: '%upload_directory%'
-            $assetsDir: '%assets_directory%'
-            $imageWidth: '%image.width%'
-            $imageHeight: '%image.height%'
 
     App\:
         resource: '../src/'

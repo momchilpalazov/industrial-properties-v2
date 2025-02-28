@@ -46,52 +46,44 @@ class FileUploadService
 
     public function upload(UploadedFile $file, string $subdirectory = ''): string
     {
-        if (!$file->isValid()) {
-            throw new \Exception('Невалиден файл');
-        }
-
-        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = $this->slugger->slug($originalFilename);
-        $fileName = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
-
-        $targetDirectory = $this->uploadDir;
-        if ($subdirectory) {
-            $targetDirectory .= '/' . trim($subdirectory, '/');
-        }
-
         try {
-            if (!is_dir($targetDirectory)) {
-                mkdir($targetDirectory, 0777, true);
+            // Генерираме уникално име за файла
+            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+            $fileName = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+
+            // Определяме целевата директория
+            $targetDirectory = rtrim($this->uploadDir, '/') . '/uploads';
+            if ($subdirectory) {
+                $targetDirectory .= '/' . trim($subdirectory, '/');
             }
 
-            // Проверяваме дали имаме права за запис
-            if (!is_writable($targetDirectory)) {
-                throw new \Exception('Няма права за запис в директорията');
+            // Проверяваме дали директорията съществува и има правилните права
+            if (!is_dir($targetDirectory)) {
+                if (!mkdir($targetDirectory, 0777, true)) {
+                    throw new \Exception('Грешка при създаване на директорията: ' . $targetDirectory);
+                }
+                $this->setFilePermissions($targetDirectory);
             }
 
             // Преместваме файла
             $file->move($targetDirectory, $fileName);
 
-            // Проверяваме дали файлът е качен успешно
-            if (!file_exists($targetDirectory . '/' . $fileName)) {
-                throw new \Exception('Файлът не беше качен успешно');
-            }
+            // Задаваме правилните права на файла
+            $this->setFilePermissions($targetDirectory . '/' . $fileName);
 
-            // Оптимизираме изображението ако е снимка
-            if (in_array($file->guessExtension(), ['jpg', 'jpeg', 'png', 'gif'])) {
-                $this->resizeImage($targetDirectory . '/' . $fileName);
-            }
-
-            // Връщаме публичния път
-            return '/uploads/images/' . $fileName;
+            return $fileName;
         } catch (\Exception $e) {
             throw new \Exception('Грешка при качване на файла: ' . $e->getMessage());
         }
     }
 
-    public function getPublicPath(string $filename, ?string $subdirectory = null): string
+    public function getPublicPath(string $filename, string $subdirectory = ''): string
     {
-        return '/uploads/images/' . $filename;
+        if ($subdirectory) {
+            return '/uploads/' . trim($subdirectory, '/') . '/' . $filename;
+        }
+        return '/uploads/' . $filename;
     }
 
     public function deleteFile(string $filename, string $subdirectory = ''): void
@@ -107,7 +99,7 @@ class FileUploadService
         }
     }
 
-    private function setFilePermissions(string $path): void
+    public function setFilePermissions(string $path): void
     {
         if (PHP_OS_FAMILY === 'Windows') {
             // За Windows използваме icacls
@@ -122,5 +114,37 @@ class FileUploadService
                 chmod(dirname($path), 0777);
             }
         }
+    }
+
+    public function removePropertyDirectory(string $propertyPath): void
+    {
+        $targetDirectory = $this->uploadDir . '/' . $propertyPath;
+        if (is_dir($targetDirectory)) {
+            $files = glob($targetDirectory . '/*');
+            foreach ($files as $file) {
+                if (is_file($file)) {
+                    unlink($file);
+                }
+            }
+            rmdir($targetDirectory);
+        }
+    }
+
+    public function remove(string $filename, string $subdirectory = ''): void
+    {
+        $filepath = rtrim($this->uploadDir, '/') . '/uploads';
+        if ($subdirectory) {
+            $filepath .= '/' . trim($subdirectory, '/');
+        }
+        $filepath .= '/' . $filename;
+
+        if (file_exists($filepath)) {
+            unlink($filepath);
+        }
+    }
+
+    public function uploadFile(UploadedFile $file, string $subdirectory = ''): string
+    {
+        return $this->upload($file, $subdirectory);
     }
 }

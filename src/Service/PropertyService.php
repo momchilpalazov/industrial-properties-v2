@@ -107,9 +107,11 @@ class PropertyService
     {
         $uploadedImages = [];
         foreach ($images as $image) {
-            $path = $this->fileUploadService->uploadFile($image, 'properties');
-            if ($path) {
-                $uploadedImages[] = $path;
+            if ($image instanceof UploadedFile) {
+                $path = $this->fileUploadService->upload($image, 'images/properties');
+                if ($path) {
+                    $uploadedImages[] = $path;
+                }
             }
         }
         return $uploadedImages;
@@ -117,7 +119,10 @@ class PropertyService
 
     private function handlePdfUpload(array $file): ?string
     {
-        return $this->fileUploadService->uploadFile($file, 'flyers');
+        if ($file instanceof UploadedFile) {
+            return $this->fileUploadService->upload($file, 'flyers');
+        }
+        return null;
     }
 
     public function create(Property $property): void
@@ -130,10 +135,15 @@ class PropertyService
         $this->entityManager->flush();
 
         // След като имаме ID, създаваме директорията за снимки
-        $propertyDir = $this->uploadDir . '/properties/' . $property->getId();
-        if (!is_dir($propertyDir)) {
-            mkdir($propertyDir, 0777, true);
-            $this->fileUploadService->setFilePermissions($propertyDir);
+        $propertyDir = $this->uploadDir . '/images/properties/' . $property->getId();
+        try {
+            // Създаваме директорията
+            if (!is_dir($propertyDir)) {
+                mkdir($propertyDir, 0777, true);
+                $this->fileUploadService->setFilePermissions($propertyDir);
+            }
+        } catch (\Exception $e) {
+            throw new \Exception('Грешка при създаване на директория за имота: ' . $e->getMessage());
         }
     }
 
@@ -148,7 +158,7 @@ class PropertyService
     public function delete(Property $property): void
     {
         // Изтриване на всички снимки и директорията на имота
-        $this->fileUploadService->removePropertyDirectory($property->getId());
+        $this->fileUploadService->removePropertyDirectory('images/properties/' . $property->getId());
 
         $this->entityManager->remove($property);
         $this->entityManager->flush();
@@ -167,20 +177,23 @@ class PropertyService
                     throw new \Exception('Невалиден файл');
                 }
 
-                // Създаваме директорията за снимки на имота
-                $propertyDir = 'properties/' . $property->getId();
-
-                // Качваме файла
-                $filename = $this->fileUploadService->upload($file, $propertyDir);
+                // Създаваме директорията за имота ако не съществува
+                $propertyDir = 'public/uploads/images/properties/' . $property->getId();
+                if (!is_dir($propertyDir)) {
+                    mkdir($propertyDir, 0777, true);
+                    $this->fileUploadService->setFilePermissions($propertyDir);
+                }
+                
+                // Качваме файла в директорията на имота
+                $filename = $this->fileUploadService->upload($file, 'images/properties/' . $property->getId());
 
                 // Създаваме нов PropertyImage обект
                 $image = new PropertyImage();
                 $image->setProperty($property);
                 $image->setFilename($filename);
                 
-                // Ако това е първата снимка или е избрана като главна
-                if ($property->getImages()->isEmpty() || 
-                    ($mainImageId !== null && $mainImageId === $image->getId())) {
+                // Ако това е първата снимка, я правим основна
+                if ($property->getImages()->isEmpty()) {
                     $image->setIsMain(true);
                 }
 
@@ -213,7 +226,7 @@ class PropertyService
             }
 
             // Изтриваме физическия файл
-            $this->fileUploadService->remove($image->getFilename(), $property->getId());
+            $this->fileUploadService->remove($image->getFilename(), 'images/properties/' . $property->getId());
             
             // Изтриваме записа от базата данни
             $this->entityManager->remove($image);

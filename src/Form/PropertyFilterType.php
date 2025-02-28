@@ -77,13 +77,23 @@ class PropertyFilterType extends AbstractType
             ->add('sort', ChoiceType::class, [
                 'label' => 'Подреждане',
                 'choices' => [
-                    'Най-нови' => 'newest',
-                    'Цена (възходящо)' => 'price_asc',
-                    'Цена (низходящо)' => 'price_desc',
-                    'Площ (възходящо)' => 'area_asc',
-                    'Площ (низходящо)' => 'area_desc'
+                    'Най-нови' => 'p.createdAt',
+                    'Цена (възходящо)' => 'p.price',
+                    'Цена (низходящо)' => 'p.price',
+                    'Площ (възходящо)' => 'p.area',
+                    'Площ (низходящо)' => 'p.area'
                 ],
                 'placeholder' => 'Изберете подреждане',
+                'required' => false,
+                'attr' => ['class' => 'form-select']
+            ])
+            ->add('direction', ChoiceType::class, [
+                'label' => 'Посока',
+                'choices' => [
+                    'Възходящо' => 'asc',
+                    'Низходящо' => 'desc'
+                ],
+                'data' => 'desc',
                 'required' => false,
                 'attr' => ['class' => 'form-select']
             ]);
