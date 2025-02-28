@@ -239,7 +239,9 @@
                                            title="Снимки">
                                             <i class="bi bi-images"></i>
                                         </a>
-                                        <button type="button" class="btn btn-sm btn-danger delete-property" data-id="{{ property.id }}" title="Изтриване">
+                                        <button type="button" class="btn btn-sm btn-danger delete-property" 
+                                                data-id="{{ property.id }}"
+                                                data-token="{{ csrf_token('delete' ~ property.id) }}">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
@@ -332,6 +334,7 @@
                 button.addEventListener('click', function() {
                     if (confirm('Сигурни ли сте, че искате да изтриете този имот?')) {
                         const propertyId = this.dataset.id;
+                        const token = this.dataset.token;
                         
                         const form = document.createElement('form');
                         form.method = 'POST';
@@ -340,7 +343,7 @@
                         const tokenInput = document.createElement('input');
                         tokenInput.type = 'hidden';
                         tokenInput.name = '_token';
-                        tokenInput.value = '{{ csrf_token('delete' ~ property.id) }}';
+                        tokenInput.value = token;
                         
                         form.appendChild(tokenInput);
                         document.body.appendChild(form);
@@ -350,4 +353,4 @@
             });
         });
     </script>
-{% endblock %} 
+{% endblock %}

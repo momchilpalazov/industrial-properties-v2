@@ -1,0 +1,2 @@
+127.0.0.1 industrial.local
+127.0.0.1 www.industrial.local

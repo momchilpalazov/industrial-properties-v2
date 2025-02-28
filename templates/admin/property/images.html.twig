@@ -93,7 +93,7 @@
                             {% if image.isMain %}
                                 <span class="main-image-badge">Основна</span>
                             {% endif %}
-                            <img src="{{ asset('img/properties/' ~ property.id ~ '/' ~ image.filename) }}" alt="{{ property.titleBg }}">
+                            <img src="{{ asset('uploads/images/' ~ image.filename) }}" alt="{{ property.titleBg }}">
                             <div class="image-actions">
                                 {% if not image.isMain %}
                                     <button type="button" class="set-main-image" title="Задай като основна" 

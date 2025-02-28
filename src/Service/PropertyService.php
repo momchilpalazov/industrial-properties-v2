@@ -156,44 +156,44 @@ class PropertyService
 
     public function handleImages(Property $property, array $uploadedFiles, ?int $mainImageId = null): void
     {
-        // Качване на нови снимки
-        foreach ($uploadedFiles as $file) {
-            if ($file instanceof UploadedFile) {
-                try {
-                    $filename = $this->fileUploadService->upload($file, 'properties', $property->getId());
-                    
-                    // Намираме последната позиция
-                    $lastPosition = 0;
-                    foreach ($property->getImages() as $existingImage) {
-                        $lastPosition = max($lastPosition, $existingImage->getPosition());
-                    }
-                    
-                    $image = new PropertyImage();
-                    $image->setProperty($property);
-                    $image->setFilename(basename($filename));
-                    $image->setIsMain(false);
-                    $image->setPosition($lastPosition + 1);
-                    
-                    $property->addImage($image);
-                    $this->entityManager->persist($image);
-                    $this->entityManager->flush();
-                } catch (\Exception $e) {
-                    throw new \Exception('Грешка при качване на снимка: ' . $e->getMessage());
+        try {
+            foreach ($uploadedFiles as $file) {
+                if (!$file instanceof UploadedFile) {
+                    continue;
                 }
-            }
-        }
 
-        // Задаване на основна снимка
-        if ($mainImageId) {
-            $this->setMainImage($property, $mainImageId);
-        }
-        // Ако няма зададена основна снимка и това е първата снимка, я правим основна
-        elseif (count($property->getImages()) === 1) {
-            $firstImage = $property->getImages()->first();
-            if ($firstImage) {
-                $firstImage->setIsMain(true);
-                $this->entityManager->flush();
+                // Проверяваме дали файлът е валиден
+                if (!$file->isValid()) {
+                    throw new \Exception('Невалиден файл');
+                }
+
+                // Създаваме директорията за снимки на имота
+                $propertyDir = 'properties/' . $property->getId();
+
+                // Качваме файла
+                $filename = $this->fileUploadService->upload($file, $propertyDir);
+
+                // Създаваме нов PropertyImage обект
+                $image = new PropertyImage();
+                $image->setProperty($property);
+                $image->setFilename($filename);
+                
+                // Ако това е първата снимка или е избрана като главна
+                if ($property->getImages()->isEmpty() || 
+                    ($mainImageId !== null && $mainImageId === $image->getId())) {
+                    $image->setIsMain(true);
+                }
+
+                // Задаваме позиция в края
+                $image->setPosition($property->getImages()->count());
+                
+                $property->addImage($image);
+                $this->entityManager->persist($image);
             }
+
+            $this->entityManager->flush();
+        } catch (\Exception $e) {
+            throw new \Exception('Грешка при обработка на снимките: ' . $e->getMessage());
         }
     }
 

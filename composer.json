@@ -25,7 +25,7 @@
         "doctrine/orm": "^2.17",
         "dompdf/dompdf": "*",
         "friendsofsymfony/ckeditor-bundle": "2.4",
-        "intervention/image": "*",
+        "intervention/image": "^3.11",
         "knplabs/knp-paginator-bundle": "*",
         "symfony/asset": "6.4.*",
         "symfony/console": "6.4.*",
