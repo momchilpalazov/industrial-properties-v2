@@ -231,7 +231,7 @@ class AdminController extends AbstractController
                 $this->setFilePermissions($uploadDir);
                 $this->setFilePermissions($uploadDir . '/' . $fileName);
                 
-                $settings->setCompanyImage('/img/about/company/' . $fileName);
+                $settings->setCompanyImage('uploads/about/company/' . $fileName);
             }
         }
 
@@ -287,7 +287,7 @@ class AdminController extends AbstractController
                     $this->setFilePermissions($uploadDir);
                     $this->setFilePermissions($uploadDir . '/' . $fileName);
                     
-                    $team[$key]['image'] = '/img/about/team/' . $fileName;
+                    $team[$key]['image'] = 'uploads/about/team/' . $fileName;
                 }
             }
         }

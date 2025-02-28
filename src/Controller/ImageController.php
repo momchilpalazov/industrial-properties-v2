@@ -18,7 +18,7 @@ class ImageController extends AbstractController
     #[Route('/img/{type}/{subtype}/{filename}', name: 'app_image', requirements: ['type' => 'about|properties|blog', 'subtype' => 'team|company', 'filename' => '.+'])]
     public function serveImage(string $type, string $subtype, string $filename): Response
     {
-        $imagePath = $this->getParameter('kernel.project_dir') . '/img/' . $type . '/' . $subtype . '/' . $filename;
+        $imagePath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $type . '/' . $subtype . '/' . $filename;
         
         // Логваме пътя за дебъгване
         $this->logger->info('Опит за достъп до изображение', [

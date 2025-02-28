@@ -462,10 +462,10 @@
                                         <div class="image-preview">
                                             <img src="{{ asset(member.image) }}" alt="{{ member.name }}" class="img-thumbnail">
                                             <button type="button" class="btn delete-image" onclick="deleteTeamMemberImage(this, {{ key }})" title="Изтрий снимката">&times;</button>
-                                            <input type="hidden" name="delete_team_image_{{ key }}" value="0">
+                                            <input type="hidden" name="delete_team_image[{{ key }}]" value="0">
                                         </div>
                                     {% endif %}
-                                    <input type="file" class="form-control mt-2" name="team[{{ key }}][image]" accept="image/*">
+                                    <input type="file" class="form-control mt-2" name="team_images[{{ key }}]" accept="image/*">
                                 </div>
                             </div>
                         </div>
@@ -532,7 +532,7 @@
 
             window.deleteTeamMemberImage = function(button, key) {
                 const preview = button.closest('.image-preview');
-                const deleteInput = preview.querySelector(`input[name="delete_team_image_${key}"]`);
+                const deleteInput = preview.querySelector(`input[name="delete_team_image[${key}]"]`);
                 deleteInput.value = "1";
                 preview.style.display = 'none';
             };

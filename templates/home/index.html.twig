@@ -167,7 +167,7 @@
                     <div class="col-md-4">
                         <div class="card property-card h-100">
                             {% if property.mainImage %}
-                                <img src="{{ asset('img/properties/' ~ property.mainImage.filename) }}"
+                                <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}"
                                      class="card-img-top property-image"
                                      alt="{{ property.title }}">
                             {% endif %}
