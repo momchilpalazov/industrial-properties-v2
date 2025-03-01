@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PropertyInquiryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -48,8 +50,12 @@ class PropertyInquiry
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\OneToMany(mappedBy: 'inquiry', targetEntity: Offer::class)]
+    private Collection $offers;
+
     public function __construct()
     {
+        $this->offers = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }
@@ -150,5 +156,49 @@ class PropertyInquiry
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @return Collection<int, Offer>
+     */
+    public function getOffers(): Collection
+    {
+        return $this->offers;
+    }
+
+    public function addOffer(Offer $offer): self
+    {
+        if (!$this->offers->contains($offer)) {
+            $this->offers->add($offer);
+            $offer->setInquiry($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOffer(Offer $offer): self
+    {
+        if ($this->offers->removeElement($offer)) {
+            // set the owning side to null (unless already changed)
+            if ($offer->getInquiry() === $this) {
+                $offer->setInquiry(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function createOffer(): Offer
+    {
+        $offer = new Offer();
+        $offer->setInquiry($this);
+        $offer->setProperty($this->getProperty());
+        $offer->setCustomerName($this->getName());
+        $offer->setEmail($this->getEmail());
+        $offer->setPhone($this->getPhone());
+        
+        $this->addOffer($offer);
+        
+        return $offer;
     }
 } 

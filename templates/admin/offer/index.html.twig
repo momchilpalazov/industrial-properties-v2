@@ -1,0 +1,99 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Оферти{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1>Оферти</h1>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Клиент</th>
+                        <th>Имот</th>
+                        <th>Цена</th>
+                        <th>Статус</th>
+                        <th>Създадена на</th>
+                        <th>PDF</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for offer in offers %}
+                    <tr>
+                        <td>{{ offer.id }}</td>
+                        <td>
+                            {{ offer.customerName }}<br>
+                            <small>{{ offer.email }}<br>{{ offer.phone }}</small>
+                        </td>
+                        <td>
+                            {% if offer.property %}
+                                <a href="{{ path('admin_property_show', {'id': offer.property.id}) }}">
+                                    {{ offer.property.title }}
+                                </a>
+                            {% endif %}
+                        </td>
+                        <td>{{ offer.price|number_format(2, '.', ',') }} €</td>
+                        <td>
+                            <span class="badge bg-{{ offer.status == 'приета' ? 'success' : 
+                                                    offer.status == 'отказана' ? 'danger' : 
+                                                    offer.status == 'изпратена' ? 'info' : 'warning' }}">
+                                {{ offer.status }}
+                            </span>
+                        </td>
+                        <td>{{ offer.createdAt|date('d.m.Y H:i') }}</td>
+                        <td>
+                            {% if offer.pdfPath %}
+                                <a href="{{ offer.pdfPath }}" target="_blank" class="btn btn-sm btn-outline-primary me-1" title="Отвори PDF">
+                                    <i class="bi bi-file-pdf"></i>
+                                </a>
+                            {% endif %}
+                            <form method="post" action="{{ path('admin_offer_generate_pdf', {'id': offer.id}) }}" 
+                                  style="display: inline-block">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary" title="Генерирай PDF">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </form>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="{{ path('admin_offer_edit', {'id': offer.id}) }}" 
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Редактирай">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form method="post" 
+                                      action="{{ path('admin_offer_send_email', {'id': offer.id}) }}" 
+                                      style="display: inline-block"
+                                      onsubmit="return confirm('Сигурни ли сте, че искате да изпратите офертата на {{ offer.email }}?');">
+                                    <button type="submit" 
+                                            class="btn btn-sm btn-outline-success"
+                                            title="Изпрати по имейл"
+                                            {{ offer.status == 'изпратена' ? 'disabled' }}>
+                                        <i class="bi bi-envelope"></i>
+                                    </button>
+                                </form>
+                                <form method="post" 
+                                      action="{{ path('admin_offer_delete', {'id': offer.id}) }}" 
+                                      onsubmit="return confirm('Сигурни ли сте, че искате да изтриете тази оферта?');" 
+                                      style="display: inline-block">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ offer.id) }}">
+                                    <button class="btn btn-sm btn-outline-danger" title="Изтрий">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8">Няма намерени оферти</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %} 

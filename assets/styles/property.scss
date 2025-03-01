@@ -192,8 +192,34 @@
     background: #f8f9fa;
 }
 
-.pnlm-title, .pnlm-author, .pnlm-about-msg {
+// Скриваме всички надписи
+.pnlm-title, 
+.pnlm-author, 
+.pnlm-about-msg,
+.pnlm-info-box,
+.pnlm-panorama-info,
+.pnlm-load-button,
+.pnlm-about-button,
+a[href^="https://pannellum.org"],
+span.pnlm-about-msg,
+.pnlm-about-msg a,
+.pnlm-container span[class*="pnlm-"],
+.pnlm-container a[href*="pannellum"] {
     display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    pointer-events: none !important;
+}
+
+// Скриваме версията на Pannellum
+.pnlm-panorama-info {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
 }
 
 .pnlm-controls {

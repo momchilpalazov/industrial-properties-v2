@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            margin-bottom: 30px;
+        }
+        .property-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Здравейте, {{ offer.customerName }},</h2>
+        <p>Благодарим Ви за интереса към нашия имот с референтен номер {{ offer.property.referenceNumber }}.</p>
+    </div>
+
+    <div class="property-info">
+        <h3>Информация за имота:</h3>
+        <p><strong>{{ offer.property.titleBg }}</strong></p>
+        <p>Локация: {{ offer.property.location }}</p>
+        <p>Площ: {{ offer.property.area }} м²</p>
+    </div>
+
+    <p>Прилагаме оферта за имота според Вашето запитване. Моля, прегледайте приложения PDF документ за повече детайли.</p>
+
+    <p>Ако имате въпроси или се нуждаете от допълнителна информация, не се колебайте да се свържете с нас.</p>
+
+    <div class="footer">
+        <p>С уважение,<br>Вашият екип от Industrial Properties</p>
+        <p>Тел: +359 888 123 456<br>
+        Имейл: contact@industrial-properties.bg</p>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Оферта {{ offer.id }}</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+        }
+        .offer-details {
+            margin-bottom: 30px;
+        }
+        .property-details {
+            margin-bottom: 30px;
+        }
+        .customer-details {
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ОФЕРТА</h1>
+        <p>№ {{ offer.id }} от {{ offer.createdAt|date('d.m.Y') }}</p>
+    </div>
+
+    <div class="offer-details">
+        <h2>Информация за офертата</h2>
+        <table>
+            <tr>
+                <th>Референтен номер:</th>
+                <td>{{ offer.property.referenceNumber }}</td>
+            </tr>
+            <tr>
+                <th>Статус:</th>
+                <td>{{ offer.status }}</td>
+            </tr>
+            <tr>
+                <th>Предложена цена:</th>
+                <td>{{ offer.price|number_format(2, '.', ',') }} €</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="property-details">
+        <h2>Информация за имота</h2>
+        <table>
+            <tr>
+                <th>Заглавие:</th>
+                <td>{{ offer.property.titleBg }}</td>
+            </tr>
+            <tr>
+                <th>Локация:</th>
+                <td>{{ offer.property.location }}</td>
+            </tr>
+            <tr>
+                <th>Площ:</th>
+                <td>{{ offer.property.area }} м²</td>
+            </tr>
+            {% if offer.property.price %}
+            <tr>
+                <th>Обявена цена:</th>
+                <td>{{ offer.property.price|number_format(2, '.', ',') }} €</td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    <div class="customer-details">
+        <h2>Информация за клиента</h2>
+        <table>
+            <tr>
+                <th>Име:</th>
+                <td>{{ offer.customerName }}</td>
+            </tr>
+            <tr>
+                <th>Имейл:</th>
+                <td>{{ offer.email }}</td>
+            </tr>
+            <tr>
+                <th>Телефон:</th>
+                <td>{{ offer.phone }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>Тази оферта е валидна 30 дни от датата на издаване.</p>
+        <p>За повече информация, моля свържете се с нас.</p>
+    </div>
+</body>
+</html> 
