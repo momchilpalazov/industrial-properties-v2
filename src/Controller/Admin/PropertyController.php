@@ -143,15 +143,6 @@ class PropertyController extends AbstractController
         return $this->json(['featured' => $property->isFeatured()]);
     }
 
-    #[Route('/{id}/toggle-available', name: 'admin_property_toggle_available', methods: ['POST'])]
-    public function toggleAvailable(Property $property): Response
-    {
-        $property->setIsAvailable(!$property->isAvailable());
-        $this->propertyRepository->save($property, true);
-
-        return $this->json(['available' => $property->isAvailable()]);
-    }
-
     #[Route('/{id}/toggle-active', name: 'admin_property_toggle_active', methods: ['POST'])]
     public function toggleActive(Property $property): Response
     {
@@ -221,6 +212,7 @@ class PropertyController extends AbstractController
         }
 
         $file = $request->files->get('file');
+        $is360 = $request->request->get('is360') === 'true';
         
         if (!$file) {
             return $this->json(['success' => false, 'error' => 'No file uploaded'], Response::HTTP_BAD_REQUEST);
@@ -228,7 +220,7 @@ class PropertyController extends AbstractController
 
         try {
             // Използваме PropertyService за качване на снимката
-            $this->propertyService->handleImages($property, [$file]);
+            $this->propertyService->handleImages($property, [$file], null, $is360);
             
             // Взимаме последно качената снимка
             $lastImage = $property->getImages()->last();
@@ -242,7 +234,8 @@ class PropertyController extends AbstractController
                 'image' => [
                     'id' => $lastImage->getId(),
                     'filename' => $lastImage->getFilename(),
-                    'path' => '/uploads/images/properties/' . $property->getId() . '/' . $lastImage->getFilename()
+                    'path' => '/uploads/images/properties/' . $property->getId() . '/' . $lastImage->getFilename(),
+                    'is360' => $lastImage->is360()
                 ]
             ]);
         } catch (\Exception $e) {

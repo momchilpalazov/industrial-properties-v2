@@ -38,6 +38,10 @@ class PropertyImageType extends AbstractType
                 'label' => 'Основна снимка',
                 'required' => false
             ])
+            ->add('is360', CheckboxType::class, [
+                'label' => '360° изображение',
+                'required' => false
+            ])
             ->add('position', HiddenType::class, [
                 'required' => false
             ]);

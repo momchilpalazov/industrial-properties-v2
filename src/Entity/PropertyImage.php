@@ -29,6 +29,9 @@ class PropertyImage
     private bool $isMain = false;
 
     #[ORM\Column]
+    private bool $is360 = false;
+
+    #[ORM\Column]
     private ?int $position = null;
 
     #[Assert\File(
@@ -88,6 +91,17 @@ class PropertyImage
     public function setIsMain(bool $isMain): self
     {
         $this->isMain = $isMain;
+        return $this;
+    }
+
+    public function is360(): bool
+    {
+        return $this->is360;
+    }
+
+    public function setIs360(bool $is360): self
+    {
+        $this->is360 = $is360;
         return $this;
     }
 

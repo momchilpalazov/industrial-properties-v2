@@ -164,7 +164,7 @@ class PropertyService
         $this->entityManager->flush();
     }
 
-    public function handleImages(Property $property, array $uploadedFiles, ?int $mainImageId = null): void
+    public function handleImages(Property $property, array $uploadedFiles, ?int $mainImageId = null, bool $is360 = false): void
     {
         try {
             foreach ($uploadedFiles as $file) {
@@ -191,6 +191,7 @@ class PropertyService
                 $image = new PropertyImage();
                 $image->setProperty($property);
                 $image->setFilename($filename);
+                $image->setIs360($is360);
                 
                 // Ако това е първата снимка, я правим основна
                 if ($property->getImages()->isEmpty()) {
