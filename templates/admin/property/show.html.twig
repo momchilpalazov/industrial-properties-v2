@@ -13,6 +13,27 @@
                 <a href="{{ path('admin_property_images', {'id': property.id}) }}" class="btn btn-sm btn-outline-secondary">
                     <i class="bi bi-images"></i> Снимки
                 </a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-share"></i> Сподели
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="{{ path('admin_social_share', {'id': property.id, 'platform': 'facebook'}) }}" 
+                               class="dropdown-item"
+                               onclick="return confirm('Сигурни ли сте, че искате да споделите този имот във Facebook?')">
+                                <i class="bi bi-facebook text-primary"></i> Сподели във Facebook
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('admin_social_share', {'id': property.id, 'platform': 'linkedin'}) }}" 
+                               class="dropdown-item"
+                               onclick="return confirm('Сигурни ли сте, че искате да споделите този имот в LinkedIn?')">
+                                <i class="bi bi-linkedin text-info"></i> Сподели в LinkedIn
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <a href="{{ path('admin_property_index') }}" class="btn btn-sm btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Назад

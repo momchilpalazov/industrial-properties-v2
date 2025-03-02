@@ -24,6 +24,8 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^2.17",
         "dompdf/dompdf": "*",
+        "facebook/graph-sdk": "*",
+        "facebook/php-business-sdk": "*",
         "friendsofsymfony/ckeditor-bundle": "2.4",
         "intervention/image": "^3.11",
         "knplabs/knp-paginator-bundle": "*",

@@ -1,0 +1,63 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Социални публикации{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Социални публикации</h1>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Имот</th>
+                    <th>Платформа</th>
+                    <th>Статус</th>
+                    <th>Дата</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('admin_property_show', {id: post.property.id}) }}">
+                                {{ post.property.titleBg }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if post.platform == 'facebook' %}
+                                <i class="bi bi-facebook text-primary"></i>
+                            {% elseif post.platform == 'linkedin' %}
+                                <i class="bi bi-linkedin text-info"></i>
+                            {% endif %}
+                            {{ post.platform|capitalize }}
+                        </td>
+                        <td>
+                            {% if post.status == 'success' %}
+                                <span class="badge bg-success">Успешно</span>
+                            {% elseif post.status == 'pending' %}
+                                <span class="badge bg-warning">В процес</span>
+                            {% else %}
+                                <span class="badge bg-danger">Грешка</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ post.createdAt|date('d.m.Y H:i') }}</td>
+                        <td>
+                            {% if post.postId and post.platform == 'facebook' %}
+                                <a href="https://facebook.com/{{ post.postId }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-box-arrow-up-right"></i> Виж публикацията
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">Няма намерени публикации</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %} 
