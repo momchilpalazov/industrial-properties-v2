@@ -8,6 +8,7 @@ use App\Repository\BlogPostRepository;
 use App\Repository\UserRepository;
 use App\Repository\FooterSettingsRepository;
 use App\Repository\AboutSettingsRepository;
+use App\Repository\ApiSettingsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,14 +20,31 @@ use Symfony\Component\Process\Process;
 #[IsGranted('ROLE_ADMIN')]
 class AdminController extends AbstractController
 {
+    private PropertyRepository $propertyRepository;
+    private PropertyInquiryRepository $inquiryRepository;
+    private BlogPostRepository $blogPostRepository;
+    private UserRepository $userRepository;
+    private FooterSettingsRepository $footerSettingsRepository;
+    private AboutSettingsRepository $aboutSettingsRepository;
+    private ApiSettingsRepository $apiSettingsRepository;
+
     public function __construct(
-        private PropertyRepository $propertyRepository,
-        private PropertyInquiryRepository $inquiryRepository,
-        private BlogPostRepository $blogPostRepository,
-        private UserRepository $userRepository,
-        private FooterSettingsRepository $footerSettingsRepository,
-        private AboutSettingsRepository $aboutSettingsRepository
-    ) {}
+        PropertyRepository $propertyRepository,
+        PropertyInquiryRepository $inquiryRepository,
+        BlogPostRepository $blogPostRepository,
+        UserRepository $userRepository,
+        FooterSettingsRepository $footerSettingsRepository,
+        AboutSettingsRepository $aboutSettingsRepository,
+        ApiSettingsRepository $apiSettingsRepository
+    ) {
+        $this->propertyRepository = $propertyRepository;
+        $this->inquiryRepository = $inquiryRepository;
+        $this->blogPostRepository = $blogPostRepository;
+        $this->userRepository = $userRepository;
+        $this->footerSettingsRepository = $footerSettingsRepository;
+        $this->aboutSettingsRepository = $aboutSettingsRepository;
+        $this->apiSettingsRepository = $apiSettingsRepository;
+    }
 
     #[Route('/', name: 'dashboard')]
     public function dashboard(): Response
@@ -52,16 +70,21 @@ class AdminController extends AbstractController
     #[Route('/settings', name: 'settings')]
     public function settings(): Response
     {
-        // TODO: Зареждане на настройките от базата данни
-        $settings = [
-            'site_name' => 'Industrial Properties',
-            'admin_email' => 'admin@example.com',
-            'items_per_page' => 10,
-            'here_maps_api_key' => $_ENV['HERE_MAPS_API_KEY'] ?? ''
-        ];
+        $apiSettings = $this->apiSettingsRepository->getSettings();
 
         return $this->render('admin/settings.html.twig', [
-            'settings' => $settings
+            'settings' => [
+                'site_name' => 'Industrial Properties',
+                'admin_email' => 'admin@example.com',
+                'items_per_page' => 10,
+                'here_maps_api_key' => $_ENV['HERE_MAPS_API_KEY'] ?? '',
+                'facebook_app_id' => $apiSettings->getFacebookAppId(),
+                'facebook_app_secret' => $apiSettings->getFacebookAppSecret(),
+                'facebook_page_id' => $apiSettings->getFacebookPageId(),
+                'facebook_page_access_token' => $apiSettings->getFacebookPageAccessToken(),
+                'linkedin_access_token' => $apiSettings->getLinkedinAccessToken(),
+                'linkedin_organization_id' => $apiSettings->getLinkedinOrganizationId()
+            ]
         ]);
     }
 
@@ -76,7 +99,17 @@ class AdminController extends AbstractController
     #[Route('/settings/api', name: 'settings_api', methods: ['POST'])]
     public function saveApiSettings(Request $request): Response
     {
-        // TODO: Запазване на API настройките
+        $settings = $this->apiSettingsRepository->getSettings();
+
+        $settings->setFacebookAppId($request->request->get('facebook_app_id'))
+            ->setFacebookAppSecret($request->request->get('facebook_app_secret'))
+            ->setFacebookPageId($request->request->get('facebook_page_id'))
+            ->setFacebookPageAccessToken($request->request->get('facebook_page_access_token'))
+            ->setLinkedinAccessToken($request->request->get('linkedin_access_token'))
+            ->setLinkedinOrganizationId($request->request->get('linkedin_organization_id'));
+
+        $this->apiSettingsRepository->save($settings);
+
         $this->addFlash('success', 'API настройките бяха запазени успешно');
         return $this->redirectToRoute('admin_settings');
     }
