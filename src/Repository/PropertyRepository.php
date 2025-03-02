@@ -185,4 +185,34 @@ class PropertyRepository extends ServiceEntityRepository
             'production_facility' => 'property.types.production_facility'
         ];
     }
+
+    public function countByStatus(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        
+        $sql = '
+            SELECT 
+                status,
+                COUNT(id) as count
+            FROM properties
+            GROUP BY status
+        ';
+
+        $stmt = $conn->executeQuery($sql);
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function calculateAverageSaleTime(): ?float
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        
+        $sql = '
+            SELECT AVG(TIMESTAMPDIFF(DAY, created_at, sold_at)) as avgDays
+            FROM properties
+            WHERE sold_at IS NOT NULL
+        ';
+
+        $result = $conn->executeQuery($sql)->fetchOne();
+        return $result ? round($result, 1) : null;
+    }
 } 

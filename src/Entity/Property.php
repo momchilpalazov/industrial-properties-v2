@@ -171,12 +171,19 @@ class Property
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $soldAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyView::class, cascade: ['remove'])]
+    private Collection $views;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
         $this->features = new ArrayCollection();
         $this->pdfFiles = new ArrayCollection();
         $this->inquiries = new ArrayCollection();
+        $this->views = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }
@@ -644,6 +651,31 @@ class Property
     public function setAddress(?string $address): self
     {
         $this->address = $address;
+        return $this;
+    }
+
+    public function getSoldAt(): ?\DateTimeInterface
+    {
+        return $this->soldAt;
+    }
+
+    public function setSoldAt(?\DateTimeInterface $soldAt): self
+    {
+        $this->soldAt = $soldAt;
+        return $this;
+    }
+
+    public function getViews(): Collection
+    {
+        return $this->views;
+    }
+
+    public function addView(PropertyView $view): self
+    {
+        if (!$this->views->contains($view)) {
+            $this->views[] = $view;
+            $view->setProperty($this);
+        }
         return $this;
     }
 

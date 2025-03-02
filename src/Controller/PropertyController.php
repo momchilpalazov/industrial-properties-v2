@@ -15,6 +15,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\DBAL\Connection;
+use App\Repository\PropertyViewRepository;
 
 class PropertyController extends AbstractController
 {
@@ -102,31 +103,17 @@ class PropertyController extends AbstractController
     }
 
     #[Route('/properties/{id}', name: 'app_property_show', methods: ['GET'])]
-    public function show(int $id): Response
+    public function show(Property $property, Request $request, PropertyViewRepository $viewRepository): Response
     {
-        // Директна SQL заявка за проверка на активността
-        $sql = 'SELECT * FROM property WHERE id = :id AND is_active = :active';
-        $stmt = $this->connection->executeQuery(
-            $sql,
-            ['id' => $id, 'active' => true],
-            ['id' => \PDO::PARAM_INT, 'active' => \PDO::PARAM_BOOL]
+        // Записваме разглеждането
+        $viewRepository->addView(
+            $property->getId(),
+            $request->getClientIp(),
+            $request->headers->get('User-Agent')
         );
 
-        $result = $stmt->fetchAssociative();
-
-        if (!$result) {
-            throw $this->createNotFoundException('Имотът не е намерен');
-        }
-
-        // Зареждаме обекта с актуалните данни
-        $property = $this->entityManager->getRepository(Property::class)->find($id);
-
-        if (!$property || !$property->isActive()) {
-            throw $this->createNotFoundException('Имотът не е намерен');
-        }
-
         return $this->render('property/show.html.twig', [
-            'property' => $property,
+            'property' => $property
         ]);
     }
 

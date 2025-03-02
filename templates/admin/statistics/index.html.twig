@@ -1,0 +1,176 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Статистика{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Статистическо табло</h1>
+
+        <div class="row">
+            <!-- Общо имоти по статус -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Активни имоти</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {{ propertiesByStatus|filter(status => status.status == 'active')|first.count|default(0) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Средно време за продажба -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Средно време за продажба</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {{ avgSaleTime ? avgSaleTime ~ ' дни' : 'Няма данни' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Средно време за отговор -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    Средно време за отговор</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {{ avgResponseTime ? avgResponseTime ~ ' часа' : 'Няма данни' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Графика на запитванията -->
+            <div class="col-xl-8 col-lg-7">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Запитвания по месеци</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="inquiriesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Топ локации -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Топ 5 локации</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Локация</th>
+                                        <th>Брой запитвания</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for location in topLocations %}
+                                        <tr>
+                                            <td>{{ location.location }}</td>
+                                            <td>{{ location.inquiryCount }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Най-разглеждани имоти -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Най-разглеждани имоти</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Имот</th>
+                                        <th>Брой разглеждания</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for property in mostViewedProperties %}
+                                        <tr>
+                                            <td>{{ property.title }}</td>
+                                            <td>{{ property.viewCount }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('inquiriesChart').getContext('2d');
+            const data = {{ inquiriesByMonth|json_encode|raw }};
+            
+            const labels = data.map(item => `${item.year}-${item.month}`);
+            const values = data.map(item => item.count);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Брой запитвания',
+                        data: values,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %} 

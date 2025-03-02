@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PropertyInquiryRepository::class)]
-#[ORM\Table(name: 'property_inquiry')]
+#[ORM\Table(name: 'property_inquiries')]
 #[ORM\HasLifecycleCallbacks]
 class PropertyInquiry
 {
@@ -52,6 +52,9 @@ class PropertyInquiry
 
     #[ORM\OneToMany(mappedBy: 'inquiry', targetEntity: Offer::class)]
     private Collection $offers;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $respondedAt = null;
 
     public function __construct()
     {
@@ -134,6 +137,9 @@ class PropertyInquiry
     public function setResponse(?string $response): self
     {
         $this->response = $response;
+        if ($response !== null) {
+            $this->respondedAt = new \DateTimeImmutable();
+        }
         return $this;
     }
 
@@ -200,5 +206,16 @@ class PropertyInquiry
         $this->addOffer($offer);
         
         return $offer;
+    }
+
+    public function getRespondedAt(): ?\DateTimeImmutable
+    {
+        return $this->respondedAt;
+    }
+
+    public function setRespondedAt(?\DateTimeImmutable $respondedAt): self
+    {
+        $this->respondedAt = $respondedAt;
+        return $this;
     }
 } 
