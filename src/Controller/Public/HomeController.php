@@ -37,12 +37,14 @@ class HomeController extends AbstractController
     {
         $currentLanguage = $request->getLocale();
         
+        $vipProperties = $this->propertyRepository->findVipProperties(6);
         $featuredProperties = $this->propertyRepository->findFeatured(6);
         $latestProperties = $this->propertyRepository->findLatest(3);
         $latestPosts = $this->blogService->getLatestPosts(3, $currentLanguage);
         $propertyStats = $this->propertyRepository->getPropertyTypeStats();
 
         return $this->render('home/index.html.twig', [
+            'vip_properties' => $vipProperties,
             'featured_properties' => $featuredProperties,
             'latest_properties' => $latestProperties,
             'latest_posts' => $latestPosts,

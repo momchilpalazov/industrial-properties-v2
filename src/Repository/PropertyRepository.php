@@ -215,4 +215,34 @@ class PropertyRepository extends ServiceEntityRepository
         $result = $conn->executeQuery($sql)->fetchOne();
         return $result ? round($result, 1) : null;
     }
+
+    public function findVipProperties(int $limit = 6): array
+    {
+        $now = new \DateTimeImmutable();
+        
+        return $this->createQueryBuilder('p')
+            ->where('p.isVip = :isVip')
+            ->andWhere('p.vipExpiration > :now')
+            ->andWhere('p.isActive = :isActive')
+            ->setParameter('isVip', true)
+            ->setParameter('now', $now)
+            ->setParameter('isActive', true)
+            ->orderBy('p.vipExpiration', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findFeaturedProperties(int $limit = 6): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.isFeatured = :featured')
+            ->andWhere('p.isActive = :active')
+            ->setParameter('featured', true)
+            ->setParameter('active', true)
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 } 

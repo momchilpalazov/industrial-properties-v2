@@ -106,16 +106,27 @@ class PropertyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->propertyRepository->save($property, true);
+            // Обработка на VIP статуса
+            if ($form->has('vipDuration') && $form->get('isVip')->getData()) {
+                $days = (int) $form->get('vipDuration')->getData();
+                if ($days > 0) {
+                    $property->setIsVip(true);
+                    $property->setVipExpiration(new \DateTimeImmutable("+{$days} days"));
+                }
+            } else {
+                $property->setIsVip(false);
+                $property->setVipExpiration(null);
+            }
 
-            $this->addFlash('success', 'Имотът беше редактиран успешно');
+            $this->entityManager->flush();
 
-            return $this->redirectToRoute('admin_property_index');
+            $this->addFlash('success', 'Имотът беше успешно редактиран.');
+            return $this->redirectToRoute('admin_property_show', ['id' => $property->getId()]);
         }
 
         return $this->render('admin/property/edit.html.twig', [
             'property' => $property,
-            'form' => $form->createView(),
+            'form' => $form
         ]);
     }
 

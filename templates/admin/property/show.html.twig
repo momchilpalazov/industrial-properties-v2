@@ -43,8 +43,8 @@
 
     <div class="row">
         <div class="col-md-8">
-            {% if property.mainImage %}
-                <img src="{{ asset('uploads/images/' ~ property.mainImage.filename) }}" 
+            {% if property.mainImage and property.mainImage.filename %}
+                <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}" 
                      class="img-fluid rounded mb-4" 
                      alt="{{ property.titleBg }}">
             {% endif %}
@@ -104,11 +104,13 @@
                         <h5 class="card-title">Галерия</h5>
                         <div class="row g-2">
                             {% for image in property.images %}
-                                <div class="col-6">
-                                    <img src="{{ asset('uploads/images/' ~ image.filename) }}" 
-                                         class="img-fluid rounded" 
-                                         alt="Снимка {{ loop.index }}">
-                                </div>
+                                {% if image.filename %}
+                                    <div class="col-6">
+                                        <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ image.filename) }}" 
+                                             class="img-fluid rounded" 
+                                             alt="Снимка {{ loop.index }}">
+                                    </div>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
@@ -116,4 +118,35 @@
             {% endif %}
         </div>
     </div>
+
+    {% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация на Lightbox за галерията
+            const galleryImages = document.querySelectorAll('.card-body img');
+            galleryImages.forEach(image => {
+                image.style.cursor = 'pointer';
+                image.addEventListener('click', function() {
+                    const modal = document.createElement('div');
+                    modal.className = 'modal fade';
+                    modal.innerHTML = `
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body p-0">
+                                    <img src="${this.src}" class="img-fluid" alt="${this.alt}">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                    const modalInstance = new bootstrap.Modal(modal);
+                    modalInstance.show();
+                    modal.addEventListener('hidden.bs.modal', function() {
+                        modal.remove();
+                    });
+                });
+            });
+        });
+    </script>
+    {% endblock %}
 {% endblock %} 

@@ -137,6 +137,12 @@ class Property
     #[ORM\Column]
     private bool $isFeatured = false;
 
+    #[ORM\Column]
+    private bool $isVip = false;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $vipExpiration = null;
+
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyImage::class, orphanRemoval: true, cascade: ['persist'])]
     #[Assert\Valid]
     private Collection $images;
@@ -468,6 +474,31 @@ class Property
     public function setIsFeatured(bool $isFeatured): self
     {
         $this->isFeatured = $isFeatured;
+        return $this;
+    }
+
+    public function isVip(): bool
+    {
+        if (!$this->isVip || !$this->vipExpiration) {
+            return false;
+        }
+        return $this->vipExpiration > new \DateTimeImmutable();
+    }
+
+    public function setIsVip(bool $isVip): self
+    {
+        $this->isVip = $isVip;
+        return $this;
+    }
+
+    public function getVipExpiration(): ?\DateTimeImmutable
+    {
+        return $this->vipExpiration;
+    }
+
+    public function setVipExpiration(?\DateTimeImmutable $vipExpiration): self
+    {
+        $this->vipExpiration = $vipExpiration;
         return $this;
     }
 

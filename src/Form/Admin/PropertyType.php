@@ -173,6 +173,30 @@ class PropertyType extends AbstractType
                     'class' => 'form-control'
                 ],
                 'help' => 'Въведете географската дължина в десетичен формат'
+            ])
+            ->add('isVip', CheckboxType::class, [
+                'label' => 'VIP имот',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-check-input',
+                    'data-toggle' => 'vip-options'
+                ]
+            ])
+            ->add('vipDuration', ChoiceType::class, [
+                'label' => 'Продължителност на VIP статус',
+                'mapped' => false,
+                'required' => false,
+                'choices' => [
+                    '7 дни' => 7,
+                    '14 дни' => 14,
+                    '30 дни' => 30
+                ],
+                'attr' => [
+                    'class' => 'form-select vip-option',
+                ],
+                'row_attr' => [
+                    'class' => 'vip-options-group'
+                ]
             ]);
     }
 
