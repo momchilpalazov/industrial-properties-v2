@@ -4,12 +4,81 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         .filter-section {
             background: #f8f9fa;
-            padding: 2rem 0;
-            margin-top: 56px;
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
         }
+        
+        .filter-section.show {
+            max-height: 1000px;
+            opacity: 1;
+            padding: 2rem 0;
+        }
+
+        .filters-wrapper {
+            position: relative;
+            padding-top: 70px;
+        }
+
+        .filter-toggle-container {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: white;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .filter-toggle {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            padding: 12px 24px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: fit-content;
+        }
+
+        .filter-toggle:hover {
+            background: #f5f5f5;
+            border-color: #d0d0d0;
+        }
+
+        .filter-toggle i {
+            transition: transform 0.3s ease;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .filter-toggle.active {
+            background: #1976d2;
+            color: white;
+            border-color: #1976d2;
+        }
+
+        .filter-toggle.active i {
+            transform: rotate(180deg);
+            color: white;
+        }
+
         .property-card {
             transition: transform 0.3s;
         }
@@ -55,48 +124,60 @@
 {% endblock %}
 
 {% block body %}
-    <!-- Filter Section -->
-    <section class="filter-section">
-        <div class="container">
-            {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
-                <div class="col-md-4">
-                    {{ form_row(form.type, {'attr': {'class': 'form-select'}}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.min_price, {'attr': {'class': 'form-control', 'placeholder': 'Минимална цена'}}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.max_price, {'attr': {'class': 'form-control', 'placeholder': 'Максимална цена'}}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.min_area, {'attr': {'class': 'form-control', 'placeholder': 'Минимална площ'}}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.max_area, {'attr': {'class': 'form-control', 'placeholder': 'Максимална площ'}}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.location, {'attr': {'class': 'form-control', 'placeholder': 'Търсене по локация'}}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.status, {'attr': {'class': 'form-select'}}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.sort, {'attr': {'class': 'form-select'}}) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.direction, {'attr': {'class': 'form-select'}}) }}
-                </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search"></i> Търсене
-                    </button>
-                    <a href="{{ path('app_property_index') }}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Изчисти филтрите
-                    </a>
-                </div>
-            {{ form_end(form) }}
+    <div class="filters-wrapper">
+        <!-- Filter Toggle Button -->
+        <div class="filter-toggle-container">
+            <div class="container">
+                <button class="filter-toggle" id="filterToggle">
+                    <i class="material-icons">tune</i>
+                    <span>Филтри</span>
+                </button>
+            </div>
         </div>
-    </section>
+
+        <!-- Filter Section -->
+        <section class="filter-section" id="filterSection">
+            <div class="container">
+                {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
+                    <div class="col-md-4">
+                        {{ form_row(form.type, {'attr': {'class': 'form-select'}}) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.min_price, {'attr': {'class': 'form-control', 'placeholder': 'Минимална цена'}}) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.max_price, {'attr': {'class': 'form-control', 'placeholder': 'Максимална цена'}}) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.min_area, {'attr': {'class': 'form-control', 'placeholder': 'Минимална площ'}}) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.max_area, {'attr': {'class': 'form-control', 'placeholder': 'Максимална площ'}}) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.location, {'attr': {'class': 'form-control', 'placeholder': 'Търсене по локация'}}) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.status, {'attr': {'class': 'form-select'}}) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.sort, {'attr': {'class': 'form-select'}}) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.direction, {'attr': {'class': 'form-select'}}) }}
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i> Търсене
+                        </button>
+                        <a href="{{ path('app_property_index') }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Изчисти филтрите
+                        </a>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </section>
+    </div>
 
     <!-- Properties List -->
     <section class="py-5">
@@ -165,4 +246,36 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterToggle = document.getElementById('filterToggle');
+            const filterSection = document.getElementById('filterSection');
+            const filtersWrapper = document.querySelector('.filters-wrapper');
+            
+            // Проверяваме запазеното състояние
+            const isFilterVisible = localStorage.getItem('filterVisible') === 'true';
+            
+            // Задаваме първоначалното състояние
+            if (isFilterVisible) {
+                filterSection.classList.add('show');
+                filterToggle.classList.add('active');
+            }
+            
+            filterToggle.addEventListener('click', function() {
+                filterSection.classList.toggle('show');
+                filterToggle.classList.toggle('active');
+                
+                // Запазваме състоянието
+                localStorage.setItem('filterVisible', filterSection.classList.contains('show'));
+                
+                // Ако филтрите са показани, скролваме до тях плавно
+                if (filterSection.classList.contains('show')) {
+                    window.scrollTo({
+                        top: filtersWrapper.offsetTop - 70,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
 {% endblock %} 
