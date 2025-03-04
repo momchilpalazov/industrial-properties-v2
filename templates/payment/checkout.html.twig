@@ -69,7 +69,7 @@
             
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <p><strong>Имот:</strong> {{ promotion.property.title }}</p>
+                    <p><strong>Имот:</strong> {{ promotion.property.titleBg }}</p>
                     <p><strong>Референтен номер:</strong> {{ promotion.property.referenceNumber }}</p>
                     <p>
                         <strong>Тип промоция:</strong>
@@ -120,7 +120,7 @@
                 </button>
             {% endif %}
             
-            <a href="{{ path('admin_promotion_edit', {id: promotion.id}) }}" class="btn btn-outline-secondary btn-lg ms-2">
+            <a href="{{ path('app_home') }}" class="btn btn-outline-secondary btn-lg ms-2">
                 Отказ
             </a>
         </div>

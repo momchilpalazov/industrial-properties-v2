@@ -216,13 +216,13 @@
                                                     </a>
                                                     
                                                     {% if not promotion.isPaid %}
-                                                        <a href="{{ path('payment_checkout', {id: promotion.id}) }}" 
+                                                        <a href="{{ path('admin_payment_checkout', {id: promotion.id}) }}" 
                                                            class="btn btn-sm btn-success" 
                                                            title="Плати">
                                                             <i class="bi bi-credit-card"></i>
                                                         </a>
                                                         
-                                                        <a href="{{ path('payment_generate_link', {id: promotion.id}) }}" 
+                                                        <a href="{{ path('admin_payment_generate_link', {id: promotion.id}) }}" 
                                                            class="btn btn-sm btn-info" 
                                                            title="Генерирай платежен линк">
                                                             <i class="bi bi-link-45deg"></i>

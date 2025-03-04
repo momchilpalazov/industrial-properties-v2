@@ -1,4 +1,8 @@
-{% extends 'base.html.twig' %}
+{% if is_public %}
+    {% extends 'base_public.html.twig' %}
+{% else %}
+    {% extends 'admin/base.html.twig' %}
+{% endif %}
 
 {% block title %}Отказано плащане{% endblock %}
 
@@ -70,7 +74,7 @@
         </div>
         
         <div class="cancel-actions">
-            <a href="{{ path('payment_checkout', {id: promotion.id}) }}" class="btn btn-primary btn-lg">
+            <a href="{{ path('admin_payment_checkout', {id: promotion.id}) }}" class="btn btn-primary btn-lg">
                 <i class="bi bi-arrow-repeat me-2"></i> Опитайте отново
             </a>
             <a href="{{ path('admin_promotion_edit', {id: promotion.id}) }}" class="btn btn-outline-secondary btn-lg ms-2">

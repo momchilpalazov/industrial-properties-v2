@@ -1,0 +1,54 @@
+{% extends 'base_public.html.twig' %}
+
+{% block title %}{{ error_title }}{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Възникна грешка
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-x-circle text-danger" style="font-size: 4rem;"></i>
+                        </div>
+
+                        <div class="alert alert-danger mb-4">
+                            <h5 class="alert-heading">
+                                <i class="bi bi-info-circle me-2"></i>
+                                {{ error_title|default('Грешка при обработка на плащането') }}
+                            </h5>
+                            <p class="mb-0">{{ error_message }}</p>
+                        </div>
+
+                        {% if error_details is defined and error_details %}
+                            <div class="alert alert-secondary mb-4">
+                                <h6 class="alert-heading">Технически детайли:</h6>
+                                <p class="mb-0">{{ error_details }}</p>
+                            </div>
+                        {% endif %}
+
+                        <div class="alert alert-info mb-4">
+                            <h6 class="mb-2">Какво можете да направите?</h6>
+                            <ul class="mb-0">
+                                <li>Опитайте отново по-късно</li>
+                                <li>Свържете се с администратор за съдействие</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <a href="{{ path('app_home') }}" class="btn btn-secondary">
+                                <i class="bi bi-house"></i> Начало
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

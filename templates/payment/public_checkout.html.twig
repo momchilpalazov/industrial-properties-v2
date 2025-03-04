@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_public.html.twig' %}
 
 {% block title %}Плащане на промоция{% endblock %}
 
@@ -141,7 +141,7 @@
                 </button>
             {% endif %}
             
-            <a href="{{ path('payment_cancel', {id: promotion.id}) }}" class="btn btn-outline-secondary">
+            <a href="{{ path('payment_public_cancel', {token: promotion.paymentToken}) }}" class="btn btn-outline-secondary">
                 <i class="bi bi-x-circle me-2"></i> Отказ
             </a>
         </div>
@@ -156,7 +156,7 @@
                 const stripeButton = document.getElementById('stripe-button');
                 if (stripeButton) {
                     stripeButton.addEventListener('click', function() {
-                        window.location.href = '{{ path('payment_success', {id: promotion.id}) }}';
+                        window.location.href = '{{ path('payment_public_success', {token: promotion.paymentToken}) }}';
                     });
                 }
             {% endif %}
@@ -165,7 +165,7 @@
                 const paypalButton = document.getElementById('paypal-button');
                 if (paypalButton) {
                     paypalButton.addEventListener('click', function() {
-                        window.location.href = '{{ path('payment_success', {id: promotion.id}) }}';
+                        window.location.href = '{{ path('payment_public_success', {token: promotion.paymentToken}) }}';
                     });
                 }
             {% endif %}

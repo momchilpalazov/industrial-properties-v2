@@ -63,7 +63,7 @@
                                             </a>
                                             
                                             {% if not promotion.isPaid %}
-                                                <a href="{{ path('payment_generate_link', {id: promotion.id}) }}" 
+                                                <a href="{{ path('admin_payment_generate_link', {id: promotion.id}) }}" 
                                                    class="btn btn-sm btn-info" 
                                                    title="Генерирай платежен линк">
                                                     <i class="bi bi-link-45deg"></i>

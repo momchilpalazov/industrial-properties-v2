@@ -29,12 +29,15 @@ class PaymentController extends AbstractController
         $this->settingsService = $settingsService;
     }
 
-    #[Route('/checkout/{id}', name: 'payment_checkout', methods: ['GET'])]
+    #[Route('/checkout/{id}', name: 'admin_payment_checkout', methods: ['GET'])]
     public function checkout(Promotion $promotion): Response
     {
         if ($promotion->isPaid()) {
-            $this->addFlash('info', 'Тази промоция вече е платена.');
-            return $this->redirectToRoute('admin_promotion_edit', ['id' => $promotion->getId()]);
+            return $this->render('payment/error_admin.html.twig', [
+                'error_title' => 'Промоцията е вече платена',
+                'error_message' => 'Тази промоция вече е платена и не може да бъде платена отново.',
+                'promotion' => $promotion
+            ]);
         }
 
         try {
@@ -49,12 +52,23 @@ class PaymentController extends AbstractController
                 'test_mode' => $this->settingsService->get('payment_test_mode', true),
             ]);
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Грешка при създаване на платежна сесия: ' . $e->getMessage());
-            return $this->redirectToRoute('admin_promotion_edit', ['id' => $promotion->getId()]);
+            $errorMessage = 'Възникна проблем при създаването на платежна сесия. ';
+            if (str_contains($e->getMessage(), 'Липсва Stripe таен ключ')) {
+                $errorMessage .= 'Моля, конфигурирайте Stripe таен ключ в настройките за плащане.';
+            } else {
+                $errorMessage .= 'Моля, проверете настройките за плащане.';
+            }
+            
+            return $this->render('payment/error_admin.html.twig', [
+                'error_title' => 'Грешка при създаване на платежна сесия',
+                'error_message' => $errorMessage,
+                'error_details' => $e->getMessage(),
+                'promotion' => $promotion
+            ]);
         }
     }
 
-    #[Route('/success/{id}', name: 'payment_success', methods: ['GET'])]
+    #[Route('/success/{id}', name: 'admin_payment_success', methods: ['GET'])]
     public function success(Request $request, Promotion $promotion): Response
     {
         $transactionId = $request->query->get('transaction_id', 'tx_' . uniqid());
@@ -69,7 +83,7 @@ class PaymentController extends AbstractController
         ]);
     }
 
-    #[Route('/cancel/{id}', name: 'payment_cancel', methods: ['GET'])]
+    #[Route('/cancel/{id}', name: 'admin_payment_cancel', methods: ['GET'])]
     public function cancel(Promotion $promotion): Response
     {
         return $this->render('payment/cancel.html.twig', [
@@ -77,7 +91,7 @@ class PaymentController extends AbstractController
         ]);
     }
 
-    #[Route('/webhook', name: 'payment_webhook', methods: ['POST'])]
+    #[Route('/webhook', name: 'admin_payment_webhook', methods: ['POST'])]
     public function webhook(Request $request): Response
     {
         $gateway = $this->settingsService->get('payment_gateway', 'stripe');
@@ -94,7 +108,7 @@ class PaymentController extends AbstractController
         return new Response('Webhook received', Response::HTTP_OK);
     }
 
-    #[Route('/generate-link/{id}', name: 'payment_generate_link', methods: ['GET'])]
+    #[Route('/generate-link/{id}', name: 'admin_payment_generate_link', methods: ['GET'])]
     public function generatePaymentLink(Promotion $promotion): Response
     {
         // Генериране на уникален токен за плащането
@@ -106,59 +120,13 @@ class PaymentController extends AbstractController
         
         // Генериране на URL за плащане
         $paymentUrl = $this->generateUrl('payment_public_checkout', [
-            'token' => $token
+            'token' => $token,
+            '_locale' => $this->getParameter('locale')
         ], UrlGeneratorInterface::ABSOLUTE_URL);
         
         return $this->render('payment/generate_link.html.twig', [
             'promotion' => $promotion,
             'payment_url' => $paymentUrl
-        ]);
-    }
-    
-    #[Route('/public/checkout/{token}', name: 'payment_public_checkout', methods: ['GET'])]
-    public function publicCheckout(string $token): Response
-    {
-        // Намиране на промоцията по токена
-        $promotion = $this->entityManager->getRepository(Promotion::class)->findOneBy(['paymentToken' => $token]);
-        
-        if (!$promotion) {
-            throw $this->createNotFoundException('Невалиден платежен линк.');
-        }
-        
-        // Проверка дали промоцията вече е платена
-        if ($promotion->isPaid()) {
-            return $this->redirectToRoute('payment_already_paid', ['token' => $token]);
-        }
-        
-        // Създаване на платежна сесия
-        $gateway = $this->settingsService->get('payment_gateway', 'stripe');
-        $testMode = $this->settingsService->get('payment_test_mode', false);
-        $currency = $this->settingsService->get('payment_currency', 'EUR');
-        $totalPrice = $this->paymentService->calculateTotalPrice($promotion);
-        
-        $session = $this->paymentService->createPaymentSession($promotion);
-        
-        return $this->render('payment/public_checkout.html.twig', [
-            'promotion' => $promotion,
-            'gateway' => $gateway,
-            'test_mode' => $testMode,
-            'currency' => $currency,
-            'total_price' => $totalPrice,
-            'session' => $session
-        ]);
-    }
-    
-    #[Route('/already-paid/{token}', name: 'payment_already_paid', methods: ['GET'])]
-    public function alreadyPaid(string $token): Response
-    {
-        $promotion = $this->entityManager->getRepository(Promotion::class)->findOneBy(['paymentToken' => $token]);
-        
-        if (!$promotion) {
-            throw $this->createNotFoundException('Невалиден платежен линк.');
-        }
-        
-        return $this->render('payment/already_paid.html.twig', [
-            'promotion' => $promotion
         ]);
     }
 } 
