@@ -205,21 +205,20 @@
                                 Социални публикации
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_settings' %}active{% endif %}" 
-                               href="{{ path('admin_settings') }}">
-                                <i class="bi bi-gear"></i>
-                                Настройки
-                            </a>
-                            <ul class="nav flex-column ms-3">
-                                <li class="nav-item">
+                         <li class="nav-item">
                                     <a class="nav-link {% if app.request.get('_route') == 'admin_payment_settings' %}active{% endif %}" 
                                        href="{{ path('admin_payment_settings') }}">
                                         <i class="bi bi-credit-card"></i>
                                         Настройки за плащане
                                     </a>
                                 </li>
-                            </ul>
+                        <li class="nav-item">
+                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_settings' %}active{% endif %}" 
+                               href="{{ path('admin_settings') }}">
+                                <i class="bi bi-gear"></i>
+                                Настройки
+                            </a>
+                            
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if app.request.get('_route') starts with 'admin_footer' %}active{% endif %}" 
