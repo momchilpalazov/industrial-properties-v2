@@ -10,6 +10,12 @@
 
 {% block body %}
     <div class="container mt-4">
+        <div class="print-header d-none">
+            <div class="mb-4">
+                <h3 class="mb-1">{{ 'app.title'|trans }}</h3>
+                <p class="text-muted mb-0">{{ 'app.tagline'|trans }}</p>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-8">
                 {% if property.images|length > 0 %}
@@ -99,7 +105,55 @@
                             {% if property.price %}
                                 <p><i class="bi bi-tag"></i> <strong>{{ 'property.price'|trans }}:</strong> {{ property.price|number_format(0, '.', ' ') }} €</p>
                             {% endif %}
+                            {% if property.pdfs is not empty %}
+                                {% for pdf in property.pdfs %}
+                                    <p>
+                                        <i class="bi bi-file-pdf"></i>
+                                        <strong>{{ 'property.expose'|trans }}:</strong>
+                                        <a href="{{ asset('uploads/properties/exposes/' ~ pdf.filename) }}" target="_blank" class="text-primary">
+                                            {{ 'property.download_pdf'|trans }}
+                                        </a>
+                                    </p>
+                                {% endfor %}
+                            {% endif %}
                         </div>
+                    </div>
+                </div>
+
+                <div class="share-buttons mb-4">
+                    <h5 class="mb-3">
+                        <i class="bi bi-share"></i>
+                        {{ 'property.share.title'|trans }}
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ app.request.uri|url_encode }}" 
+                           target="_blank" 
+                           class="btn btn-primary">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ app.request.uri|url_encode }}&title={{ property.title|url_encode }}" 
+                           target="_blank" 
+                           class="btn btn-info">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ app.request.uri|url_encode }}&text={{ property.title|url_encode }}" 
+                           target="_blank" 
+                           class="btn btn-dark">
+                            <i class="bi bi-twitter-x"></i>
+                        </a>
+                        <button class="btn btn-secondary copy-link" 
+                                data-clipboard-text="{{ app.request.uri }}"
+                                data-bs-toggle="tooltip" 
+                                data-bs-placement="top" 
+                                title="{{ 'property.share.copy_link'|trans }}">
+                            <i class="bi bi-link-45deg"></i>
+                        </button>
+                        <button class="btn btn-success print-property"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title="{{ 'property.print'|trans }}">
+                            <i class="bi bi-printer"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -146,6 +200,169 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
     {{ encore_entry_script_tags('property-360-viewer') }}
     {{ encore_entry_script_tags('property-inquiry') }}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализиране на tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Инициализиране на Clipboard.js
+            var clipboard = new ClipboardJS('.copy-link');
+            
+            clipboard.on('success', function(e) {
+                // Показване на toastr съобщение
+                toastr.success('{{ "property.share.copied"|trans }}');
+                
+                // Скриване на tooltip-а
+                var tooltip = bootstrap.Tooltip.getInstance(e.trigger);
+                if (tooltip) {
+                    tooltip.hide();
+                }
+                
+                e.clearSelection();
+            });
+
+            // Функционалност за принтиране
+            document.querySelector('.print-property').addEventListener('click', function() {
+                // Скриване на tooltip-а преди принтиране
+                var tooltip = bootstrap.Tooltip.getInstance(this);
+                if (tooltip) {
+                    tooltip.hide();
+                }
+                
+                // Добавяне на стилове за принтиране
+                var printStyles = `
+                    <style>
+                        @media print {
+                            /* Показване на хедъра за принтиране */
+                            .print-header {
+                                display: block !important;
+                                margin-bottom: 20px;
+                                border-bottom: 1px solid #ddd;
+                                padding-bottom: 15px;
+                            }
+
+                            .print-header h3 {
+                                font-size: 18pt;
+                                margin: 0;
+                                color: #000;
+                            }
+
+                            .print-header p {
+                                font-size: 12pt;
+                                color: #666;
+                            }
+
+                            /* Скриване само на ненужните елементи */
+                            .card-body form,
+                            .carousel-control-prev,
+                            .carousel-control-next,
+                            .share-buttons,
+                            footer,
+                            nav,
+                            .btn {
+                                display: none !important;
+                            }
+
+                            /* Показване на контейнера на цялата ширина */
+                            .container {
+                                width: 100% !important;
+                                max-width: none !important;
+                                padding: 0 20px !important;
+                                margin: 0 !important;
+                            }
+
+                            /* Оптимизация на изображенията */
+                            .carousel-item {
+                                display: block !important;
+                                page-break-inside: avoid;
+                                margin-bottom: 20px;
+                            }
+
+                            img {
+                                max-width: 100% !important;
+                                height: auto !important;
+                                page-break-inside: avoid;
+                            }
+
+                            /* Стилове за текст и линкове */
+                            body {
+                                font-size: 12pt;
+                                line-height: 1.5;
+                                color: #000;
+                            }
+
+                            h1, h2, h3, h4, h5 {
+                                page-break-after: avoid;
+                            }
+
+                            a {
+                                text-decoration: none !important;
+                                color: #000 !important;
+                            }
+
+                            /* Добавяне на разстояния между секциите */
+                            .property-description,
+                            .property-details {
+                                margin-bottom: 20px;
+                                page-break-inside: avoid;
+                            }
+
+                            /* Показване на всички детайли в една колона */
+                            .col-md-8 {
+                                width: 100% !important;
+                                max-width: 100% !important;
+                                flex: 0 0 100% !important;
+                            }
+
+                            /* Скриване на дясната колона с формата */
+                            .col-md-4 {
+                                display: none !important;
+                            }
+
+                            /* Добавяне на рамка около основната информация */
+                            .property-details {
+                                border: 1px solid #ddd;
+                                padding: 15px;
+                                margin: 15px 0;
+                            }
+
+                            /* Добавяне на дата на принтиране */
+                            .property-details::after {
+                                content: "Дата на принтиране: " attr(data-print-date);
+                                display: block;
+                                margin-top: 20px;
+                                font-size: 10pt;
+                                color: #666;
+                            }
+
+                            /* Стил за 360° изображения */
+                            .property-360-section {
+                                page-break-before: always;
+                            }
+                        }
+                    </style>
+                `;
+                
+                // Добавяне на текуща дата към детайлите
+                var propertyDetails = document.querySelector('.property-details');
+                if (propertyDetails) {
+                    var currentDate = new Date().toLocaleDateString('bg-BG');
+                    propertyDetails.setAttribute('data-print-date', currentDate);
+                }
+
+                // Добавяне на стиловете към head
+                document.head.insertAdjacentHTML('beforeend', printStyles);
+                
+                // Извикване на принтиране
+                window.print();
+            });
+        });
+    </script>
 {% endblock %} 

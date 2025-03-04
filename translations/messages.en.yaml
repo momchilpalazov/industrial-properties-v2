@@ -90,6 +90,8 @@ property:
         search: 'Search'
         filter: 'Filter'
         clear: 'Clear'
+    expose: 'Expose'
+    download_pdf: 'Download PDF'
 
 blog:
     title: 'Blog'

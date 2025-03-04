@@ -51,7 +51,8 @@ property:
         pending: 'Очаква финализиране'
     share:
         title: 'Сподели'
-        copied: 'Линкът е копиран в клипборда'
+        copied: 'Линкът е копиран'
+        copy_link: 'Копирай линк'
     print: 'Принтирай'
     inquiry:
         title: 'Запитване за имота'
@@ -98,6 +99,8 @@ property:
     vip_properties: 'Премиум оферти'
     featured_properties: 'Избрани имоти'
     latest_properties: 'Последно добавени'
+    expose: 'Експозе'
+    download_pdf: 'Изтегли PDF'
 
 blog:
     title: 'Блог и новини за индустриални имоти'
