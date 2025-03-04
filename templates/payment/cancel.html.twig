@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Отказано плащане{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .cancel-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .cancel-icon {
+            font-size: 5rem;
+            color: #dc3545;
+            margin-bottom: 2rem;
+        }
+        
+        .cancel-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cancel-message {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            color: #6c757d;
+        }
+        
+        .cancel-details {
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .cancel-actions {
+            margin-top: 2rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="cancel-container">
+        <div class="cancel-icon">
+            <i class="bi bi-x-circle-fill"></i>
+        </div>
+        
+        <h1 class="cancel-title">Плащането е отказано</h1>
+        <p class="cancel-message">Плащането беше отказано или възникна проблем при обработката.</p>
+        
+        <div class="cancel-details">
+            <h4 class="mb-3">Детайли за промоцията</h4>
+            
+            <p><strong>Имот:</strong> {{ promotion.property.title }}</p>
+            <p><strong>Референтен номер:</strong> {{ promotion.property.referenceNumber }}</p>
+            <p>
+                <strong>Тип промоция:</strong>
+                {% if promotion.type == 'vip' %}
+                    <span class="badge bg-warning">VIP обява</span>
+                {% else %}
+                    <span class="badge bg-info">Избрана обява</span>
+                {% endif %}
+            </p>
+            <p><strong>Начална дата:</strong> {{ promotion.startDate|date('d.m.Y') }}</p>
+            <p><strong>Крайна дата:</strong> {{ promotion.endDate|date('d.m.Y') }}</p>
+        </div>
+        
+        <div class="cancel-actions">
+            <a href="{{ path('payment_checkout', {id: promotion.id}) }}" class="btn btn-primary btn-lg">
+                <i class="bi bi-arrow-repeat me-2"></i> Опитайте отново
+            </a>
+            <a href="{{ path('admin_promotion_edit', {id: promotion.id}) }}" class="btn btn-outline-secondary btn-lg ms-2">
+                <i class="bi bi-pencil me-2"></i> Редактирай промоцията
+            </a>
+        </div>
+    </div>
+{% endblock %} 

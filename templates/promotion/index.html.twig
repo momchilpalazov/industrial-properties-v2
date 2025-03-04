@@ -1,0 +1,235 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'promotion.active_promotions'|trans }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .promotions-header {
+            background-color: #f8f9fa;
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+        }
+        
+        .promotions-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .promotions-subtitle {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+        
+        .promotion-card {
+            height: 100%;
+            transition: transform 0.3s;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .promotion-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .promotion-card.vip {
+            border: 2px solid #ffc107;
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
+        }
+        
+        .promotion-image {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .promotion-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            z-index: 10;
+        }
+        
+        .promotion-badge.vip {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .promotion-badge.featured {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .promotion-info {
+            padding: 1.5rem;
+        }
+        
+        .promotion-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 3rem;
+        }
+        
+        .promotion-location {
+            color: #6c757d;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .promotion-features {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .promotion-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .promotion-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 1rem;
+        }
+        
+        .promotion-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .promotion-date {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .promotion-link {
+            color: #007bff;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .promotion-link:hover {
+            text-decoration: underline;
+        }
+        
+        .no-promotions {
+            text-align: center;
+            padding: 3rem;
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .no-promotions-icon {
+            font-size: 3rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        
+        .no-promotions-text {
+            font-size: 1.25rem;
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="promotions-header">
+        <div class="container">
+            <h1 class="promotions-title">{{ 'promotion.active_promotions'|trans }}</h1>
+            <p class="promotions-subtitle">{{ 'promotion.discover_best_offers'|trans }}</p>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        {% if promotions|length > 0 %}
+            <div class="row">
+                {% for promotion in promotions %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="promotion-card position-relative {% if promotion.type == 'vip' %}vip{% endif %}">
+                            {% if promotion.type == 'vip' %}
+                                <div class="promotion-badge vip">VIP</div>
+                            {% else %}
+                                <div class="promotion-badge featured">{{ 'promotion.featured'|trans }}</div>
+                            {% endif %}
+                            
+                            {% if promotion.property.mainImage %}
+                                <img src="{{ asset('uploads/images/properties/' ~ promotion.property.id ~ '/' ~ promotion.property.mainImage.filename) }}" 
+                                     class="promotion-image w-100" 
+                                     alt="{{ promotion.property.titleBg }}">
+                            {% else %}
+                                <img src="{{ asset('img/no-image.jpg') }}" 
+                                     class="promotion-image w-100" 
+                                     alt="No image">
+                            {% endif %}
+                            
+                            <div class="promotion-info">
+                                <h3 class="promotion-title">{{ promotion.property.titleBg }}</h3>
+                                <div class="promotion-location">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span>{{ promotion.property.locationBg }}</span>
+                                </div>
+                                
+                                <div class="promotion-features">
+                                    <div class="promotion-feature">
+                                        <i class="bi bi-rulers"></i>
+                                        <span>{{ promotion.property.area }} m²</span>
+                                    </div>
+                                    <div class="promotion-feature">
+                                        <i class="bi bi-building"></i>
+                                        <span>{{ promotion.property.type }}</span>
+                                    </div>
+                                </div>
+                                
+                                {% if promotion.property.price %}
+                                    <div class="promotion-price">{{ promotion.property.price|number_format(0, '.', ' ') }} €</div>
+                                {% endif %}
+                                
+                                <div class="promotion-footer">
+                                    <div class="promotion-date">
+                                        {{ 'promotion.valid_until'|trans }}: {{ promotion.endDate|date('d.m.Y') }}
+                                    </div>
+                                    <a href="{{ path('app_property_show', {id: promotion.property.id}) }}" class="promotion-link">
+                                        {{ 'promotion.view_details'|trans }} <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-promotions">
+                <div class="no-promotions-icon">
+                    <i class="bi bi-exclamation-circle"></i>
+                </div>
+                <h3 class="no-promotions-text">{{ 'promotion.no_active_promotions'|trans }}</h3>
+                <a href="{{ path('app_home') }}" class="btn btn-primary">
+                    {{ 'promotion.back_to_home'|trans }}
+                </a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %} 

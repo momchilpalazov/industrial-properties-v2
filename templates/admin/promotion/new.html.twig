@@ -1,0 +1,100 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Нова промоция{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-xl-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Създаване на промоция за имот</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="property-info mb-4">
+                            <h6>Информация за имота:</h6>
+                            <p><strong>Заглавие:</strong> {{ property.title }}</p>
+                            <p><strong>Локация:</strong> {{ property.location }}</p>
+                            <p><strong>Референтен номер:</strong> {{ property.referenceNumber }}</p>
+                        </div>
+
+                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.type, {
+                                        'attr': {
+                                            'class': 'form-select'
+                                        }
+                                    }) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.price, {
+                                        'attr': {
+                                            'class': 'form-control'
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.startDate, {
+                                        'attr': {
+                                            'class': 'form-control'
+                                        }
+                                    }) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.endDate, {
+                                        'attr': {
+                                            'class': 'form-control'
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary">
+                                    Създай промоция
+                                </button>
+                                <a href="{{ path('admin_property_show', {id: property.id}) }}" class="btn btn-secondary">
+                                    Отказ
+                                </a>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-xl-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Информация за промоциите</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h6>VIP обява</h6>
+                            <p>VIP обявите се показват с приоритет в началото на списъка и имат специално оформление.</p>
+                            <ul>
+                                <li>Златна рамка</li>
+                                <li>VIP значка</li>
+                                <li>По-голямо изображение</li>
+                                <li>Приоритетно показване</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h6>Избрана обява</h6>
+                            <p>Избраните обяви се показват в специална секция на началната страница.</p>
+                            <ul>
+                                <li>Специална секция</li>
+                                <li>Значка "Избрана"</li>
+                                <li>По-добра видимост</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

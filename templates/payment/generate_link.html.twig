@@ -1,0 +1,118 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Генериране на платежен линк{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Платежен линк генериран успешно</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info mb-4">
+                            <p class="mb-0">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Платежният линк е генериран успешно и може да бъде споделен с клиента.
+                            </p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5>Детайли за промоцията:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th style="width: 30%">Имот:</th>
+                                        <td>{{ promotion.property.titleBg }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Референтен номер:</th>
+                                        <td>{{ promotion.property.referenceNumber }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Тип промоция:</th>
+                                        <td>
+                                            {% if promotion.type == 'vip' %}
+                                                <span class="badge bg-warning">VIP</span>
+                                            {% else %}
+                                                <span class="badge bg-info">Избрана</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Период:</th>
+                                        <td>{{ promotion.startDate|date('d.m.Y') }} - {{ promotion.endDate|date('d.m.Y') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Цена:</th>
+                                        <td>{{ promotion.price|number_format(2, '.', ' ') }} €</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5>Платежен линк:</h5>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="payment-url" value="{{ payment_url }}" readonly>
+                                <button class="btn btn-outline-primary" type="button" id="copy-button" onclick="copyPaymentUrl()">
+                                    <i class="bi bi-clipboard"></i> Копирай
+                                </button>
+                            </div>
+                            <small class="text-muted">Този линк е валиден до изтичане на промоцията.</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5>Споделяне на линка:</h5>
+                            <div class="d-flex gap-2">
+                                <a href="mailto:?subject=Платежен линк за промоция на имот&body=Здравейте,%0D%0A%0D%0AМоля, използвайте следния линк за плащане на промоцията за имот {{ promotion.property.titleBg }}:%0D%0A%0D%0A{{ payment_url }}%0D%0A%0D%0AПоздрави,%0D%0AЕкипът на Industrial Properties" class="btn btn-outline-secondary">
+                                    <i class="bi bi-envelope"></i> Имейл
+                                </a>
+                                <a href="https://wa.me/?text=Платежен линк за промоция на имот {{ promotion.property.titleBg }}: {{ payment_url }}" target="_blank" class="btn btn-outline-success">
+                                    <i class="bi bi-whatsapp"></i> WhatsApp
+                                </a>
+                                <a href="sms:?body=Платежен линк за промоция на имот {{ promotion.property.titleBg }}: {{ payment_url }}" class="btn btn-outline-info">
+                                    <i class="bi bi-chat"></i> SMS
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('admin_promotion_edit', {id: promotion.id}) }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Назад към промоцията
+                            </a>
+                            <a href="{{ path('payment_checkout', {id: promotion.id}) }}" class="btn btn-primary">
+                                <i class="bi bi-credit-card"></i> Към плащане
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function copyPaymentUrl() {
+            const paymentUrl = document.getElementById('payment-url');
+            paymentUrl.select();
+            document.execCommand('copy');
+            
+            const copyButton = document.getElementById('copy-button');
+            const originalHtml = copyButton.innerHTML;
+            
+            copyButton.innerHTML = '<i class="bi bi-check"></i> Копирано';
+            copyButton.classList.remove('btn-outline-primary');
+            copyButton.classList.add('btn-success');
+            
+            setTimeout(() => {
+                copyButton.innerHTML = originalHtml;
+                copyButton.classList.remove('btn-success');
+                copyButton.classList.add('btn-outline-primary');
+            }, 2000);
+        }
+    </script>
+{% endblock %} 

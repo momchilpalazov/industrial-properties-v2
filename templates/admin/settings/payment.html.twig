@@ -1,0 +1,246 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Платежни настройки{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .payment-settings-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .payment-gateway-section {
+            padding: 1.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .payment-gateway-section h4 {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .payment-gateway-toggle {
+            margin-bottom: 1.5rem;
+        }
+        
+        .payment-gateway-toggle .form-check {
+            display: inline-block;
+            margin-right: 1.5rem;
+        }
+        
+        .payment-gateway-toggle .form-check-input {
+            margin-top: 0.25rem;
+        }
+        
+        .payment-gateway-toggle .form-check-label {
+            font-weight: 500;
+        }
+        
+        .gateway-fields {
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+        }
+        
+        .gateway-fields.hidden {
+            display: none;
+        }
+        
+        .api-key-field {
+            font-family: monospace;
+        }
+        
+        .test-mode-badge {
+            background-color: #ffc107;
+            color: #212529;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            margin-left: 0.5rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">Платежни настройки</h1>
+        </div>
+
+        <div class="row">
+            <div class="col-12 col-xl-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Настройки на платежните системи</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'class': 'payment-settings-form'}}) }}
+                            <div class="payment-gateway-toggle">
+                                <div class="mb-3">
+                                    <label class="form-label">Активна платежна система</label>
+                                    {{ form_widget(form.payment_gateway) }}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_row(form.payment_test_mode) }}
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    {{ form_row(form.payment_currency) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_row(form.vat_rate) }}
+                                </div>
+                            </div>
+
+                            <div class="payment-gateway-section stripe-section">
+                                <h4>
+                                    <i class="bi bi-credit-card"></i> Stripe настройки
+                                    <span class="test-mode-badge stripe-test-badge d-none">
+                                        <i class="bi bi-exclamation-triangle"></i> Тестов режим
+                                    </span>
+                                </h4>
+                                <div class="gateway-fields stripe-fields">
+                                    <div class="mb-3">
+                                        {{ form_row(form.stripe_public_key, {
+                                            'attr': {
+                                                'class': 'form-control api-key-field'
+                                            }
+                                        }) }}
+                                    </div>
+                                    <div class="mb-3">
+                                        {{ form_row(form.stripe_secret_key, {
+                                            'attr': {
+                                                'class': 'form-control api-key-field'
+                                            }
+                                        }) }}
+                                    </div>
+                                    <div class="mb-3">
+                                        {{ form_row(form.stripe_webhook_secret, {
+                                            'attr': {
+                                                'class': 'form-control api-key-field'
+                                            }
+                                        }) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="payment-gateway-section paypal-section">
+                                <h4>
+                                    <i class="bi bi-paypal"></i> PayPal настройки
+                                    <span class="test-mode-badge paypal-test-badge d-none">
+                                        <i class="bi bi-exclamation-triangle"></i> Тестов режим
+                                    </span>
+                                </h4>
+                                <div class="gateway-fields paypal-fields">
+                                    <div class="mb-3">
+                                        {{ form_row(form.paypal_client_id, {
+                                            'attr': {
+                                                'class': 'form-control api-key-field'
+                                            }
+                                        }) }}
+                                    </div>
+                                    <div class="mb-3">
+                                        {{ form_row(form.paypal_client_secret, {
+                                            'attr': {
+                                                'class': 'form-control api-key-field'
+                                            }
+                                        }) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save"></i> Запази настройките
+                                </button>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-xl-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Информация</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h6>Платежни системи</h6>
+                            <p>Изберете платежна система, която да използвате за обработка на плащанията за промоции.</p>
+                            
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                За да използвате платежните системи, трябва да имате регистрация и API ключове от съответния доставчик.
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6>Тестов режим</h6>
+                            <p>В тестов режим, плащанията се обработват в тестова среда и не се извършват реални транзакции.</p>
+                            <p>Използвайте тестови карти и акаунти за тестване на функционалността.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6>Webhook настройки</h6>
+                            <p>За да получавате известия за успешни плащания, трябва да настроите webhook URL в контролния панел на платежната система:</p>
+                            <code>{{ app.request.schemeAndHttpHost }}/payment/webhook</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentGatewayRadios = document.querySelectorAll('input[name="payment_settings[payment_gateway]"]');
+            const stripeFields = document.querySelector('.stripe-fields');
+            const paypalFields = document.querySelector('.paypal-fields');
+            const testModeCheckbox = document.querySelector('input[name="payment_settings[payment_test_mode]"]');
+            const stripeTestBadge = document.querySelector('.stripe-test-badge');
+            const paypalTestBadge = document.querySelector('.paypal-test-badge');
+            
+            function updateGatewayFields() {
+                const selectedGateway = document.querySelector('input[name="payment_settings[payment_gateway]"]:checked').value;
+                
+                if (selectedGateway === 'stripe') {
+                    stripeFields.classList.remove('hidden');
+                    paypalFields.classList.add('hidden');
+                } else if (selectedGateway === 'paypal') {
+                    stripeFields.classList.add('hidden');
+                    paypalFields.classList.remove('hidden');
+                }
+            }
+            
+            function updateTestModeBadges() {
+                if (testModeCheckbox.checked) {
+                    stripeTestBadge.classList.remove('d-none');
+                    paypalTestBadge.classList.remove('d-none');
+                } else {
+                    stripeTestBadge.classList.add('d-none');
+                    paypalTestBadge.classList.add('d-none');
+                }
+            }
+            
+            paymentGatewayRadios.forEach(radio => {
+                radio.addEventListener('change', updateGatewayFields);
+            });
+            
+            testModeCheckbox.addEventListener('change', updateTestModeBadges);
+            
+            // Initial update
+            updateGatewayFields();
+            updateTestModeBadges();
+        });
+    </script>
+{% endblock %} 

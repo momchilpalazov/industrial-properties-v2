@@ -64,6 +64,21 @@
             padding: 1.5rem;
         }
 
+        /* Submenu styles */
+        .sidebar .nav-item ul {
+            display: none;
+            padding-left: 0;
+        }
+        .sidebar .nav-item.active ul,
+        .sidebar .nav-link.active + ul,
+        .sidebar .nav-item:hover ul {
+            display: block;
+        }
+        .sidebar .nav-item ul .nav-link {
+            padding-left: 2.5rem;
+            font-size: 0.9rem;
+        }
+
         /* Social Media Buttons */
         .btn-facebook {
             background-color: #1877f2;
@@ -156,6 +171,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_promotion' %}active{% endif %}" 
+                               href="{{ path('admin_promotion_index') }}">
+                                <i class="bi bi-star"></i>
+                                Промоции
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link {% if app.request.get('_route') starts with 'admin_blog' %}active{% endif %}" 
                                href="{{ path('admin_blog_index') }}">
                                 <i class="bi bi-file-text"></i>
@@ -189,6 +211,15 @@
                                 <i class="bi bi-gear"></i>
                                 Настройки
                             </a>
+                            <ul class="nav flex-column ms-3">
+                                <li class="nav-item">
+                                    <a class="nav-link {% if app.request.get('_route') == 'admin_payment_settings' %}active{% endif %}" 
+                                       href="{{ path('admin_payment_settings') }}">
+                                        <i class="bi bi-credit-card"></i>
+                                        Настройки за плащане
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if app.request.get('_route') starts with 'admin_footer' %}active{% endif %}" 
@@ -235,5 +266,38 @@
     <!-- Custom JS -->
     <script src="{{ asset('js/script.js') }}"></script>
     {% block javascripts %}{% endblock %}
+    
+    <script>
+        // Управление на подменютата
+        document.addEventListener('DOMContentLoaded', function() {
+            // Активиране на подменюто, ако текущият път съвпада с някой от елементите в подменюто
+            const currentPath = window.location.pathname;
+            const subMenuItems = document.querySelectorAll('.sidebar .nav-item ul .nav-link');
+            
+            subMenuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPath) {
+                    const parentItem = item.closest('.nav-item');
+                    if (parentItem) {
+                        parentItem.classList.add('active');
+                    }
+                }
+            });
+            
+            // Показване на подменюто при клик върху родителския елемент
+            const menuItems = document.querySelectorAll('.sidebar .nav-item > .nav-link');
+            
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    const hasSubmenu = this.nextElementSibling && this.nextElementSibling.tagName === 'UL';
+                    
+                    if (hasSubmenu) {
+                        e.preventDefault();
+                        const parentItem = this.parentElement;
+                        parentItem.classList.toggle('active');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html> 

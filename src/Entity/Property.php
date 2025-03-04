@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Entity\PropertyPdf;
 use App\Entity\PropertyInquiry;
 use App\Entity\PropertyType;
+use App\Entity\Promotion;
 
 #[ORM\Entity(repositoryClass: PropertyRepository::class)]
 #[ORM\Table(name: 'properties')]
@@ -156,6 +157,9 @@ class Property
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyInquiry::class)]
     private Collection $inquiries;
 
+    #[ORM\OneToMany(mappedBy: 'property', targetEntity: Promotion::class, orphanRemoval: true)]
+    private Collection $promotions;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -189,6 +193,7 @@ class Property
         $this->features = new ArrayCollection();
         $this->pdfFiles = new ArrayCollection();
         $this->inquiries = new ArrayCollection();
+        $this->promotions = new ArrayCollection();
         $this->views = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
@@ -726,5 +731,64 @@ class Property
         $random = strtoupper(substr(uniqid(), -4));
 
         $this->referenceNumber = "IP-{$typeCode}-{$date}-{$random}";
+    }
+
+    /**
+     * @return Collection<int, Promotion>
+     */
+    public function getPromotions(): Collection
+    {
+        return $this->promotions;
+    }
+
+    public function addPromotion(Promotion $promotion): self
+    {
+        if (!$this->promotions->contains($promotion)) {
+            $this->promotions->add($promotion);
+            $promotion->setProperty($this);
+        }
+
+        return $this;
+    }
+
+    public function removePromotion(Promotion $promotion): self
+    {
+        if ($this->promotions->removeElement($promotion)) {
+            if ($promotion->getProperty() === $this) {
+                $promotion->setProperty(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function hasActivePromotion(string $type): bool
+    {
+        foreach ($this->promotions as $promotion) {
+            if ($promotion->getType() === $type && $promotion->isActive()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getActiveVipPromotion(): ?Promotion
+    {
+        foreach ($this->promotions as $promotion) {
+            if ($promotion->getType() === 'vip' && $promotion->isActive()) {
+                return $promotion;
+            }
+        }
+        return null;
+    }
+
+    public function getActiveFeaturedPromotion(): ?Promotion
+    {
+        foreach ($this->promotions as $promotion) {
+            if ($promotion->getType() === 'featured' && $promotion->isActive()) {
+                return $promotion;
+            }
+        }
+        return null;
     }
 } 

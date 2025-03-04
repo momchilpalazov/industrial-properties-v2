@@ -249,6 +249,16 @@
                                                title="Снимки">
                                                 <i class="bi bi-images"></i>
                                             </a>
+                                            <a href="{{ path('admin_promotion_new', {'property': property.id}) }}" 
+                                               class="btn btn-sm btn-warning" 
+                                               title="Създай промоция">
+                                                <i class="bi bi-star"></i>
+                                            </a>
+                                            <a href="{{ path('admin_property_show', {'id': property.id}) }}#promotions" 
+                                               class="btn btn-sm btn-outline-warning" 
+                                               title="Промоции на имота">
+                                                <i class="bi bi-star-half"></i>
+                                            </a>
                                             <div class="btn-group">
                                                 <button type="button" 
                                                         class="btn btn-sm btn-outline-info dropdown-toggle" 

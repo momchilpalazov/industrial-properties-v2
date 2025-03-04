@@ -1,0 +1,96 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Управление на промоции{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4">Управление на промоции</h1>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Списък с промоции</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Имот</th>
+                                <th>Тип</th>
+                                <th>Начало</th>
+                                <th>Край</th>
+                                <th>Цена</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for promotion in promotions %}
+                                <tr>
+                                    <td>{{ promotion.id }}</td>
+                                    <td>
+                                        <a href="{{ path('admin_property_show', {id: promotion.property.id}) }}">
+                                            {{ promotion.property.title }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {% if promotion.type == 'vip' %}
+                                            <span class="badge bg-warning">VIP</span>
+                                        {% else %}
+                                            <span class="badge bg-info">Избрана</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ promotion.startDate|date('d.m.Y H:i') }}</td>
+                                    <td>{{ promotion.endDate|date('d.m.Y H:i') }}</td>
+                                    <td>{{ promotion.price|number_format(2, '.', ' ') }} €</td>
+                                    <td>
+                                        {% if promotion.isPaid %}
+                                            {% if promotion.isActive %}
+                                                <span class="badge bg-success">Активна</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Изтекла</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge bg-danger">Неплатена</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{{ path('admin_promotion_edit', {id: promotion.id}) }}" 
+                                               class="btn btn-sm btn-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            
+                                            {% if not promotion.isPaid %}
+                                                <a href="{{ path('payment_generate_link', {id: promotion.id}) }}" 
+                                                   class="btn btn-sm btn-info" 
+                                                   title="Генерирай платежен линк">
+                                                    <i class="bi bi-link-45deg"></i>
+                                                </a>
+                                            {% endif %}
+                                            
+                                            <form action="{{ path('admin_promotion_delete', {id: promotion.id}) }}" 
+                                                  method="post" 
+                                                  onsubmit="return confirm('Сигурни ли сте, че искате да изтриете тази промоция?');"
+                                                  style="display: inline-block;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ promotion.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="8" class="text-center">Няма намерени промоции</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

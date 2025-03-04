@@ -10,6 +10,7 @@ nav:
     contact: 'Контакти'
     language: 'Език'
     faq: 'Често задавани въпроси'
+    promotions: 'Промоции'
     admin:
         faq: FAQ - Често задавани въпроси
         blog: Блог
@@ -260,4 +261,41 @@ faq:
         active: Активен
         inactive: Неактивен
         reorder: Пренареди
-        no_items: Няма намерени въпроси 
+        no_items: Няма намерени въпроси
+
+promotion:
+    title: 'Промоции'
+    subtitle: 'Разгледайте нашите активни промоции за индустриални имоти'
+    no_promotions: 'В момента няма активни промоции'
+    back_to_home: 'Обратно към начало'
+    active_promotions: 'Активни промоции'
+    discover_best_offers: 'Открийте най-добрите оферти за индустриални имоти'
+    featured: 'Препоръчан'
+    valid_until: 'Валидна до'
+    view_details: 'Виж детайли'
+    no_active_promotions: 'В момента няма активни промоции'
+    types:
+        featured: 'Препоръчан'
+        vip: 'ВИП'
+        premium: 'Премиум'
+        standard: 'Стандартен'
+    status:
+        active: 'Активна'
+        inactive: 'Неактивна'
+        paid: 'Платена'
+        unpaid: 'Неплатена'
+    payment:
+        pay_now: 'Плати сега'
+        generate_link: 'Генерирай платежен линк'
+        warning: 'Тази промоция ще стане активна след плащане'
+    admin:
+        title: 'Управление на промоции'
+        new: 'Нова промоция'
+        edit: 'Редактиране на промоция'
+        save: 'Запази'
+        cancel: 'Отказ'
+        delete: 'Изтрий'
+        confirm_delete: 'Сигурни ли сте, че искате да изтриете тази промоция?'
+        all_promotions: 'Всички промоции'
+        view_all: 'Виж всички промоции'
+        create_for_property: 'Създай промоция за този имот' 
