@@ -6,6 +6,27 @@
     {{ parent() }}
     <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
     <style>
+        .alert {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: none;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .alert-dismissible .btn-close {
+            padding: 1.25rem;
+        }
+        
         .property-form {
             max-width: 1200px;
             margin: 0 auto;
@@ -78,6 +99,72 @@
         .form-check-input:checked {
             background-color: #3498db;
             border-color: #3498db;
+        }
+        
+        .expose-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .expose-section .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .expose-section label {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .expose-section .help-block {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+        
+        .expose-section .form-control {
+            border: 1px solid #ced4da;
+        }
+        
+        .expose-section .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        
+        .pdf-list {
+            margin-top: 1rem;
+        }
+        
+        .pdf-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pdf-item i {
+            margin-right: 0.5rem;
+            color: #dc3545;
+        }
+        
+        .pdf-item a {
+            margin-right: 1rem;
+            color: #0d6efd;
+            text-decoration: none;
+        }
+        
+        .pdf-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .delete-pdf-btn {
+            margin-left: auto;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
         }
     </style>
 {% endblock %}
@@ -228,6 +315,31 @@
             </div>
         </div>
 
+        <!-- PDF Expose -->
+        <div class="form-section">
+            <h4 class="form-section-title">
+                <i class="bi bi-file-pdf"></i> PDF Файлове
+            </h4>
+            
+            {{ form_row(form.expose.exposeFile) }}
+            
+            {% if property.pdfs is not empty %}
+                <div class="pdf-list">
+                    {% for pdf in property.pdfs %}
+                        <div class="pdf-item" id="pdf-{{ pdf.id }}">
+                            <i class="bi bi-file-pdf"></i>
+                            <a href="{{ asset('uploads/expose/' ~ pdf.filename) }}" target="_blank">
+                                {{ pdf.filename }}
+                            </a>
+                            <button type="button" class="btn btn-danger btn-sm delete-pdf-btn" data-pdf-id="{{ pdf.id }}">
+                                <i class="bi bi-trash"></i> Изтрий
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
         <!-- Бутони -->
         <div class="d-flex justify-content-end gap-2 mb-4">
             <a href="{{ path('admin_property_index') }}" class="btn btn-outline-secondary">
@@ -252,6 +364,22 @@
     <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Валидация на размера на PDF файла
+            const pdfInput = document.querySelector('input[type="file"][accept="application/pdf"]');
+            if (pdfInput) {
+                pdfInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const maxSize = 20 * 1024 * 1024; // 20MB в байтове
+                        if (file.size > maxSize) {
+                            alert('Файлът е твърде голям. Максималният размер е 20MB.');
+                            e.target.value = '';
+                            return;
+                        }
+                    }
+                });
+            }
+
             // CKEditor initialization
             const editors = ['descriptionBg', 'descriptionEn', 'descriptionDe', 'descriptionRu'];
             
@@ -399,6 +527,55 @@
                     });
                 });
             }
+
+            // Функция за изтриване на PDF
+            function deletePdf(pdfId) {
+                if (!confirm('Сигурни ли сте, че искате да изтриете този PDF файл?')) {
+                    return;
+                }
+
+                fetch(`{{ path('admin_property_delete_pdf', {'id': property.id, 'pdfId': 'PDF_ID'}) }}`.replace('PDF_ID', pdfId), {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Премахваме елемента от DOM
+                        document.querySelector(`#pdf-${pdfId}`).remove();
+                        // Показваме съобщение за успех
+                        const alert = document.createElement('div');
+                        alert.className = 'alert alert-success alert-dismissible fade show';
+                        alert.innerHTML = `
+                            ${data.message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        `;
+                        document.querySelector('.property-form').insertBefore(alert, document.querySelector('.form-section'));
+                    } else {
+                        throw new Error(data.error);
+                    }
+                })
+                .catch(error => {
+                    // Показваме съобщение за грешка
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-danger alert-dismissible fade show';
+                    alert.innerHTML = `
+                        Грешка при изтриване на PDF файла: ${error.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    document.querySelector('.property-form').insertBefore(alert, document.querySelector('.form-section'));
+                });
+            }
+
+            // Добавяме event listeners за бутоните за изтриване
+            document.querySelectorAll('.delete-pdf-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const pdfId = this.dataset.pdfId;
+                    deletePdf(pdfId);
+                });
+            });
         });
     </script>
 {% endblock %} 

@@ -11,6 +11,7 @@ parameters:
     facebook_page_access_token: '%env(FACEBOOK_PAGE_ACCESS_TOKEN)%'
     linkedin_access_token: '%env(LINKEDIN_ACCESS_TOKEN)%'
     linkedin_organization_id: '%env(LINKEDIN_ORGANIZATION_ID)%'
+    property_expose_directory: '%kernel.project_dir%/public/uploads/properties/exposes'
 
 services:
     _defaults:

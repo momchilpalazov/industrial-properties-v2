@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Property;
 use App\Entity\PropertyImage;
+use App\Entity\PropertyPdf;
 use App\Form\Admin\PropertyType;
 use App\Repository\PropertyRepository;
 use App\Repository\PropertyTypeRepository;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/properties')]
 #[IsGranted('ROLE_ADMIN')]
@@ -27,7 +30,9 @@ class PropertyController extends AbstractController
         private PropertyTypeRepository $propertyTypeRepository,
         private PropertyService $propertyService,
         private FileUploadService $fileUploadService,
-        private PaginatorInterface $paginator
+        private PaginatorInterface $paginator,
+        private ParameterBagInterface $params,
+        private ValidatorInterface $validator
     ) {}
 
     #[Route('/', name: 'admin_property_index', methods: ['GET'])]
@@ -118,9 +123,92 @@ class PropertyController extends AbstractController
                 $property->setVipExpiration(null);
             }
 
-            $this->entityManager->flush();
+            // Обработка на PDF expose
+            $file = $form->get('expose')->get('exposeFile')->getData();
+            if ($file) {
+                try {
+                    // Проверяваме дали файлът е валиден
+                    if (!$file->isValid()) {
+                        throw new \Exception('Невалиден PDF файл');
+                    }
 
-            $this->addFlash('success', 'Имотът беше успешно редактиран.');
+                    // Проверяваме дали директорията съществува
+                    $uploadDir = $this->params->get('property_expose_directory');
+                    if (!is_dir($uploadDir)) {
+                        if (!mkdir($uploadDir, 0777, true)) {
+                            throw new \Exception('Грешка при създаване на директорията за PDF файлове');
+                        }
+                        $this->fileUploadService->setFilePermissions($uploadDir);
+                    }
+
+                    // Проверяваме дали директорията е записваема
+                    if (!is_writable($uploadDir)) {
+                        throw new \Exception('Директорията за PDF файлове не е записваема');
+                    }
+
+                    // Генерираме уникално име за файла
+                    $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+                    
+                    // Проверяваме дали разширението е PDF
+                    if ($file->getClientOriginalExtension() !== 'pdf') {
+                        throw new \Exception('Файлът трябва да бъде PDF формат');
+                    }
+                    
+                    // Проверяваме размера на файла
+                    $maxSize = 20 * 1024 * 1024; // 20MB
+                    if ($file->getSize() > $maxSize) {
+                        throw new \Exception('Файлът е твърде голям. Максималният размер е 20MB');
+                    }
+                    
+                    // Преместваме файла
+                    try {
+                        $file->move($uploadDir, $filename);
+                    } catch (\Exception $e) {
+                        throw new \Exception('Грешка при преместване на файла: ' . $e->getMessage());
+                    }
+                    
+                    // Задаваме правилни права на файла
+                    $this->fileUploadService->setFilePermissions($uploadDir . '/' . $filename);
+
+                    // Създаваме нов PDF запис
+                    $pdf = new PropertyPdf();
+                    $pdf->setFilename($filename);
+                    $pdf->setProperty($property);
+                    
+                    // Проверяваме дали PDF обектът е валиден
+                    $errors = $this->validator->validate($pdf);
+                    if (count($errors) > 0) {
+                        throw new \Exception((string) $errors);
+                    }
+
+                    // Опитваме се да запазим PDF файла
+                    try {
+                        $this->entityManager->persist($pdf);
+                        $this->entityManager->flush();
+                        $this->addFlash('success', 'PDF файлът беше качен успешно.');
+                    } catch (\Exception $e) {
+                        throw new \Exception('Грешка при запазване в базата данни: ' . $e->getMessage());
+                    }
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Грешка при качване на PDF файла: ' . $e->getMessage());
+                    // Изтриваме файла ако е бил качен
+                    if (isset($filename) && file_exists($uploadDir . '/' . $filename)) {
+                        unlink($uploadDir . '/' . $filename);
+                    }
+                    return $this->render('admin/property/edit.html.twig', [
+                        'property' => $property,
+                        'form' => $form
+                    ]);
+                }
+            }
+
+            try {
+                $this->entityManager->flush();
+                $this->addFlash('success', 'Имотът беше успешно редактиран.');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Грешка при запазване на промените: ' . $e->getMessage());
+            }
+
             return $this->redirectToRoute('admin_property_show', ['id' => $property->getId()]);
         }
 
@@ -263,6 +351,40 @@ class PropertyController extends AbstractController
         try {
             $this->propertyService->setMainImage($property, $imageId);
             return $this->json(['success' => true]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    #[Route('/{id}/delete-pdf/{pdfId}', name: 'admin_property_delete_pdf', methods: ['POST'])]
+    public function deletePdf(Property $property, int $pdfId): Response
+    {
+        try {
+            $pdf = $this->entityManager->getRepository(PropertyPdf::class)->find($pdfId);
+            
+            if (!$pdf || $pdf->getProperty() !== $property) {
+                throw new \Exception('PDF файлът не беше намерен');
+            }
+
+            // Изтриваме физическия файл
+            $uploadDir = $this->params->get('property_expose_directory');
+            $filePath = $uploadDir . '/' . $pdf->getFilename();
+            
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            // Изтриваме записа от базата данни
+            $this->entityManager->remove($pdf);
+            $this->entityManager->flush();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'PDF файлът беше изтрит успешно'
+            ]);
         } catch (\Exception $e) {
             return $this->json([
                 'success' => false,

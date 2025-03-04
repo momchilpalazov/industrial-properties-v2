@@ -151,8 +151,8 @@ class Property
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyFeature::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $features;
 
-    #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyPdf::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $pdfFiles;
+    #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyPdf::class, orphanRemoval: true)]
+    private Collection $pdfs;
 
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: PropertyInquiry::class)]
     private Collection $inquiries;
@@ -191,7 +191,7 @@ class Property
     {
         $this->images = new ArrayCollection();
         $this->features = new ArrayCollection();
-        $this->pdfFiles = new ArrayCollection();
+        $this->pdfs = new ArrayCollection();
         $this->inquiries = new ArrayCollection();
         $this->promotions = new ArrayCollection();
         $this->views = new ArrayCollection();
@@ -574,27 +574,30 @@ class Property
     /**
      * @return Collection<int, PropertyPdf>
      */
-    public function getPdfFiles(): Collection
+    public function getPdfs(): Collection
     {
-        return $this->pdfFiles;
+        return $this->pdfs;
     }
 
-    public function addPdfFile(PropertyPdf $pdfFile): self
+    public function addPdf(PropertyPdf $pdf): self
     {
-        if (!$this->pdfFiles->contains($pdfFile)) {
-            $this->pdfFiles->add($pdfFile);
-            $pdfFile->setProperty($this);
+        if (!$this->pdfs->contains($pdf)) {
+            $this->pdfs->add($pdf);
+            $pdf->setProperty($this);
         }
+
         return $this;
     }
 
-    public function removePdfFile(PropertyPdf $pdfFile): self
+    public function removePdf(PropertyPdf $pdf): self
     {
-        if ($this->pdfFiles->removeElement($pdfFile)) {
-            if ($pdfFile->getProperty() === $this) {
-                $pdfFile->setProperty(null);
+        if ($this->pdfs->removeElement($pdf)) {
+            // set the owning side to null (unless already changed)
+            if ($pdf->getProperty() === $this) {
+                $pdf->setProperty(null);
             }
         }
+
         return $this;
     }
 

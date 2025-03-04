@@ -24,10 +24,10 @@ class PropertyPdf
     #[Assert\NotBlank]
     private ?string $filename = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $titleEn = null;
 
     #[ORM\Column]
@@ -71,7 +71,7 @@ class PropertyPdf
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
         return $this;
@@ -82,7 +82,7 @@ class PropertyPdf
         return $this->titleEn;
     }
 
-    public function setTitleEn(string $titleEn): self
+    public function setTitleEn(?string $titleEn): self
     {
         $this->titleEn = $titleEn;
         return $this;
