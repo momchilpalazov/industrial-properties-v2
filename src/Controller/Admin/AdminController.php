@@ -77,7 +77,6 @@ class AdminController extends AbstractController
                 'site_name' => 'Industrial Properties',
                 'admin_email' => 'admin@example.com',
                 'items_per_page' => 10,
-                'here_maps_api_key' => $_ENV['HERE_MAPS_API_KEY'] ?? '',
                 'facebook_app_id' => $apiSettings->getFacebookAppId(),
                 'facebook_app_secret' => $apiSettings->getFacebookAppSecret(),
                 'facebook_page_id' => $apiSettings->getFacebookPageId(),

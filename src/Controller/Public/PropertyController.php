@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 #[Route('/property', name: 'app_property_')]
 class PropertyController extends AbstractController
@@ -26,13 +27,16 @@ class PropertyController extends AbstractController
 
     private PropertyRepository $propertyRepository;
     private PaginatorInterface $paginator;
+    private ParameterBagInterface $parameterBag;
 
     public function __construct(
         PropertyRepository $propertyRepository,
-        PaginatorInterface $paginator
+        PaginatorInterface $paginator,
+        ParameterBagInterface $parameterBag
     ) {
         $this->propertyRepository = $propertyRepository;
         $this->paginator = $paginator;
+        $this->parameterBag = $parameterBag;
     }
 
     #[Route('', name: 'index')]
@@ -128,8 +132,19 @@ class PropertyController extends AbstractController
             throw $this->createNotFoundException('Имотът не е намерен');
         }
 
+        // Задаване на reCAPTCHA ключ, който да се използва в шаблона
+        try {
+            // Опитваме се да вземем ключ от параметрите
+            $recaptchaSiteKey = $this->getParameter('recaptcha.site_key');
+        } catch (\Exception $e) {
+            // Ако възникне грешка, използваме тестов ключ от документацията на Google
+            // Този ключ работи само за localhost
+            $recaptchaSiteKey = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
+        }
+
         return $this->render('property/show.html.twig', [
-            'property' => $property
+            'property' => $property,
+            'recaptcha_site_key' => $recaptchaSiteKey
         ]);
     }
 } 

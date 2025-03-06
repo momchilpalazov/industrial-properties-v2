@@ -56,6 +56,9 @@ class PropertyInquiry
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $respondedAt = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $gdprConsent = false;
+
     public function __construct()
     {
         $this->offers = new ArrayCollection();
@@ -216,6 +219,23 @@ class PropertyInquiry
     public function setRespondedAt(?\DateTimeImmutable $respondedAt): self
     {
         $this->respondedAt = $respondedAt;
+        return $this;
+    }
+
+    public function isGdprConsent(): bool
+    {
+        return $this->gdprConsent;
+    }
+
+    public function getGdprConsent(): bool
+    {
+        return $this->gdprConsent;
+    }
+
+    public function setGdprConsent(bool $gdprConsent): self
+    {
+        $this->gdprConsent = $gdprConsent;
+
         return $this;
     }
 } 

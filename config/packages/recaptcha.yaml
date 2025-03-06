@@ -1,0 +1,10 @@
+# This file contains configuration for Google reCAPTCHA
+parameters:
+    # Генерирайте ключовете от https://www.google.com/recaptcha/admin
+    # Тези тестови ключове работят само на localhost
+    recaptcha.site_key: '%env(default:recaptcha.default.site_key:RECAPTCHA_SITE_KEY)%'
+    recaptcha.secret_key: '%env(default:recaptcha.default.secret_key:RECAPTCHA_SECRET_KEY)%'
+    
+    # Стойности по подразбиране (тестови ключове от Google документацията)
+    recaptcha.default.site_key: '6Ldz5usqAAAAAMA77wAUfegFRxlA2RNri8jyTMcW'
+    recaptcha.default.secret_key: '6Ldz5usqAAAAAMKX4_jdRZsMKMDVO58XLG5N3nlf' 

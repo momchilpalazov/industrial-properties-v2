@@ -4,7 +4,6 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
     <style>
         .property-form {
             max-width: 1200px;
@@ -241,10 +240,6 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // CKEditor initialization
@@ -283,117 +278,6 @@
                         });
                 }
             });
-
-            // Here Maps initialization
-            const platform = new H.service.Platform({
-                'apikey': '{{ here_maps_api_key }}'
-            });
-
-            const defaultLayers = platform.createDefaultLayers();
-            
-            // Initialize map with default coordinates (София)
-            const latitude = document.getElementById('{{ form.latitude.vars.id }}').value || 42.6977;
-            const longitude = document.getElementById('{{ form.longitude.vars.id }}').value || 23.3219;
-            
-            const map = new H.Map(
-                document.getElementById('locationMap'),
-                defaultLayers.vector.normal.map,
-                {
-                    zoom: 13,
-                    center: { lat: parseFloat(latitude), lng: parseFloat(longitude) }
-                }
-            );
-
-            // Enable map interaction
-            const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-            const ui = H.ui.UI.createDefault(map, defaultLayers);
-
-            // Add marker
-            let marker = new H.map.Marker({ lat: parseFloat(latitude), lng: parseFloat(longitude) });
-            map.addObject(marker);
-
-            // Update marker and coordinates on map click
-            map.addEventListener('tap', function(evt) {
-                const coords = map.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY);
-                
-                // Update marker position
-                map.removeObject(marker);
-                marker = new H.map.Marker(coords);
-                map.addObject(marker);
-
-                // Update form fields
-                document.getElementById('{{ form.latitude.vars.id }}').value = coords.lat.toFixed(6);
-                document.getElementById('{{ form.longitude.vars.id }}').value = coords.lng.toFixed(6);
-            });
-
-            // Geocoding service
-            const geocoder = platform.getSearchService();
-            const geocodeButton = document.getElementById('geocodeAddress');
-            const addressInput = document.getElementById('addressSearch');
-            
-            geocodeButton.addEventListener('click', function() {
-                const address = addressInput.value;
-                if (!address) {
-                    alert('Моля, въведете адрес');
-                    return;
-                }
-
-                geocoder.geocode({
-                    q: address
-                }, (result) => {
-                    if (result.items && result.items.length > 0) {
-                        const coords = result.items[0].position;
-                        
-                        // Update map center and marker
-                        map.setCenter(coords);
-                        map.setZoom(15);
-                        map.removeObject(marker);
-                        marker = new H.map.Marker(coords);
-                        map.addObject(marker);
-
-                        // Update form fields
-                        document.getElementById('{{ form.latitude.vars.id }}').value = coords.lat.toFixed(6);
-                        document.getElementById('{{ form.longitude.vars.id }}').value = coords.lng.toFixed(6);
-                        document.getElementById('{{ form.address.vars.id }}').value = result.items[0].address.label;
-
-                        // Update location field if empty
-                        const locationInput = document.getElementById('{{ form.locationBg.vars.id }}');
-                        if (!locationInput.value) {
-                            locationInput.value = result.items[0].address.city || result.items[0].address.county || '';
-                        }
-                    } else {
-                        alert('Не можахме да намерим координатите за този адрес');
-                    }
-                }, (error) => {
-                    console.error('Грешка при геокодиране:', error);
-                    alert('Възникна грешка при търсенето на координати');
-                });
-            });
-
-            // Handle Enter key in address input
-            addressInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    geocodeButton.click();
-                }
-            });
-
-            // Handle window resize
-            window.addEventListener('resize', () => map.getViewPort().resize());
-
-            // Синхронизираме съдържанието при submit
-            const form = document.querySelector('form');
-            if (form) {
-                form.addEventListener('submit', function() {
-                    editors.forEach(function(editorId) {
-                        const editor = window[`editor_${editorId}`];
-                        if (editor) {
-                            const element = document.querySelector('#property_' + editorId);
-                            element.value = editor.getData();
-                        }
-                    });
-                });
-            }
         });
     </script>
 {% endblock %} 

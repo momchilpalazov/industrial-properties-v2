@@ -6,6 +6,15 @@
     {{ parent() }}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <style>
+        .gdpr-link {
+            color: #007bff;
+            text-decoration: underline;
+        }
+        .recaptcha-container {
+            margin-bottom: 1rem;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -185,6 +194,20 @@
                                 <label for="message" class="form-label">{{ 'property.inquiry.message'|trans }}</label>
                                 <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
                             </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="gdprConsent" name="gdprConsent" required>
+                                <label class="form-check-label" for="gdprConsent">
+                                    {{ 'Съгласен/а съм с '|trans }}
+                                    <a href="{{ path('privacy_policy') }}" target="_blank" class="gdpr-link">{{ 'политиката за обработка на лични данни'|trans }}</a>
+                                </label>
+                            </div>
+                            
+                            <div class="recaptcha-container">
+                                <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                                <small class="text-muted">{{ 'Моля, потвърдете, че не сте робот.'|trans }}</small>
+                            </div>
+                            
                             <input type="hidden" name="propertyId" value="{{ property.id }}">
                             <button type="submit" class="btn btn-primary w-100">{{ 'property.inquiry.send'|trans }}</button>
                         </form>
@@ -201,6 +224,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     {{ encore_entry_script_tags('property-360-viewer') }}
     {{ encore_entry_script_tags('property-inquiry') }}
     
@@ -226,6 +250,24 @@
                 }
                 
                 e.clearSelection();
+            });
+
+            // Валидация на формата за запитване
+            document.getElementById('inquiryForm').addEventListener('submit', function(event) {
+                // Проверка за reCAPTCHA
+                var recaptchaResponse = grecaptcha.getResponse();
+                if (recaptchaResponse.length === 0) {
+                    event.preventDefault();
+                    toastr.error('{{ "Моля, потвърдете, че не сте робот"|trans }}');
+                    return false;
+                }
+                
+                // Проверка за съгласие с политиката за лични данни
+                if (!document.getElementById('gdprConsent').checked) {
+                    event.preventDefault();
+                    toastr.error('{{ "Моля, дайте съгласие за обработка на личните данни"|trans }}');
+                    return false;
+                }
             });
 
             // Функционалност за принтиране

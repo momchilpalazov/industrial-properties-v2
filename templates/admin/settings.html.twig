@@ -60,47 +60,37 @@
                 <div class="card-body">
                     <form method="post" action="{{ path('admin_settings_api') }}">
                         <div class="mb-3">
-                            <label for="here_maps_api_key" class="form-label">HERE Maps API Key</label>
-                            <input type="text" class="form-control" id="here_maps_api_key" name="here_maps_api_key" 
-                                   value="{{ settings.here_maps_api_key|default('') }}">
-                        </div>
-
-                        <h6 class="mb-3">Facebook API Настройки</h6>
-                        <div class="mb-3">
-                            <label for="facebook_app_id" class="form-label">App ID</label>
+                            <label for="facebook_app_id" class="form-label">Facebook App ID</label>
                             <input type="text" class="form-control" id="facebook_app_id" name="facebook_app_id" 
                                    value="{{ settings.facebook_app_id|default('') }}">
                         </div>
                         <div class="mb-3">
-                            <label for="facebook_app_secret" class="form-label">App Secret</label>
-                            <input type="password" class="form-control" id="facebook_app_secret" name="facebook_app_secret" 
+                            <label for="facebook_app_secret" class="form-label">Facebook App Secret</label>
+                            <input type="text" class="form-control" id="facebook_app_secret" name="facebook_app_secret" 
                                    value="{{ settings.facebook_app_secret|default('') }}">
                         </div>
                         <div class="mb-3">
-                            <label for="facebook_page_id" class="form-label">Page ID</label>
+                            <label for="facebook_page_id" class="form-label">Facebook Page ID</label>
                             <input type="text" class="form-control" id="facebook_page_id" name="facebook_page_id" 
                                    value="{{ settings.facebook_page_id|default('') }}">
                         </div>
                         <div class="mb-3">
-                            <label for="facebook_page_access_token" class="form-label">Page Access Token</label>
-                            <input type="password" class="form-control" id="facebook_page_access_token" name="facebook_page_access_token" 
+                            <label for="facebook_page_access_token" class="form-label">Facebook Page Access Token</label>
+                            <input type="text" class="form-control" id="facebook_page_access_token" name="facebook_page_access_token" 
                                    value="{{ settings.facebook_page_access_token|default('') }}">
                         </div>
-
-                        <h6 class="mb-3">LinkedIn API Настройки</h6>
                         <div class="mb-3">
-                            <label for="linkedin_access_token" class="form-label">Access Token</label>
-                            <input type="password" class="form-control" id="linkedin_access_token" name="linkedin_access_token" 
+                            <label for="linkedin_access_token" class="form-label">LinkedIn Access Token</label>
+                            <input type="text" class="form-control" id="linkedin_access_token" name="linkedin_access_token" 
                                    value="{{ settings.linkedin_access_token|default('') }}">
                         </div>
                         <div class="mb-3">
-                            <label for="linkedin_organization_id" class="form-label">Organization ID</label>
+                            <label for="linkedin_organization_id" class="form-label">LinkedIn Organization ID</label>
                             <input type="text" class="form-control" id="linkedin_organization_id" name="linkedin_organization_id" 
                                    value="{{ settings.linkedin_organization_id|default('') }}">
                         </div>
-
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Запази API настройките
+                            <i class="bi bi-save"></i> Запази промените
                         </button>
                     </form>
                 </div>
