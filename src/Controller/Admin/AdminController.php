@@ -256,14 +256,20 @@ class AdminController extends AbstractController
                 }
                 
                 $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-                $uploadDir = $this->getParameter('upload_directory') . '/about/company';
+                $uploadDir = $this->getParameter('upload_directory') . '/uploads/about/company';
+                
+                // Създаваме директорията, ако не съществува
+                if (!file_exists($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                
                 $file->move($uploadDir, $fileName);
                 
                 // Задаваме правилните права на директорията и файла
                 $this->setFilePermissions($uploadDir);
                 $this->setFilePermissions($uploadDir . '/' . $fileName);
                 
-                $settings->setCompanyImage('uploads/about/company/' . $fileName);
+                $settings->setCompanyImage('/uploads/about/company/' . $fileName);
             }
         }
 
@@ -312,14 +318,20 @@ class AdminController extends AbstractController
                     }
 
                     $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-                    $uploadDir = $this->getParameter('upload_directory') . '/about/team';
+                    $uploadDir = $this->getParameter('upload_directory') . '/uploads/about/team';
+                    
+                    // Създаваме директорията, ако не съществува
+                    if (!file_exists($uploadDir)) {
+                        mkdir($uploadDir, 0777, true);
+                    }
+                    
                     $file->move($uploadDir, $fileName);
                     
                     // Задаваме правилните права на директорията и файла
                     $this->setFilePermissions($uploadDir);
                     $this->setFilePermissions($uploadDir . '/' . $fileName);
                     
-                    $team[$key]['image'] = 'uploads/about/team/' . $fileName;
+                    $team[$key]['image'] = '/uploads/about/team/' . $fileName;
                 }
             }
         }

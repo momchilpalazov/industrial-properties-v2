@@ -1,273 +1,199 @@
-app:
-    title: 'Industrial Properties'
-    tagline: 'Industrial Properties in Bulgaria'
-
+# Navigation and general translations
 nav:
-    home: 'Home'
-    properties: 'Properties'
-    services: 'Services'
-    about: 'About'
-    contact: 'Contact'
-    language: 'Language'
-    faq: 'FAQ'
-    promotions: 'Promotions'
-    admin:
-        faq: FAQ - Frequently Asked Questions
+  home: 'Home'
+  properties: 'Properties'
+  promotions: 'Promotions'
+  services: 'Services'
+  blog: 'Blog'
+  about: 'About Us'
+  contact: 'Contact'
+  faq: 'FAQ'
 
+# Footer translations
 footer:
-    description: 'Your reliable partner in industrial properties'
-    quick_links: 'Quick Links'
-    contact_us: 'Contact Us'
-    rights: 'All rights reserved'
+  quick_links: 'Quick Links'
+  contact_us: 'Contact Us'
+  rights: 'All rights reserved.'
+  privacy_policy: 'Privacy Policy'
+  cookie_settings: 'Cookie Settings'
 
-property:
-    list_title: 'Industrial Properties'
-    filter:
-        type: 'Property Type'
-        all_types: 'All Types'
-        area: 'Area'
-        price: 'Price'
-        search: 'Search'
-    area: 'Area'
-    location: 'Location'
-    type: 'Type'
-    price: 'Price'
-    reference: 'Reference Number'
-    description: 'Description'
-    view_details: 'View Details'
-    similar: 'Similar Properties'
-    featured: 'Featured'
-    details: 'Details'
-    contact: 'Contact Us'
-    specifications: 'Specifications'
-    created_at: 'Published on'
-    share:
-        title: 'Share'
-        copied: 'Link copied to clipboard'
-    print: 'Print'
-    inquiry:
-        title: 'Property Inquiry'
-        name: 'Name'
-        email: 'Email'
-        phone: 'Phone'
-        message: 'Message'
-        submit: 'Send Inquiry'
-        send: 'Send Inquiry'
-        success: 'Your inquiry has been sent successfully!'
-        error: 'An error occurred while sending your inquiry.'
-    types:
-        industrial: 'Industrial'
-        warehouse: 'Warehouse'
-        logistics: 'Logistics Center'
-        production: 'Production'
-        office: 'Office'
-        retail: 'Retail'
-        mixed: 'Mixed'
-        industrial_land: 'Industrial Land'
-        industrial_building: 'Industrial Building'
-        logistics_center: 'Logistics Center'
-        production_facility: 'Production Facility'
-    sort:
-        newest: 'Newest'
-        price_asc: 'Price (ascending)'
-        price_desc: 'Price (descending)'
-        area_asc: 'Area (ascending)'
-        area_desc: 'Area (descending)'
-    features:
-        area: 'Area'
-        price: 'Price'
-        location: 'Location'
-        type: 'Type'
-    status:
-        available: 'Available'
-        sold: 'Sold'
-        reserved: 'Reserved'
-        rented: 'Rented'
-        pending: 'Pending Finalization'
-    actions:
-        view: 'Details'
-        contact: 'Inquiry'
-        search: 'Search'
-        filter: 'Filter'
-        clear: 'Clear'
-    expose: 'Expose'
-    download_pdf: 'Download PDF'
+# Language translations
+language:
+  bg: 'Български'
+  en: 'English'
 
-blog:
-    title: 'Blog'
-    latest_posts: 'Latest Posts'
-    categories: 'Categories'
-    read_more: 'Read More'
-    share: 'Share'
-    related_posts: 'Related Posts'
-
-contact:
-    title: 'Contact'
-    info: 'Contact Information'
-    address: 'Address'
-    phone: 'Phone'
-    email: 'Email'
-    working_hours: 'Working Hours'
-    follow_us: 'Follow Us'
-    form_title: 'Send us a message'
-    form:
-        name: 'Name'
-        email: 'Email'
-        phone: 'Phone'
-        subject: 'Subject'
-        message: 'Message'
-        submit: 'Send'
-        success: 'Your message has been sent successfully!'
-        error: 'An error occurred while sending your message.'
-
-properties:
-    list:
-        title: 'Industrial Properties'
-        heading: 'Find Your Industrial Property'
-        description: 'Browse our selection of industrial properties, warehouses, and logistics centers'
-        no_results: 'No properties found'
-        try_different_filters: 'Try different search criteria'
-    filter:
-        search: 'Search'
-        type: 'Property Type'
-        area: 'Area'
-        price: 'Price'
-        location: 'Location'
-        sort: 'Sort by'
-    types:
-        industrial_land: 'Industrial Land'
-        industrial_building: 'Industrial Building'
-        logistics_center: 'Logistics Center'
-        warehouse: 'Warehouse'
-        production_facility: 'Production Facility'
-    sort:
-        newest: 'Newest'
-        price_asc: 'Price (ascending)'
-        price_desc: 'Price (descending)'
-        area_asc: 'Area (ascending)'
-        area_desc: 'Area (descending)'
-
+# Home page translations
 home:
-    hero:
-        title: 'Industrial Properties in Bulgaria'
-        subtitle: 'Find the perfect location for your business'
-        cta: 'View all properties'
-    sections:
-        types: 'Property Types'
-        featured: 'Featured Properties'
-        cta:
-            title: 'Looking for a specific property?'
-            text: 'Contact us and we will help you find exactly what you need'
-            button: 'Contact Us'
+  hero:
+    title: 'Industrial Properties in Bulgaria'
+    subtitle: 'Find the perfect location for your business'
+    cta: 'View all properties'
+  property_types:
+    title: 'Property Types'
+    industrial_land: 'Industrial Land'
+    industrial_land_desc: 'Plots for your business needs'
+    logistics_center: 'Logistics Centers'
+    logistics_center_desc: 'Warehouses and distribution centers'
+    production_facility: 'Production Facilities'
+    production_facility_desc: 'Manufacturing premises'
+    properties_count: '{count} properties'
+  featured_properties:
+    title: 'Featured Properties'
+    subtitle: 'Discover the best offerings in our catalog'
+    view_all: 'View all'
+  vip_properties:
+    title: 'VIP Properties'
+    subtitle: 'Exclusive offers from our partners'
+  latest_properties:
+    title: 'Latest Properties'
+    subtitle: 'Recently added properties to our database'
+    view_all: 'View all'
+  cta:
+    title: 'Looking for a specific property?'
+    subtitle: 'Contact us and we will help you find exactly what you need'
+    button: 'Contact us'
 
-form:
-    labels:
-        name: 'Name'
-        email: 'Email'
-        phone: 'Phone'
-        message: 'Message'
-        submit: 'Send'
-    placeholders:
-        search: 'Search by location, type...'
-        min_price: 'Minimum price'
-        max_price: 'Maximum price'
-        min_area: 'Minimum area'
-        max_area: 'Maximum area'
+# Property translations
+property:
+  reference: 'Reference Number'
+  location: 'Location'
+  area: 'Area'
+  type: 'Type'
+  price: 'Price'
+  description: 'Description'
+  features: 'Features'
+  contact: 'Contact'
+  details: 'Details'
+  view_details: 'View details'
+  vip_properties: 'VIP Properties'
+  featured_properties: 'Featured Properties'
+  latest_properties: 'Latest Properties'
+  status:
+    label: 'Status'
+    available: 'Available'
+    sold: 'Sold'
+    reserved: 'Reserved'
+    rented: 'Rented'
+    pending: 'Pending'
 
-services:
-    page_title: 'Our Services'
-    hero:
-        title: 'Our Services'
-        subtitle: 'We offer a complete range of industrial property services'
-    section:
-        title: 'How We Can Help'
-        subtitle: 'Our team of experts is ready to assist you at every stage of managing your industrial properties'
-    contact_button: 'Contact Us'
-    market_analysis:
-        title: 'Market Analysis'
-        description: 'In-depth analysis of the industrial property market, trends, and investment opportunities'
-    property_management:
-        title: 'Property Management'
-        description: 'Comprehensive management of your industrial properties, including maintenance and optimization'
-    cost_optimization:
-        title: 'Cost Optimization'
-        description: 'Analysis and optimization of operational costs for maximum efficiency'
-    legal:
-        title: 'Legal Services'
-        description: 'Legal assistance with industrial property transactions, contracts, and documentation'
-    hr:
-        title: 'HR Services'
-        description: 'Professional recruitment of qualified personnel for your industrial facilities'
-    international:
-        title: 'International Clients'
-        description: 'Specialized services for international clients, including language support'
-    financial:
-        title: 'Financial Consulting'
-        description: 'Expert financial consulting for optimizing investments in industrial properties'
-    consulting:
-        title: 'Business Consulting'
-        description: 'Strategic consulting for developing and optimizing your business'
+# Cookie Consent translations
+cookie:
+  title: 'Cookies & Privacy'
+  main_text: 'We use cookies to enhance your experience, analyze traffic, and personalize advertisements. By clicking "Accept All", you consent to our use of all cookies. You can manage your preferences through "Customize Settings".'
+  privacy_link: 'Learn more about our Privacy Policy'
+  accept_all: 'Accept All'
+  accept_necessary: 'Only Necessary'
+  customize: 'Customize Settings'
+  settings_title: 'Cookie Settings'
+  settings_text: 'Here you can choose which types of cookies to enable. Necessary cookies are required for the proper functioning of the website.'
+  necessary_title: 'Necessary Cookies'
+  necessary_text: 'These cookies are essential for the proper functioning of the website and cannot be disabled. They are usually only set in response to actions you take, such as setting privacy preferences, logging in, or filling out forms.'
+  functional_title: 'Functional Cookies'
+  functional_text: 'These cookies allow the website to provide enhanced functionality and personalization. They may be set by us or by third-party providers whose services we have added to our pages.'
+  analytics_title: 'Analytics Cookies'
+  analytics_text: 'These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site. They help us understand which pages are the most popular and how visitors move around the site.'
+  marketing_title: 'Marketing Cookies'
+  marketing_text: 'These cookies are used to track visitors across websites. The intention is to display ads that are relevant and engaging for the individual user and thereby more valuable for publishers and advertisers.'
+  back: 'Back'
+  save_preferences: 'Save Preferences'
+  settings: 'Cookie Settings'
 
-faq:
-    title: Frequently Asked Questions
-    subtitle: Answers to the most common questions that will help you make an informed decision.
-    categories:
-        all: All Questions
-        general: General Questions
-        property_info: Property Information
-        legal: Legal Questions
-        rent_sale: Rent and Sale Conditions
-    search:
-        placeholder: Search questions...
-        submit: Search
-        no_results: No questions found
-    admin:
-        title: Frequently Asked Questions
-        new: New Question
-        edit: Edit Question
-        save: Save
-        cancel: Cancel
-        delete: Delete
-        confirm_delete: Delete Confirmation
-        confirm_delete_message: Are you sure you want to delete this question?
-        active: Active
-        inactive: Inactive
-        reorder: Reorder
-        no_items: No questions found
-
+# Promotions translations
 promotion:
-    title: 'Promotions'
-    subtitle: 'Browse our active promotions for industrial properties'
-    no_promotions: 'There are no active promotions at the moment'
-    back_to_home: 'Back to home'
-    active_promotions: 'Active Promotions'
-    discover_best_offers: 'Discover the best offers for industrial properties'
-    featured: 'Featured'
-    valid_until: 'Valid until'
-    view_details: 'View details'
-    no_active_promotions: 'There are no active promotions at the moment'
-    types:
-        featured: 'Featured'
-        vip: 'VIP'
-        premium: 'Premium'
-        standard: 'Standard'
-    status:
-        active: 'Active'
-        inactive: 'Inactive'
-        paid: 'Paid'
-        unpaid: 'Unpaid'
-    payment:
-        pay_now: 'Pay now'
-        generate_link: 'Generate payment link'
-        warning: 'This promotion will become active after payment'
-    admin:
-        title: 'Promotion Management'
-        new: 'New Promotion'
-        edit: 'Edit Promotion'
-        save: 'Save'
-        cancel: 'Cancel'
-        delete: 'Delete'
-        confirm_delete: 'Are you sure you want to delete this promotion?'
-        all_promotions: 'All Promotions'
-        view_all: 'View all promotions'
-        create_for_property: 'Create promotion for this property'
+  active_promotions: 'Active Promotions'
+  discover_best_offers: 'Discover the best offers and special deals'
+  featured: 'Featured'
+  valid_until: 'Valid until'
+  view_details: 'View details'
+  no_active_promotions: 'No active promotions at the moment'
+  back_to_home: 'Back to home page'
+
+# Services translations
+services:
+  page_title: 'Services - Industrial Properties'
+  hero:
+    title: 'Our Services'
+    subtitle: 'We offer comprehensive solutions for your business in the industrial property sector'
+  section:
+    title: 'How We Can Help You'
+    subtitle: 'Our team of experts is ready to assist you at every stage of the process'
+  contact_button: 'Contact Us'
+  market_analysis:
+    title: 'Market Analysis'
+    description: 'We provide detailed analyses of the industrial property market to help you make informed decisions.'
+  property_management:
+    title: 'Property Management'
+    description: 'We offer professional management of your industrial properties to maximize your return on investment.'
+  cost_optimization:
+    title: 'Cost Optimization'
+    description: 'We help you optimize the costs of acquisition, management, and maintenance of industrial properties.'
+  legal:
+    title: 'Legal Services'
+    description: 'Our legal team assists you with all aspects of industrial property transactions, including contracts and permits.'
+  hr:
+    title: 'Human Resources'
+    description: 'We support the process of hiring and managing personnel for your industrial facilities.'
+  international:
+    title: 'International Partnerships'
+    description: 'We facilitate international partnerships and investments in industrial properties.'
+  financial:
+    title: 'Financial Consulting'
+    description: 'We offer expert financial consulting for budgeting, financing, and investment strategies in the industrial property sector.'
+  consulting:
+    title: 'Business Consulting'
+    description: 'Our business consultants help you develop successful strategies for growing your business in the industrial sector.'
+
+# Blog translations
+blog:
+  title: 'Blog'
+  subtitle: 'Latest news and articles from the world of industrial properties'
+  categories:
+    all: 'All Categories'
+    industry_news: 'Industry News'
+    market_trends: 'Market Trends'
+    property_management: 'Property Management'
+    investment: 'Investment'
+    legal: 'Legal Issues'
+    advice: 'Useful Tips'
+    industry_articles: 'Industry Articles'
+    sector_news: 'Sector News'
+    investor_tips: 'Investor Tips'
+  search:
+    placeholder: 'Search the blog...'
+    submit: 'Search'
+    no_results: 'No results found. Please try a different search.'
+  read_more: 'Read more'
+  latest_posts: 'Latest Posts'
+  meta:
+    share: 'Share this article'
+  social:
+    facebook: 'Facebook'
+    linkedin: 'LinkedIn'
+    twitter: 'Twitter'
+
+# About page translations
+about:
+  title: 'About Us'
+  subtitle: 'Your trusted partner in industrial properties'
+  meta_title: 'About Us - Industrial Properties'
+  our_story:
+    title: 'Our Story'
+    description: 'With years of experience in the industrial property market, we have established ourselves as a leading company in Bulgaria. Our commitment to excellence and deep understanding of the market allows us to provide exceptional service to our clients.'
+  our_values:
+    title: 'Our Values'
+    quality:
+      title: 'Quality'
+      description: 'We maintain the highest standards in every aspect of our work'
+    trust:
+      title: 'Trust'
+      description: 'Building long-term relationships based on transparency and reliability'
+    expertise:
+      title: 'Expertise'
+      description: 'Professional knowledge and experience in industrial properties'
+  our_team:
+    title: 'Our Team'
+    description: 'Meet the professionals behind our success'
+  cta:
+    title: 'Need Professional Consultation?'
+    description: 'Our team is ready to assist you with any questions about industrial properties'
+    button: 'Contact Us Now' 

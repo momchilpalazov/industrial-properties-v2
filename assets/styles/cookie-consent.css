@@ -1,0 +1,183 @@
+/**
+ * Стилове за Cookie Consent банера
+ */
+ 
+.cookie-consent-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(33, 37, 41, 0.95);
+    color: #fff;
+    z-index: 9999;
+    padding: 1.5rem;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    font-size: 0.95rem;
+}
+
+.cookie-consent-banner h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.cookie-consent-banner p {
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.cookie-consent-banner a {
+    color: #6ea8fe;
+    text-decoration: none;
+}
+
+.cookie-consent-banner a:hover {
+    text-decoration: underline;
+}
+
+.cookie-consent-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.cookie-settings-section {
+    margin-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 1.5rem;
+}
+
+.cookie-type {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cookie-type:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.cookie-type h4 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.cookie-type p {
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+.cookie-type label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.cookie-necessary-label {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Стилове за превключвателя */
+.cookie-switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+    margin-left: 0.75rem;
+}
+
+.cookie-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.cookie-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.25);
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.cookie-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .cookie-slider {
+    background-color: #0d6efd;
+}
+
+input:checked + .cookie-slider:before {
+    transform: translateX(24px);
+}
+
+/* Стил за фиксирания бутон за настройки на бисквитки */
+.cookie-settings-widget {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 998;
+}
+
+.cookie-settings-btn {
+    width: 44px;
+    height: 44px;
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.cookie-settings-btn:hover {
+    transform: scale(1.05);
+    background-color: #0b5ed7;
+}
+
+/* Адаптивен дизайн */
+@media (max-width: 768px) {
+    .cookie-consent-buttons {
+        flex-direction: column;
+    }
+    
+    .cookie-consent-buttons .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .cookie-type h4 {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .cookie-switch {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+} 

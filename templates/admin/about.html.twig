@@ -458,12 +458,14 @@
                             <div class="mb-3">
                                 <label class="form-label">Снимка</label>
                                 <div class="image-upload-container">
-                                    {% if member.image %}
+                                    {% if member.image is defined and member.image %}
                                         <div class="image-preview">
                                             <img src="{{ asset(member.image) }}" alt="{{ member.name }}" class="img-thumbnail">
                                             <button type="button" class="btn delete-image" onclick="deleteTeamMemberImage(this, {{ key }})" title="Изтрий снимката">&times;</button>
                                             <input type="hidden" name="delete_team_image[{{ key }}]" value="0">
                                         </div>
+                                    {% else %}
+                                        <img src="{{ asset('/uploads/about/team/default-avatar.jpg') }}" alt="{{ member.name }}" class="team-member-img mb-3">
                                     {% endif %}
                                     <input type="file" class="form-control mt-2" name="team_images[{{ key }}]" accept="image/*">
                                 </div>

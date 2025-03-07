@@ -66,7 +66,8 @@ class BlogController extends AbstractController
 
         return $this->render('blog/show.html.twig', [
             'post' => $post,
-            'latestPosts' => $latestPosts
+            'latestPosts' => $latestPosts,
+            'categories' => $this->blogPostRepository->getCategories()
         ]);
     }
 } 

@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ settings.metaTitleBg }}{% endblock %}
+{% block title %}{{ 'about.meta_title'|trans }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <style>
         .about-header {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('images/about-bg.jpg') }}') no-repeat center center;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('/uploads/about/bg/about-bg.jpg') }}') no-repeat center center;
             background-size: cover;
             height: 300px;
             display: flex;
@@ -28,8 +28,8 @@
     <!-- Header -->
     <section class="about-header">
         <div class="container">
-            <h1 class="display-4">{{ settings.titleBg }}</h1>
-            <p class="lead">{{ settings.subtitleBg }}</p>
+            <h1 class="display-4">{{ 'about.title'|trans }}</h1>
+            <p class="lead">{{ 'about.subtitle'|trans }}</p>
         </div>
     </section>
 
@@ -38,14 +38,18 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h2 class="mb-4">Нашата история</h2>
-                    {{ settings.contentBg|raw }}
+                    <h2 class="mb-4">{{ 'about.our_story.title'|trans }}</h2>
+                    {% if app.request.locale == 'en' %}
+                        {{ settings.contentEn|raw }}
+                    {% else %}
+                        {{ settings.contentBg|raw }}
+                    {% endif %}
                 </div>
                 <div class="col-md-6">
                     {% if settings.companyImage %}
-                        <img src="{{ asset(settings.companyImage) }}" alt="Our Company" class="img-fluid rounded shadow">
+                        <img src="{{ asset(settings.companyImage) }}" alt="{{ 'about.title'|trans }}" class="img-fluid rounded shadow">
                     {% else %}
-                        <img src="{{ asset('images/about-company.jpg') }}" alt="Our Company" class="img-fluid rounded shadow">
+                        <img src="{{ asset('/uploads/about/company/default-company.jpg') }}" alt="{{ 'about.title'|trans }}" class="img-fluid rounded shadow">
                     {% endif %}
                 </div>
             </div>
@@ -55,17 +59,29 @@
     <!-- Our Values -->
     <section class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center mb-5">Нашите ценности</h2>
+            <h2 class="text-center mb-5">{{ 'about.our_values.title'|trans }}</h2>
             <div class="row g-4">
-                {% for key, value in settings.valuesBg %}
-                    <div class="col-md-4">
-                        <div class="text-center">
-                            <i class="bi bi-star fs-1 text-primary mb-3"></i>
-                            <h4>{{ value.title }}</h4>
-                            <p class="text-muted">{{ value.description }}</p>
-                        </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="bi bi-star fs-1 text-primary mb-3"></i>
+                        <h4>{{ 'about.our_values.quality.title'|trans }}</h4>
+                        <p class="text-muted">{{ 'about.our_values.quality.description'|trans }}</p>
                     </div>
-                {% endfor %}
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="bi bi-star fs-1 text-primary mb-3"></i>
+                        <h4>{{ 'about.our_values.trust.title'|trans }}</h4>
+                        <p class="text-muted">{{ 'about.our_values.trust.description'|trans }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="bi bi-star fs-1 text-primary mb-3"></i>
+                        <h4>{{ 'about.our_values.expertise.title'|trans }}</h4>
+                        <p class="text-muted">{{ 'about.our_values.expertise.description'|trans }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -73,15 +89,15 @@
     <!-- Our Team -->
     <section class="py-5">
         <div class="container">
-            <h2 class="text-center mb-5">Нашият екип</h2>
+            <h2 class="text-center mb-5">{{ 'about.our_team.title'|trans }}</h2>
             <div class="row g-4">
                 {% for member in settings.team %}
                     <div class="col-md-4">
                         <div class="text-center">
-                            {% if member.image %}
+                            {% if member.image is defined and member.image %}
                                 <img src="{{ asset(member.image) }}" alt="{{ member.name }}" class="team-member-img mb-3">
                             {% else %}
-                                <img src="{{ asset('images/team/default-avatar.jpg') }}" alt="{{ member.name }}" class="team-member-img mb-3">
+                                <img src="{{ asset('/uploads/about/team/default-avatar.jpg') }}" alt="{{ member.name }}" class="team-member-img mb-3">
                             {% endif %}
                             <h4>{{ member.name }}</h4>
                             <p class="text-muted">{{ member.position }}</p>
@@ -95,9 +111,9 @@
     <!-- Call to Action -->
     <section class="py-5 bg-primary text-white">
         <div class="container text-center">
-            <h2 class="mb-4">Готови ли сте да започнем заедно?</h2>
-            <p class="lead mb-4">Свържете се с нас за професионална консултация</p>
-            <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">Свържете се с нас</a>
+            <h2 class="mb-4">{{ 'about.cta.title'|trans }}</h2>
+            <p class="lead mb-4">{{ 'about.cta.description'|trans }}</p>
+            <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">{{ 'about.cta.button'|trans }}</a>
         </div>
     </section>
 {% endblock %} 

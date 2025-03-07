@@ -1,0 +1,126 @@
+<!-- Cookie Consent Banner -->
+<div id="cookie-consent-banner" class="cookie-consent-banner d-none">
+    <!-- Main View -->
+    <div id="cookie-banner-main" class="cookie-banner-view">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h3>{{ 'cookie.title'|trans({}, 'messages')|default('Бисквитки и поверителност') }}</h3>
+                    <p>
+                        {{ 'cookie.main_text'|trans({}, 'messages')|default('Ние използваме бисквитки, за да подобрим Вашето преживяване, да анализираме трафика и да персонализираме рекламите. Като кликнете на "Приемам всички", Вие се съгласявате с използването на всички видове бисквитки. Можете да управлявате предпочитанията си чрез "Персонализирай настройките".') }}
+                    </p>
+                    <p>
+                        <a href="{{ path('privacy_policy') }}" target="_blank">
+                            {{ 'cookie.privacy_link'|trans({}, 'messages')|default('Научете повече за нашата Политика за поверителност') }}
+                        </a>
+                    </p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="cookie-consent-buttons">
+                        <button id="cookie-accept-all" class="btn btn-primary">
+                            {{ 'cookie.accept_all'|trans({}, 'messages')|default('Приемам всички') }}
+                        </button>
+                        <button id="cookie-accept-necessary" class="btn btn-outline-secondary">
+                            {{ 'cookie.accept_necessary'|trans({}, 'messages')|default('Само необходимите') }}
+                        </button>
+                        <button id="cookie-customize" class="btn btn-outline-light">
+                            {{ 'cookie.customize'|trans({}, 'messages')|default('Персонализирай настройките') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings View -->
+    <div id="cookie-banner-settings" class="cookie-banner-view d-none">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h3>{{ 'cookie.settings_title'|trans({}, 'messages')|default('Настройки на бисквитките') }}</h3>
+                    <p>
+                        {{ 'cookie.settings_text'|trans({}, 'messages')|default('Тук можете да изберете кои видове бисквитки да активирате. Необходимите бисквитки са задължителни за правилното функциониране на сайта.') }}
+                    </p>
+                </div>
+            </div>
+            
+            <div class="cookie-settings-section">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Необходими бисквитки -->
+                        <div class="cookie-type">
+                            <h4>
+                                {{ 'cookie.necessary_title'|trans({}, 'messages')|default('Необходими бисквитки') }}
+                                <label class="cookie-switch cookie-necessary-label">
+                                    <input type="checkbox" checked disabled>
+                                    <span class="cookie-slider"></span>
+                                </label>
+                            </h4>
+                            <p>
+                                {{ 'cookie.necessary_text'|trans({}, 'messages')|default('Тези бисквитки са необходими за правилното функциониране на уебсайта и не могат да бъдат изключени. Те обикновено се задават само в отговор на действия, извършени от Вас, като например задаване на предпочитания за поверителност, влизане в системата или попълване на формуляри.') }}
+                            </p>
+                        </div>
+                        
+                        <!-- Функционални бисквитки -->
+                        <div class="cookie-type">
+                            <h4>
+                                {{ 'cookie.functional_title'|trans({}, 'messages')|default('Функционални бисквитки') }}
+                                <label class="cookie-switch">
+                                    <input type="checkbox" id="cookie-functional">
+                                    <span class="cookie-slider"></span>
+                                </label>
+                            </h4>
+                            <p>
+                                {{ 'cookie.functional_text'|trans({}, 'messages')|default('Тези бисквитки позволяват на уебсайта да предостави подобрена функционалност и персонализация. Те могат да бъдат зададени от нас или от трети страни, чиито услуги сме добавили към нашите страници.') }}
+                            </p>
+                        </div>
+                        
+                        <!-- Аналитични бисквитки -->
+                        <div class="cookie-type">
+                            <h4>
+                                {{ 'cookie.analytics_title'|trans({}, 'messages')|default('Аналитични бисквитки') }}
+                                <label class="cookie-switch">
+                                    <input type="checkbox" id="cookie-analytics">
+                                    <span class="cookie-slider"></span>
+                                </label>
+                            </h4>
+                            <p>
+                                {{ 'cookie.analytics_text'|trans({}, 'messages')|default('Тези бисквитки ни позволяват да броим посещенията и източниците на трафик, за да можем да измерваме и подобряваме представянето на нашия сайт. Те ни помагат да разберем кои страници са най-популярни и как посетителите се движат в сайта.') }}
+                            </p>
+                        </div>
+                        
+                        <!-- Маркетингови бисквитки -->
+                        <div class="cookie-type">
+                            <h4>
+                                {{ 'cookie.marketing_title'|trans({}, 'messages')|default('Маркетингови бисквитки') }}
+                                <label class="cookie-switch">
+                                    <input type="checkbox" id="cookie-marketing">
+                                    <span class="cookie-slider"></span>
+                                </label>
+                            </h4>
+                            <p>
+                                {{ 'cookie.marketing_text'|trans({}, 'messages')|default('Тези бисквитки се използват за проследяване на посетителите на нашия уебсайт. Целта е да се показват реклами, които са от значение и ангажиращи за отделния потребител и по този начин по-ценни за издателите и рекламодателите.') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cookie-consent-buttons mt-4">
+                    <button id="cookie-back" class="btn btn-outline-secondary">
+                        {{ 'cookie.back'|trans({}, 'messages')|default('Назад') }}
+                    </button>
+                    <button id="cookie-save-preferences" class="btn btn-primary">
+                        {{ 'cookie.save_preferences'|trans({}, 'messages')|default('Запази предпочитанията') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cookie Settings Button -->
+<div class="cookie-settings-widget">
+    <a href="#" id="cookie-settings-btn" class="cookie-settings-btn" title="{{ 'cookie.settings'|trans({}, 'messages')|default('Настройки на бисквитки') }}">
+        <i class="bi bi-shield-check"></i>
+    </a>
+</div> 
