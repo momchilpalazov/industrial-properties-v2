@@ -384,7 +384,7 @@
                                             <i class="bi bi-upc-scan"></i> {{ property.referenceNumber }}
                                         </small>
                                         <small class="text-muted">
-                                            <i class="bi bi-building"></i> {{ property.type.name }}<br>
+                                            <i class="bi bi-building"></i> {{ property.type.getLocalizedName(app.request.locale) }}<br>
                                             <i class="bi bi-arrows-angle-expand"></i> {{ property.area }} m²<br>
                                             {% if property.price %}
                                                 <i class="bi bi-tag"></i> {{ property.price|number_format(0, '.', ' ') }} €<br>

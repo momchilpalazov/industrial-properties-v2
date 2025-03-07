@@ -2,6 +2,76 @@
 
 {% block title %}Управление на типове имоти{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .main-category {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .sub-category {
+            background-color: #ffffff;
+        }
+        
+        .sub-category td:nth-child(2) {
+            padding-left: 2rem;
+        }
+        
+        .sub-category-icon {
+            color: #6c757d;
+            margin-right: 0.5rem;
+        }
+        
+        .category-badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+        }
+        
+        .main-category-badge {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .sub-category-badge {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .properties-count {
+            display: inline-block;
+            min-width: 1.5rem;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+        
+        .properties-count-main {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .properties-count-sub {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .subcategory-count {
+            font-weight: normal;
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-left: 0.5rem;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="container-fluid px-4">
         <h1 class="mt-4">Типове имоти</h1>
@@ -10,8 +80,8 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <i class="bi bi-table me-1"></i>
-                        Списък с типове имоти
+                        <i class="bi bi-diagram-3 me-1"></i>
+                        Категории и подкатегории
                     </div>
                     <a href="{{ path('admin_property_type_new') }}" class="btn btn-primary">
                         <i class="bi bi-plus-lg"></i> Добави нов тип
@@ -19,74 +89,122 @@
                 </div>
             </div>
             <div class="card-body">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Име</th>
-                            <th>Описание</th>
-                            <th>Родителска категория</th>
-                            <th>Подкатегории</th>
-                            <th>Брой имоти</th>
-                            <th class="text-end">Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for property_type in property_types %}
-                        <tr>
-                            <td>{{ property_type.id }}</td>
-                            <td>
-                                {% if property_type.parent %}
-                                    <span class="ms-3">
-                                        <i class="bi bi-arrow-return-right text-muted me-1"></i>
-                                        {{ property_type.name }}
-                                    </span>
-                                {% else %}
-                                    <strong>{{ property_type.name }}</strong>
-                                {% endif %}
-                            </td>
-                            <td>{{ property_type.description|default('-') }}</td>
-                            <td>
-                                {% if property_type.parent %}
-                                    {{ property_type.parent.name }}
-                                {% else %}
-                                    <span class="text-muted">-</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if property_type.hasChildren %}
-                                    <span class="badge bg-primary">{{ property_type.children|length }}</span>
-                                {% else %}
-                                    <span class="text-muted">-</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ property_type.properties|length }}</td>
-                            <td class="text-end">
-                                <div class="btn-group">
-                                    <a href="{{ path('admin_property_type_edit', {'id': property_type.id}) }}" 
-                                       class="btn btn-sm btn-primary" 
-                                       title="Редактирай">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <form method="post" 
-                                          action="{{ path('admin_property_type_delete', {'id': property_type.id}) }}" 
-                                          style="display: inline-block" 
-                                          onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този тип имот?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ property_type.id) }}">
-                                        <button type="submit" class="btn btn-sm btn-danger" title="Изтрий">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="7" class="text-center">Няма намерени типове имоти</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th width="60">ID</th>
+                                <th>Категория</th>
+                                <th>Описание</th>
+                                <th>Имоти</th>
+                                <th class="text-end">Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% set last_category = null %}
+                        {% for item in structured_categories %}
+                            {% set category = item.category %}
+                            {% set is_main = item.level == 0 %}
+                            
+                            <tr class="{{ is_main ? 'main-category' : 'sub-category' }}">
+                                <td>{{ category.id }}</td>
+                                <td>
+                                    {% if is_main %}
+                                        <div class="d-flex align-items-center">
+                                            <span class="category-badge main-category-badge">
+                                                <i class="bi bi-folder"></i>
+                                            </span>
+                                            <strong>{{ category.name }}</strong>
+                                            
+                                            {% if category.hasChildren %}
+                                                <span class="subcategory-count">
+                                                    <i class="bi bi-diagram-3"></i>
+                                                    {{ category.children|length }} подкатегор{{ category.children|length == 1 ? 'ия' : 'ии' }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <div class="d-flex align-items-center">
+                                            <span class="category-badge sub-category-badge">
+                                                <i class="bi bi-arrow-return-right"></i>
+                                            </span>
+                                            <span>{{ category.name }}</span>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if category.description %}
+                                        {{ category.description }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if category.properties|length > 0 %}
+                                        <span class="properties-count {{ is_main ? 'properties-count-main' : 'properties-count-sub' }}">
+                                            {{ category.properties|length }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">0</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group">
+                                        <a href="{{ path('admin_property_type_edit', {'id': category.id}) }}" 
+                                           class="btn btn-sm btn-primary" 
+                                           title="Редактирай">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        {% if not category.hasChildren and category.properties|length == 0 %}
+                                            <form method="post" 
+                                                  action="{{ path('admin_property_type_delete', {'id': category.id}) }}" 
+                                                  style="display: inline-block" 
+                                                  onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този тип имот?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Изтрий">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <button type="button" class="btn btn-sm btn-secondary" disabled title="Не може да бъде изтрит, защото има свързани подкатегории или имоти">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">Няма намерени типове имоти</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-info-circle me-1"></i>
+                Информация за типовете имоти
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info alert-permanent">
+                    <h5><i class="bi bi-lightbulb"></i> Как работят категориите?</h5>
+                    <p>
+                        <strong>Основна категория:</strong> Представлява главен тип имот (например "Склад", "Офис сграда").<br>
+                        <strong>Подкатегория:</strong> Представлява подтип на основна категория (например "Високотехнологичен офис" е подкатегория на "Офис сграда").
+                    </p>
+                    <p>
+                        <strong>Указания:</strong>
+                        <ul>
+                            <li>Основните категории са с тъмен фон за по-лесно разграничаване</li>
+                            <li>Подкатегориите се показват с отстъп под съответната основна категория</li>
+                            <li>Категории с подкатегории или свързани имоти не могат да бъдат изтрити</li>
+                        </ul>
+                    </p>
+                </div>
             </div>
         </div>
     </div>

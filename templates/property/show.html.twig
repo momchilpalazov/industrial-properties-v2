@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ property.title }} - Industrial Properties{% endblock %}
+{% block title %}{{ property.title(app.request.locale) }} - Industrial Properties{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -87,13 +87,13 @@
                     </div>
                 {% endif %}
 
-                <h1 class="mb-4">{{ property.title }}</h1>
+                <h1 class="mb-4">{{ property.title(app.request.locale) }}</h1>
 
                 <div class="property-details mb-4">
                     <div class="row">
                         <div class="col-md-6">
                             <p><i class="bi bi-upc-scan"></i> <strong>{{ 'property.reference'|trans }}:</strong> {{ property.referenceNumber }}</p>
-                            <p><i class="bi bi-geo-alt"></i> <strong>{{ 'property.location'|trans }}:</strong> {{ property.location }}</p>
+                            <p><i class="bi bi-geo-alt"></i> <strong>{{ 'property.location'|trans }}:</strong> {{ property.location(app.request.locale) }}</p>
                             <p><i class="bi bi-arrows-angle-expand"></i> <strong>{{ 'property.area'|trans }}:</strong> {{ property.area }} m²</p>
                             <p>
                                 <i class="bi bi-circle-fill status-icon text-{{ property.status == 'available' ? 'success' : 
@@ -110,7 +110,7 @@
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <p><i class="bi bi-building"></i> <strong>{{ 'property.type'|trans }}:</strong> {{ property.type.name }}</p>
+                            <p><i class="bi bi-building"></i> <strong>{{ 'property.type'|trans }}:</strong> {{ property.type.getLocalizedName(app.request.locale) }}</p>
                             {% if property.price %}
                                 <p><i class="bi bi-tag"></i> <strong>{{ 'property.price'|trans }}:</strong> {{ property.price|number_format(0, '.', ' ') }} €</p>
                             {% endif %}
@@ -140,12 +140,12 @@
                            class="btn btn-primary">
                             <i class="bi bi-facebook"></i>
                         </a>
-                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ app.request.uri|url_encode }}&title={{ property.title|url_encode }}" 
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ app.request.uri|url_encode }}&title={{ property.title(app.request.locale)|url_encode }}" 
                            target="_blank" 
                            class="btn btn-info">
                             <i class="bi bi-linkedin"></i>
                         </a>
-                        <a href="https://twitter.com/intent/tweet?url={{ app.request.uri|url_encode }}&text={{ property.title|url_encode }}" 
+                        <a href="https://twitter.com/intent/tweet?url={{ app.request.uri|url_encode }}&text={{ property.title(app.request.locale)|url_encode }}" 
                            target="_blank" 
                            class="btn btn-dark">
                             <i class="bi bi-twitter-x"></i>
@@ -168,7 +168,7 @@
 
                 <div class="property-description mb-4">
                     <h2>{{ 'property.description'|trans }}</h2>
-                    {{ property.description|raw }}
+                    {{ property.description(app.request.locale)|raw }}
                 </div>
             </div>
 
@@ -198,14 +198,14 @@
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="gdprConsent" name="gdprConsent" required>
                                 <label class="form-check-label" for="gdprConsent">
-                                    {{ 'Съгласен/а съм с '|trans }}
-                                    <a href="{{ path('privacy_policy') }}" target="_blank" class="gdpr-link">{{ 'политиката за обработка на лични данни'|trans }}</a>
+                                    {{ 'common.gdpr_consent'|trans }}
+                                    <a href="{{ path('privacy_policy') }}" target="_blank" class="gdpr-link">{{ 'common.privacy_policy'|trans }}</a>
                                 </label>
                             </div>
                             
                             <div class="recaptcha-container">
                                 <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
-                                <small class="text-muted">{{ 'Моля, потвърдете, че не сте робот.'|trans }}</small>
+                                <small class="text-muted">{{ 'common.recaptcha_prompt'|trans }}</small>
                             </div>
                             
                             <input type="hidden" name="propertyId" value="{{ property.id }}">
@@ -258,14 +258,14 @@
                 var recaptchaResponse = grecaptcha.getResponse();
                 if (recaptchaResponse.length === 0) {
                     event.preventDefault();
-                    toastr.error('{{ "Моля, потвърдете, че не сте робот"|trans }}');
+                    toastr.error('{{ "common.recaptcha_error"|trans }}');
                     return false;
                 }
                 
                 // Проверка за съгласие с политиката за лични данни
                 if (!document.getElementById('gdprConsent').checked) {
                     event.preventDefault();
-                    toastr.error('{{ "Моля, дайте съгласие за обработка на личните данни"|trans }}');
+                    toastr.error('{{ "common.gdpr_consent_error"|trans }}');
                     return false;
                 }
             });

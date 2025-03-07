@@ -8,6 +8,9 @@ nav:
   about: 'About Us'
   contact: 'Contact'
   faq: 'FAQ'
+  admin:
+    blog: 'Blog'
+    faq: 'FAQ'
 
 # Footer translations
 footer:
@@ -68,6 +71,22 @@ property:
   vip_properties: 'VIP Properties'
   featured_properties: 'Featured Properties'
   latest_properties: 'Latest Properties'
+  share:
+    title: 'Share this property'
+    copy_link: 'Copy link'
+    copied: 'Link copied to clipboard'
+  print: 'Print'
+  expose: 'Exposé'
+  download_pdf: 'Download PDF'
+  inquiry:
+    title: 'Property Inquiry'
+    name: 'Name'
+    email: 'Email'
+    phone: 'Phone'
+    message: 'Message'
+    send: 'Send Inquiry'
+    success: 'Your inquiry has been sent successfully. We will contact you soon.'
+    error: 'An error occurred while sending your inquiry. Please try again.'
   status:
     label: 'Status'
     available: 'Available'
@@ -75,6 +94,16 @@ property:
     reserved: 'Reserved'
     rented: 'Rented'
     pending: 'Pending'
+  360_images: '360° Images'
+  360_instructions: 'Click and hold to rotate the image. Use scroll to zoom.'
+
+# Common translations
+common:
+  gdpr_consent: 'I agree with the'
+  privacy_policy: 'privacy policy'
+  recaptcha_prompt: 'Please confirm that you are not a robot.'
+  gdpr_consent_error: 'Please give consent for processing personal data'
+  recaptcha_error: 'Please confirm that you are not a robot'
 
 # Cookie Consent translations
 cookie:
@@ -170,6 +199,34 @@ blog:
     facebook: 'Facebook'
     linkedin: 'LinkedIn'
     twitter: 'Twitter'
+  admin:
+    title: 'Blog'
+    new_post: 'New Post'
+    published: 'Published'
+    draft: 'Draft'
+    edit: 'Edit Post'
+    delete: 'Delete'
+    confirm_delete: 'Are you sure you want to delete this post?'
+    title_field: 'Title'
+    content: 'Content'
+    excerpt: 'Excerpt'
+    category: 'Category'
+    image: 'Image'
+    date: 'Date'
+    save: 'Save'
+    back_to_list: 'Back to list'
+    success_created: 'Post was successfully created'
+    success_updated: 'Post was successfully updated'
+    success_deleted: 'Post was successfully deleted'
+    featured_image: 'Featured Image'
+    seo_title: 'SEO Title'
+    seo_description: 'SEO Description'
+    seo_keywords: 'SEO Keywords'
+    author: 'Author'
+    status: 'Status'
+    created_at: 'Created at'
+    updated_at: 'Updated at'
+    published_at: 'Published at'
 
 # About page translations
 about:
@@ -196,4 +253,27 @@ about:
   cta:
     title: 'Need Professional Consultation?'
     description: 'Our team is ready to assist you with any questions about industrial properties'
-    button: 'Contact Us Now' 
+    button: 'Contact Us Now'
+
+# FAQ Admin Panel Translations
+faq:
+  admin:
+    title: 'Frequently Asked Questions'
+    new: 'New Question'
+    active: 'Active'
+    edit: 'Edit Question'
+    save: 'Save'
+    delete: 'Delete'
+    confirm_delete: 'Are you sure you want to delete this question?'
+    question: 'Question'
+    answer: 'Answer'
+    category: 'Category'
+    order: 'Order'
+    created_at: 'Created at'
+    updated_at: 'Updated at'
+    back_to_list: 'Back to list'
+    success_created: 'Question was successfully created'
+    success_updated: 'Question was successfully updated'
+    success_deleted: 'Question was successfully deleted'
+  categories:
+    general: 'General Questions' 

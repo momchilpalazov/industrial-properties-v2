@@ -8,6 +8,9 @@ nav:
   about: 'За нас'
   contact: 'Контакти'
   faq: 'Често задавани въпроси'
+  admin:
+    blog: 'Блог'
+    faq: 'Често задавани въпроси'
 
 # Footer преводи
 footer:
@@ -68,6 +71,22 @@ property:
   vip_properties: 'VIP имоти'
   featured_properties: 'Избрани имоти'
   latest_properties: 'Най-нови имоти'
+  share:
+    title: 'Споделете този имот'
+    copy_link: 'Копирай линк'
+    copied: 'Линкът е копиран в клипборда'
+  print: 'Принтирай'
+  expose: 'Експозе'
+  download_pdf: 'Изтегли PDF'
+  inquiry:
+    title: 'Запитване за имота'
+    name: 'Име'
+    email: 'Имейл'
+    phone: 'Телефон'
+    message: 'Съобщение'
+    send: 'Изпрати запитване'
+    success: 'Вашето запитване беше изпратено успешно. Ще се свържем с вас скоро.'
+    error: 'Възникна грешка при изпращане на запитването. Моля, опитайте отново.'
   status:
     label: 'Статус'
     available: 'Наличен'
@@ -75,6 +94,16 @@ property:
     reserved: 'Резервиран'
     rented: 'Отдаден под наем'
     pending: 'В процес на договаряне'
+  360_images: '360° Изображения'
+  360_instructions: 'Натиснете и задръжте мишката, за да завъртите изображението. Използвайте скрол за мащабиране.'
+
+# Общи преводи
+common:
+  gdpr_consent: 'Съгласен/а съм с'
+  privacy_policy: 'политиката за обработка на лични данни'
+  recaptcha_prompt: 'Моля, потвърдете, че не сте робот.'
+  gdpr_consent_error: 'Моля, дайте съгласие за обработка на личните данни'
+  recaptcha_error: 'Моля, потвърдете, че не сте робот'
 
 # Cookie Consent преводи
 cookie:
@@ -170,6 +199,34 @@ blog:
     facebook: 'Facebook'
     linkedin: 'LinkedIn'
     twitter: 'Twitter'
+  admin:
+    title: 'Блог'
+    new_post: 'Нова публикация'
+    published: 'Публикувана'
+    draft: 'Чернова'
+    edit: 'Редактиране на публикация'
+    delete: 'Изтриване'
+    confirm_delete: 'Сигурни ли сте, че искате да изтриете тази публикация?'
+    title_field: 'Заглавие'
+    content: 'Съдържание'
+    excerpt: 'Кратко описание'
+    category: 'Категория'
+    image: 'Изображение'
+    date: 'Дата'
+    save: 'Запази'
+    back_to_list: 'Обратно към списъка'
+    success_created: 'Публикацията беше успешно създадена'
+    success_updated: 'Публикацията беше успешно обновена'
+    success_deleted: 'Публикацията беше успешно изтрита'
+    featured_image: 'Основно изображение'
+    seo_title: 'SEO заглавие'
+    seo_description: 'SEO описание'
+    seo_keywords: 'SEO ключови думи'
+    author: 'Автор'
+    status: 'Статус'
+    created_at: 'Създадена на'
+    updated_at: 'Обновена на'
+    published_at: 'Публикувана на'
 
 # Преводи за страницата "За нас"
 about:
@@ -192,4 +249,27 @@ about:
   cta:
     title: 'Готови ли сте да започнем заедно?'
     subtitle: 'Свържете се с нас за професионална консултация'
-    button: 'Свържете се с нас' 
+    button: 'Свържете се с нас'
+
+# Преводи за FAQ административен панел
+faq:
+  admin:
+    title: 'Често задавани въпроси'
+    new: 'Нов въпрос'
+    active: 'Активен'
+    edit: 'Редактиране на въпрос'
+    save: 'Запази'
+    delete: 'Изтрий'
+    confirm_delete: 'Сигурни ли сте, че искате да изтриете този въпрос?'
+    question: 'Въпрос'
+    answer: 'Отговор'
+    category: 'Категория'
+    order: 'Подредба'
+    created_at: 'Създаден на'
+    updated_at: 'Обновен на'
+    back_to_list: 'Обратно към списъка'
+    success_created: 'Въпросът беше успешно създаден'
+    success_updated: 'Въпросът беше успешно обновен'
+    success_deleted: 'Въпросът беше успешно изтрит'
+  categories:
+    general: 'Общи въпроси' 

@@ -5,13 +5,13 @@
             {% if not mainImage %}
                 {% set mainImage = property.images|first %}
             {% endif %}
-            <img class="img-fluid" src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ mainImage.filename) }}" alt="{{ property.title }}">
+            <img class="img-fluid" src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ mainImage.filename) }}" alt="{{ property.title(app.request.locale) }}">
         {% else %}
             <img class="img-fluid" src="{{ asset('images/no-image.jpg') }}" alt="No image available">
         {% endif %}
         
         <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">
-            {{ property.type|trans }}
+            {{ property.type.getLocalizedName(app.request.locale) }}
         </div>
 
         {% if property.isVip %}
@@ -37,13 +37,13 @@
         </div>
     </div>
     <div class="p-4 pb-0">
-        <h5 class="text-primary mb-3">{{ property.title }}</h5>
+        <h5 class="text-primary mb-3">{{ property.title(app.request.locale) }}</h5>
         <a class="d-block h5 mb-2" href="{{ path('app_property_show', {id: property.id}) }}">
-            {{ property.title }}
+            {{ property.title(app.request.locale) }}
         </a>
         <p>
             <i class="bi bi-geo-alt text-primary me-2"></i>
-            {{ property.location }}
+            {{ property.location(app.request.locale) }}
         </p>
     </div>
     <div class="d-flex border-top">

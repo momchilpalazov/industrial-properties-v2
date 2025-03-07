@@ -9,6 +9,9 @@ nav:
     about: 'Über uns'
     contact: 'Kontakt'
     language: 'Sprache'
+    admin:
+        blog: 'Blog'
+        faq: 'FAQ'
 
 footer:
     description: 'Ihr vertrauenswürdiger Partner für Industrieimmobilien'
@@ -76,6 +79,34 @@ blog:
     read_more: 'Weiterlesen'
     share: 'Teilen'
     related_posts: 'Ähnliche Beiträge'
+    admin:
+        title: 'Blog'
+        new_post: 'Neuer Beitrag'
+        published: 'Veröffentlicht'
+        draft: 'Entwurf'
+        edit: 'Beitrag bearbeiten'
+        delete: 'Löschen'
+        confirm_delete: 'Sind Sie sicher, dass Sie diesen Beitrag löschen möchten?'
+        title_field: 'Titel'
+        content: 'Inhalt'
+        excerpt: 'Auszug'
+        category: 'Kategorie'
+        image: 'Bild'
+        date: 'Datum'
+        save: 'Speichern'
+        back_to_list: 'Zurück zur Liste'
+        success_created: 'Der Beitrag wurde erfolgreich erstellt'
+        success_updated: 'Der Beitrag wurde erfolgreich aktualisiert'
+        success_deleted: 'Der Beitrag wurde erfolgreich gelöscht'
+        featured_image: 'Hauptbild'
+        seo_title: 'SEO-Titel'
+        seo_description: 'SEO-Beschreibung'
+        seo_keywords: 'SEO-Schlüsselwörter'
+        author: 'Autor'
+        status: 'Status'
+        created_at: 'Erstellt am'
+        updated_at: 'Aktualisiert am'
+        published_at: 'Veröffentlicht am'
 
 contact:
     title: 'Kontakt'
@@ -121,4 +152,27 @@ form:
         min_price: 'Mindestpreis'
         max_price: 'Höchstpreis'
         min_area: 'Mindestfläche'
-        max_area: 'Maximale Fläche' 
+        max_area: 'Maximale Fläche'
+
+# FAQ Admin Panel Übersetzungen
+faq:
+  admin:
+    title: 'Häufig gestellte Fragen'
+    new: 'Neue Frage'
+    active: 'Aktiv'
+    edit: 'Frage bearbeiten'
+    save: 'Speichern'
+    delete: 'Löschen'
+    confirm_delete: 'Sind Sie sicher, dass Sie diese Frage löschen möchten?'
+    question: 'Frage'
+    answer: 'Antwort'
+    category: 'Kategorie'
+    order: 'Reihenfolge'
+    created_at: 'Erstellt am'
+    updated_at: 'Aktualisiert am'
+    back_to_list: 'Zurück zur Liste'
+    success_created: 'Die Frage wurde erfolgreich erstellt'
+    success_updated: 'Die Frage wurde erfolgreich aktualisiert'
+    success_deleted: 'Die Frage wurde erfolgreich gelöscht'
+  categories:
+    general: 'Allgemeine Fragen' 

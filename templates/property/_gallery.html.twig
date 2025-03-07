@@ -9,7 +9,7 @@
             <a href="{{ asset('img/properties/' ~ property.images[0].filename) }}" 
                data-fancybox="property-gallery">
                 <img src="{{ asset('img/properties/' ~ property.images[0].filename) }}" 
-                     alt="{{ property.title }}"
+                     alt="{{ property.title(app.request.locale) }}"
                      class="property-main-image">
             </a>
         {% endif %}
@@ -20,7 +20,7 @@
             <div class="property-thumbnail {% if loop.first %}active{% endif %}"
                  data-large="{{ asset('img/properties/' ~ image.filename) }}">
                 <img src="{{ asset('img/properties/' ~ image.filename) }}" 
-                     alt="{{ property.title }} - {{ loop.index }}">
+                     alt="{{ property.title(app.request.locale) }} - {{ loop.index }}">
             </div>
         {% endfor %}
     </div>

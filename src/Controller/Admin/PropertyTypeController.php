@@ -19,24 +19,38 @@ class PropertyTypeController extends AbstractController
     #[Route('/', name: 'admin_property_type_index', methods: ['GET'])]
     public function index(PropertyTypeRepository $propertyTypeRepository): Response
     {
-        // Извличаме всички типове имоти, подредени по йерархия
-        // Първо родителите, после техните деца
-        $propertyTypes = $propertyTypeRepository->findBy(
+        // Извличаме всички основни категории (без родител)
+        $mainCategories = $propertyTypeRepository->findBy(
             ['parent' => null], 
             ['name' => 'ASC']
         );
         
-        // След това добавяме всички подкатегории
-        $childTypes = $propertyTypeRepository->findBy(
-            ['parent' => isset($propertyTypes[0]) ? $propertyTypes[0]->getId() : null], 
-            ['name' => 'ASC']
-        );
+        // Създаваме структурирани данни за шаблона
+        $structuredCategories = [];
         
-        // Комбинираме ги в един списък
-        $allTypes = array_merge($propertyTypes, $childTypes);
+        foreach ($mainCategories as $mainCategory) {
+            // Добавяме основната категория
+            $structuredCategories[] = [
+                'category' => $mainCategory,
+                'level' => 0
+            ];
+            
+            // Добавяме нейните подкатегории (ако има)
+            $subCategories = $propertyTypeRepository->findBy(
+                ['parent' => $mainCategory->getId()],
+                ['name' => 'ASC']
+            );
+            
+            foreach ($subCategories as $subCategory) {
+                $structuredCategories[] = [
+                    'category' => $subCategory,
+                    'level' => 1
+                ];
+            }
+        }
         
         return $this->render('admin/property_type/index.html.twig', [
-            'property_types' => $allTypes,
+            'structured_categories' => $structuredCategories,
         ]);
     }
 

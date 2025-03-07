@@ -9,6 +9,9 @@ nav:
     about: 'О нас'
     contact: 'Контакты'
     language: 'Язык'
+    admin:
+        blog: 'Блог'
+        faq: 'ЧЗВ'
 
 footer:
     description: 'Ваш надежный партнер в сфере промышленной недвижимости'
@@ -76,6 +79,34 @@ blog:
     read_more: 'Читать далее'
     share: 'Поделиться'
     related_posts: 'Похожие публикации'
+    admin:
+        title: 'Блог'
+        new_post: 'Новая публикация'
+        published: 'Опубликовано'
+        draft: 'Черновик'
+        edit: 'Редактировать публикацию'
+        delete: 'Удалить'
+        confirm_delete: 'Вы уверены, что хотите удалить эту публикацию?'
+        title_field: 'Заголовок'
+        content: 'Содержание'
+        excerpt: 'Краткое описание'
+        category: 'Категория'
+        image: 'Изображение'
+        date: 'Дата'
+        save: 'Сохранить'
+        back_to_list: 'Вернуться к списку'
+        success_created: 'Публикация успешно создана'
+        success_updated: 'Публикация успешно обновлена'
+        success_deleted: 'Публикация успешно удалена'
+        featured_image: 'Главное изображение'
+        seo_title: 'SEO-заголовок'
+        seo_description: 'SEO-описание'
+        seo_keywords: 'SEO-ключевые слова'
+        author: 'Автор'
+        status: 'Статус'
+        created_at: 'Создано'
+        updated_at: 'Обновлено'
+        published_at: 'Опубликовано'
 
 contact:
     title: 'Контакты'
@@ -113,4 +144,27 @@ home:
         cta:
             title: 'Ищете конкретный объект?'
             text: 'Свяжитесь с нами, и мы поможем вам найти именно то, что вам нужно'
-            button: 'Связаться с нами' 
+            button: 'Связаться с нами'
+
+# Переводы для панели администратора FAQ
+faq:
+  admin:
+    title: 'Часто задаваемые вопросы'
+    new: 'Новый вопрос'
+    active: 'Активный'
+    edit: 'Редактировать вопрос'
+    save: 'Сохранить'
+    delete: 'Удалить'
+    confirm_delete: 'Вы уверены, что хотите удалить этот вопрос?'
+    question: 'Вопрос'
+    answer: 'Ответ'
+    category: 'Категория'
+    order: 'Порядок'
+    created_at: 'Создан'
+    updated_at: 'Обновлен'
+    back_to_list: 'Вернуться к списку'
+    success_created: 'Вопрос успешно создан'
+    success_updated: 'Вопрос успешно обновлен'
+    success_deleted: 'Вопрос успешно удален'
+  categories:
+    general: 'Общие вопросы' 

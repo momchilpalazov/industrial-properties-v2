@@ -179,4 +179,9 @@ class PropertyType
     {
         return $this->name ?? '';
     }
+
+    public function getLocalizedName(string $locale): string
+    {
+        return $locale === 'en' ? ($this->nameEn ?? $this->name) : $this->name;
+    }
 } 
