@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'about.meta_title'|trans }}{% endblock %}
+{% block title %}{{ settings.metaTitleBg }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -28,8 +28,8 @@
     <!-- Header -->
     <section class="about-header">
         <div class="container">
-            <h1 class="display-4">{{ 'about.title'|trans }}</h1>
-            <p class="lead">{{ 'about.subtitle'|trans }}</p>
+            <h1 class="display-4">{% if app.request.locale == 'en' %}{{ settings.titleEn }}{% else %}{{ settings.titleBg }}{% endif %}</h1>
+            <p class="lead">{% if app.request.locale == 'en' %}{{ settings.subtitleEn }}{% else %}{{ settings.subtitleBg }}{% endif %}</p>
         </div>
     </section>
 
@@ -38,7 +38,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h2 class="mb-4">{{ 'about.our_story.title'|trans }}</h2>
+                    <h2 class="mb-4">{% if app.request.locale == 'en' %}Our Story{% else %}Нашата история{% endif %}</h2>
                     {% if app.request.locale == 'en' %}
                         {{ settings.contentEn|raw }}
                     {% else %}
@@ -47,9 +47,9 @@
                 </div>
                 <div class="col-md-6">
                     {% if settings.companyImage %}
-                        <img src="{{ asset(settings.companyImage) }}" alt="{{ 'about.title'|trans }}" class="img-fluid rounded shadow">
+                        <img src="{{ asset(settings.companyImage) }}" alt="{% if app.request.locale == 'en' %}{{ settings.titleEn }}{% else %}{{ settings.titleBg }}{% endif %}" class="img-fluid rounded shadow">
                     {% else %}
-                        <img src="{{ asset('/uploads/about/company/default-company.jpg') }}" alt="{{ 'about.title'|trans }}" class="img-fluid rounded shadow">
+                        <img src="{{ asset('/uploads/about/company/default-company.jpg') }}" alt="{% if app.request.locale == 'en' %}{{ settings.titleEn }}{% else %}{{ settings.titleBg }}{% endif %}" class="img-fluid rounded shadow">
                     {% endif %}
                 </div>
             </div>
@@ -59,29 +59,29 @@
     <!-- Our Values -->
     <section class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center mb-5">{{ 'about.our_values.title'|trans }}</h2>
+            <h2 class="text-center mb-5">{% if app.request.locale == 'en' %}Our Values{% else %}Нашите ценности{% endif %}</h2>
             <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="text-center">
-                        <i class="bi bi-star fs-1 text-primary mb-3"></i>
-                        <h4>{{ 'about.our_values.quality.title'|trans }}</h4>
-                        <p class="text-muted">{{ 'about.our_values.quality.description'|trans }}</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="text-center">
-                        <i class="bi bi-star fs-1 text-primary mb-3"></i>
-                        <h4>{{ 'about.our_values.trust.title'|trans }}</h4>
-                        <p class="text-muted">{{ 'about.our_values.trust.description'|trans }}</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="text-center">
-                        <i class="bi bi-star fs-1 text-primary mb-3"></i>
-                        <h4>{{ 'about.our_values.expertise.title'|trans }}</h4>
-                        <p class="text-muted">{{ 'about.our_values.expertise.description'|trans }}</p>
-                    </div>
-                </div>
+                {% if app.request.locale == 'en' %}
+                    {% for value in settings.valuesEn %}
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="bi bi-star fs-1 text-primary mb-3"></i>
+                                <h4>{{ value.title }}</h4>
+                                <p class="text-muted">{{ value.description }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    {% for value in settings.valuesBg %}
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="bi bi-star fs-1 text-primary mb-3"></i>
+                                <h4>{{ value.title }}</h4>
+                                <p class="text-muted">{{ value.description }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
     </section>
@@ -89,7 +89,7 @@
     <!-- Our Team -->
     <section class="py-5">
         <div class="container">
-            <h2 class="text-center mb-5">{{ 'about.our_team.title'|trans }}</h2>
+            <h2 class="text-center mb-5">{% if app.request.locale == 'en' %}Our Team{% else %}Нашият екип{% endif %}</h2>
             <div class="row g-4">
                 {% for member in settings.team %}
                     <div class="col-md-4">
@@ -111,9 +111,9 @@
     <!-- Call to Action -->
     <section class="py-5 bg-primary text-white">
         <div class="container text-center">
-            <h2 class="mb-4">{{ 'about.cta.title'|trans }}</h2>
-            <p class="lead mb-4">{{ 'about.cta.description'|trans }}</p>
-            <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">{{ 'about.cta.button'|trans }}</a>
+            <h2 class="mb-4">{% if app.request.locale == 'en' %}Ready to Start?{% else %}Готови ли сте да започнем заедно?{% endif %}</h2>
+            <p class="lead mb-4">{% if app.request.locale == 'en' %}Contact us for professional consultation{% else %}Свържете се с нас за професионална консултация{% endif %}</p>
+            <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">{% if app.request.locale == 'en' %}Contact Us{% else %}Свържете се с нас{% endif %}</a>
         </div>
     </section>
 {% endblock %} 
