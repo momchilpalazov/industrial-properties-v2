@@ -392,14 +392,18 @@
             {% endif %}
         </div>
 
+        {{ form_rest(form) }}
+
         <!-- Бутони -->
-        <div class="d-flex justify-content-end gap-2 mb-4">
-            <a href="{{ path('admin_property_index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-x"></i> Отказ
-            </a>
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check-lg"></i> Запази промените
-            </button>
+        <div class="form-section">
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{{ path('admin_property_index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x"></i> Отказ
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg"></i> Запази промените
+                </button>
+            </div>
         </div>
 
         {{ form_end(form) }}
