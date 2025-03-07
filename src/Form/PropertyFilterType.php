@@ -34,10 +34,27 @@ class PropertyFilterType extends AbstractType
             ])
             ->add('type', EntityType::class, [
                 'class' => PropertyType::class,
-                'choice_label' => 'name',
+                'choice_label' => function (PropertyType $propertyType) {
+                    $prefix = $propertyType->getParent() ? '— ' : '';
+                    return $prefix . $propertyType->getName();
+                },
                 'required' => false,
                 'placeholder' => 'Всички типове',
-                'label' => 'Тип имот'
+                'label' => 'Тип имот',
+                'group_by' => function (PropertyType $propertyType) {
+                    if ($propertyType->getParent()) {
+                        return $propertyType->getParent()->getName();
+                    }
+                    return null;
+                },
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('pt')
+                        ->orderBy('CASE WHEN pt.parent IS NULL THEN 0 ELSE 1 END', 'ASC')
+                        ->addOrderBy('pt.name', 'ASC');
+                },
+                'attr' => [
+                    'class' => 'form-select property-type-filter'
+                ]
             ])
             ->add('min_price', NumberType::class, [
                 'required' => false,
@@ -65,13 +82,6 @@ class PropertyFilterType extends AbstractType
                 'label' => 'Максимална площ',
                 'attr' => [
                     'placeholder' => 'Максимална площ'
-                ]
-            ])
-            ->add('location', TextType::class, [
-                'required' => false,
-                'label' => 'Локация',
-                'attr' => [
-                    'placeholder' => 'Търсене по локация'
                 ]
             ])
             ->add('sort', ChoiceType::class, [

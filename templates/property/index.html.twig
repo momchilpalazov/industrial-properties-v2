@@ -5,6 +5,8 @@
 {% block stylesheets %}
     {{ parent() }}
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
     <style>
         .filter-section {
             background: #f8f9fa;
@@ -120,6 +122,141 @@
             display: inline-block;
             animation: pulse 2s infinite ease-in-out;
         }
+        
+        /* Стилове за Select2 с типове имоти */
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+        
+        .select2-container--bootstrap-5 .select2-results__group {
+            padding: 8px 12px;
+            font-weight: bold;
+            color: #1976d2;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .select2-container--bootstrap-5 .child-option {
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .select2-container--bootstrap-5 .child-option:before {
+            content: "—";
+            position: absolute;
+            left: 10px;
+            color: #6c757d;
+        }
+        
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        /* Подобрения на филтрите */
+        .property-filter-section {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .property-filter-section h4 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f4f4f4;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .form-control, .form-select {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            box-shadow: none;
+            padding: 10px 15px;
+            height: auto;
+            font-size: 14px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.2);
+            border-color: #1976d2;
+        }
+        
+        .filter-button,
+        .reset-button {
+            margin-top: 0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            display: block;
+            width: 100%;
+            height: 44px;
+            transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .filter-button {
+            background-color: #1976d2;
+            border-color: #1976d2;
+            color: #fff;
+        }
+        
+        .filter-button:hover {
+            background-color: #0d47a1;
+            border-color: #0d47a1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        
+        .reset-button {
+            border: 1px solid #e0e0e0;
+            background-color: white;
+            color: #666;
+        }
+        
+        .reset-button:hover {
+            background-color: #f5f5f5;
+            color: #333;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .filter-button i,
+        .reset-button i {
+            font-size: 14px;
+            margin-right: 5px;
+        }
+        
+        /* Размери на полета */
+        .d-flex.gap-2 {
+            gap: 10px !important;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 767px) {
+            .d-flex.gap-2 {
+                flex-direction: column;
+                gap: 5px !important;
+            }
+            
+            .form-group {
+                margin-bottom: 10px;
+            }
+        }
     </style>
 {% endblock %}
 
@@ -138,43 +275,85 @@
         <!-- Filter Section -->
         <section class="filter-section" id="filterSection">
             <div class="container">
-                {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
-                    <div class="col-md-4">
-                        {{ form_row(form.type, {'attr': {'class': 'form-select'}}) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.min_price, {'attr': {'class': 'form-control', 'placeholder': 'Минимална цена'}}) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.max_price, {'attr': {'class': 'form-control', 'placeholder': 'Максимална цена'}}) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.min_area, {'attr': {'class': 'form-control', 'placeholder': 'Минимална площ'}}) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.max_area, {'attr': {'class': 'form-control', 'placeholder': 'Максимална площ'}}) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.location, {'attr': {'class': 'form-control', 'placeholder': 'Търсене по локация'}}) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.status, {'attr': {'class': 'form-select'}}) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.sort, {'attr': {'class': 'form-select'}}) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.direction, {'attr': {'class': 'form-select'}}) }}
-                    </div>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-search"></i> Търсене
-                        </button>
-                        <a href="{{ path('app_property_index') }}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Изчисти филтрите
-                        </a>
-                    </div>
-                {{ form_end(form) }}
+                <div class="property-filter-section">
+                    <h4 class="mb-3">Филтриране на имоти</h4>
+                    {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
+                        <!-- Първи ред - основни филтри -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.type) }}
+                                {{ form_widget(form.type) }}
+                                <small class="form-text text-muted">Изберете тип имот или подкатегория</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.status) }}
+                                {{ form_widget(form.status) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Втори ред - ценови филтри -->
+                        <div class="col-md-6">
+                            <div class="d-flex gap-2">
+                                <div class="flex-grow-1">
+                                    {{ form_label(form.min_price) }}
+                                    {{ form_widget(form.min_price, {'attr': {'placeholder': 'От', 'class': 'form-control'}}) }}
+                                </div>
+                                <div class="flex-grow-1">
+                                    {{ form_label(form.max_price) }}
+                                    {{ form_widget(form.max_price, {'attr': {'placeholder': 'До', 'class': 'form-control'}}) }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Трети ред - филтри за площ -->
+                        <div class="col-md-6">
+                            <div class="d-flex gap-2">
+                                <div class="flex-grow-1">
+                                    {{ form_label(form.min_area) }}
+                                    {{ form_widget(form.min_area, {'attr': {'placeholder': 'От', 'class': 'form-control'}}) }}
+                                </div>
+                                <div class="flex-grow-1">
+                                    {{ form_label(form.max_area) }}
+                                    {{ form_widget(form.max_area, {'attr': {'placeholder': 'До', 'class': 'form-control'}}) }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Четвърти ред - сортиране и бутони -->
+                        <div class="col-md-6">
+                            <div class="form-group d-flex gap-2">
+                                <div class="flex-grow-1">
+                                    {{ form_label(form.sort) }}
+                                    {{ form_widget(form.sort) }}
+                                </div>
+                                <div class="flex-grow-1">
+                                    {{ form_label(form.direction) }}
+                                    {{ form_widget(form.direction) }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group d-flex gap-2">
+                                <div class="flex-grow-1">
+                                    <label class="form-label">Действия</label>
+                                    <button type="submit" class="btn filter-button w-100">
+                                        <i class="bi bi-search"></i> Търси имоти
+                                    </button>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <label class="form-label">&nbsp;</label>
+                                    <a href="{{ path('app_property_index') }}" class="btn reset-button w-100">
+                                        <i class="bi bi-x-circle"></i> Изчисти филтрите
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
             </div>
         </section>
     </div>
@@ -205,7 +384,6 @@
                                             <i class="bi bi-upc-scan"></i> {{ property.referenceNumber }}
                                         </small>
                                         <small class="text-muted">
-                                            <i class="bi bi-geo-alt"></i> {{ property.location(app.request.locale) }}<br>
                                             <i class="bi bi-building"></i> {{ property.type.name }}<br>
                                             <i class="bi bi-arrows-angle-expand"></i> {{ property.area }} m²<br>
                                             {% if property.price %}
@@ -246,6 +424,7 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const filterToggle = document.getElementById('filterToggle');
@@ -276,6 +455,32 @@
                     });
                 }
             });
+            
+            // Инициализираме Select2 за по-добра визуализация
+            $('.property-type-filter').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: 'Изберете тип имот',
+                allowClear: true,
+                templateResult: formatPropertyType
+            });
+            
+            // Форматиране на опциите в падащото меню
+            function formatPropertyType(state) {
+                if (!state.id) {
+                    return state.text; // Placeholder
+                }
+                
+                // Добавяме клас за подкатегория
+                if (state.text.startsWith('—')) {
+                    let $state = $(
+                        '<span class="child-option">' + state.text.substring(2) + '</span>'
+                    );
+                    return $state;
+                }
+                
+                return state.text;
+            }
         });
     </script>
 {% endblock %} 

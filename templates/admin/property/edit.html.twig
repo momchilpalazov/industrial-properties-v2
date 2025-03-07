@@ -4,6 +4,8 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
     <style>
         .alert {
             margin-bottom: 1rem;
@@ -164,6 +166,57 @@
             margin-left: auto;
             padding: 0.25rem 0.5rem;
             font-size: 0.875rem;
+        }
+        
+        /* Стилове за падащото меню с типове имоти */
+        .property-type-select optgroup {
+            font-weight: bold;
+            color: #3498db;
+            background-color: #f8f9fa;
+        }
+        
+        .property-type-select option[value=""] {
+            font-weight: bold;
+            font-style: italic;
+        }
+        
+        .property-type-select option {
+            padding: 5px;
+        }
+        
+        .property-type-select option:hover {
+            background-color: #e9ecef;
+        }
+        
+        /* Стилове за Select2 с типове имоти */
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+        
+        .select2-container--bootstrap-5 .select2-results__group {
+            padding: 8px 12px;
+            font-weight: bold;
+            color: #3498db;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .select2-container--bootstrap-5 .child-option {
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .select2-container--bootstrap-5 .child-option:before {
+            content: "—";
+            position: absolute;
+            left: 10px;
+            color: #6c757d;
+        }
+        
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         }
     </style>
 {% endblock %}
@@ -357,6 +410,7 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // CKEditor initialization
@@ -395,6 +449,49 @@
                         });
                 }
             });
+
+            // Добавяме допълнителни визуални индикатори за йерархичната структура
+            const propertyTypeSelect = document.querySelector('.property-type-select');
+            if (propertyTypeSelect) {
+                // Добавяме класове към опциите за по-добра визуализация
+                Array.from(propertyTypeSelect.options).forEach(option => {
+                    if (option.text.startsWith('—')) {
+                        option.classList.add('property-type-child');
+                    }
+                });
+                
+                // Добавяме индикация за избрания тип
+                propertyTypeSelect.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    console.log('Избран тип имот: ' + selectedOption.text);
+                });
+            }
+
+            // Инициализираме Select2 за по-добра визуализация
+            $('.property-type-select').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: 'Изберете тип имот',
+                allowClear: true,
+                templateResult: formatPropertyType
+            });
+            
+            // Форматиране на опциите в падащото меню
+            function formatPropertyType(state) {
+                if (!state.id) {
+                    return state.text; // Placeholder
+                }
+                
+                // Добавяме клас за подкатегория
+                if (state.text.startsWith('—')) {
+                    let $state = $(
+                        '<span class="child-option">' + state.text.substring(2) + '</span>'
+                    );
+                    return $state;
+                }
+                
+                return state.text;
+            }
         });
     </script>
 {% endblock %} 

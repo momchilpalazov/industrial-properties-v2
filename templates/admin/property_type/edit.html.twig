@@ -113,6 +113,28 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Настройки на йерархията -->
+            <div class="form-section">
+                <h4 class="form-section-title">
+                    <i class="bi bi-diagram-3 me-1"></i> Настройки на йерархията
+                </h4>
+                <div class="mb-3">
+                    {{ form_label(form.parent, 'Родителска категория', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.parent, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(form.parent, {'attr': {'class': 'invalid-feedback'}}) }}
+                    <div class="form-text">
+                        <i class="bi bi-info-circle"></i> 
+                        Изберете родителска категория, ако този тип е подкатегория. Оставете празно за основна категория.
+                        {% if property_type.hasChildren %}
+                            <div class="alert alert-warning mt-2">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                Внимание: Този тип има подкатегории. Промяната на йерархията може да повлияе на структурата на категориите.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
 
             <!-- Бутони -->
             <div class="d-flex justify-content-end gap-2 mb-4">

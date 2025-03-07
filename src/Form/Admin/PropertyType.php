@@ -125,14 +125,26 @@ class PropertyType extends AbstractType
             ])
             ->add('type', EntityType::class, [
                 'class' => PropertyTypeEntity::class,
-                'choice_label' => 'name',
+                'choice_label' => function (PropertyTypeEntity $propertyType) {
+                    $prefix = $propertyType->getParent() ? '— ' : '';
+                    return $prefix . $propertyType->getName();
+                },
                 'label' => 'Тип имот',
                 'placeholder' => 'Изберете тип имот',
+                'group_by' => function (PropertyTypeEntity $propertyType) {
+                    if ($propertyType->getParent()) {
+                        return $propertyType->getParent()->getName();
+                    }
+                    return null;
+                },
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('pt')
-                        ->orderBy('pt.name', 'ASC');
+                        ->orderBy('CASE WHEN pt.parent IS NULL THEN 0 ELSE 1 END', 'ASC')
+                        ->addOrderBy('pt.name', 'ASC');
                 },
-                'attr' => ['class' => 'form-select']
+                'attr' => [
+                    'class' => 'form-select property-type-select'
+                ]
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'Статус',

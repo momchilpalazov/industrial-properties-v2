@@ -25,6 +25,8 @@
                             <th>ID</th>
                             <th>Име</th>
                             <th>Описание</th>
+                            <th>Родителска категория</th>
+                            <th>Подкатегории</th>
                             <th>Брой имоти</th>
                             <th class="text-end">Действия</th>
                         </tr>
@@ -33,8 +35,31 @@
                     {% for property_type in property_types %}
                         <tr>
                             <td>{{ property_type.id }}</td>
-                            <td>{{ property_type.name }}</td>
+                            <td>
+                                {% if property_type.parent %}
+                                    <span class="ms-3">
+                                        <i class="bi bi-arrow-return-right text-muted me-1"></i>
+                                        {{ property_type.name }}
+                                    </span>
+                                {% else %}
+                                    <strong>{{ property_type.name }}</strong>
+                                {% endif %}
+                            </td>
                             <td>{{ property_type.description|default('-') }}</td>
+                            <td>
+                                {% if property_type.parent %}
+                                    {{ property_type.parent.name }}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if property_type.hasChildren %}
+                                    <span class="badge bg-primary">{{ property_type.children|length }}</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
                             <td>{{ property_type.properties|length }}</td>
                             <td class="text-end">
                                 <div class="btn-group">
@@ -57,7 +82,7 @@
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="5" class="text-center">Няма намерени типове имоти</td>
+                            <td colspan="7" class="text-center">Няма намерени типове имоти</td>
                         </tr>
                     {% endfor %}
                     </tbody>

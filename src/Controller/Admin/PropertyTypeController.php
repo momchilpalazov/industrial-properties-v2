@@ -19,8 +19,24 @@ class PropertyTypeController extends AbstractController
     #[Route('/', name: 'admin_property_type_index', methods: ['GET'])]
     public function index(PropertyTypeRepository $propertyTypeRepository): Response
     {
+        // Извличаме всички типове имоти, подредени по йерархия
+        // Първо родителите, после техните деца
+        $propertyTypes = $propertyTypeRepository->findBy(
+            ['parent' => null], 
+            ['name' => 'ASC']
+        );
+        
+        // След това добавяме всички подкатегории
+        $childTypes = $propertyTypeRepository->findBy(
+            ['parent' => isset($propertyTypes[0]) ? $propertyTypes[0]->getId() : null], 
+            ['name' => 'ASC']
+        );
+        
+        // Комбинираме ги в един списък
+        $allTypes = array_merge($propertyTypes, $childTypes);
+        
         return $this->render('admin/property_type/index.html.twig', [
-            'property_types' => $propertyTypeRepository->findAll(),
+            'property_types' => $allTypes,
         ]);
     }
 
@@ -71,6 +87,12 @@ class PropertyTypeController extends AbstractController
             // Проверка дали има свързани имоти
             if (!$propertyType->getProperties()->isEmpty()) {
                 $this->addFlash('error', 'Не можете да изтриете този тип имот, защото има свързани имоти с него.');
+                return $this->redirectToRoute('admin_property_type_index');
+            }
+            
+            // Проверка дали има подкатегории
+            if (!$propertyType->getChildren()->isEmpty()) {
+                $this->addFlash('error', 'Не можете да изтриете този тип имот, защото има подкатегории свързани с него.');
                 return $this->redirectToRoute('admin_property_type_index');
             }
 
