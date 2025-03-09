@@ -1,7 +1,8 @@
 # Навигация и общи преводи
 nav:
   home: 'Начало'
-  properties: 'Имоти'
+  properties: 'Продажба'
+  rental_properties: 'Наем'
   promotions: 'Промоции'
   services: 'Услуги'
   blog: 'Блог'

@@ -1,7 +1,8 @@
 # Navigation and general translations
 nav:
   home: 'Home'
-  properties: 'Properties'
+  properties: 'Sale'
+  rental_properties: 'Rental'
   promotions: 'Promotions'
   services: 'Services'
   blog: 'Blog'

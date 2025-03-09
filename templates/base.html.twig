@@ -263,6 +263,10 @@
                            href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans }}</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') starts with 'app_rental_property' %}active{% endif %}" 
+                           href="{{ path('app_rental_property_index') }}">{{ 'nav.rental_properties'|trans({'default': 'Под наем'}) }}</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') == 'app_promotions' %}active{% endif %}" 
                            href="{{ path('app_promotions') }}">{{ 'nav.promotions'|trans }}</a>
                     </li>
@@ -270,18 +274,18 @@
                         <a class="nav-link {% if app.request.get('_route') == 'app_services' %}active{% endif %}" 
                            href="{{ path('app_services') }}">{{ 'nav.services'|trans }}</a>
                     </li>
-                    <li class="nav-item">
+                    {#<li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') starts with 'app_blog' %}active{% endif %}" 
                            href="{{ path('app_blog_index') }}">{{ 'nav.blog'|trans }}</a>
-                    </li>
-                    <li class="nav-item">
+                    </li>#}
+                    {#<li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') == 'app_about' %}active{% endif %}" 
                            href="{{ path('app_about') }}">{{ 'nav.about'|trans }}</a>
-                    </li>
-                    <li class="nav-item">
+                    </li>#}
+                    {#<li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') == 'app_contact' %}active{% endif %}" 
                            href="{{ path('app_contact') }}">{{ 'nav.contact'|trans }}</a>
-                    </li>
+                    </li>#}
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
@@ -341,6 +345,7 @@
                     <ul class="list-unstyled">
                         <li><a href="{{ path('app_home') }}">{{ 'nav.home'|trans }}</a></li>
                         <li><a href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans }}</a></li>
+                        <li><a href="{{ path('app_rental_property_index') }}">{{ 'nav.rental_properties'|trans({'default': 'Под наем'}) }}</a></li>
                         <li><a href="{{ path('app_promotions') }}">{{ 'nav.promotions'|trans }}</a></li>
                         <li><a href="{{ path('app_services') }}">{{ 'nav.services'|trans }}</a></li>
                         <li><a href="{{ path('app_blog_index') }}">{{ 'nav.blog'|trans }}</a></li>
