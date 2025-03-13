@@ -14,7 +14,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
-#[Route('/users')]
+#[Route('/admin/users')]
 #[IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
 {

@@ -29,6 +29,14 @@ app_logout:
     defaults:
         _locale: bg
 
+# Here Maps routes
+here_maps:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+    exclude: '../src/Controller/Admin/|../src/Controller/SecurityController.php|../src/Controller/Public/'
+
 # Localized public routes
 controllers:
     resource:

@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Process\Process;
 
-#[Route('', name: 'admin_')]
+#[Route('/admin', name: 'admin_')]
 #[IsGranted('ROLE_ADMIN')]
 class AdminController extends AbstractController
 {

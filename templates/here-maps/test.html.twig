@@ -1,0 +1,265 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Here Maps API Тест{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <style>
+        #map-container {
+            width: 100%;
+            height: 400px;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .debug-info {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .debug-info h5 {
+            margin-top: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .api-status {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .log-panel {
+            background-color: #212529;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            word-wrap: break-word;
+        }
+        
+        .error-entry {
+            color: #ff6b6b;
+        }
+        
+        .api-key-display {
+            background-color: #e2e3e5;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Here Maps API Тест</h1>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Карта</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="map-container"></div>
+                        <div id="api-status" class="api-status mt-3"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Дебъг информация</h4>
+                    </div>
+                    <div class="card-body">
+                        <h5>API Ключ</h5>
+                        <div class="api-key-display mb-3">{{ options.apiKey }}</div>
+                        
+                        <h5>Настройки</h5>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Дължина на ключа
+                                <span class="badge bg-primary">{{ options.apiKey|length }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Център (LAT)
+                                <span class="badge bg-primary">{{ options.center.lat }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Център (LNG)
+                                <span class="badge bg-primary">{{ options.center.lng }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Zoom
+                                <span class="badge bg-primary">{{ options.zoom }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Брой маркери
+                                <span class="badge bg-primary">{{ options.markers|length }}</span>
+                            </li>
+                        </ul>
+                        
+                        <h5>Дебъг променливи</h5>
+                        {% if options.debug is defined %}
+                            <pre class="debug-info">{{ dump(options.debug) }}</pre>
+                        {% endif %}
+                        
+                        <h5>Конзолни съобщения</h5>
+                        <div id="console-log" class="log-panel"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    
+    <script>
+        // Прихващане на конзолни съобщения
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        const originalConsoleWarn = console.warn;
+        const logPanel = document.getElementById('console-log');
+        
+        console.log = function() {
+            originalConsoleLog.apply(console, arguments);
+            const message = Array.from(arguments).map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg) : arg
+            ).join(' ');
+            appendToLogPanel(message);
+        };
+        
+        console.error = function() {
+            originalConsoleError.apply(console, arguments);
+            const message = Array.from(arguments).map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg) : arg
+            ).join(' ');
+            appendToLogPanel(message, true);
+        };
+        
+        console.warn = function() {
+            originalConsoleWarn.apply(console, arguments);
+            const message = Array.from(arguments).map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg) : arg
+            ).join(' ');
+            appendToLogPanel(message);
+        };
+        
+        function appendToLogPanel(message, isError = false) {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry' + (isError ? ' error-entry' : '');
+            entry.textContent = message;
+            logPanel.appendChild(entry);
+            logPanel.scrollTop = logPanel.scrollHeight;
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const mapOptions = {{ options|json_encode|raw }};
+            const apiStatusElement = document.getElementById('api-status');
+            
+            console.log('Map options:', mapOptions);
+            
+            try {
+                // Инициализация на Here Maps
+                const platform = new H.service.Platform({
+                    apiKey: mapOptions.apiKey
+                });
+                
+                console.log('Platform initialized');
+                
+                // Проверка на API ключа
+                fetch(`https://maps.hereapi.com/v3/copyright?xnlp=CL_JSMv3.1.63.0&apikey=${mapOptions.apiKey}`)
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('API key is valid');
+                            apiStatusElement.className = 'api-status status-success';
+                            apiStatusElement.innerHTML = '<strong>Статус на API:</strong> Успешно свързване с Here Maps API. Ключът е валиден.';
+                        } else {
+                            console.error('API key is invalid or unauthorized', response.status, response.statusText);
+                            apiStatusElement.className = 'api-status status-error';
+                            apiStatusElement.innerHTML = `<strong>Статус на API:</strong> Грешка при свързване с Here Maps API. Код: ${response.status} ${response.statusText}. Ключът може да е невалиден или неоторизиран.`;
+                        }
+                        return response;
+                    })
+                    .catch(error => {
+                        console.error('API request failed', error);
+                        apiStatusElement.className = 'api-status status-error';
+                        apiStatusElement.innerHTML = `<strong>Статус на API:</strong> Грешка при свързване с Here Maps API: ${error.message}`;
+                    });
+                
+                // Създаване на слоеве
+                const defaultLayers = platform.createDefaultLayers();
+                
+                // Създаване на карта
+                const map = new H.Map(
+                    document.getElementById('map-container'),
+                    defaultLayers.vector.normal.map,
+                    {
+                        center: { lat: mapOptions.center.lat, lng: mapOptions.center.lng },
+                        zoom: mapOptions.zoom
+                    }
+                );
+                
+                // Добавяне на интерактивност и контроли
+                const ui = H.ui.UI.createDefault(map, defaultLayers);
+                const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+                
+                // Ресайз на картата при промяна на размера на прозореца
+                window.addEventListener('resize', () => {
+                    map.getViewPort().resize();
+                });
+                
+                // Добавяне на маркери ако има такива
+                if (mapOptions.markers && mapOptions.markers.length > 0) {
+                    mapOptions.markers.forEach(marker => {
+                        const mapMarker = new H.map.Marker({ lat: marker.lat, lng: marker.lng });
+                        map.addObject(mapMarker);
+                    });
+                }
+                
+                console.log('Here Maps initialized successfully');
+                
+            } catch (error) {
+                console.error('Here Maps initialization failed:', error);
+                apiStatusElement.className = 'api-status status-error';
+                apiStatusElement.innerHTML = `<strong>Статус на API:</strong> Грешка при инициализация на Here Maps: ${error.message}`;
+            }
+        });
+    </script>
+{% endblock %} 

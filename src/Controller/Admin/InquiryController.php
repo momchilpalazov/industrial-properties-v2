@@ -14,7 +14,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Knp\Component\Pager\PaginatorInterface;
 
-#[Route('/inquiries')]
+#[Route('/admin/inquiries')]
 #[IsGranted('ROLE_ADMIN')]
 class InquiryController extends AbstractController
 {

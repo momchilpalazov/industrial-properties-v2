@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Here Maps Test{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <style>
+        #map-container {
+            width: 100%;
+            height: 500px;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .debug-info {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .debug-info pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Тест на Here Maps интеграция</h1>
+        
+        <div class="row">
+            <div class="col-12">
+                <div id="map-container"></div>
+            </div>
+        </div>
+        
+        {% if options.debug is defined %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="debug-info">
+                        <h4>Дебъг информация</h4>
+                        <pre>{{ dump(options.debug) }}</pre>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mapOptions = {{ options|json_encode|raw }};
+            console.log('Map options:', mapOptions);
+            
+            // Инициализация на Here Maps
+            const platform = new H.service.Platform({
+                apiKey: mapOptions.apiKey
+            });
+            
+            // Създаване на слоеве
+            const defaultLayers = platform.createDefaultLayers();
+            
+            // Създаване на карта
+            const map = new H.Map(
+                document.getElementById('map-container'),
+                defaultLayers.vector.normal.map,
+                {
+                    center: { lat: mapOptions.center.lat, lng: mapOptions.center.lng },
+                    zoom: mapOptions.zoom
+                }
+            );
+            
+            // Добавяне на интерактивност и контроли
+            const ui = H.ui.UI.createDefault(map, defaultLayers);
+            const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+            
+            // Ресайз на картата при промяна на размера на прозореца
+            window.addEventListener('resize', () => {
+                map.getViewPort().resize();
+            });
+            
+            // Добавяне на маркери ако има такива
+            if (mapOptions.markers && mapOptions.markers.length > 0) {
+                mapOptions.markers.forEach(marker => {
+                    const mapMarker = new H.map.Marker({ lat: marker.lat, lng: marker.lng });
+                    map.addObject(mapMarker);
+                });
+            }
+            
+            console.log('Here Maps initialized successfully with raster tiles');
+        });
+    </script>
+{% endblock %} 

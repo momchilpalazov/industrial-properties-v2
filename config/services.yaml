@@ -63,4 +63,17 @@ services:
 
     slugger:
         class: Symfony\Component\String\Slugger\AsciiSlugger
-        arguments: ['%locale%'] 
+        arguments: ['%locale%']
+
+    App\HereMaps\Config\HereMapsConfig:
+        arguments:
+            $config:
+                api_key: '%env(HERE_MAPS_API_KEY)%'
+                default_lat: '%env(float:HERE_MAPS_DEFAULT_LAT)%'
+                default_lng: '%env(float:HERE_MAPS_DEFAULT_LNG)%'
+                default_zoom: '%env(int:HERE_MAPS_DEFAULT_ZOOM)%'
+
+    App\HereMaps\Services\MapService:
+        arguments:
+            $config: '@App\HereMaps\Config\HereMapsConfig'
+            $twig: '@twig' 

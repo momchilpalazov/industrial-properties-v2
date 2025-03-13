@@ -20,7 +20,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/properties')]
+#[Route('/admin/properties')]
 #[IsGranted('ROLE_ADMIN')]
 class PropertyController extends AbstractController
 {
