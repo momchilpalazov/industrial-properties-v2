@@ -152,7 +152,7 @@
                         defaultLayers.vector.normal.map,
                         {
                             center: sofiaCoordinates,
-                            zoom: 15
+                            zoom: 10
                         }
                     );
                     
@@ -165,22 +165,28 @@
                     
                     // Създаваме балон с информация за офиса - по-компактен
                     marker.setData(`
-                        <div style="padding: 8px; min-width: 150px; max-width: 200px;">
+                        <div style="padding: 8px; min-width: 180px; max-width: 220px;">
                             <h5 style="font-size: 14px; margin-bottom: 5px;">Industrial Properties</h5>
                             <p style="margin-bottom: 5px; font-size: 12px;">ул. Примерна 123<br>София 1000</p>
-                            <p style="margin-bottom: 3px; font-size: 12px;"><strong>Тел:</strong> +359 2 123 4567</p>
-                            <p style="margin-bottom: 0; font-size: 12px;"><strong>Имейл:</strong> office@industrial-properties.bg</p>
+                            <p style="margin-bottom: 3px; font-size: 12px;"><strong>{{ 'contact.phone'|trans }}:</strong> +359 2 123 4567</p>
+                            <p style="margin-bottom: 0; font-size: 12px;"><strong>{{ 'contact.email'|trans }}:</strong> office@industrial-properties.bg</p>
                         </div>
                     `);
                     
                     // Добавяме маркера към картата
                     map.addObject(marker);
                     
+                    // Центрираме картата малко по-надолу, за да има място за балона
+                    map.setCenter({lat: sofiaCoordinates.lat - 0.001, lng: sofiaCoordinates.lng});
+                    
                     // Добавяме слушател за клик върху маркера
                     marker.addEventListener('tap', function(evt) {
                         const bubble = new H.ui.InfoBubble(
                             evt.target.getGeometry(), 
-                            { content: evt.target.getData() }
+                            { 
+                                content: evt.target.getData(),
+                                pixelOffset: {x: 0, y: -50}
+                            }
                         );
                         ui.addBubble(bubble);
                     });
@@ -189,7 +195,10 @@
                     setTimeout(function() {
                         const bubble = new H.ui.InfoBubble(
                             marker.getGeometry(), 
-                            { content: marker.getData() }
+                            { 
+                                content: marker.getData(),
+                                pixelOffset: {x: 0, y: -50}
+                            }
                         );
                         ui.addBubble(bubble);
                     }, 1000);
