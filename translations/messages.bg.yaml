@@ -72,6 +72,7 @@ property:
   vip_properties: 'VIP имоти'
   featured_properties: 'Избрани имоти'
   latest_properties: 'Най-нови имоти'
+  location_map: 'Местоположение'
   share:
     title: 'Споделете този имот'
     copy_link: 'Копирай линк'

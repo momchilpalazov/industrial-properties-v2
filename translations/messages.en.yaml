@@ -72,6 +72,7 @@ property:
   vip_properties: 'VIP Properties'
   featured_properties: 'Featured Properties'
   latest_properties: 'Latest Properties'
+  location_map: 'Location Map'
   share:
     title: 'Share this property'
     copy_link: 'Copy link'
