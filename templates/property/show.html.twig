@@ -475,13 +475,13 @@
                         lng: {{ property.longitude }} 
                     });
                     
-                    // Създаваме балон с информация за имота
+                    // Създаваме балон с информация за имота - по-компактен
                     marker.setData(`
-                        <div style="padding: 10px; min-width: 200px;">
-                            <h5>{{ property.title(app.request.locale)|escape('js') }}</h5>
-                            <p>{{ property.location(app.request.locale)|escape('js') }}</p>
+                        <div style="padding: 8px; min-width: 150px; max-width: 200px;">
+                            <h5 style="font-size: 14px; margin-bottom: 5px;">{{ property.title(app.request.locale)|escape('js') }}</h5>
+                            <p style="margin-bottom: 5px; font-size: 12px;">{{ property.location(app.request.locale)|escape('js') }}</p>
                             {% if property.price %}
-                            <p><strong>{{ 'property.price'|trans|escape('js') }}:</strong> {{ property.price|number_format(0, '.', ' ') }} €</p>
+                            <p style="margin-bottom: 0; font-size: 12px;"><strong>{{ 'property.price'|trans|escape('js') }}:</strong> {{ property.price|number_format(0, '.', ' ') }} €</p>
                             {% endif %}
                         </div>
                     `);

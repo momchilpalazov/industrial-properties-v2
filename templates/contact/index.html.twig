@@ -3,6 +3,8 @@
 {% block title %}{{ translations.contact.title }} - Industrial Properties{% endblock %}
 
 {% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
 <style>
     .contact-info-item {
         display: flex;
@@ -206,8 +208,12 @@
             <!-- Карта -->
             {% if contact.map_coordinates %}
             <div class="card shadow-sm mt-4">
-                <div class="card-body p-0">
-                    <div class="map-container" id="map"></div>
+                <div class="card-body">
+                    <h4 class="card-title mb-4">
+                        <i class="bi bi-geo-alt-fill"></i> 
+                        {{ translations.contact.location_map }}
+                    </h4>
+                    <div class="map-container" id="contact-map"></div>
                 </div>
             </div>
             {% endif %}
@@ -217,64 +223,120 @@
 {% endblock %}
 
 {% block javascripts %}
-<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" 
-        async 
-        defer></script>
+{{ parent() }}
+<script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
 <script>
-function initMap() {
-    const coordinates = { 
-        lat: {{ contact.map_coordinates.lat }}, 
-        lng: {{ contact.map_coordinates.lng }} 
-    };
-    
-    const map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 15,
-        center: coordinates,
-        styles: [
-            {
-                "featureType": "poi",
-                "elementType": "labels",
-                "stylers": [
-                    { "visibility": "off" }
-                ]
-            }
-        ]
-    });
-    
-    const marker = new google.maps.Marker({
-        position: coordinates,
-        map: map,
-        title: '{{ contact.company_name }}'
-    });
-}
+document.addEventListener('DOMContentLoaded', function() {
+    {% if contact.map_coordinates %}
+    // Инициализиране на Here Maps
+    (function initializeContactMap() {
+        try {
+            // Създаваме Here Maps платформа с API ключа
+            const apiKey = "{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}";
+            
+            const platform = new H.service.Platform({
+                apiKey: apiKey
+            });
+            
+            // Създаваме слоеве
+            const defaultLayers = platform.createDefaultLayers();
+            
+            // Създаваме картата
+            const map = new H.Map(
+                document.getElementById('contact-map'),
+                defaultLayers.vector.normal.map,
+                {
+                    center: { 
+                        lat: {{ contact.map_coordinates.lat }}, 
+                        lng: {{ contact.map_coordinates.lng }} 
+                    },
+                    zoom: 15
+                }
+            );
+            
+            // Добавяме интерактивност и контроли
+            const ui = H.ui.UI.createDefault(map, defaultLayers);
+            const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+            
+            // Добавяме маркер за офиса
+            const marker = new H.map.Marker({ 
+                lat: {{ contact.map_coordinates.lat }}, 
+                lng: {{ contact.map_coordinates.lng }} 
+            });
+            
+            // Създаваме балон с информация за офиса - по-компактен
+            marker.setData(`
+                <div style="padding: 8px; min-width: 150px; max-width: 200px;">
+                    <h5 style="font-size: 14px; margin-bottom: 5px;">{{ contact.company_name|default('Industrial Properties')|escape('js') }}</h5>
+                    <p style="margin-bottom: 5px; font-size: 12px;">{{ contact.address|escape('js') }}</p>
+                    <p style="margin-bottom: 3px; font-size: 12px;"><strong>Тел:</strong> {{ contact.phone|escape('js') }}</p>
+                    <p style="margin-bottom: 0; font-size: 12px;"><strong>Имейл:</strong> {{ contact.email|escape('js') }}</p>
+                </div>
+            `);
+            
+            // Добавяме маркера към картата
+            map.addObject(marker);
+            
+            // Добавяме слушател за клик върху маркера
+            marker.addEventListener('tap', function(evt) {
+                const bubble = new H.ui.InfoBubble(
+                    evt.target.getGeometry(), 
+                    { content: evt.target.getData() }
+                );
+                ui.addBubble(bubble);
+            });
+            
+            // Отваряме балона автоматично
+            setTimeout(function() {
+                const bubble = new H.ui.InfoBubble(
+                    marker.getGeometry(), 
+                    { content: marker.getData() }
+                );
+                ui.addBubble(bubble);
+            }, 1000);
+            
+            // Ресайз на картата при промяна на размера на прозореца
+            window.addEventListener('resize', () => {
+                map.getViewPort().resize();
+            });
+        } catch (error) {
+            console.error('Грешка при инициализиране на Here Maps:', error);
+            document.getElementById('contact-map').innerHTML = '<div class="alert alert-danger">Грешка при зареждане на картата</div>';
+        }
+    })();
+    {% endif %}
 
-function submitContactForm(event) {
-    event.preventDefault();
-    const form = event.target;
-    const data = new FormData(form);
-    
-    fetch('{{ path('contact_submit') }}', {
-        method: 'POST',
-        body: JSON.stringify(Object.fromEntries(data)),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            alert(data.error);
-        } else {
-            alert('{{ translations.contact.form.success }}');
-            form.reset();
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('{{ translations.contact.form.error }}');
-    });
-    
-    return false;
-}
+    function submitContactForm(event) {
+        event.preventDefault();
+        const form = event.target;
+        const data = new FormData(form);
+        
+        fetch('{{ path('contact_submit') }}', {
+            method: 'POST',
+            body: JSON.stringify(Object.fromEntries(data)),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                alert('{{ translations.contact.form.success }}');
+                form.reset();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('{{ translations.contact.form.error }}');
+        });
+        
+        return false;
+    }
+});
 </script>
 {% endblock %} 

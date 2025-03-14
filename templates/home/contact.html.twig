@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
     <style>
         .contact-header {
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('images/contact-bg.jpg') }}') no-repeat center center;
@@ -18,6 +19,10 @@
         .contact-info i {
             font-size: 2rem;
             color: var(--bs-primary);
+        }
+        #home-contact-map {
+            width: 100%;
+            height: 450px;
         }
     </style>
 {% endblock %}
@@ -110,12 +115,94 @@
 
     <!-- Map -->
     <section class="map">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2932.7247167138396!2d23.321661315445367!3d42.69769797916543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40aa8682cb317bf5%3A0x400a01269bf5e60!2z0KHQvtGE0LjRjw!5e0!3m2!1sbg!2sbg!4v1635944243000!5m2!1sbg!2sbg" 
-                width="100%" 
-                height="450" 
-                style="border:0;" 
-                allowfullscreen="" 
-                loading="lazy">
-        </iframe>
+        <div id="home-contact-map"></div>
     </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализиране на Here Maps
+            (function initializeHomeContactMap() {
+                try {
+                    // Създаваме Here Maps платформа с API ключа
+                    const apiKey = "{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}";
+                    
+                    const platform = new H.service.Platform({
+                        apiKey: apiKey
+                    });
+                    
+                    // Създаваме слоеве
+                    const defaultLayers = platform.createDefaultLayers();
+                    
+                    // Координати на София
+                    const sofiaCoordinates = {
+                        lat: 42.697797,
+                        lng: 23.321661
+                    };
+                    
+                    // Създаваме картата
+                    const map = new H.Map(
+                        document.getElementById('home-contact-map'),
+                        defaultLayers.vector.normal.map,
+                        {
+                            center: sofiaCoordinates,
+                            zoom: 15
+                        }
+                    );
+                    
+                    // Добавяме интерактивност и контроли
+                    const ui = H.ui.UI.createDefault(map, defaultLayers);
+                    const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+                    
+                    // Добавяме маркер за офиса
+                    const marker = new H.map.Marker(sofiaCoordinates);
+                    
+                    // Създаваме балон с информация за офиса - по-компактен
+                    marker.setData(`
+                        <div style="padding: 8px; min-width: 150px; max-width: 200px;">
+                            <h5 style="font-size: 14px; margin-bottom: 5px;">Industrial Properties</h5>
+                            <p style="margin-bottom: 5px; font-size: 12px;">ул. Примерна 123<br>София 1000</p>
+                            <p style="margin-bottom: 3px; font-size: 12px;"><strong>Тел:</strong> +359 2 123 4567</p>
+                            <p style="margin-bottom: 0; font-size: 12px;"><strong>Имейл:</strong> office@industrial-properties.bg</p>
+                        </div>
+                    `);
+                    
+                    // Добавяме маркера към картата
+                    map.addObject(marker);
+                    
+                    // Добавяме слушател за клик върху маркера
+                    marker.addEventListener('tap', function(evt) {
+                        const bubble = new H.ui.InfoBubble(
+                            evt.target.getGeometry(), 
+                            { content: evt.target.getData() }
+                        );
+                        ui.addBubble(bubble);
+                    });
+                    
+                    // Отваряме балона автоматично
+                    setTimeout(function() {
+                        const bubble = new H.ui.InfoBubble(
+                            marker.getGeometry(), 
+                            { content: marker.getData() }
+                        );
+                        ui.addBubble(bubble);
+                    }, 1000);
+                    
+                    // Ресайз на картата при промяна на размера на прозореца
+                    window.addEventListener('resize', () => {
+                        map.getViewPort().resize();
+                    });
+                } catch (error) {
+                    console.error('Грешка при инициализиране на Here Maps:', error);
+                    document.getElementById('home-contact-map').innerHTML = '<div class="alert alert-danger">Грешка при зареждане на картата</div>';
+                }
+            })();
+        });
+    </script>
 {% endblock %} 

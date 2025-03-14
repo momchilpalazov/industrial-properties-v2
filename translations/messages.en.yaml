@@ -278,4 +278,25 @@ faq:
     success_updated: 'Question was successfully updated'
     success_deleted: 'Question was successfully deleted'
   categories:
-    general: 'General Questions' 
+    general: 'General Questions'
+
+# Contact Translations
+contact:
+  title: 'Contact Us'
+  info: 'Contact Information'
+  address: 'Address'
+  phone: 'Phone'
+  email: 'Email'
+  working_hours: 'Working Hours'
+  follow_us: 'Follow Us'
+  form_title: 'Send Us a Message'
+  location_map: 'Location Map'
+  form:
+    name: 'Name'
+    email: 'Email'
+    phone: 'Phone'
+    subject: 'Subject'
+    message: 'Message'
+    submit: 'Send'
+    success: 'Your message has been sent successfully. We will contact you soon.'
+    error: 'An error occurred while sending your message. Please try again.' 
