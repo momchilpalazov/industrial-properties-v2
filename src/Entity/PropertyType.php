@@ -37,8 +37,17 @@ class PropertyType
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', nullable: true)]
     private ?self $parent = null;
 
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['persist'])]
     private Collection $children;
+
+    #[ORM\Column(name: 'level', type: 'integer', options: ['default' => 0])]
+    private int $level = 0;
+
+    #[ORM\Column(name: 'position', type: 'integer', options: ['default' => 0])]
+    private int $position = 0;
+
+    #[ORM\Column(name: 'is_visible', type: 'boolean', options: ['default' => true])]
+    private bool $isVisible = true;
 
     public function __construct()
     {
@@ -132,6 +141,14 @@ class PropertyType
     public function setParent(?self $parent): static
     {
         $this->parent = $parent;
+        
+        // Автоматично задаваме нивото на категорията
+        if ($parent) {
+            $this->level = $parent->getLevel() + 1;
+        } else {
+            $this->level = 0;
+        }
+        
         return $this;
     }
 
@@ -141,6 +158,18 @@ class PropertyType
     public function getChildren(): Collection
     {
         return $this->children;
+    }
+
+    /**
+     * Връща само директните деца, сортирани по позиция
+     */
+    public function getVisibleChildren(): Collection
+    {
+        $criteria = \Doctrine\Common\Collections\Criteria::create()
+            ->where(\Doctrine\Common\Collections\Criteria::expr()->eq('isVisible', true))
+            ->orderBy(['position' => 'ASC']);
+            
+        return $this->children->matching($criteria);
     }
 
     public function addChild(self $child): static
@@ -173,6 +202,82 @@ class PropertyType
     public function isChildOf(self $propertyType): bool
     {
         return $this->parent === $propertyType;
+    }
+
+    /**
+     * Проверява дали категорията е потомък (на всяко ниво) на дадена категория
+     */
+    public function isDescendantOf(self $propertyType): bool
+    {
+        $parent = $this->parent;
+        
+        while ($parent !== null) {
+            if ($parent === $propertyType) {
+                return true;
+            }
+            $parent = $parent->getParent();
+        }
+        
+        return false;
+    }
+
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
+
+    public function setLevel(int $level): static
+    {
+        $this->level = $level;
+        return $this;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): static
+    {
+        $this->position = $position;
+        return $this;
+    }
+
+    public function isVisible(): bool
+    {
+        return $this->isVisible;
+    }
+
+    public function setIsVisible(bool $isVisible): static
+    {
+        $this->isVisible = $isVisible;
+        return $this;
+    }
+
+    /**
+     * Връща пълния път до категорията (всички родители)
+     * @return PropertyType[]
+     */
+    public function getPath(): array
+    {
+        $path = [];
+        $current = $this;
+        
+        while ($current !== null) {
+            array_unshift($path, $current);
+            $current = $current->getParent();
+        }
+        
+        return $path;
+    }
+
+    /**
+     * Връща форматирано име с отстъп според нивото
+     */
+    public function getIndentedName(): string
+    {
+        $prefix = str_repeat('— ', $this->level);
+        return $prefix . $this->name;
     }
 
     public function __toString(): string

@@ -19,38 +19,14 @@ class PropertyTypeController extends AbstractController
     #[Route('/', name: 'admin_property_type_index', methods: ['GET'])]
     public function index(PropertyTypeRepository $propertyTypeRepository): Response
     {
-        // Извличаме всички основни категории (без родител)
-        $mainCategories = $propertyTypeRepository->findBy(
+        // Извличаме само основните категории (без родител)
+        $rootCategories = $propertyTypeRepository->findBy(
             ['parent' => null], 
-            ['name' => 'ASC']
+            ['position' => 'ASC']
         );
         
-        // Създаваме структурирани данни за шаблона
-        $structuredCategories = [];
-        
-        foreach ($mainCategories as $mainCategory) {
-            // Добавяме основната категория
-            $structuredCategories[] = [
-                'category' => $mainCategory,
-                'level' => 0
-            ];
-            
-            // Добавяме нейните подкатегории (ако има)
-            $subCategories = $propertyTypeRepository->findBy(
-                ['parent' => $mainCategory->getId()],
-                ['name' => 'ASC']
-            );
-            
-            foreach ($subCategories as $subCategory) {
-                $structuredCategories[] = [
-                    'category' => $subCategory,
-                    'level' => 1
-                ];
-            }
-        }
-        
         return $this->render('admin/property_type/index.html.twig', [
-            'structured_categories' => $structuredCategories,
+            'root_categories' => $rootCategories,
         ]);
     }
 
@@ -58,10 +34,43 @@ class PropertyTypeController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $propertyType = new PropertyType();
+        
+        // Ако имаме parent_id в заявката, задаваме родителя
+        if ($parentId = $request->query->get('parent_id')) {
+            $parent = $entityManager->getRepository(PropertyType::class)->find($parentId);
+            if ($parent) {
+                $propertyType->setParent($parent);
+            }
+        }
+        
         $form = $this->createForm(PropertyTypeType::class, $propertyType);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Определяме позицията на новата категория
+            if ($propertyType->getParent()) {
+                // Ако е подкатегория, намираме последната позиция сред децата на родителя
+                $lastPosition = $entityManager->getRepository(PropertyType::class)
+                    ->createQueryBuilder('pt')
+                    ->select('MAX(pt.position)')
+                    ->where('pt.parent = :parent')
+                    ->setParameter('parent', $propertyType->getParent())
+                    ->getQuery()
+                    ->getSingleScalarResult();
+                
+                $propertyType->setPosition($lastPosition ? $lastPosition + 1 : 0);
+            } else {
+                // Ако е основна категория, намираме последната позиция сред основните категории
+                $lastPosition = $entityManager->getRepository(PropertyType::class)
+                    ->createQueryBuilder('pt')
+                    ->select('MAX(pt.position)')
+                    ->where('pt.parent IS NULL')
+                    ->getQuery()
+                    ->getSingleScalarResult();
+                
+                $propertyType->setPosition($lastPosition ? $lastPosition + 1 : 0);
+            }
+            
             $entityManager->persist($propertyType);
             $entityManager->flush();
 
@@ -116,6 +125,112 @@ class PropertyTypeController extends AbstractController
             $this->addFlash('success', 'Типът имот беше изтрит успешно.');
         }
 
+        return $this->redirectToRoute('admin_property_type_index');
+    }
+    
+    #[Route('/{id}/add-subcategory', name: 'admin_property_type_add_subcategory', methods: ['GET'])]
+    public function addSubcategory(PropertyType $propertyType): Response
+    {
+        return $this->redirectToRoute('admin_property_type_new', [
+            'parent_id' => $propertyType->getId()
+        ]);
+    }
+    
+    #[Route('/{id}/toggle-visibility', name: 'admin_property_type_toggle_visibility', methods: ['POST'])]
+    public function toggleVisibility(Request $request, PropertyType $propertyType, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('toggle-visibility'.$propertyType->getId(), $request->request->get('_token'))) {
+            $propertyType->setIsVisible(!$propertyType->isVisible());
+            $entityManager->flush();
+            
+            $status = $propertyType->isVisible() ? 'видим' : 'скрит';
+            $this->addFlash('success', "Типът имот е вече {$status}.");
+        }
+        
+        return $this->redirectToRoute('admin_property_type_index');
+    }
+    
+    #[Route('/{id}/move-up', name: 'admin_property_type_move_up', methods: ['POST'])]
+    public function moveUp(Request $request, PropertyType $propertyType, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('move-up'.$propertyType->getId(), $request->request->get('_token'))) {
+            $currentPosition = $propertyType->getPosition();
+            
+            if ($currentPosition > 0) {
+                // Намираме категорията над текущата
+                $qb = $entityManager->createQueryBuilder();
+                $qb->select('pt')
+                   ->from(PropertyType::class, 'pt')
+                   ->where('pt.position < :position')
+                   ->andWhere('pt.level = :level');
+                
+                if ($propertyType->getParent()) {
+                    $qb->andWhere('pt.parent = :parent')
+                       ->setParameter('parent', $propertyType->getParent());
+                } else {
+                    $qb->andWhere('pt.parent IS NULL');
+                }
+                
+                $qb->setParameter('position', $currentPosition)
+                   ->setParameter('level', $propertyType->getLevel())
+                   ->orderBy('pt.position', 'DESC')
+                   ->setMaxResults(1);
+                
+                $previousCategory = $qb->getQuery()->getOneOrNullResult();
+                
+                if ($previousCategory) {
+                    // Разменяме позициите
+                    $previousPosition = $previousCategory->getPosition();
+                    $previousCategory->setPosition($currentPosition);
+                    $propertyType->setPosition($previousPosition);
+                    $entityManager->flush();
+                    
+                    $this->addFlash('success', 'Позицията на типа имот беше променена успешно.');
+                }
+            }
+        }
+        
+        return $this->redirectToRoute('admin_property_type_index');
+    }
+    
+    #[Route('/{id}/move-down', name: 'admin_property_type_move_down', methods: ['POST'])]
+    public function moveDown(Request $request, PropertyType $propertyType, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('move-down'.$propertyType->getId(), $request->request->get('_token'))) {
+            $currentPosition = $propertyType->getPosition();
+            
+            // Намираме категорията под текущата
+            $qb = $entityManager->createQueryBuilder();
+            $qb->select('pt')
+               ->from(PropertyType::class, 'pt')
+               ->where('pt.position > :position')
+               ->andWhere('pt.level = :level');
+            
+            if ($propertyType->getParent()) {
+                $qb->andWhere('pt.parent = :parent')
+                   ->setParameter('parent', $propertyType->getParent());
+            } else {
+                $qb->andWhere('pt.parent IS NULL');
+            }
+            
+            $qb->setParameter('position', $currentPosition)
+               ->setParameter('level', $propertyType->getLevel())
+               ->orderBy('pt.position', 'ASC')
+               ->setMaxResults(1);
+            
+            $nextCategory = $qb->getQuery()->getOneOrNullResult();
+            
+            if ($nextCategory) {
+                // Разменяме позициите
+                $nextPosition = $nextCategory->getPosition();
+                $nextCategory->setPosition($currentPosition);
+                $propertyType->setPosition($nextPosition);
+                $entityManager->flush();
+                
+                $this->addFlash('success', 'Позицията на типа имот беше променена успешно.');
+            }
+        }
+        
         return $this->redirectToRoute('admin_property_type_index');
     }
 } 
