@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\PropertyType;
+use App\Entity\PropertyCategory;
 use App\Form\PropertyTypeType;
 use App\Repository\PropertyTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,16 +18,23 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class PropertyTypeController extends AbstractController
 {
     #[Route('/', name: 'admin_property_type_index', methods: ['GET'])]
-    public function index(PropertyTypeRepository $propertyTypeRepository): Response
+    public function index(PropertyTypeRepository $propertyTypeRepository, EntityManagerInterface $entityManager): Response
     {
-        // Извличаме само основните категории (без родител)
-        $rootCategories = $propertyTypeRepository->findBy(
+        // Извличаме категориите
+        $categories = $entityManager->getRepository(PropertyCategory::class)->findBy(
+            [], 
+            ['position' => 'ASC']
+        );
+        
+        // Извличаме само основните типове имоти (без родител)
+        $rootTypes = $propertyTypeRepository->findBy(
             ['parent' => null], 
             ['position' => 'ASC']
         );
         
         return $this->render('admin/property_type/index.html.twig', [
-            'root_categories' => $rootCategories,
+            'categories' => $categories,
+            'root_categories' => $rootTypes,
         ]);
     }
 
@@ -40,6 +48,19 @@ class PropertyTypeController extends AbstractController
             $parent = $entityManager->getRepository(PropertyType::class)->find($parentId);
             if ($parent) {
                 $propertyType->setParent($parent);
+                
+                // Ако родителят има категория, задаваме същата категория на новия тип
+                if ($parent->getCategory()) {
+                    $propertyType->setCategory($parent->getCategory());
+                }
+            }
+        }
+        
+        // Ако имаме category_id в заявката, задаваме категорията
+        if ($categoryId = $request->query->get('category_id')) {
+            $category = $entityManager->getRepository(PropertyCategory::class)->find($categoryId);
+            if ($category) {
+                $propertyType->setCategory($category);
             }
         }
         

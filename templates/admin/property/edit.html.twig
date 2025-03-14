@@ -454,48 +454,156 @@
                 }
             });
 
-            // Добавяме допълнителни визуални индикатори за йерархичната структура
-            const propertyTypeSelect = document.querySelector('.property-type-select');
-            if (propertyTypeSelect) {
-                // Добавяме класове към опциите за по-добра визуализация
-                Array.from(propertyTypeSelect.options).forEach(option => {
-                    if (option.text.startsWith('—')) {
-                        option.classList.add('property-type-child');
-                    }
-                });
-                
-                // Добавяме индикация за избрания тип
-                propertyTypeSelect.addEventListener('change', function() {
-                    const selectedOption = this.options[this.selectedIndex];
-                    console.log('Избран тип имот: ' + selectedOption.text);
-                });
-            }
-
-            // Инициализираме Select2 за по-добра визуализация
+            // Инициализираме Select2 за по-добра визуализация на типовете имоти
             $('.property-type-select').select2({
                 theme: 'bootstrap-5',
                 width: '100%',
                 placeholder: 'Изберете тип имот',
                 allowClear: true,
-                templateResult: formatPropertyType
+                templateResult: formatPropertyType,
+                escapeMarkup: function(markup) {
+                    return markup;
+                }
             });
             
-            // Форматиране на опциите в падащото меню
+            // Форматиране на опциите в падащото меню с дървовидна структура
             function formatPropertyType(state) {
                 if (!state.id) {
                     return state.text; // Placeholder
                 }
                 
-                // Добавяме клас за подкатегория
-                if (state.text.startsWith('—')) {
-                    let $state = $(
-                        '<span class="child-option">' + state.text.substring(2) + '</span>'
-                    );
-                    return $state;
+                let text = state.text;
+                let level = 0;
+                let icon = '';
+                
+                // Определяме нивото на вложеност и съответната икона
+                if (text.startsWith('— ')) {
+                    level = 1;
+                    text = text.substring(2);
+                    icon = '<i class="bi bi-house-door text-success me-1"></i>';
+                } else {
+                    // Това е основен тип
+                    icon = '<i class="bi bi-building text-primary me-1"></i>';
                 }
                 
-                return state.text;
+                // Проверяваме дали има родителска група (категория)
+                const optgroup = $(state.element).parent('optgroup');
+                if (optgroup.length) {
+                    const categoryName = optgroup.attr('label');
+                    
+                    // Определяме цвета според категорията
+                    let categoryColor = '#0d6efd'; // син по подразбиране
+                    
+                    if (categoryName === 'Продажба') {
+                        categoryColor = '#198754'; // зелен
+                    } else if (categoryName === 'Под наем') {
+                        categoryColor = '#dc3545'; // червен
+                    } else if (categoryName === 'Инвестиция') {
+                        categoryColor = '#fd7e14'; // оранжев
+                    } else if (categoryName === 'Без категория') {
+                        categoryColor = '#6c757d'; // сив
+                    }
+                    
+                    // Ако е в категория, добавяме индикация
+                    if (level === 0) {
+                        // Основен тип в категория
+                        return '<div class="select2-option-with-category">' +
+                               '<div class="select2-option-category-indicator" style="color: ' + categoryColor + '; font-weight: 600;">' +
+                               icon + text + '</div>' +
+                               '<small class="text-muted ms-2">(' + categoryName + ')</small>' +
+                               '</div>';
+                    } else {
+                        // Подтип в категория
+                        return '<div class="select2-option-with-category" style="padding-left: 20px;">' +
+                               '<div class="select2-option-category-indicator" style="color: ' + categoryColor + ';">' +
+                               '<span style="display: inline-block; width: 10px; border-top: 1px solid #adb5bd; margin-right: 5px;"></span>' +
+                               icon + text + '</div>' +
+                               '<small class="text-muted ms-2">(' + categoryName + ')</small>' +
+                               '</div>';
+                    }
+                }
+                
+                // Форматиране според нивото на вложеност
+                if (level === 0) {
+                    return '<div class="select2-option-main">' + icon + text + '</div>';
+                } else {
+                    return '<div class="select2-option-child" style="padding-left: 20px;">' +
+                           '<span style="display: inline-block; width: 10px; border-top: 1px solid #adb5bd; margin-right: 5px;"></span>' +
+                           icon + text + '</div>';
+                }
             }
+            
+            // Добавяме CSS стилове за Select2 опциите
+            $('<style>')
+                .prop('type', 'text/css')
+                .html(`
+                    .select2-container--bootstrap-5 .select2-results__option {
+                        padding: 6px 12px;
+                        font-size: 0.9rem;
+                    }
+                    
+                    .select2-container--bootstrap-5 .select2-results__group {
+                        padding: 8px 12px;
+                        font-weight: bold;
+                        color: #0d6efd;
+                        background-color: #e6f2ff;
+                        border-bottom: 1px solid #aec7e8;
+                    }
+                    
+                    .select2-container--bootstrap-5 .select2-results__group:nth-child(1) {
+                        background-color: #e6f2ff; /* Син за първата категория */
+                        color: #0d6efd;
+                    }
+                    
+                    .select2-container--bootstrap-5 .select2-results__group:nth-child(3) {
+                        background-color: #e6fff0; /* Зелен за втората категория */
+                        color: #198754;
+                    }
+                    
+                    .select2-container--bootstrap-5 .select2-results__group:nth-child(5) {
+                        background-color: #fff0f0; /* Червен за третата категория */
+                        color: #dc3545;
+                    }
+                    
+                    .select2-container--bootstrap-5 .select2-results__group:nth-child(7) {
+                        background-color: #fff8e6; /* Оранжев за четвъртата категория */
+                        color: #fd7e14;
+                    }
+                    
+                    .select2-container--bootstrap-5 .select2-results__group:last-child {
+                        background-color: #f8f9fa; /* Сив за "Без категория" */
+                        color: #6c757d;
+                    }
+                    
+                    .select2-container--bootstrap-5 .select2-results__option--highlighted {
+                        background-color: #f0f4f8 !important;
+                        color: #212529 !important;
+                    }
+                    
+                    .select2-container--bootstrap-5 .select2-results__option--selected {
+                        background-color: #e6f2ff !important;
+                        color: #0d6efd !important;
+                    }
+                    
+                    .select2-option-main {
+                        font-weight: 500;
+                    }
+                    
+                    .select2-option-child {
+                        position: relative;
+                    }
+                    
+                    .select2-option-with-category {
+                        display: flex;
+                        align-items: center;
+                    }
+                    
+                    .select2-option-category-indicator {
+                        display: flex;
+                        align-items: center;
+                    }
+                `)
+                .appendTo('head');
         });
     </script>
 {% endblock %} 

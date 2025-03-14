@@ -3,7 +3,7 @@ nav:
   home: 'Начало'
   properties: 'Продажба'
   rental_properties: 'Наем'
-  promotions: 'Промоции'
+  promotions: 'Търгове'
   services: 'Услуги'
   blog: 'Блог'
   about: 'За нас'
@@ -131,12 +131,12 @@ cookie:
 
 # Преводи за промоции
 promotion:
-  active_promotions: 'Активни промоции'
+  active_promotions: 'Активни търгове'
   discover_best_offers: 'Открийте най-добрите оферти и специални предложения'
   featured: 'Промоция'
   valid_until: 'Валидна до'
   view_details: 'Вижте детайли'
-  no_active_promotions: 'В момента няма активни промоции'
+  no_active_promotions: 'В момента няма активни търгове'
   back_to_home: 'Обратно към началната страница'
 
 # Преводи за услуги

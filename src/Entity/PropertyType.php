@@ -49,6 +49,10 @@ class PropertyType
     #[ORM\Column(name: 'is_visible', type: 'boolean', options: ['default' => true])]
     private bool $isVisible = true;
 
+    #[ORM\ManyToOne(targetEntity: PropertyCategory::class, inversedBy: 'propertyTypes')]
+    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: true)]
+    private ?PropertyCategory $category = null;
+
     public function __construct()
     {
         $this->properties = new ArrayCollection();
@@ -288,5 +292,16 @@ class PropertyType
     public function getLocalizedName(string $locale): string
     {
         return $locale === 'en' ? ($this->nameEn ?? $this->name) : $this->name;
+    }
+
+    public function getCategory(): ?PropertyCategory
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?PropertyCategory $category): static
+    {
+        $this->category = $category;
+        return $this;
     }
 } 

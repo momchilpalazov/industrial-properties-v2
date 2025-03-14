@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'property.list_title'|trans }}{% endblock %}
+{% block title %}{{ 'promotion.active_promotions'|trans }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -276,7 +276,7 @@
         <section class="filter-section" id="filterSection">
             <div class="container">
                 <div class="property-filter-section">
-                    <h4 class="mb-3">Филтриране на имоти</h4>
+                    <h4 class="mb-3">Филтриране на търгове</h4>
                     {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
                         <!-- Първи ред - основни филтри -->
                         <div class="col-md-6">
@@ -361,6 +361,7 @@
     <!-- Properties List -->
     <section class="py-5">
         <div class="container">
+            <h1 class="mb-4">{{ 'promotion.active_promotions'|trans }}</h1>
             <div class="row g-4">
                 {% for property in properties %}
                     <div class="col-md-4">

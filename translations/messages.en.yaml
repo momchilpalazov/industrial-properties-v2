@@ -3,7 +3,7 @@ nav:
   home: 'Home'
   properties: 'Sale'
   rental_properties: 'Rental'
-  promotions: 'Promotions'
+  promotions: 'Auctions'
   services: 'Services'
   blog: 'Blog'
   about: 'About Us'
@@ -131,12 +131,12 @@ cookie:
 
 # Promotions translations
 promotion:
-  active_promotions: 'Active Promotions'
+  active_promotions: 'Active Auctions'
   discover_best_offers: 'Discover the best offers and special deals'
   featured: 'Featured'
   valid_until: 'Valid until'
   view_details: 'View details'
-  no_active_promotions: 'No active promotions at the moment'
+  no_active_promotions: 'No active auctions at the moment'
   back_to_home: 'Back to home page'
 
 # Services translations

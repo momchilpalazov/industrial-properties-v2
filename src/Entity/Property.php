@@ -13,6 +13,7 @@ use App\Entity\PropertyPdf;
 use App\Entity\PropertyInquiry;
 use App\Entity\PropertyType;
 use App\Entity\Promotion;
+use App\Entity\PropertyCategory;
 
 #[ORM\Entity(repositoryClass: PropertyRepository::class)]
 #[ORM\Table(name: 'properties')]
@@ -124,9 +125,13 @@ class Property
     private ?\DateTimeImmutable $availableFrom = null;
 
     #[ORM\ManyToOne(targetEntity: PropertyType::class, inversedBy: 'properties')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'type_id', referencedColumnName: 'id', nullable: true)]
     #[Assert\NotNull(message: 'Моля изберете тип имот')]
     private ?PropertyType $type = null;
+
+    #[ORM\ManyToOne(targetEntity: PropertyCategory::class, inversedBy: 'properties')]
+    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: true)]
+    private ?PropertyCategory $category = null;
 
     #[ORM\Column(length: 20)]
     #[Assert\Choice(choices: ['available', 'sold', 'reserved', 'rented', 'pending'], message: 'Моля изберете валиден статус')]
@@ -443,9 +448,20 @@ class Property
         return $this->type;
     }
 
-    public function setType(?PropertyType $type): self
+    public function setType(?PropertyType $type): static
     {
         $this->type = $type;
+        return $this;
+    }
+
+    public function getCategory(): ?PropertyCategory
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?PropertyCategory $category): static
+    {
+        $this->category = $category;
         return $this;
     }
 

@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use App\Entity\Property;
+use App\Entity\PropertyCategory;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/renting', name: 'app_rental_property_')]
 class RentalPropertyController extends AbstractController
@@ -29,15 +31,18 @@ class RentalPropertyController extends AbstractController
     private PropertyRepository $propertyRepository;
     private PaginatorInterface $paginator;
     private ParameterBagInterface $parameterBag;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(
         PropertyRepository $propertyRepository,
         PaginatorInterface $paginator,
-        ParameterBagInterface $parameterBag
+        ParameterBagInterface $parameterBag,
+        EntityManagerInterface $entityManager
     ) {
         $this->propertyRepository = $propertyRepository;
         $this->paginator = $paginator;
         $this->parameterBag = $parameterBag;
+        $this->entityManager = $entityManager;
     }
 
     #[Route('', name: 'index')]
@@ -46,11 +51,19 @@ class RentalPropertyController extends AbstractController
         $form = $this->createForm(PropertyFilterType::class);
         $form->handleRequest($request);
 
+        // Намираме категорията "Под наем"
+        $rentalCategory = $this->entityManager->getRepository(PropertyCategory::class)
+            ->findOneBy(['slug' => 'for-rent']);
+
+        if (!$rentalCategory) {
+            throw $this->createNotFoundException('Категорията "Под наем" не е намерена');
+        }
+
         $queryBuilder = $this->propertyRepository->createQueryBuilder('p')
             ->where('p.isActive = :active')
-            ->andWhere('p.status = :status')
+            ->andWhere('p.category = :category')
             ->setParameter('active', true)
-            ->setParameter('status', Property::STATUS_RENTED)
+            ->setParameter('category', $rentalCategory)
             ->orderBy('p.createdAt', 'DESC');
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -64,10 +77,6 @@ class RentalPropertyController extends AbstractController
             if (!empty($filters['status'])) {
                 $queryBuilder->andWhere('p.status = :formStatus')
                     ->setParameter('formStatus', $filters['status']);
-            } else {
-                // Ако статусът не е зададен във формата, филтрираме само имоти под наем
-                $queryBuilder->andWhere('p.status = :status')
-                    ->setParameter('status', Property::STATUS_RENTED);
             }
 
             if (!empty($filters['min_price'])) {
@@ -127,7 +136,8 @@ class RentalPropertyController extends AbstractController
             'properties' => $pagination,
             'types' => self::PROPERTY_TYPES,
             'form' => $form->createView(),
-            'rental_mode' => true
+            'rental_mode' => true,
+            'category' => $rentalCategory
         ]);
     }
 

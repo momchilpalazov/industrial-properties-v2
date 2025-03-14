@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
+use App\Entity\PropertyCategory;
 
 class PropertyTypeType extends AbstractType
 {
@@ -59,6 +60,22 @@ class PropertyTypeType extends AbstractType
                 'label_attr' => [
                     'class' => 'form-check-label'
                 ]
+            ])
+            ->add('category', EntityType::class, [
+                'class' => PropertyCategory::class,
+                'label' => 'Категория',
+                'required' => false,
+                'placeholder' => '-- Изберете категория --',
+                'attr' => [
+                    'class' => 'form-select'
+                ],
+                'choice_label' => function (PropertyCategory $category) {
+                    return $category->getName();
+                },
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('pc')
+                        ->orderBy('pc.position', 'ASC');
+                }
             ])
             ->add('parent', EntityType::class, [
                 'class' => PropertyType::class,

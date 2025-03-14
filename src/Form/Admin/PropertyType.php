@@ -132,14 +132,32 @@ class PropertyType extends AbstractType
                 'label' => 'Тип имот',
                 'placeholder' => 'Изберете тип имот',
                 'group_by' => function (PropertyTypeEntity $propertyType) {
-                    if ($propertyType->getParent()) {
+                    // Ако типът има категория, групираме по категория
+                    if ($propertyType->getCategory()) {
+                        return $propertyType->getCategory()->getName();
+                    }
+                    
+                    // Ако типът има родител, но няма категория, групираме по родителя
+                    if ($propertyType->getParent() && !$propertyType->getParent()->getParent()) {
                         return $propertyType->getParent()->getName();
                     }
+                    
+                    // Ако няма категория и няма родител, слагаме в група "Без категория"
+                    if (!$propertyType->getParent()) {
+                        return 'Без категория';
+                    }
+                    
                     return null;
                 },
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('pt')
-                        ->orderBy('CASE WHEN pt.parent IS NULL THEN 0 ELSE 1 END', 'ASC')
+                        ->leftJoin('pt.category', 'c')
+                        ->leftJoin('pt.parent', 'p')
+                        ->orderBy('CASE WHEN c IS NOT NULL THEN 0 ELSE 1 END', 'ASC')
+                        ->addOrderBy('c.position', 'ASC')
+                        ->addOrderBy('CASE WHEN pt.parent IS NULL THEN 0 ELSE 1 END', 'ASC')
+                        ->addOrderBy('pt.level', 'ASC')
+                        ->addOrderBy('pt.position', 'ASC')
                         ->addOrderBy('pt.name', 'ASC');
                 },
                 'attr' => [

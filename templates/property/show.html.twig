@@ -125,7 +125,13 @@
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <p><i class="bi bi-building"></i> <strong>{{ 'property.type'|trans }}:</strong> {{ property.type.getLocalizedName(app.request.locale) }}</p>
+                            <p><i class="bi bi-building"></i> <strong>{{ 'property.type'|trans }}:</strong> 
+                            {% if property.type %}
+                                {{ property.type.getLocalizedName(app.request.locale) }}
+                            {% else %}
+                                {{ 'property.no_type'|trans({'default': 'Няма тип'}) }}
+                            {% endif %}
+                            </p>
                             {% if property.price %}
                                 <p><i class="bi bi-tag"></i> <strong>{{ 'property.price'|trans }}:</strong> {{ property.price|number_format(0, '.', ' ') }} €</p>
                             {% endif %}

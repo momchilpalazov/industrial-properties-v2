@@ -263,12 +263,12 @@
                            href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if app.request.get('_route') starts with 'app_rental_property' %}active{% endif %}" 
-                           href="{{ path('app_rental_property_index') }}">{{ 'nav.rental_properties'|trans({'default': 'Под наем'}) }}</a>
+                        <a class="nav-link {% if app.request.get('_route') starts with 'app_renting' %}active{% endif %}" 
+                           href="{{ path('app_renting') }}">{{ 'nav.rental_properties'|trans }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if app.request.get('_route') == 'app_promotions' %}active{% endif %}" 
-                           href="{{ path('app_promotions') }}">{{ 'nav.promotions'|trans }}</a>
+                        <a class="nav-link {% if app.request.get('_route') == 'app_auctions' %}active{% endif %}" 
+                           href="{{ path('app_auctions') }}">{{ 'nav.promotions'|trans }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') == 'app_services' %}active{% endif %}" 
@@ -345,8 +345,8 @@
                     <ul class="list-unstyled">
                         <li><a href="{{ path('app_home') }}">{{ 'nav.home'|trans }}</a></li>
                         <li><a href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans }}</a></li>
-                        <li><a href="{{ path('app_rental_property_index') }}">{{ 'nav.rental_properties'|trans({'default': 'Под наем'}) }}</a></li>
-                        <li><a href="{{ path('app_promotions') }}">{{ 'nav.promotions'|trans }}</a></li>
+                        <li><a href="{{ path('app_renting') }}">{{ 'nav.rental_properties'|trans }}</a></li>
+                        <li><a href="{{ path('app_auctions') }}">{{ 'nav.promotions'|trans }}</a></li>
                         <li><a href="{{ path('app_services') }}">{{ 'nav.services'|trans }}</a></li>
                         <li><a href="{{ path('app_blog_index') }}">{{ 'nav.blog'|trans }}</a></li>
                         <li><a href="{{ path('app_about') }}">{{ 'nav.about'|trans }}</a></li>

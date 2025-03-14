@@ -10,24 +10,24 @@
         }
         
         .category-row:hover {
-            background-color: #f5f5f5;
+            background-color: #e9ecef;
         }
         
         .category-level-0 {
-            background-color: #f8f9fa;
+            background-color: #f0f4f8;
             font-weight: 600;
         }
         
         .category-level-1 {
-            background-color: #ffffff;
+            background-color: #e6f2ff;
         }
         
         .category-level-2 {
-            background-color: #ffffff;
+            background-color: #e6fff0;
         }
         
         .category-level-3 {
-            background-color: #ffffff;
+            background-color: #fff0f0;
         }
         
         .category-name {
@@ -43,7 +43,7 @@
         
         .category-icon {
             margin-right: 0.5rem;
-            color: #6c757d;
+            color: #495057;
         }
         
         .category-badge {
@@ -99,7 +99,7 @@
         .subcategory-count {
             font-weight: normal;
             font-size: 0.85rem;
-            color: #6c757d;
+            color: #495057;
             margin-left: 0.5rem;
         }
         
@@ -130,7 +130,7 @@
             top: 0;
             bottom: 0;
             width: 1px;
-            background-color: #dee2e6;
+            background-color: #6c757d;
         }
         
         .tree-branch {
@@ -146,7 +146,7 @@
             top: 50%;
             width: 12px;
             height: 1px;
-            background-color: #dee2e6;
+            background-color: #6c757d;
         }
         
         .tree-branch:after {
@@ -156,7 +156,7 @@
             top: 0;
             height: 50%;
             width: 1px;
-            background-color: #dee2e6;
+            background-color: #6c757d;
         }
         
         .category-name-text {
@@ -176,7 +176,7 @@
             align-items: center;
             justify-content: center;
             margin-right: 5px;
-            color: #6c757d;
+            color: #495057;
             transition: all 0.2s;
         }
         
@@ -190,6 +190,247 @@
         
         .subcategories.show {
             display: table-row-group;
+        }
+        
+        /* Нови стилове за подобрена визуализация */
+        .main-category-row {
+            background-color: #d1e7ff;
+            border-top: 2px solid #aec7e8;
+        }
+        
+        .property-type-row {
+            background-color: #f0f4f8;
+            border-left: 3px solid #6c757d;
+        }
+        
+        .property-type-row.level-0 {
+            background-color: #e6f2ff;
+            border-left-color: #0d6efd;
+        }
+        
+        .property-type-row.level-1 {
+            background-color: #e6fff0;
+            border-left-color: #198754;
+        }
+        
+        .property-type-row.level-2 {
+            background-color: #fff0f0;
+            border-left-color: #dc3545;
+        }
+        
+        .property-type-row.level-3 {
+            background-color: #fff8e6;
+            border-left-color: #fd7e14;
+        }
+        
+        .property-type-row.level-4 {
+            background-color: #f0e6ff;
+            border-left-color: #6f42c1;
+        }
+        
+        .tree-arrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            color: #495057;
+            transition: transform 0.2s;
+        }
+        
+        .tree-arrow.rotated {
+            transform: rotate(90deg);
+        }
+        
+        .category-types-container {
+            display: table-row-group;
+        }
+        
+        .category-types-container.hidden {
+            display: none;
+        }
+        
+        .main-category-header {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .main-category-header .category-name-text {
+            font-weight: 600;
+            color: black;
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .main-category-header .subcategory-count {
+            color: rgba(190, 29, 29, 0.8);
+        }
+        
+        .main-category-header .toggle-icon {
+            color: white;
+        }
+        
+        .main-category-header .toggle-icon:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .uncategorized-header {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .uncategorized-header .category-name-text {
+            font-weight: 600;
+            color: white;
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Нови стилове за текстовете в полетата на категориите */
+        .property-type-row .category-name-text {
+            color: #212529;
+            font-weight: 500;
+        }
+        
+        .property-type-row.level-0 .category-name-text {
+            color: #0d6efd;
+            font-weight: 600;
+            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .property-type-row.level-1 .category-name-text {
+            color: #198754;
+            font-weight: 500;
+            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .property-type-row.level-2 .category-name-text {
+            color: #dc3545;
+            font-weight: 500;
+            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .property-type-row.level-3 .category-name-text {
+            color: #fd7e14;
+            font-weight: 500;
+            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .property-type-row.level-4 .category-name-text {
+            color: #6f42c1;
+            font-weight: 500;
+            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Стилове за описанията */
+        .property-description {
+            color: #495057;
+            font-style: italic;
+        }
+        
+        /* Стилове за иконите на типовете */
+        .type-icon {
+            margin-right: 5px;
+            font-size: 1rem;
+        }
+        
+        .type-icon-0 {
+            color: #0d6efd;
+            filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
+        }
+        
+        .type-icon-1 {
+            color: #198754;
+            filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
+        }
+        
+        .type-icon-2 {
+            color: #dc3545;
+            filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
+        }
+        
+        .type-icon-3 {
+            color: #fd7e14;
+            filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
+        }
+        
+        .type-icon-4 {
+            color: #6f42c1;
+            filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
+        }
+        
+        /* Подобрени стилове за дървовидната структура */
+        .tree-indent:after {
+            background-color: #adb5bd;
+        }
+        
+        .tree-branch:before,
+        .tree-branch:after {
+            background-color: #adb5bd;
+        }
+        
+        /* Подобрени стилове за бутоните */
+        .action-button {
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Подобрени стилове за бутоните в заглавната част на категориите */
+        .main-category-header .btn-outline-primary {
+            background-color: #fff;
+            border-color: #0d6efd;
+            color: #0d6efd;
+            font-weight: 500;
+        }
+        
+        .main-category-header .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+        
+        .main-category-header .btn-outline-info {
+            background-color: #fff;
+            border-color: #0dcaf0;
+            color: #0dcaf0;
+            font-weight: 500;
+        }
+        
+        .main-category-header .btn-outline-info:hover {
+            background-color: #0dcaf0;
+            color: #fff;
+        }
+        
+        .main-category-header .btn-outline-danger {
+            background-color: #fff;
+            border-color: #dc3545;
+            color: #dc3545;
+            font-weight: 500;
+        }
+        
+        .main-category-header .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        
+        /* Подобрени стилове за таблицата */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .table thead th {
+            background-color: #e9ecef;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        /* Подобрени стилове за hover ефекта */
+        .property-type-row:hover {
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            position: relative;
         }
     </style>
 {% endblock %}
@@ -216,10 +457,39 @@
                 }
             }
             
-            // Добавяне на слушатели за събития към всички бутони за превключване
-            const toggleIcons = document.querySelectorAll('.toggle-icon');
+            // Функция за превключване на видимостта на типовете в категория
+            function toggleCategoryTypes(event) {
+                const toggleIcon = event.currentTarget;
+                const categoryId = toggleIcon.getAttribute('data-category-id');
+                const typesContainer = document.getElementById('category-types-' + categoryId);
+                
+                if (typesContainer) {
+                    typesContainer.classList.toggle('hidden');
+                    
+                    // Промяна на иконата и класа на стрелката
+                    const arrowIcon = toggleIcon.querySelector('.tree-arrow');
+                    if (typesContainer.classList.contains('hidden')) {
+                        toggleIcon.querySelector('i').classList.remove('bi-chevron-down');
+                        toggleIcon.querySelector('i').classList.add('bi-chevron-right');
+                        arrowIcon.classList.remove('rotated');
+                    } else {
+                        toggleIcon.querySelector('i').classList.remove('bi-chevron-right');
+                        toggleIcon.querySelector('i').classList.add('bi-chevron-down');
+                        arrowIcon.classList.add('rotated');
+                    }
+                }
+            }
+            
+            // Добавяне на слушатели за събития към всички бутони за превключване на подкатегории
+            const toggleIcons = document.querySelectorAll('.toggle-subcategories');
             toggleIcons.forEach(icon => {
                 icon.addEventListener('click', toggleSubcategories);
+            });
+            
+            // Добавяне на слушатели за събития към всички бутони за превключване на типове в категория
+            const toggleCategoryIcons = document.querySelectorAll('.toggle-category-types');
+            toggleCategoryIcons.forEach(icon => {
+                icon.addEventListener('click', toggleCategoryTypes);
             });
             
             // Автоматично разгъване на всички категории при зареждане
@@ -239,11 +509,16 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <i class="bi bi-diagram-3 me-1"></i>
-                        Категории и подкатегории
+                        Категории и типове имоти
                     </div>
-                    <a href="{{ path('admin_property_type_new') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-lg"></i> Добави нов тип
-                    </a>
+                    <div class="d-flex gap-2">
+                        <a href="{{ path('admin_property_category_new') }}" class="btn btn-success">
+                            <i class="bi bi-folder-plus"></i> Добави нова категория
+                        </a>
+                        <a href="{{ path('admin_property_type_new') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-lg"></i> Добави нов тип
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -252,7 +527,7 @@
                         <thead>
                             <tr>
                                 <th width="60">ID</th>
-                                <th>Категория</th>
+                                <th>Категория / Тип</th>
                                 <th>Описание</th>
                                 <th>Имоти</th>
                                 <th class="text-end">Действия</th>
@@ -260,7 +535,7 @@
                         </thead>
                         
                         {% macro renderCategory(category, level) %}
-                            <tr class="category-row category-level-{{ level }} {% if not category.isVisible %}category-hidden{% endif %}">
+                            <tr class="category-row property-type-row level-{{ level }} {% if not category.isVisible %}category-hidden{% endif %}">
                                 <td>{{ category.id }}</td>
                                 <td>
                                     <div class="category-name">
@@ -273,22 +548,24 @@
                                         {% endif %}
                                         
                                         {% if category.children|length > 0 %}
-                                            <span class="toggle-icon" data-category-id="{{ category.id }}">
+                                            <span class="toggle-icon toggle-subcategories" data-category-id="{{ category.id }}">
                                                 <i class="bi bi-plus-square"></i>
                                             </span>
                                         {% else %}
                                             <span style="width: 24px; display: inline-block;"></span>
                                         {% endif %}
                                         
-                                        <span class="category-badge level-{{ level }}-badge">
+                                        <span class="type-icon type-icon-{{ level }}">
                                             {% if level == 0 %}
-                                                <i class="bi bi-folder"></i>
+                                                <i class="bi bi-building"></i>
                                             {% elseif level == 1 %}
-                                                <i class="bi bi-arrow-return-right"></i>
+                                                <i class="bi bi-house-door"></i>
                                             {% elseif level == 2 %}
-                                                <i class="bi bi-dash"></i>
+                                                <i class="bi bi-shop"></i>
+                                            {% elseif level == 3 %}
+                                                <i class="bi bi-house"></i>
                                             {% else %}
-                                                <i class="bi bi-dot"></i>
+                                                <i class="bi bi-building-fill"></i>
                                             {% endif %}
                                         </span>
                                         
@@ -308,7 +585,7 @@
                                 </td>
                                 <td>
                                     {% if category.description %}
-                                        {{ category.description }}
+                                        <span class="property-description">{{ category.description }}</span>
                                     {% else %}
                                         <span class="text-muted">-</span>
                                     {% endif %}
@@ -385,14 +662,138 @@
                             {% endif %}
                         {% endmacro %}
                         
+                        {% macro renderPropertyCategory(category) %}
+                            <tr class="category-row main-category-header">
+                                <td>{{ category.id }}</td>
+                                <td>
+                                    <div class="category-name">
+                                        <span class="toggle-icon toggle-category-types" data-category-id="{{ category.id }}">
+                                            <span class="tree-arrow rotated">
+                                                <i class="bi bi-chevron-down"></i>
+                                            </span>
+                                        </span>
+                                        
+                                        <span class="type-icon type-icon-0">
+                                            <i class="bi bi-collection"></i>
+                                        </span>
+                                        <span class="category-name-text">{{ category.name }}</span>
+                                        
+                                        {% if category.propertyTypes|length > 0 %}
+                                            <span class="subcategory-count">
+                                                <i class="bi bi-diagram-3"></i>
+                                                {{ category.propertyTypes|length }} тип{{ category.propertyTypes|length == 1 ? '' : 'а' }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if category.description %}
+                                        {{ category.description }}
+                                    {% else %}
+                                        <span class="text-white-50">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if category.properties|length > 0 %}
+                                        <span class="properties-count properties-count-main">
+                                            {{ category.properties|length }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-white-50">0</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <div class="action-buttons">
+                                        <a href="{{ path('admin_property_category_edit', {'id': category.id}) }}" 
+                                           class="btn btn-sm btn-outline-primary action-button" 
+                                           title="Редактирай категория">
+                                            <i class="bi bi-pencil-square"></i> Редактирай
+                                        </a>
+                                        
+                                        <a href="{{ path('admin_property_type_new') }}?category_id={{ category.id }}" 
+                                           class="btn btn-sm btn-outline-info action-button" 
+                                           title="Добави тип в тази категория">
+                                            <i class="bi bi-plus-circle"></i> Добави тип
+                                        </a>
+                                        
+                                        {% if category.propertyTypes|length == 0 and category.properties|length == 0 %}
+                                            <form method="post" 
+                                                  action="{{ path('admin_property_category_delete', {'id': category.id}) }}" 
+                                                  style="display: inline-block" 
+                                                  onsubmit="return confirm('Сигурни ли сте, че искате да изтриете тази категория?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger action-button" title="Изтрий категория">
+                                                    <i class="bi bi-trash"></i> Изтрий
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <button type="button" class="btn btn-sm btn-outline-secondary action-button" disabled title="Не може да бъде изтрита, защото има свързани типове имоти или имоти">
+                                                <i class="bi bi-trash"></i> Изтрий
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endmacro %}
+                        
                         <tbody>
-                            {% if root_categories|length > 0 %}
-                                {% for category in root_categories %}
-                                    {{ _self.renderCategory(category, 0) }}
+                            {% if categories|length > 0 %}
+                                {% for category in categories %}
+                                    {{ _self.renderPropertyCategory(category) }}
+                                    
+                                    <tbody id="category-types-{{ category.id }}" class="category-types-container">
+                                        {% set categoryTypes = root_categories|filter(type => type.category and type.category.id == category.id) %}
+                                        {% if categoryTypes|length > 0 %}
+                                            {% for type in categoryTypes %}
+                                                {{ _self.renderCategory(type, 0) }}
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="5" class="text-center">
+                                                    <em>Няма типове имоти в тази категория</em>
+                                                    <a href="{{ path('admin_property_type_new') }}?category_id={{ category.id }}" class="btn btn-sm btn-outline-primary ms-3">
+                                                        <i class="bi bi-plus-circle"></i> Добави тип
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    </tbody>
                                 {% endfor %}
+                                
+                                {# Показваме типовете без категория #}
+                                <tr class="category-row uncategorized-header">
+                                    <td colspan="5">
+                                        <div class="category-name">
+                                            <span class="toggle-icon toggle-category-types" data-category-id="uncategorized">
+                                                <span class="tree-arrow rotated">
+                                                    <i class="bi bi-chevron-down"></i>
+                                                </span>
+                                            </span>
+                                            <span class="type-icon type-icon-0">
+                                                <i class="bi bi-question-circle"></i>
+                                            </span>
+                                            <span class="category-name-text">Типове без категория</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tbody id="category-types-uncategorized" class="category-types-container">
+                                    {% set uncategorizedTypes = root_categories|filter(type => not type.category) %}
+                                    {% if uncategorizedTypes|length > 0 %}
+                                        {% for type in uncategorizedTypes %}
+                                            {{ _self.renderCategory(type, 0) }}
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="5" class="text-center">
+                                                <em>Няма типове имоти без категория</em>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                </tbody>
                             {% else %}
                                 <tr>
-                                    <td colspan="5" class="text-center">Няма намерени типове имоти</td>
+                                    <td colspan="5" class="text-center">Няма намерени категории</td>
                                 </tr>
                             {% endif %}
                         </tbody>
@@ -408,20 +809,23 @@
             </div>
             <div class="card-body">
                 <div class="alert alert-info alert-permanent">
-                    <h5><i class="bi bi-lightbulb"></i> Как работят категориите?</h5>
+                    <h5><i class="bi bi-lightbulb"></i> Как работят категориите и типовете?</h5>
                     <p>
-                        <strong>Основна категория:</strong> Представлява главен тип имот (например "Под наем", "Продажба").<br>
-                        <strong>Подкатегория:</strong> Представлява подтип на основна категория (например "Офис сграда" е подкатегория на "Под наем").<br>
-                        <strong>Под-подкатегория:</strong> Представлява подтип на подкатегория (например "Луксозен офис" е под-подкатегория на "Офис сграда").
+                        <strong>Категория:</strong> Представлява основна група имоти (например "Под наем", "Продажба", "Инвестиция").<br>
+                        <strong>Тип имот:</strong> Представлява конкретен тип имот в дадена категория (например "Офис сграда", "Индустриален парцел").<br>
+                        <strong>Подтип:</strong> Представлява подтип на тип имот (например "Луксозен офис" е подтип на "Офис сграда").
                     </p>
                     <p>
                         <strong>Указания:</strong>
                         <ul>
-                            <li>Използвайте бутона <i class="bi bi-plus-square"></i>/<i class="bi bi-dash-square"></i> за разгъване/свиване на подкатегориите.</li>
-                            <li>Използвайте бутона <i class="bi bi-plus-circle"></i> за добавяне на подкатегория към съществуваща категория.</li>
-                            <li>Използвайте бутоните <i class="bi bi-arrow-up"></i> и <i class="bi bi-arrow-down"></i> за промяна на реда на категориите.</li>
-                            <li>Използвайте бутона <i class="bi bi-eye-slash"></i> за скриване на категория (тя няма да се показва в публичната част).</li>
-                            <li>Категория с подкатегории или свързани имоти не може да бъде изтрита.</li>
+                            <li>Използвайте бутона <i class="bi bi-chevron-down"></i>/<i class="bi bi-chevron-right"></i> за скриване/показване на типовете в категория.</li>
+                            <li>Използвайте бутона <i class="bi bi-plus-square"></i>/<i class="bi bi-dash-square"></i> за разгъване/свиване на подтиповете.</li>
+                            <li>Използвайте бутона <i class="bi bi-plus-circle"></i> за добавяне на подтип към съществуващ тип.</li>
+                            <li>Използвайте бутоните <i class="bi bi-arrow-up"></i> и <i class="bi bi-arrow-down"></i> за промяна на реда на типовете.</li>
+                            <li>Използвайте бутона <i class="bi bi-eye-slash"></i> за скриване на тип (той няма да се показва в публичната част).</li>
+                            <li>Тип с подтипове или свързани имоти не може да бъде изтрит.</li>
+                            <li>Можете да създавате неограничен брой нива на подтипове.</li>
+                            <li>Използвайте бутона <i class="bi bi-pencil-square"></i> за редактиране на категория или тип.</li>
                         </ul>
                     </p>
                 </div>
