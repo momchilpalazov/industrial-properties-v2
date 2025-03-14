@@ -328,7 +328,21 @@
 {% endblock %}
 
 {% block body %}
+    <!-- Page Title -->
+    <div class="container mt-5 pt-5">
+        {% if category is defined %}
+            <h1 class="mb-4">{{ category.getLocalizedName(app.request.locale) }}</h1>
+            {% if category.getLocalizedDescription(app.request.locale) %}
+                <p class="lead mb-4">{{ category.getLocalizedDescription(app.request.locale) }}</p>
+            {% endif %}
+        {% else %}
+            <h1 class="mb-4">{{ 'property.list_title'|trans }}</h1>
+            <p class="lead mb-4">{{ 'property.list_subtitle'|trans }}</p>
+        {% endif %}
+    </div>
+    
     <div class="filters-wrapper">
+    
         <!-- Filter Toggle Button -->
         <div class="filter-toggle-container">
             <div class="container">
