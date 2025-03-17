@@ -101,6 +101,7 @@ class PropertyController extends AbstractController
         return $this->render('admin/property/new.html.twig', [
             'property' => $property,
             'form' => $form->createView(),
+            'here_maps_api_key' => $this->getParameter('app.here_maps_api_key')
         ]);
     }
 
@@ -197,7 +198,8 @@ class PropertyController extends AbstractController
                     }
                     return $this->render('admin/property/edit.html.twig', [
                         'property' => $property,
-                        'form' => $form
+                        'form' => $form,
+                        'here_maps_api_key' => $this->getParameter('app.here_maps_api_key')
                     ]);
                 }
             }
@@ -214,7 +216,8 @@ class PropertyController extends AbstractController
 
         return $this->render('admin/property/edit.html.twig', [
             'property' => $property,
-            'form' => $form
+            'form' => $form,
+            'here_maps_api_key' => $this->getParameter('app.here_maps_api_key')
         ]);
     }
 

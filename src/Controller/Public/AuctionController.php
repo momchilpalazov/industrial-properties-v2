@@ -73,7 +73,11 @@ class AuctionController extends AbstractController
         return $this->render('auction/index.html.twig', [
             'properties' => $properties,
             'form' => $form->createView(),
-            'category' => $auctionCategory
+            'category' => $auctionCategory,
+            'here_maps_api_key' => $this->getParameter('app.here_maps_api_key'),
+            'here_maps_default_lat' => $this->getParameter('app.here_maps_default_lat'),
+            'here_maps_default_lng' => $this->getParameter('app.here_maps_default_lng'),
+            'here_maps_default_zoom' => $this->getParameter('app.here_maps_default_zoom')
         ]);
     }
 } 

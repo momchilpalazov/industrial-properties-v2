@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
     <style>
         .filter-section {
             background: #f8f9fa;
@@ -257,6 +258,84 @@
                 margin-bottom: 10px;
             }
         }
+        
+        /* Here Maps Styles */
+        .map-container-wrapper {
+            position: fixed;
+            top: 120px;
+            right: -400px;
+            width: 400px;
+            height: calc(100vh - 140px);
+            z-index: 1050;
+            transition: right 0.3s ease-in-out;
+            background: white;
+            box-shadow: -3px 0 10px rgba(0,0,0,0.1);
+            border-radius: 10px 0 0 10px;
+            overflow: hidden;
+        }
+        
+        .map-container-wrapper.show {
+            right: 0;
+        }
+        
+        #map-container {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .map-toggle {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 100px;
+            background: #e91e63;
+            color: white;
+            border: none;
+            border-radius: 10px 0 0 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+            z-index: 1051;
+            font-size: 24px;
+            animation: pulse-button 2s infinite;
+        }
+        
+        @keyframes pulse-button {
+            0% {
+                box-shadow: 0 0 0 0 rgba(233, 30, 99, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(233, 30, 99, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(233, 30, 99, 0);
+            }
+        }
+        
+        .map-toggle i {
+            font-size: 24px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 767px) {
+            .d-flex.gap-2 {
+                flex-direction: column;
+                gap: 5px !important;
+            }
+            
+            .form-group {
+                margin-bottom: 10px;
+            }
+            
+            .map-container-wrapper {
+                width: 300px;
+                right: -300px;
+            }
+        }
     </style>
 {% endblock %}
 
@@ -358,6 +437,14 @@
         </section>
     </div>
 
+    <!-- Here Maps Container -->
+    <div class="map-container-wrapper" id="mapWrapper">
+        <button class="map-toggle" id="mapToggle">
+            <i class="material-icons">map</i>
+        </button>
+        <div id="map-container"></div>
+    </div>
+
     <!-- Properties List -->
     <section class="py-5">
         <div class="container">
@@ -434,16 +521,22 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const filterToggle = document.getElementById('filterToggle');
             const filterSection = document.getElementById('filterSection');
             const filtersWrapper = document.querySelector('.filters-wrapper');
+            const mapToggle = document.getElementById('mapToggle');
+            const mapWrapper = document.getElementById('mapWrapper');
             
-            // Проверяваме запазеното състояние
+            // Проверяваме запазеното състояние на филтрите
             const isFilterVisible = localStorage.getItem('filterVisible') === 'true';
             
-            // Задаваме първоначалното състояние
+            // Задаваме първоначалното състояние на филтрите
             if (isFilterVisible) {
                 filterSection.classList.add('show');
                 filterToggle.classList.add('active');
@@ -462,6 +555,27 @@
                         top: filtersWrapper.offsetTop - 70,
                         behavior: 'smooth'
                     });
+                }
+            });
+            
+            // Проверяваме запазеното състояние на картата
+            const isMapVisible = localStorage.getItem('mapVisible') === 'true';
+            
+            // Задаваме първоначалното състояние на картата
+            if (isMapVisible) {
+                mapWrapper.classList.add('show');
+            }
+            
+            // Обработка на бутона за картата
+            mapToggle.addEventListener('click', function() {
+                mapWrapper.classList.toggle('show');
+                
+                // Запазваме състоянието
+                localStorage.setItem('mapVisible', mapWrapper.classList.contains('show'));
+                
+                // Ако картата се показва за първи път, инициализираме я
+                if (mapWrapper.classList.contains('show') && !window.mapInitialized) {
+                    initializeMap();
                 }
             });
             
@@ -489,6 +603,66 @@
                 }
                 
                 return state.text;
+            }
+            
+            // Функция за инициализиране на Here Maps
+            function initializeMap() {
+                // Проверяваме дали Here Maps API е зареден
+                if (typeof H !== 'undefined') {
+                    // Инициализираме платформата
+                    const platform = new H.service.Platform({
+                        'apikey': '{{ here_maps_api_key }}' // Използваме ключа от Twig променливите
+                    });
+                    
+                    // Задаваме типа на картата
+                    const defaultLayers = platform.createDefaultLayers();
+                    
+                    // Инициализираме картата
+                    const map = new H.Map(
+                        document.getElementById('map-container'),
+                        defaultLayers.vector.normal.map,
+                        {
+                            zoom: {{ here_maps_default_zoom }},
+                            center: { lat: {{ here_maps_default_lat }}, lng: {{ here_maps_default_lng }} } // Използваме координатите от Twig променливите
+                        }
+                    );
+                    
+                    // Добавяме контроли за мащабиране
+                    const ui = H.ui.UI.createDefault(map, defaultLayers);
+                    
+                    // Добавяме възможност за интеракция с картата
+                    const mapEvents = new H.mapevents.MapEvents(map);
+                    const behavior = new H.mapevents.Behavior(mapEvents);
+                    
+                    // Маркираме картата като инициализирана
+                    window.mapInitialized = true;
+                    
+                    // Добавяме маркери за имотите
+                    addPropertyMarkers(map);
+                }
+            }
+            
+            // Функция за добавяне на маркери за имотите
+            function addPropertyMarkers(map) {
+                // Тук можете да добавите код за извличане на координатите на имотите
+                // и добавяне на маркери на картата
+                
+                // Пример:
+                // const properties = [
+                //     { lat: 42.6977, lng: 23.3219, title: 'Имот 1', id: 1 },
+                //     { lat: 42.1429, lng: 24.7500, title: 'Имот 2', id: 2 }
+                // ];
+                
+                // properties.forEach(property => {
+                //     const marker = new H.map.Marker({ lat: property.lat, lng: property.lng });
+                //     marker.setData(property.id);
+                //     map.addObject(marker);
+                //     
+                //     marker.addEventListener('tap', function(evt) {
+                //         const id = evt.target.getData();
+                //         window.location.href = '/property/' + id;
+                //     });
+                // });
             }
         });
     </script>
