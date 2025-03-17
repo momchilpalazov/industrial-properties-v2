@@ -46,8 +46,11 @@ class PropertyController extends AbstractController
         $form->handleRequest($request);
 
         $queryBuilder = $this->propertyRepository->createQueryBuilder('p')
+            ->leftJoin('p.category', 'c')
             ->where('p.isActive = :active')
+            ->andWhere('c.name = :categoryName')
             ->setParameter('active', true)
+            ->setParameter('categoryName', 'Продажба')
             ->orderBy('p.createdAt', 'DESC');
 
         if ($form->isSubmitted() && $form->isValid()) {

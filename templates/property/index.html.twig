@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'property.list_title'|trans }}{% endblock %}
+{% block title %}{{ 'property.list_title'|trans }} - Продажба{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -449,7 +449,7 @@
 
     <!-- Properties List -->
     <section class="py-5">
-        <div class="container">
+        <div class="container">   
             <div class="row g-4">
                 {% for property in properties %}
                     <div class="col-md-4">
