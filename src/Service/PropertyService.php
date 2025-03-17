@@ -130,6 +130,11 @@ class PropertyService
         // Генериране на slug
         $property->setSlug($this->generateSlug($property));
         
+        // Задаване на категория въз основа на типа имот
+        if ($property->getType() && $property->getType()->getCategory() && !$property->getCategory()) {
+            $property->setCategory($property->getType()->getCategory());
+        }
+        
         // Първо записваме имота за да получим ID
         $this->entityManager->persist($property);
         $this->entityManager->flush();
@@ -151,6 +156,11 @@ class PropertyService
     {
         // Обновяване на slug ако е променено заглавието
         $property->setSlug($this->generateSlug($property));
+
+        // Задаване на категория въз основа на типа имот
+        if ($property->getType() && $property->getType()->getCategory()) {
+            $property->setCategory($property->getType()->getCategory());
+        }
 
         $this->entityManager->flush();
     }

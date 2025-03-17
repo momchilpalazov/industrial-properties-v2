@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'promotion.active_promotions'|trans }}{% endblock %}
+{% block title %}{% if category %}{{ category.getLocalizedName(app.request.locale) }}{% else %}{{ 'promotion.active_promotions'|trans }}{% endif %}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -361,7 +361,10 @@
     <!-- Properties List -->
     <section class="py-5">
         <div class="container">
-            <h1 class="mb-4">{{ 'promotion.active_promotions'|trans }}</h1>
+            <h1 class="mb-4">{% if category %}{{ category.getLocalizedName(app.request.locale) }}{% else %}{{ 'promotion.active_promotions'|trans }}{% endif %}</h1>
+            {% if category and category.getLocalizedDescription(app.request.locale) %}
+                <p class="lead mb-4">{{ category.getLocalizedDescription(app.request.locale) }}</p>
+            {% endif %}
             <div class="row g-4">
                 {% for property in properties %}
                     <div class="col-md-4">

@@ -171,7 +171,8 @@ class PropertyType extends AbstractType
                     'Продаден' => Property::STATUS_SOLD,
                     'Резервиран' => Property::STATUS_RESERVED,
                     'Отдаден под наем' => Property::STATUS_RENTED,
-                    'Очаква финализиране' => Property::STATUS_PENDING
+                    'Очаква финализиране' => Property::STATUS_PENDING,
+                    'На търг' => Property::STATUS_AUCTION
                 ],
                 'attr' => ['class' => 'form-select']
             ])

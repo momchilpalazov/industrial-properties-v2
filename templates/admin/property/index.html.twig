@@ -284,12 +284,12 @@
                                                     </li>
                                                 </ul>
                                             </div>
-                                            <button type="button" 
-                                                    class="btn btn-sm btn-danger delete-property" 
-                                                    data-property-id="{{ property.id }}"
-                                                    title="Изтриване">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                            <form method="post" action="{{ path('admin_property_delete', {'id': property.id}) }}" style="display: inline-block" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този имот?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ property.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Изтриване">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -327,36 +327,6 @@
                     });
                 });
             }
-
-            // Delete Property
-            const deleteButtons = document.querySelectorAll('.delete-property');
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    if (confirm('Сигурни ли сте, че искате да изтриете този имот?')) {
-                        const propertyId = this.dataset.propertyId;
-
-                        fetch(`/admin/properties/${propertyId}`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                            },
-                            body: `_token=${csrf_token('delete' ~ propertyId)}`
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                this.closest('tr').remove();
-                            } else {
-                                alert('Грешка при изтриване на имота');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Възникна грешка при изтриване на имота');
-                        });
-                    }
-                });
-            });
 
             // Toggle Active Status
             const toggleButtons = document.querySelectorAll('.toggle-active');

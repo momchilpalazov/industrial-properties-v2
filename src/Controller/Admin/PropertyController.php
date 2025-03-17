@@ -203,7 +203,7 @@ class PropertyController extends AbstractController
             }
 
             try {
-                $this->entityManager->flush();
+                $this->propertyService->update($property);
                 $this->addFlash('success', 'Имотът беше успешно редактиран.');
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Грешка при запазване на промените: ' . $e->getMessage());

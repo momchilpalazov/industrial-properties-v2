@@ -66,7 +66,8 @@
                                 <span class="badge bg-{{ property.status == 'available' ? 'success' : 
                                     property.status == 'sold' ? 'danger' : 
                                     property.status == 'reserved' ? 'warning' : 
-                                    property.status == 'rented' ? 'info' : 'secondary' }}">
+                                    property.status == 'rented' ? 'info' : 
+                                    property.status == 'auction' ? 'primary' : 'secondary' }}">
                                     {{ ('property.status.' ~ property.status)|trans }}
                                 </span>
                             </p>

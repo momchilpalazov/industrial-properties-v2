@@ -93,7 +93,8 @@ class PropertyType extends AbstractType
                     'Продаден' => Property::STATUS_SOLD,
                     'Резервиран' => Property::STATUS_RESERVED,
                     'Под наем' => Property::STATUS_RENTED,
-                    'В процес' => Property::STATUS_PENDING
+                    'В процес' => Property::STATUS_PENDING,
+                    'На търг' => Property::STATUS_AUCTION
                 ],
                 'placeholder' => 'Изберете статус'
             ])

@@ -98,6 +98,7 @@ property:
     reserved: 'Reserved'
     rented: 'Rented'
     pending: 'Pending'
+    auction: 'On Auction'
   360_images: '360° Images'
   360_instructions: 'Click and hold to rotate the image. Use scroll to zoom.'
 

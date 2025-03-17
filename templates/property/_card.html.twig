@@ -33,10 +33,11 @@
         <div class="bg-white rounded-pill position-absolute start-0 bottom-0 m-4 py-1 px-3">
             {{ property.price|number_format(0, '.', ' ') }} €
         </div>
-        <div class="bg-{{ property.status == 'available' ? 'success' : 
-            property.status == 'sold' ? 'danger' : 
-            property.status == 'reserved' ? 'warning' : 
-            property.status == 'rented' ? 'info' : 'secondary' }} rounded-pill position-absolute end-0 bottom-0 m-4 py-1 px-3 text-white">
+        <div class="bg-{{ property.status == 'available' ? 'success' :
+        property.status == 'sold' ? 'danger' :
+        property.status == 'reserved' ? 'warning' :
+        property.status == 'rented' ? 'info' : 
+        property.status == 'auction' ? 'primary' : 'secondary' }} rounded-pill position-absolute end-0 bottom-0 m-4 py-1 px-3 text-white">
             {{ ('property.status.' ~ property.status)|trans }}
         </div>
     </div>

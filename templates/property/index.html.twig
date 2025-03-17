@@ -486,11 +486,13 @@
                                             <i class="bi bi-circle-fill status-icon text-{{ property.status == 'available' ? 'success' : 
                                                 property.status == 'sold' ? 'danger' : 
                                                 property.status == 'reserved' ? 'warning' : 
-                                                property.status == 'rented' ? 'info' : 'secondary' }}"></i>
+                                                property.status == 'rented' ? 'info' : 
+                                                property.status == 'auction' ? 'primary' : 'secondary' }}"></i>
                                             <span class="text-{{ property.status == 'available' ? 'success' : 
                                                 property.status == 'sold' ? 'danger' : 
                                                 property.status == 'reserved' ? 'warning' : 
-                                                property.status == 'rented' ? 'info' : 'secondary' }}">
+                                                property.status == 'rented' ? 'info' : 
+                                                property.status == 'auction' ? 'primary' : 'secondary' }}">
                                                 {{ ('property.status.' ~ property.status)|trans }}
                                             </span>
                                         </small>

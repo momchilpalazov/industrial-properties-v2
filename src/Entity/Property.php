@@ -26,6 +26,7 @@ class Property
     public const STATUS_RESERVED = 'reserved';
     public const STATUS_RENTED = 'rented';
     public const STATUS_PENDING = 'pending';
+    public const STATUS_AUCTION = 'auction';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -134,7 +135,7 @@ class Property
     private ?PropertyCategory $category = null;
 
     #[ORM\Column(length: 20)]
-    #[Assert\Choice(choices: ['available', 'sold', 'reserved', 'rented', 'pending'], message: 'Моля изберете валиден статус')]
+    #[Assert\Choice(choices: ['available', 'sold', 'reserved', 'rented', 'pending', 'auction'], message: 'Моля изберете валиден статус')]
     private ?string $status = self::STATUS_AVAILABLE;
 
     #[ORM\Column]
