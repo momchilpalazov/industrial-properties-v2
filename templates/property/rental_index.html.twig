@@ -703,60 +703,116 @@
             function initializeMap() {
                 // Проверяваме дали Here Maps API е зареден
                 if (typeof H !== 'undefined') {
-                    // Инициализираме платформата
-                    const platform = new H.service.Platform({
-                        'apikey': 'YOUR_API_KEY' // Заменете с вашия API ключ
-                    });
-                    
-                    // Задаваме типа на картата
-                    const defaultLayers = platform.createDefaultLayers();
-                    
-                    // Инициализираме картата
-                    const map = new H.Map(
-                        document.getElementById('map-container'),
-                        defaultLayers.vector.normal.map,
-                        {
-                            zoom: 7,
-                            center: { lat: 42.7339, lng: 25.4858 } // Център на България
-                        }
-                    );
-                    
-                    // Добавяме контроли за мащабиране
-                    const ui = H.ui.UI.createDefault(map, defaultLayers);
-                    
-                    // Добавяме възможност за интеракция с картата
-                    const mapEvents = new H.mapevents.MapEvents(map);
-                    const behavior = new H.mapevents.Behavior(mapEvents);
+                    console.log('Инициализиране на Here Maps...');
                     
                     // Маркираме картата като инициализирана
                     window.mapInitialized = true;
                     
-                    // Добавяме маркери за имотите
-                    addPropertyMarkers(map);
+                    try {
+                        // Създаваме Here Maps платформа с API ключа
+                        const apiKey = "{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}";
+                        console.log('API ключ:', apiKey);
+                        
+                        const platform = new H.service.Platform({
+                            apiKey: apiKey
+                        });
+                        
+                        // Създаваме слоеве
+                        const defaultLayers = platform.createDefaultLayers();
+                        
+                        // Създаваме картата
+                        const map = new H.Map(
+                            document.getElementById('map-container'),
+                            defaultLayers.vector.normal.map,
+                            {
+                                center: { lat: 42.6977, lng: 23.3219 }, // София по подразбиране
+                                zoom: 13
+                            }
+                        );
+                        
+                        // Добавяме интерактивност и контроли
+                        const ui = H.ui.UI.createDefault(map, defaultLayers);
+                        const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+                        
+                        // Добавяме маркери за всеки имот
+                        const markers = [];
+                        {% for property in properties %}
+                            {% if property.latitude is not empty and property.longitude is not empty %}
+                                markers.push({
+                                    lat: {{ property.latitude }},
+                                    lng: {{ property.longitude }},
+                                    title: "{{ property.title(app.request.locale)|escape('js') }}",
+                                    id: {{ property.id }}
+                                });
+                            {% endif %}
+                        {% endfor %}
+                        
+                        console.log('Брой маркери:', markers.length);
+                        
+                        // Добавяме маркери на картата
+                        markers.forEach(marker => {
+                            const mapMarker = new H.map.Marker({ 
+                                lat: marker.lat, 
+                                lng: marker.lng 
+                            });
+                            
+                            // Създаваме балон с информация за имота
+                            mapMarker.setData(`
+                                <div style="padding: 10px;">
+                                    <h5>${marker.title}</h5>
+                                    <a href="/bg/property/${marker.id}" class="btn btn-sm btn-primary">Детайли</a>
+                                </div>
+                            `);
+                            
+                            // Добавяме маркера към картата
+                            map.addObject(mapMarker);
+                            
+                            // Добавяме слушател за клик върху маркера
+                            mapMarker.addEventListener('tap', function(evt) {
+                                const bubble = new H.ui.InfoBubble(
+                                    evt.target.getGeometry(), 
+                                    { content: evt.target.getData() }
+                                );
+                                ui.addBubble(bubble);
+                            });
+                        });
+                        
+                        // Коригираме зума, за да се виждат всички маркери
+                        if (markers.length > 0) {
+                            // Ако има само един маркер, центрираме картата върху него
+                            if (markers.length === 1) {
+                                map.setCenter({ lat: markers[0].lat, lng: markers[0].lng });
+                                map.setZoom(15);
+                            } else {
+                                // Ако има повече маркери, мащабираме картата, за да се виждат всички
+                                const group = new H.map.Group();
+                                markers.forEach(marker => {
+                                    group.addObject(new H.map.Marker({ lat: marker.lat, lng: marker.lng }));
+                                });
+                                map.addObject(group);
+                                map.getViewModel().setLookAtData({
+                                    bounds: group.getBoundingBox()
+                                });
+                            }
+                        }
+                        
+                        // Ресайз на картата при промяна на размера на прозореца
+                        window.addEventListener('resize', () => {
+                            map.getViewPort().resize();
+                        });
+                        
+                        console.log('Here Maps инициализирана успешно!');
+                    } catch (error) {
+                        console.error('Грешка при инициализиране на Here Maps:', error);
+                    }
+                } else {
+                    console.error('Here Maps API не е зареден!');
                 }
             }
             
             // Функция за добавяне на маркери за имотите
             function addPropertyMarkers(map) {
-                // Тук можете да добавите код за извличане на координатите на имотите
-                // и добавяне на маркери на картата
-                
-                // Пример:
-                // const properties = [
-                //     { lat: 42.6977, lng: 23.3219, title: 'Имот 1', id: 1 },
-                //     { lat: 42.1429, lng: 24.7500, title: 'Имот 2', id: 2 }
-                // ];
-                
-                // properties.forEach(property => {
-                //     const marker = new H.map.Marker({ lat: property.lat, lng: property.lng });
-                //     marker.setData(property.id);
-                //     map.addObject(marker);
-                //     
-                //     marker.addEventListener('tap', function(evt) {
-                //         const id = evt.target.getData();
-                //         window.location.href = '/property/' + id;
-                //     });
-                // });
+                // Тази функция вече не се използва, тъй като маркерите се добавят директно в initializeMap
             }
         });
     </script>

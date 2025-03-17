@@ -79,6 +79,44 @@
             background-color: #3498db;
             border-color: #3498db;
         }
+        
+        /* Стилове за автоматичното предлагане на адреси */
+        .address-suggestions {
+            position: absolute;
+            z-index: 1000;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: white;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        .address-suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .address-suggestion-item:hover,
+        .address-suggestion-item.active {
+            background-color: #f8f9fa;
+        }
+        
+        .address-suggestion-item .main-text {
+            font-weight: 500;
+        }
+        
+        .address-suggestion-item .secondary-text {
+            font-size: 0.85em;
+            color: #6c757d;
+        }
+        
+        .address-input-wrapper {
+            position: relative;
+        }
     </style>
 {% endblock %}
 
@@ -195,11 +233,14 @@
             
             <div class="mb-3">
                 {{ form_label(form.address) }}
-                <div class="input-group">
-                    {{ form_widget(form.address, {'attr': {'class': 'form-control'}}) }}
-                    <button class="btn btn-outline-primary" type="button" id="geocodeAddress">
-                        <i class="bi bi-search"></i> Намери координати
-                    </button>
+                <div class="address-input-wrapper">
+                    <div class="input-group">
+                        {{ form_widget(form.address, {'attr': {'class': 'form-control', 'autocomplete': 'off'}}) }}
+                        <button class="btn btn-outline-primary" type="button" id="geocodeAddress">
+                            <i class="bi bi-search"></i> Намери координати
+                        </button>
+                    </div>
+                    <div id="addressSuggestions" class="address-suggestions"></div>
                 </div>
                 <small class="form-text text-muted">Въведете адрес във формат: улица и номер, град, държава. За по-точни резултати включете пощенски код.</small>
                 {{ form_errors(form.address) }}
@@ -301,6 +342,7 @@
             const geocodeButton = document.getElementById('geocodeAddress');
             const geocodeResults = document.getElementById('geocodeResults');
             const geocodeResultsList = document.getElementById('geocodeResultsList');
+            const addressSuggestions = document.getElementById('addressSuggestions');
             
             if (!latitudeField || !longitudeField || !mapElement) {
                 console.error('Не са намерени необходимите елементи за картата');
@@ -348,8 +390,7 @@
             });
             
             // Функция за намиране на координати по адрес
-            function findCoordinates() {
-                const address = addressField.value;
+            function findCoordinates(address) {
                 if (!address) {
                     alert('Моля, въведете адрес');
                     return;
@@ -466,9 +507,170 @@
                     });
             }
             
+            // Функция за търсене на предложения за адреси
+            let searchTimeout;
+            function searchAddressSuggestions(query) {
+                if (!query || query.length < 3) {
+                    addressSuggestions.style.display = 'none';
+                    return;
+                }
+                
+                // Изчакваме малко преди да изпратим заявката, за да избегнем твърде много заявки
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    // Използваме OpenStreetMap Nominatim API за предложения
+                    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Изчистваме предишните предложения
+                            addressSuggestions.innerHTML = '';
+                            
+                            if (data && data.length > 0) {
+                                // Добавяме всеки резултат като предложение
+                                data.forEach(item => {
+                                    const suggestionItem = document.createElement('div');
+                                    suggestionItem.className = 'address-suggestion-item';
+                                    
+                                    // Форматираме адреса
+                                    const parts = item.display_name.split(', ');
+                                    const mainPart = parts.slice(0, 2).join(', ');
+                                    const secondaryPart = parts.slice(2).join(', ');
+                                    
+                                    suggestionItem.innerHTML = `
+                                        <div class="main-text">${mainPart}</div>
+                                        <div class="secondary-text">${secondaryPart}</div>
+                                    `;
+                                    
+                                    // Добавяме обработчик на събития
+                                    suggestionItem.addEventListener('click', function() {
+                                        // Задаваме адреса в полето
+                                        addressField.value = item.display_name;
+                                        
+                                        // Скриваме предложенията
+                                        addressSuggestions.style.display = 'none';
+                                        
+                                        // Актуализираме координатите и картата
+                                        const coords = {
+                                            lat: parseFloat(item.lat),
+                                            lng: parseFloat(item.lon)
+                                        };
+                                        
+                                        // Актуализираме полетата за координати
+                                        latitudeField.value = coords.lat.toFixed(6);
+                                        longitudeField.value = coords.lng.toFixed(6);
+                                        
+                                        // Актуализираме маркера и центрираме картата
+                                        marker.setLatLng(coords);
+                                        map.setView(coords, 15);
+                                        
+                                        // Актуализираме попъпа
+                                        marker.setPopupContent(`<div>
+                                            <strong>Адрес:</strong> ${item.display_name}<br>
+                                            <strong>Координати:</strong><br>
+                                            Lat: ${coords.lat.toFixed(6)}<br>
+                                            Lng: ${coords.lng.toFixed(6)}
+                                        </div>`);
+                                        
+                                        marker.openPopup();
+                                    });
+                                    
+                                    addressSuggestions.appendChild(suggestionItem);
+                                });
+                                
+                                // Показваме контейнера с предложения
+                                addressSuggestions.style.display = 'block';
+                            } else {
+                                // Скриваме контейнера с предложения, ако няма резултати
+                                addressSuggestions.style.display = 'none';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Грешка при търсене на предложения:', error);
+                            addressSuggestions.style.display = 'none';
+                        });
+                }, 300); // Изчакваме 300ms преди да изпратим заявката
+            }
+            
             // Добавяме слушател за бутона за намиране на координати
             if (geocodeButton) {
-                geocodeButton.addEventListener('click', findCoordinates);
+                geocodeButton.addEventListener('click', function() {
+                    findCoordinates(addressField.value);
+                });
+            }
+            
+            // Добавяме слушател за въвеждане в полето за адрес
+            if (addressField) {
+                addressField.addEventListener('input', function() {
+                    searchAddressSuggestions(this.value);
+                });
+                
+                // Обработка на клавиша Enter в полето за адрес
+                addressField.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        
+                        // Ако има видими предложения, избираме първото
+                        if (addressSuggestions.style.display === 'block' && addressSuggestions.children.length > 0) {
+                            addressSuggestions.children[0].click();
+                        } else {
+                            findCoordinates(this.value);
+                        }
+                    }
+                });
+                
+                // Обработка на клавишите стрелка нагоре/надолу за навигация в предложенията
+                addressField.addEventListener('keydown', function(e) {
+                    if (addressSuggestions.style.display === 'block') {
+                        const items = addressSuggestions.querySelectorAll('.address-suggestion-item');
+                        let activeIndex = -1;
+                        
+                        // Намираме активния елемент
+                        items.forEach((item, index) => {
+                            if (item.classList.contains('active')) {
+                                activeIndex = index;
+                            }
+                        });
+                        
+                        if (e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            
+                            // Премахваме активния клас от текущия елемент
+                            if (activeIndex >= 0) {
+                                items[activeIndex].classList.remove('active');
+                            }
+                            
+                            // Избираме следващия елемент или първия, ако сме в края
+                            activeIndex = (activeIndex + 1) % items.length;
+                            items[activeIndex].classList.add('active');
+                            items[activeIndex].scrollIntoView({ block: 'nearest' });
+                        } else if (e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            
+                            // Премахваме активния клас от текущия елемент
+                            if (activeIndex >= 0) {
+                                items[activeIndex].classList.remove('active');
+                            }
+                            
+                            // Избираме предишния елемент или последния, ако сме в началото
+                            activeIndex = (activeIndex - 1 + items.length) % items.length;
+                            items[activeIndex].classList.add('active');
+                            items[activeIndex].scrollIntoView({ block: 'nearest' });
+                        } else if (e.key === 'Escape') {
+                            // Скриваме предложенията при натискане на Escape
+                            addressSuggestions.style.display = 'none';
+                        } else if (e.key === 'Tab') {
+                            // Скриваме предложенията при натискане на Tab
+                            addressSuggestions.style.display = 'none';
+                        }
+                    }
+                });
+                
+                // Скриваме предложенията при клик извън полето
+                document.addEventListener('click', function(e) {
+                    if (!addressField.contains(e.target) && !addressSuggestions.contains(e.target)) {
+                        addressSuggestions.style.display = 'none';
+                    }
+                });
             }
             
             // Добавяме слушател за клик върху картата
@@ -491,16 +693,6 @@
                 
                 marker.openPopup();
             });
-            
-            // Обработка на клавиша Enter в полето за адрес
-            if (addressField) {
-                addressField.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        findCoordinates();
-                    }
-                });
-            }
             
             // Обработка на промяна на размера на прозореца
             window.addEventListener('resize', function() {
