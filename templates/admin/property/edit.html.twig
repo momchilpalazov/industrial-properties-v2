@@ -384,11 +384,11 @@
             <div class="mb-3">
                 {{ form_label(form.address) }}
                 <div class="address-input-wrapper">
-                    <div class="input-group">
+                <div class="input-group">
                         {{ form_widget(form.address, {'attr': {'class': 'form-control', 'autocomplete': 'off'}}) }}
-                        <button class="btn btn-outline-primary" type="button" id="geocodeAddress">
-                            <i class="bi bi-search"></i> Намери координати
-                        </button>
+                    <button class="btn btn-outline-primary" type="button" id="geocodeAddress">
+                        <i class="bi bi-search"></i> Намери координати
+                    </button>
                     </div>
                     <div id="addressSuggestions" class="address-suggestions"></div>
                 </div>

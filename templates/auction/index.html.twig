@@ -456,7 +456,7 @@
                 {% for property in properties %}
                     <div class="col-md-4">
                         <div class="card h-100 property-card">
-                            <a href="{{ path('app_property_show', {'id': property.id}) }}" class="text-decoration-none">
+                            <a href="{{ path('app_auctions_show', {'id': property.id}) }}" class="text-decoration-none">
                                 <div class="position-relative">
                                     {% if property.mainImage %}
                                         <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}" 
@@ -666,7 +666,7 @@
                             mapMarker.setData(`
                                 <div style="padding: 10px;">
                                     <h5>${marker.title}</h5>
-                                    <a href="/bg/property/${marker.id}" class="btn btn-sm btn-primary">Детайли</a>
+                                    <a href="/bg/auctions/${marker.id}" class="btn btn-sm btn-primary">Детайли</a>
                                 </div>
                             `);
                             

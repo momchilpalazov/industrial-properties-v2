@@ -105,6 +105,16 @@ class PropertyController extends AbstractController
     #[Route('/properties/{id}', name: 'app_property_show', methods: ['GET'])]
     public function show(Property $property, Request $request, PropertyViewRepository $viewRepository): Response
     {
+        // Проверка дали имотът е под наем и пренасочване към съответната страница
+        if ($property->getCategory() && $property->getCategory()->getSlug() === 'for-rent') {
+            return $this->redirectToRoute('app_rental_property_show', ['id' => $property->getId()]);
+        }
+        
+        // Проверка дали имотът е от категория "Търгове" и пренасочване към аукциони
+        if ($property->getCategory() && $property->getCategory()->getName() === 'Търгове') {
+            return $this->redirectToRoute('app_auctions_show', ['id' => $property->getId()]);
+        }
+        
         // Записваме разглеждането
         $viewRepository->addView(
             $property->getId(),

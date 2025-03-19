@@ -234,11 +234,11 @@
             <div class="mb-3">
                 {{ form_label(form.address) }}
                 <div class="address-input-wrapper">
-                    <div class="input-group">
+                <div class="input-group">
                         {{ form_widget(form.address, {'attr': {'class': 'form-control', 'autocomplete': 'off'}}) }}
-                        <button class="btn btn-outline-primary" type="button" id="geocodeAddress">
-                            <i class="bi bi-search"></i> Намери координати
-                        </button>
+                    <button class="btn btn-outline-primary" type="button" id="geocodeAddress">
+                        <i class="bi bi-search"></i> Намери координати
+                    </button>
                     </div>
                     <div id="addressSuggestions" class="address-suggestions"></div>
                 </div>
@@ -249,7 +249,7 @@
                     <ul id="geocodeResultsList" class="list-group"></ul>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.latitude) }}
@@ -391,15 +391,15 @@
             
             // Функция за намиране на координати по адрес
             function findCoordinates(address) {
-                if (!address) {
-                    alert('Моля, въведете адрес');
-                    return;
-                }
-                
-                // Показваме индикатор за зареждане
-                geocodeButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Търсене...';
-                geocodeButton.disabled = true;
-                
+                    if (!address) {
+                        alert('Моля, въведете адрес');
+                        return;
+                    }
+
+                    // Показваме индикатор за зареждане
+                    geocodeButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Търсене...';
+                    geocodeButton.disabled = true;
+
                 // Използваме OpenStreetMap Nominatim API за геокодиране
                 fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=5`)
                     .then(response => response.json())
@@ -417,7 +417,7 @@
                             // Актуализираме полетата за координати
                             latitudeField.value = coords.lat.toFixed(6);
                             longitudeField.value = coords.lng.toFixed(6);
-                            
+
                             // Актуализираме маркера и центрираме картата
                             marker.setLatLng(coords);
                             map.setView(coords, 15);

@@ -550,7 +550,7 @@
                 {% for property in properties %}
                     <div class="col-md-4">
                         <div class="property-item">
-                            <a href="{{ path('app_property_show', {'id': property.id}) }}">
+                            <a href="{{ path('app_rental_property_show', {'id': property.id}) }}">
                                 {% if property.mainImage %}
                                     <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}" 
                                          class="property-image" 
@@ -562,7 +562,7 @@
                                 {% endif %}
                             </a>
                             <div class="property-content">
-                                <a href="{{ path('app_property_show', {'id': property.id}) }}" class="property-title">
+                                <a href="{{ path('app_rental_property_show', {'id': property.id}) }}" class="property-title">
                                     {{ property.title(app.request.locale) }}
                                 </a>
                                 <div class="property-ref">

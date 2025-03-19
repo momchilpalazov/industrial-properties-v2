@@ -166,4 +166,30 @@ class RentalPropertyController extends AbstractController
             'rental_mode' => true
         ]);
     }
+
+    /**
+     * Redirects from the general property show page to the rental property show page
+     * for properties that are in the rental category.
+     */
+    #[Route('/redirect/{id}', name: 'redirect_from_property')]
+    public function redirectFromProperty(int $id): Response
+    {
+        $property = $this->propertyRepository->find($id);
+        
+        if (!$property) {
+            throw $this->createNotFoundException('Имотът не е намерен');
+        }
+        
+        // Проверяваме дали имотът е в категория "Под наем"
+        $rentalCategory = $this->entityManager->getRepository(PropertyCategory::class)
+            ->findOneBy(['slug' => 'for-rent']);
+            
+        if ($property->getCategory() && $property->getCategory()->getId() === $rentalCategory->getId()) {
+            // Ако имотът е в категория "Под наем", пренасочваме към rental_property_show
+            return $this->redirectToRoute('app_rental_property_show', ['id' => $id]);
+        }
+        
+        // В противен случай връщаме обратно към стандартното показване на имота
+        return $this->redirectToRoute('app_property_show', ['id' => $id]);
+    }
 } 

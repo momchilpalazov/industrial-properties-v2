@@ -267,8 +267,8 @@
                            href="{{ path('app_renting') }}">{{ 'nav.rental_properties'|trans }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if app.request.get('_route') == 'app_auctions' %}active{% endif %}" 
-                           href="{{ path('app_auctions') }}">{{ 'nav.promotions'|trans }}</a>
+                        <a class="nav-link {% if app.request.get('_route') starts with 'app_auctions_' %}active{% endif %}" 
+                           href="{{ path('app_auctions_index') }}">{{ 'nav.promotions'|trans }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') == 'app_services' %}active{% endif %}" 
@@ -346,7 +346,7 @@
                         <li><a href="{{ path('app_home') }}">{{ 'nav.home'|trans }}</a></li>
                         <li><a href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans }}</a></li>
                         <li><a href="{{ path('app_renting') }}">{{ 'nav.rental_properties'|trans }}</a></li>
-                        <li><a href="{{ path('app_auctions') }}">{{ 'nav.promotions'|trans }}</a></li>
+                        <li><a href="{{ path('app_auctions_index') }}">{{ 'nav.promotions'|trans }}</a></li>
                         <li><a href="{{ path('app_services') }}">{{ 'nav.services'|trans }}</a></li>
                         <li><a href="{{ path('app_blog_index') }}">{{ 'nav.blog'|trans }}</a></li>
                         <li><a href="{{ path('app_about') }}">{{ 'nav.about'|trans }}</a></li>
