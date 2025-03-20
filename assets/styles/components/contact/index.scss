@@ -1,0 +1,357 @@
+// Contact Page Styles
+
+// Дефиниране на цветове и променливи
+$primary: #1976d2;
+$secondary: #6c757d;
+$success: #198754;
+$info: #0dcaf0;
+$warning: #ffc107;
+$danger: #dc3545;
+$light: #f8f9fa;
+$dark: #343a40;
+
+$white: #fff;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$black: #000;
+
+.contact-page {
+  // Animations
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes pulseIcon {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes floatIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  // Hero section
+  .contact-hero {
+    padding: 5rem 0;
+    background: linear-gradient(135deg, rgba(25, 118, 210, 0.8), rgba(33, 150, 243, 0.6)), url('../../../images/contact-bg.jpg') no-repeat center center;
+    background-size: cover;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 3rem;
+    
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('../../../images/pattern.png');
+      opacity: 0.1;
+      z-index: 1;
+    }
+    
+    .container {
+      position: relative;
+      z-index: 2;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      opacity: 0.9;
+    }
+  }
+  
+  // Основни стилове
+  .heading-divider {
+    height: 4px;
+    width: 60px;
+    background-color: $primary;
+    margin-bottom: 2rem;
+  }
+  
+  // Контактна информация
+  .contact-info-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    height: 100%;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+  }
+  
+  .contact-info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      .contact-info-icon {
+        animation: pulseIcon 1s ease infinite;
+        background-color: darken($primary, 10%);
+      }
+    }
+  }
+  
+  .contact-info-icon {
+    width: 56px;
+    height: 56px;
+    background-color: $primary;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1.2rem;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 8px rgba($primary, 0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .contact-info-content {
+    flex: 1;
+    
+    h5 {
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      color: $gray-800;
+    }
+    
+    p {
+      margin-bottom: 0;
+      color: $gray-600;
+      
+      a {
+        color: $primary;
+        text-decoration: none;
+        transition: color 0.2s ease;
+        
+        &:hover {
+          color: darken($primary, 15%);
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  // Социални медии
+  .social-media-links {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    
+    .social-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      background-color: #f5f5f5;
+      color: $gray-700;
+      text-decoration: none;
+      
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      &.facebook {
+        &:hover {
+          background-color: #3b5998;
+          color: white;
+        }
+      }
+      
+      &.linkedin {
+        &:hover {
+          background-color: #0077b5;
+          color: white;
+        }
+      }
+      
+      &.twitter {
+        &:hover {
+          background-color: #1da1f2;
+          color: white;
+        }
+      }
+      
+      i {
+        font-size: 1.2rem;
+      }
+    }
+  }
+  
+  // Форма за контакт
+  .contact-form-card {
+    border: none;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-body {
+      padding: 2rem;
+    }
+    
+    .card-title {
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: $gray-800;
+      position: relative;
+      
+      &:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -10px;
+        width: 50px;
+        height: 3px;
+        background-color: $primary;
+      }
+    }
+  }
+  
+  .form-control {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid $gray-300;
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+    
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 0.25rem rgba($primary, 0.25);
+    }
+  }
+  
+  .form-label {
+    font-weight: 500;
+    color: $gray-700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .btn-submit {
+    background: linear-gradient(135deg, $primary, darken($primary, 10%));
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba($primary, 0.3);
+    
+    &:hover {
+      background: linear-gradient(135deg, darken($primary, 5%), darken($primary, 15%));
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba($primary, 0.4);
+    }
+    
+    &:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 5px rgba($primary, 0.2);
+    }
+    
+    .spinner-border {
+      width: 1.2rem;
+      height: 1.2rem;
+      margin-right: 0.5rem;
+    }
+  }
+  
+  // Карта
+  .map-container {
+    height: 450px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    
+    &-wrapper {
+      margin-top: 2rem;
+    }
+  }
+  
+  // Анимации за секциите
+  .animated-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+    
+    &.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  // Уведомления
+  .alert-float {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    min-width: 300px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    animation: floatIn 0.3s ease forwards;
+  }
+  
+  // Респонсивност
+  @media (max-width: 767px) {
+    .contact-hero {
+      padding: 3rem 0;
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      p {
+        font-size: 1rem;
+      }
+    }
+    
+    .contact-info-item {
+      margin-bottom: 1.2rem;
+    }
+    
+    .contact-info-icon {
+      width: 50px;
+      height: 50px;
+      font-size: 1.2rem;
+    }
+    
+    .map-container {
+      height: 300px;
+    }
+  }
+} 

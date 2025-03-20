@@ -5,218 +5,205 @@
 {% block stylesheets %}
 {{ parent() }}
 <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
-<style>
-    .contact-info-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1.5rem;
-    }
-    .contact-info-icon {
-        width: 50px;
-        height: 50px;
-        background-color: var(--bs-primary);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 1rem;
-        font-size: 1.25rem;
-    }
-    .contact-info-content h5 {
-        margin-bottom: 0.25rem;
-    }
-    .contact-info-content p {
-        margin-bottom: 0;
-        color: var(--bs-gray-600);
-    }
-    .map-container {
-        height: 400px;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-</style>
+{{ encore_entry_link_tags('contact-index') }}
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid px-4 py-5">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="h2">{{ translations.contact.title }}</h1>
-            <div class="heading-divider"></div>
+<div class="contact-page">
+    <!-- Hero Section -->
+    <section class="contact-hero">
+        <div class="container">
+            <h1 class="mb-2">{{ translations.contact.title }}</h1>
+            <p>{{ translations.contact.subtitle|default('Свържете се с нас за повече информация относно нашите имоти и услуги.') }}</p>
         </div>
-    </div>
+    </section>
 
-    <div class="row g-4">
-        <!-- Контактна информация -->
-        <div class="col-lg-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">{{ translations.contact.info }}</h4>
-                    
-                    <div class="contact-info-item">
-                        <div class="contact-info-icon">
-                            <i class="fas fa-map-marker-alt"></i>
+    <div class="container">
+        <div class="row g-4">
+            <!-- Контактна информация -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm contact-info-card animated-section">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">{{ translations.contact.info }}</h4>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h5>{{ translations.contact.address }}</h5>
+                                <p>{{ contact.address }}</p>
+                            </div>
                         </div>
-                        <div class="contact-info-content">
-                            <h5>{{ translations.contact.address }}</h5>
-                            <p>{{ contact.address }}</p>
-                        </div>
-                    </div>
 
-                    <div class="contact-info-item">
-                        <div class="contact-info-icon">
-                            <i class="fas fa-phone"></i>
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h5>{{ translations.contact.phone }}</h5>
+                                <p>
+                                    <a href="tel:{{ contact.phone }}" class="text-decoration-none">
+                                        {{ contact.phone }}
+                                    </a>
+                                </p>
+                            </div>
                         </div>
-                        <div class="contact-info-content">
-                            <h5>{{ translations.contact.phone }}</h5>
-                            <p>
-                                <a href="tel:{{ contact.phone }}" class="text-decoration-none">
-                                    {{ contact.phone }}
+
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h5>{{ translations.contact.email }}</h5>
+                                <p>
+                                    <a href="mailto:{{ contact.email }}" class="text-decoration-none">
+                                        {{ contact.email }}
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+
+                        {% if contact.working_hours %}
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h5>{{ translations.contact.working_hours }}</h5>
+                                <p>{{ contact.working_hours }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if contact.social_media %}
+                        <div class="mt-4">
+                            <h5 class="mb-3">{{ translations.contact.follow_us }}</h5>
+                            <div class="social-media-links">
+                                {% if contact.social_media.facebook %}
+                                <a href="{{ contact.social_media.facebook }}" 
+                                   target="_blank"
+                                   class="social-btn facebook">
+                                    <i class="fab fa-facebook-f"></i>
                                 </a>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="contact-info-item">
-                        <div class="contact-info-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="contact-info-content">
-                            <h5>{{ translations.contact.email }}</h5>
-                            <p>
-                                <a href="mailto:{{ contact.email }}" class="text-decoration-none">
-                                    {{ contact.email }}
+                                {% endif %}
+                                
+                                {% if contact.social_media.linkedin %}
+                                <a href="{{ contact.social_media.linkedin }}" 
+                                   target="_blank"
+                                   class="social-btn linkedin">
+                                    <i class="fab fa-linkedin-in"></i>
                                 </a>
-                            </p>
+                                {% endif %}
+                                
+                                {% if contact.social_media.twitter %}
+                                <a href="{{ contact.social_media.twitter }}" 
+                                   target="_blank"
+                                   class="social-btn twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                {% endif %}
+                            </div>
                         </div>
+                        {% endif %}
                     </div>
-
-                    {% if contact.working_hours %}
-                    <div class="contact-info-item">
-                        <div class="contact-info-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="contact-info-content">
-                            <h5>{{ translations.contact.working_hours }}</h5>
-                            <p>{{ contact.working_hours }}</p>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% if contact.social_media %}
-                    <div class="mt-4">
-                        <h5 class="mb-3">{{ translations.contact.follow_us }}</h5>
-                        <div class="d-flex gap-2">
-                            {% if contact.social_media.facebook %}
-                            <a href="{{ contact.social_media.facebook }}" 
-                               target="_blank"
-                               class="btn btn-outline-primary">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            {% endif %}
-                            
-                            {% if contact.social_media.linkedin %}
-                            <a href="{{ contact.social_media.linkedin }}" 
-                               target="_blank"
-                               class="btn btn-outline-primary">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            {% endif %}
-                            
-                            {% if contact.social_media.twitter %}
-                            <a href="{{ contact.social_media.twitter }}" 
-                               target="_blank"
-                               class="btn btn-outline-primary">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <!-- Контактна форма -->
-        <div class="col-lg-8">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">{{ translations.contact.form_title }}</h4>
-                    
-                    <form id="contactForm" onsubmit="return submitContactForm(event)">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">{{ translations.contact.form.name }}</label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           name="name" 
-                                           required>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">{{ translations.contact.form.email }}</label>
-                                    <input type="email" 
-                                           class="form-control" 
-                                           name="email" 
-                                           required>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">{{ translations.contact.form.phone }}</label>
-                                    <input type="tel" 
-                                           class="form-control" 
-                                           name="phone">
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">{{ translations.contact.form.subject }}</label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           name="subject" 
-                                           required>
-                                </div>
-                            </div>
-                            
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label class="form-label">{{ translations.contact.form.message }}</label>
-                                    <textarea class="form-control" 
-                                              name="message" 
-                                              rows="5" 
-                                              required></textarea>
-                                </div>
-                            </div>
-                            
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ translations.contact.form.submit }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
 
-            <!-- Карта -->
-            {% if contact.map_coordinates %}
-            <div class="card shadow-sm mt-4">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">
-                        <i class="bi bi-geo-alt-fill"></i> 
-                        {{ translations.contact.location_map }}
-                    </h4>
-                    <div class="map-container" id="contact-map"></div>
+            <!-- Контактна форма -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm contact-form-card animated-section">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ translations.contact.form_title }}</h4>
+                        
+                        <form id="contactForm" 
+                              data-action="{{ path('contact_submit') }}">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">{{ translations.contact.form.name }}</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               name="name" 
+                                               required>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">{{ translations.contact.form.email }}</label>
+                                        <input type="email" 
+                                               class="form-control" 
+                                               name="email" 
+                                               required>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">{{ translations.contact.form.phone }}</label>
+                                        <input type="tel" 
+                                               class="form-control" 
+                                               name="phone">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">{{ translations.contact.form.subject }}</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               name="subject" 
+                                               required>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label">{{ translations.contact.form.message }}</label>
+                                        <textarea class="form-control" 
+                                                  name="message" 
+                                                  rows="5" 
+                                                  required></textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary btn-submit">
+                                        {{ translations.contact.form.submit }}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
+
+                <!-- Карта -->
+                {% if contact.map_coordinates %}
+                <div class="card shadow-sm mt-4 animated-section">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">
+                            <i class="fas fa-map-marked-alt me-2"></i>
+                            {{ translations.contact.location_map }}
+                        </h4>
+                        <div class="map-container" id="contact-map"></div>
+                        
+                        <!-- Скрит елемент с данни за картата -->
+                        <div id="map-data" 
+                             data-map='{
+                                "latitude": {{ contact.map_coordinates.lat }},
+                                "longitude": {{ contact.map_coordinates.lng }},
+                                "companyName": "{{ contact.company_name|default('Industrial Properties')|escape('js') }}",
+                                "address": "{{ contact.address|escape('js') }}",
+                                "phone": "{{ contact.phone|escape('js') }}",
+                                "email": "{{ contact.email|escape('js') }}"
+                             }'
+                             data-api-key="{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}">
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
 </div>
@@ -228,115 +215,5 @@
 <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
 <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
 <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    {% if contact.map_coordinates %}
-    // Инициализиране на Here Maps
-    (function initializeContactMap() {
-        try {
-            // Създаваме Here Maps платформа с API ключа
-            const apiKey = "{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}";
-            
-            const platform = new H.service.Platform({
-                apiKey: apiKey
-            });
-            
-            // Създаваме слоеве
-            const defaultLayers = platform.createDefaultLayers();
-            
-            // Създаваме картата
-            const map = new H.Map(
-                document.getElementById('contact-map'),
-                defaultLayers.vector.normal.map,
-                {
-                    center: { 
-                        lat: {{ contact.map_coordinates.lat }}, 
-                        lng: {{ contact.map_coordinates.lng }} 
-                    },
-                    zoom: 15
-                }
-            );
-            
-            // Добавяме интерактивност и контроли
-            const ui = H.ui.UI.createDefault(map, defaultLayers);
-            const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-            
-            // Добавяме маркер за офиса
-            const marker = new H.map.Marker({ 
-                lat: {{ contact.map_coordinates.lat }}, 
-                lng: {{ contact.map_coordinates.lng }} 
-            });
-            
-            // Създаваме балон с информация за офиса - по-компактен
-            marker.setData(`
-                <div style="padding: 8px; min-width: 150px; max-width: 200px;">
-                    <h5 style="font-size: 14px; margin-bottom: 5px;">{{ contact.company_name|default('Industrial Properties')|escape('js') }}</h5>
-                    <p style="margin-bottom: 5px; font-size: 12px;">{{ contact.address|escape('js') }}</p>
-                    <p style="margin-bottom: 3px; font-size: 12px;"><strong>Тел:</strong> {{ contact.phone|escape('js') }}</p>
-                    <p style="margin-bottom: 0; font-size: 12px;"><strong>Имейл:</strong> {{ contact.email|escape('js') }}</p>
-                </div>
-            `);
-            
-            // Добавяме маркера към картата
-            map.addObject(marker);
-            
-            // Добавяме слушател за клик върху маркера
-            marker.addEventListener('tap', function(evt) {
-                const bubble = new H.ui.InfoBubble(
-                    evt.target.getGeometry(), 
-                    { content: evt.target.getData() }
-                );
-                ui.addBubble(bubble);
-            });
-            
-            // Отваряме балона автоматично
-            setTimeout(function() {
-                const bubble = new H.ui.InfoBubble(
-                    marker.getGeometry(), 
-                    { content: marker.getData() }
-                );
-                ui.addBubble(bubble);
-            }, 1000);
-            
-            // Ресайз на картата при промяна на размера на прозореца
-            window.addEventListener('resize', () => {
-                map.getViewPort().resize();
-            });
-        } catch (error) {
-            console.error('Грешка при инициализиране на Here Maps:', error);
-            document.getElementById('contact-map').innerHTML = '<div class="alert alert-danger">Грешка при зареждане на картата</div>';
-        }
-    })();
-    {% endif %}
-
-    function submitContactForm(event) {
-        event.preventDefault();
-        const form = event.target;
-        const data = new FormData(form);
-        
-        fetch('{{ path('contact_submit') }}', {
-            method: 'POST',
-            body: JSON.stringify(Object.fromEntries(data)),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error);
-            } else {
-                alert('{{ translations.contact.form.success }}');
-                form.reset();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('{{ translations.contact.form.error }}');
-        });
-        
-        return false;
-    }
-});
-</script>
+{{ encore_entry_script_tags('contact-index') }}
 {% endblock %} 

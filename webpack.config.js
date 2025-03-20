@@ -17,6 +17,7 @@ Encore
     .addEntry('auction-index', './assets/js/auction-index.js')
     .addEntry('auction-show', './assets/js/auction-show.js')
     .addEntry('renting-index', './assets/js/renting/index.js')
+    .addEntry('contact-index', './assets/js/contact/index.js')
     .splitEntryChunks()
     .enableSingleRuntimeChunk()
     .cleanupOutputBeforeBuild()
