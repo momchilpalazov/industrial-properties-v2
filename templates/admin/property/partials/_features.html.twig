@@ -1,0 +1,17 @@
+<div class="col-12">
+    <label class="form-label">{{ form_label(form.features) }}</label>
+    <div class="features-wrapper mb-3">
+        <ul class="features-collection" 
+            data-prototype="{{ form_widget(form.features.vars.prototype)|e('html_attr') }}">
+            {% for feature in form.features %}
+                <li class="feature-item">
+                    {{ form_widget(feature) }}
+                    <i class="bi bi-x-circle remove-feature"></i>
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="button" class="btn btn-outline-secondary btn-sm add-feature">
+            <i class="bi bi-plus"></i> Добави характеристика
+        </button>
+    </div>
+</div> 

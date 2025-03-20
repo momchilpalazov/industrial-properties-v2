@@ -10,10 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
-    <!-- CKEditor -->
-    <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
+    <!-- Admin CSS -->
+    {{ encore_entry_link_tags('admin') }}
     {% block stylesheets %}{% endblock %}
 
     <style>
@@ -99,204 +97,28 @@
     </style>
 </head>
 <body>
-    <!-- Top Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ path('admin_dashboard') }}">Industrial Properties</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i>
-                            {{ app.user.name }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Изход</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include 'admin/shared/header.html.twig' %}
 
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_dashboard' %}active{% endif %}" 
-                               href="{{ path('admin_dashboard') }}">
-                                <i class="bi bi-speedometer2"></i>
-                                Табло
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_statistics' %}active{% endif %}" 
-                               href="{{ path('admin_statistics') }}">
-                                <i class="bi bi-graph-up"></i>
-                                Статистика
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_property' and not app.request.get('_route') starts with 'admin_property_type' %}active{% endif %}" 
-                               href="{{ path('admin_property_index') }}">
-                                <i class="bi bi-building"></i>
-                                Имоти
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_property_type' %}active{% endif %}" 
-                               href="{{ path('admin_property_type_index') }}">
-                                <i class="bi bi-tags"></i>
-                                Типове имоти
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_inquiry' %}active{% endif %}" 
-                               href="{{ path('admin_property_inquiries') }}">
-                                <i class="bi bi-envelope"></i>
-                                Запитвания
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_offer' %}active{% endif %}" 
-                               href="{{ path('admin_offer_index') }}">
-                                <i class="bi bi-file-earmark-text"></i>
-                                Оферти
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_promotion' %}active{% endif %}" 
-                               href="{{ path('admin_promotion_index') }}">
-                                <i class="bi bi-star"></i>
-                                Промоции
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_blog' %}active{% endif %}" 
-                               href="{{ path('admin_blog_index') }}">
-                                <i class="bi bi-file-text"></i>
-                                {{ 'nav.admin.blog'|trans }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_faq' %}active{% endif %}" 
-                               href="{{ path('admin_faq_index') }}">
-                                <i class="bi bi-question-circle"></i>
-                                {{ 'nav.admin.faq'|trans }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_user' %}active{% endif %}" 
-                               href="{{ path('admin_user_index') }}">
-                                <i class="bi bi-people"></i>
-                                Потребители
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_social_posts' %}active{% endif %}" 
-                               href="{{ path('admin_social_posts') }}">
-                                <i class="bi bi-share"></i>
-                                Социални публикации
-                            </a>
-                        </li>
-                         <li class="nav-item">
-                                    <a class="nav-link {% if app.request.get('_route') == 'admin_payment_settings' %}active{% endif %}" 
-                                       href="{{ path('admin_payment_settings') }}">
-                                        <i class="bi bi-credit-card"></i>
-                                        Настройки за плащане
-                                    </a>
-                                </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_settings' %}active{% endif %}" 
-                               href="{{ path('admin_settings') }}">
-                                <i class="bi bi-gear"></i>
-                                Настройки
-                            </a>
-                            
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_footer' %}active{% endif %}" 
-                               href="{{ path('admin_footer') }}">
-                                <i class="bi bi-layout-text-window-reverse"></i>
-                                Футър
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if app.request.get('_route') starts with 'admin_about' %}active{% endif %}" 
-                               href="{{ path('admin_about') }}">
-                                <i class="bi bi-file-text"></i>
-                                За нас
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            {% include 'admin/shared/sidebar.html.twig' %}
 
             <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="main-content">
-                    {% for label, messages in app.flashes %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-
+                    {% include 'admin/shared/alerts.html.twig' %}
                     {% block body %}{% endblock %}
                 </div>
             </main>
         </div>
     </div>
 
-    </div>
-
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="{{ asset('js/script.js') }}"></script>
+    <!-- Admin JS -->
+    {{ encore_entry_script_tags('admin') }}
     {% block javascripts %}{% endblock %}
-    
-    <script>
-        // Управление на подменютата
-        document.addEventListener('DOMContentLoaded', function() {
-            // Активиране на подменюто, ако текущият път съвпада с някой от елементите в подменюто
-            const currentPath = window.location.pathname;
-            const subMenuItems = document.querySelectorAll('.sidebar .nav-item ul .nav-link');
-            
-            subMenuItems.forEach(item => {
-                if (item.getAttribute('href') === currentPath) {
-                    const parentItem = item.closest('.nav-item');
-                    if (parentItem) {
-                        parentItem.classList.add('active');
-                    }
-                }
-            });
-            
-            // Показване на подменюто при клик върху родителския елемент
-            const menuItems = document.querySelectorAll('.sidebar .nav-item > .nav-link');
-            
-            menuItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    const hasSubmenu = this.nextElementSibling && this.nextElementSibling.tagName === 'UL';
-                    
-                    if (hasSubmenu) {
-                        e.preventDefault();
-                        const parentItem = this.parentElement;
-                        parentItem.classList.toggle('active');
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 </html> 

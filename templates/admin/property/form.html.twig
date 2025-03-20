@@ -5,38 +5,7 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" type="text/css" />
-    <style>
-        .features-collection {
-            list-style: none;
-            padding: 0;
-        }
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .remove-feature {
-            color: var(--bs-danger);
-            cursor: pointer;
-        }
-        #locationMap {
-            width: 100%;
-            height: 400px;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .coordinates-wrapper {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .coordinates-wrapper .form-group {
-            flex: 1;
-        }
-    </style>
+    {{ encore_entry_link_tags('admin-property-form') }}
 {% endblock %}
 
 {% block body %}
@@ -66,36 +35,10 @@
                     <div class="col-12">
                         {{ form_row(form.descriptionEn) }}
                     </div>
-                    <div class="col-12">
-                        <h5 class="mb-3">Локация</h5>
-                        {{ form_row(form.location) }}
-                        
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Точен адрес (незадължително)</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="address" placeholder="Въведете точен адрес">
-                                <button class="btn btn-outline-secondary" type="button" id="geocodeAddress">
-                                    <i class="bi bi-search"></i> Намери координати
-                                </button>
-                            </div>
-                            <small class="form-text text-muted">Въведете точен адрес в Европа, за да получите автоматично координатите или въведете координатите ръчно</small>
-                            <div id="geocodeResults" class="mt-2" style="display: none;">
-                                <p class="mb-1">Намерени резултати:</p>
-                                <ul id="geocodeResultsList" class="list-group"></ul>
-                            </div>
-                        </div>
-                        
-                        <div id="locationMap"></div>
-                        
-                        <div class="coordinates-wrapper">
-                            <div class="form-group">
-                                {{ form_row(form.latitude) }}
-                            </div>
-                            <div class="form-group">
-                                {{ form_row(form.longitude) }}
-                            </div>
-                        </div>
-                    </div>
+                    
+                    <!-- Локация и карта -->
+                    {% include 'admin/property/partials/_location_map.html.twig' %}
+                    
                     <div class="col-md-6">
                         {{ form_row(form.type) }}
                     </div>
@@ -107,23 +50,7 @@
                     </div>
 
                     <!-- Характеристики -->
-                    <div class="col-12">
-                        <label class="form-label">{{ form_label(form.features) }}</label>
-                        <div class="features-wrapper mb-3">
-                            <ul class="features-collection" 
-                                data-prototype="{{ form_widget(form.features.vars.prototype)|e('html_attr') }}">
-                                {% for feature in form.features %}
-                                    <li class="feature-item">
-                                        {{ form_widget(feature) }}
-                                        <i class="bi bi-x-circle remove-feature"></i>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                            <button type="button" class="btn btn-outline-secondary btn-sm add-feature">
-                                <i class="bi bi-plus"></i> Добави характеристика
-                            </button>
-                        </div>
-                    </div>
+                    {% include 'admin/property/partials/_features.html.twig' %}
 
                     <!-- Статус -->
                     <div class="col-md-6">
@@ -150,319 +77,21 @@
     <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js" type="text/javascript" charset="utf-8"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js" type="text/javascript" charset="utf-8"></script>
-    <script>
-        // Проверка за успешно зареждане на скриптовете за Here Maps
-        function checkHereMapsScriptsLoaded() {
-            return typeof H !== 'undefined' && 
-                   typeof H.service !== 'undefined' && 
-                   typeof H.service.Platform !== 'undefined' && 
-                   typeof H.Map !== 'undefined' && 
-                   typeof H.mapevents !== 'undefined' && 
-                   typeof H.ui !== 'undefined';
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const featuresCollection = document.querySelector('.features-collection');
-            const addFeatureButton = document.querySelector('.add-feature');
-            let featureIndex = featuresCollection.children.length;
-
-            // Add new feature
-            addFeatureButton.addEventListener('click', function() {
-                const prototype = featuresCollection.dataset.prototype;
-                const newFeature = prototype.replace(/__name__/g, featureIndex);
-                const li = document.createElement('li');
-                li.className = 'feature-item';
-                li.innerHTML = newFeature + 
-                    '<i class="bi bi-x-circle remove-feature"></i>';
-                featuresCollection.appendChild(li);
-                featureIndex++;
-            });
-
-            // Remove feature
-            featuresCollection.addEventListener('click', function(e) {
-                if (e.target.matches('.remove-feature')) {
-                    e.target.closest('.feature-item').remove();
-                }
-            });
-
-            // Form validation
-            const form = document.querySelector('form');
-            form.addEventListener('submit', function(event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                form.classList.add('was-validated');
-            });
-
-            // Here Maps initialization
-            console.log('Here Maps API Key:', '{{ here_maps_api_key }}');
-            console.log('Here Maps API Key Length:', '{{ here_maps_api_key|length }}');
-            
-            try {
-                // Проверка за зареждане на Here Maps API
-                if (!checkHereMapsScriptsLoaded()) {
-                    throw new Error('Here Maps API не е зареден правилно. Моля, проверете връзката с интернет.');
-                }
-                
-                // Проверка за валидност на API ключа
-                if (!('{{ here_maps_api_key }}') || '{{ here_maps_api_key }}'.length < 10) {
-                    throw new Error('Невалиден API ключ за Here Maps. Моля, проверете конфигурацията.');
-                }
-                
-                // Инициализация на Here Maps платформата
-                const platform = new H.service.Platform({
-                    apiKey: '{{ here_maps_api_key }}'
-                });
-
-                // Проверка за успешна инициализация на платформата
-                if (!platform) {
-                    throw new Error('Неуспешна инициализация на Here Maps платформата.');
-                }
-
-                const defaultLayers = platform.createDefaultLayers();
-                
-                // Проверка за успешна инициализация на слоевете
-                if (!defaultLayers || !defaultLayers.raster || !defaultLayers.raster.normal || !defaultLayers.raster.normal.map) {
-                    throw new Error('Неуспешна инициализация на слоевете на Here Maps.');
-                }
-                
-                // Initialize map with default or existing coordinates
-                const latitudeField = document.getElementById('{{ form.latitude.vars.id }}');
-                const longitudeField = document.getElementById('{{ form.longitude.vars.id }}');
-                
-                // Проверка за съществуване на полетата за координати
-                if (!latitudeField || !longitudeField) {
-                    throw new Error('Полетата за координати не съществуват.');
-                }
-                
-                // Проверка за съществуване на полето за местоположение
-                const locationField = document.getElementById('{{ form.location.vars.id }}');
-                if (!locationField) {
-                    throw new Error('Полето за местоположение не съществува.');
-                }
-                
-                const latitude = latitudeField.value || 42.6977;
-                const longitude = longitudeField.value || 23.3219;
-                
-                console.log('Coordinates:', latitude, longitude);
-                
-                // Проверка за валидност на координатите
-                if (isNaN(parseFloat(latitude)) || isNaN(parseFloat(longitude))) {
-                    throw new Error('Невалидни координати. Използвам координати по подразбиране.');
-                }
-                
-                // Проверка за съществуване на елемента за картата
-                const mapElement = document.getElementById('locationMap');
-                if (!mapElement) {
-                    throw new Error('Елементът за картата не съществува.');
-                }
-                
-                const map = new H.Map(
-                    mapElement,
-                    defaultLayers.raster.normal.map,
-                    {
-                        zoom: 13,
-                        center: { lat: parseFloat(latitude), lng: parseFloat(longitude) }
-                    }
-                );
-                
-                // Проверка за успешна инициализация на картата
-                if (!map) {
-                    throw new Error('Неуспешна инициализация на картата.');
-                }
-                
-                // Проверка за успешно зареждане на картата
-                map.addEventListener('mapviewchangeend', function() {
-                    console.log('Картата е заредена успешно.');
-                });
-
-                // Enable map interaction
-                const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-                const ui = H.ui.UI.createDefault(map, defaultLayers);
-                
-                // Проверка за успешна инициализация на поведението и потребителския интерфейс
-                if (!behavior || !ui) {
-                    throw new Error('Неуспешна инициализация на поведението или потребителския интерфейс на картата.');
-                }
-
-                // Add marker
-                let marker = new H.map.Marker({ lat: parseFloat(latitude), lng: parseFloat(longitude) });
-                map.addObject(marker);
-                
-                // Проверка за успешно добавяне на маркера
-                if (!marker) {
-                    throw new Error('Неуспешно създаване на маркера.');
-                }
-
-                // Update marker and coordinates on map click
-                map.addEventListener('tap', function(evt) {
-                    const coords = map.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY);
-                    
-                    // Update marker position
-                    map.removeObject(marker);
-                    marker = new H.map.Marker(coords);
-                    map.addObject(marker);
-
-                    // Update form fields
-                    latitudeField.value = coords.lat.toFixed(6);
-                    longitudeField.value = coords.lng.toFixed(6);
-                });
-
-                // Geocoding service
-                const geocoder = platform.getSearchService();
-                const geocodeButton = document.getElementById('geocodeAddress');
-                const addressInput = document.getElementById('address');
-                
-                // Проверка за успешна инициализация на геокодиращата услуга
-                if (!geocoder) {
-                    throw new Error('Неуспешна инициализация на геокодиращата услуга.');
-                }
-                
-                // Проверка за съществуване на бутона и полето за адрес
-                if (!geocodeButton || !addressInput) {
-                    throw new Error('Елементите за геокодиране не съществуват.');
-                }
-                
-                // Проверка за съществуване на елемента за резултатите от геокодирането
-                const geocodeResults = document.getElementById('geocodeResults');
-                const geocodeResultsList = document.getElementById('geocodeResultsList');
-                if (!geocodeResults || !geocodeResultsList) {
-                    throw new Error('Елементите за резултатите от геокодирането не съществуват.');
-                }
-                
-                geocodeButton.addEventListener('click', function() {
-                    const address = addressInput.value;
-                    if (!address) {
-                        alert('Моля, въведете адрес');
-                        return;
-                    }
-
-                    // Показваме индикатор за зареждане
-                    geocodeButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Търсене...';
-                    geocodeButton.disabled = true;
-
-                    geocoder.geocode({
-                        q: address,
-                        in: 'countryCode:BGR',
-                        limit: 5
-                    }, (result) => {
-                        console.log('Пълен резултат от геокодиране:', result);
-                        
-                        if (result.items && result.items.length > 0) {
-                            // Показваме първия резултат на картата
-                            const coords = result.items[0].position;
-                            
-                            // Update map center and marker
-                            map.setCenter(coords);
-                            map.setZoom(15);
-                            map.removeObject(marker);
-                            marker = new H.map.Marker(coords);
-                            map.addObject(marker);
-
-                            // Update form fields
-                            latitudeField.value = coords.lat.toFixed(6);
-                            longitudeField.value = coords.lng.toFixed(6);
-
-                            // Update location field if empty
-                            if (!locationField.value) {
-                                const address = result.items[0].address;
-                                const locationName = address.city || address.county || address.state || '';
-                                locationField.value = locationName;
-                            }
-                            
-                            console.log('Geocoding успешен:', result.items[0]);
-                            
-                            // Показваме всички резултати, ако има повече от един
-                            if (result.items.length > 1) {
-                                // Изчистваме предишните резултати
-                                geocodeResultsList.innerHTML = '';
-                                
-                                // Добавяме всеки резултат като опция
-                                result.items.forEach((item, index) => {
-                                    const li = document.createElement('li');
-                                    li.className = 'list-group-item list-group-item-action' + (index === 0 ? ' active' : '');
-                                    
-                                    // Форматираме адреса
-                                    const addr = item.address;
-                                    const formattedAddress = [
-                                        addr.label || '',
-                                        addr.city ? 'Град: ' + addr.city : '',
-                                        addr.county ? 'Област: ' + addr.county : '',
-                                        addr.postalCode ? 'Пощенски код: ' + addr.postalCode : ''
-                                    ].filter(Boolean).join(', ');
-                                    
-                                    li.innerHTML = formattedAddress;
-                                    
-                                    // Добавяме обработчик на събития
-                                    li.addEventListener('click', function() {
-                                        // Премахваме активния клас от всички елементи
-                                        geocodeResultsList.querySelectorAll('li').forEach(el => el.classList.remove('active'));
-                                        // Добавяме активен клас към текущия елемент
-                                        this.classList.add('active');
-                                        
-                                        // Актуализираме картата и полетата
-                                        const itemCoords = item.position;
-                                        map.setCenter(itemCoords);
-                                        map.removeObject(marker);
-                                        marker = new H.map.Marker(itemCoords);
-                                        map.addObject(marker);
-                                        
-                                        // Актуализираме полетата за координати
-                                        latitudeField.value = itemCoords.lat.toFixed(6);
-                                        longitudeField.value = itemCoords.lng.toFixed(6);
-                                        
-                                        // Актуализираме полето за местоположение, ако е празно
-                                        if (!locationField.value) {
-                                            const itemAddr = item.address;
-                                            const itemLocationName = itemAddr.city || itemAddr.county || itemAddr.state || '';
-                                            locationField.value = itemLocationName;
-                                        }
-                                    });
-                                    
-                                    geocodeResultsList.appendChild(li);
-                                });
-                                
-                                // Показваме контейнера с резултати
-                                geocodeResults.style.display = 'block';
-                            } else {
-                                // Скриваме контейнера с резултати, ако има само един резултат
-                                geocodeResults.style.display = 'none';
-                            }
-                        } else {
-                            console.error('Не са намерени резултати за адрес:', address);
-                            alert('Не можахме да намерим координатите за този адрес. Моля, опитайте с по-точен адрес или въведете координатите ръчно.');
-                            // Скриваме контейнера с резултати
-                            geocodeResults.style.display = 'none';
-                        }
-                        
-                        // Възстановяваме бутона
-                        geocodeButton.innerHTML = '<i class="bi bi-search"></i> Намери координати';
-                        geocodeButton.disabled = false;
-                    }, (error) => {
-                        console.error('Грешка при геокодиране:', error);
-                        alert('Възникна грешка при търсенето на координати: ' + error.message);
-                        
-                        // Възстановяваме бутона
-                        geocodeButton.innerHTML = '<i class="bi bi-search"></i> Намери координати';
-                        geocodeButton.disabled = false;
-                    });
-                });
-
-                // Handle Enter key in address input
-                addressInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        geocodeButton.click();
-                    }
-                });
-
-                // Handle window resize
-                window.addEventListener('resize', () => map.getViewPort().resize());
-            } catch (error) {
-                console.error('Error initializing Here Maps:', error);
-                document.getElementById('locationMap').innerHTML = '<div class="alert alert-danger">Грешка при инициализиране на картата: ' + error.message + '</div>';
-            }
-        });
-    </script>
+    
+    <!-- Предаване на необходимите данни като data атрибути -->
+    <div id="map-config" 
+        data-api-key="{{ here_maps_api_key }}"
+        data-latitude="{{ form.latitude.vars.value|default(42.6977) }}"
+        data-longitude="{{ form.longitude.vars.value|default(23.3219) }}"
+        data-latitude-field="{{ form.latitude.vars.id }}"
+        data-longitude-field="{{ form.longitude.vars.id }}"
+        data-location-field="{{ form.location.vars.id }}"
+        data-geocode-button="geocodeAddress"
+        data-geocode-input="address"
+        data-geocode-results="geocodeResults"
+        data-geocode-results-list="geocodeResultsList"
+        data-map-element="locationMap">
+    </div>
+    
+    {{ encore_entry_script_tags('admin-property-form') }}
 {% endblock %} 

@@ -1,0 +1,110 @@
+.about-form {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.form-section {
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-section-title {
+    color: #2c3e50;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.nav-tabs {
+    border-bottom: 2px solid #e9ecef;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+    padding: 0.75rem 1rem;
+    margin-bottom: -2px;
+}
+
+.nav-tabs .nav-link.active {
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.form-check-input:checked {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.tab-content {
+    padding: 1.5rem 0;
+    background: transparent;
+    border: none;
+}
+
+.image-preview {
+    position: relative;
+    display: inline-block;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    background: #fff;
+}
+
+.image-preview img {
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: contain;
+    display: block;
+}
+
+.delete-image {
+    position: absolute !important;
+    top: -12px !important;
+    right: -12px !important;
+    width: 25px !important;
+    height: 25px !important;
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+    border-radius: 50% !important;
+    font-size: 18px !important;
+    line-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+    z-index: 1000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background-color 0.2s !important;
+}
+
+.delete-image:hover {
+    background-color: #c82333 !important;
+}
+
+.image-upload-container {
+    margin-top: 10px;
+    position: relative;
+} 

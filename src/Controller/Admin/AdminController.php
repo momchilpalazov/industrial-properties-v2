@@ -72,7 +72,7 @@ class AdminController extends AbstractController
     {
         $apiSettings = $this->apiSettingsRepository->getSettings();
 
-        return $this->render('admin/settings.html.twig', [
+        return $this->render('admin/settings/general.html.twig', [
             'settings' => [
                 'site_name' => 'Industrial Properties',
                 'admin_email' => 'admin@example.com',
@@ -175,7 +175,7 @@ class AdminController extends AbstractController
     {
         $settings = $this->aboutSettingsRepository->getSettings();
 
-        return $this->render('admin/about.html.twig', [
+        return $this->render('admin/settings/about.html.twig', [
             'settings' => [
                 'title_bg' => $settings->getTitleBg(),
                 'title_en' => $settings->getTitleEn(),

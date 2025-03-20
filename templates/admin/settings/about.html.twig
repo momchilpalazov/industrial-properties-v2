@@ -4,118 +4,13 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        .about-form {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .form-section {
-            background: #fff;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-section-title {
-            color: #2c3e50;
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .nav-tabs {
-            border-bottom: 2px solid #e9ecef;
-        }
-        
-        .nav-tabs .nav-link {
-            border: none;
-            color: #6c757d;
-            padding: 0.75rem 1rem;
-            margin-bottom: -2px;
-        }
-        
-        .nav-tabs .nav-link.active {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-        }
-        
-        .form-control:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-        }
-        
-        .btn-primary {
-            background-color: #3498db;
-            border-color: #3498db;
-        }
-        
-        .btn-primary:hover {
-            background-color: #2980b9;
-            border-color: #2980b9;
-        }
-        
-        .form-check-input:checked {
-            background-color: #3498db;
-            border-color: #3498db;
-        }
-        
-        .tab-content {
-            padding: 1.5rem 0;
-            background: transparent;
-            border: none;
-        }
+    {{ encore_entry_link_tags('admin-about') }}
+{% endblock %}
 
-        .image-preview {
-            position: relative;
-            display: inline-block;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 5px;
-            background: #fff;
-        }
-        
-        .image-preview img {
-            max-width: 200px;
-            max-height: 200px;
-            object-fit: contain;
-            display: block;
-        }
-        
-        .delete-image {
-            position: absolute !important;
-            top: -12px !important;
-            right: -12px !important;
-            width: 25px !important;
-            height: 25px !important;
-            background-color: #dc3545 !important;
-            color: #ffffff !important;
-            border: 2px solid #ffffff !important;
-            border-radius: 50% !important;
-            font-size: 18px !important;
-            line-height: 0 !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            cursor: pointer !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
-            z-index: 1000 !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            transition: background-color 0.2s !important;
-        }
-        
-        .delete-image:hover {
-            background-color: #c82333 !important;
-        }
-        
-        .image-upload-container {
-            margin-top: 10px;
-            position: relative;
-        }
-    </style>
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
+    {{ encore_entry_script_tags('admin-about') }}
 {% endblock %}
 
 {% block body %}
@@ -484,60 +379,4 @@
         </form>
     </div>
 </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация на CKEditor
-            const editors = ['content_bg', 'content_en', 'content_de', 'content_ru'];
-            
-            editors.forEach(function(editorId) {
-                ClassicEditor
-                    .create(document.querySelector('#' + editorId), {
-                        toolbar: [
-                            'heading',
-                            '|',
-                            'bold',
-                            'italic',
-                            'link',
-                            'bulletedList',
-                            'numberedList',
-                            'blockQuote',
-                            '|',
-                            'undo',
-                            'redo'
-                        ],
-                        heading: {
-                            options: [
-                                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-                                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-                                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
-                            ]
-                        },
-                        language: editorId.slice(-2).toLowerCase()
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            });
-
-            // Функции за изтриване на снимки
-            window.deleteCompanyImage = function(button) {
-                const preview = button.closest('.image-preview');
-                const deleteInput = preview.querySelector('input[name="delete_company_image"]');
-                deleteInput.value = "1";
-                preview.style.display = 'none';
-            };
-
-            window.deleteTeamMemberImage = function(button, key) {
-                const preview = button.closest('.image-preview');
-                const deleteInput = preview.querySelector(`input[name="delete_team_image[${key}]"]`);
-                deleteInput.value = "1";
-                preview.style.display = 'none';
-            };
-        });
-    </script>
 {% endblock %} 

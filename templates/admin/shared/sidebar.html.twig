@@ -1,0 +1,113 @@
+<!-- Sidebar -->
+<nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+    <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_dashboard' %}active{% endif %}" 
+                   href="{{ path('admin_dashboard') }}">
+                    <i class="bi bi-speedometer2"></i>
+                    Табло
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_statistics' %}active{% endif %}" 
+                   href="{{ path('admin_statistics') }}">
+                    <i class="bi bi-graph-up"></i>
+                    Статистика
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_property' and not app.request.get('_route') starts with 'admin_property_type' %}active{% endif %}" 
+                   href="{{ path('admin_property_index') }}">
+                    <i class="bi bi-building"></i>
+                    Имоти
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_property_type' %}active{% endif %}" 
+                   href="{{ path('admin_property_type_index') }}">
+                    <i class="bi bi-tags"></i>
+                    Типове имоти
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_inquiry' %}active{% endif %}" 
+                   href="{{ path('admin_property_inquiries') }}">
+                    <i class="bi bi-envelope"></i>
+                    Запитвания
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_offer' %}active{% endif %}" 
+                   href="{{ path('admin_offer_index') }}">
+                    <i class="bi bi-file-earmark-text"></i>
+                    Оферти
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_promotion' %}active{% endif %}" 
+                   href="{{ path('admin_promotion_index') }}">
+                    <i class="bi bi-star"></i>
+                    Промоции
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_blog' %}active{% endif %}" 
+                   href="{{ path('admin_blog_index') }}">
+                    <i class="bi bi-file-text"></i>
+                    {{ 'nav.admin.blog'|trans }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_faq' %}active{% endif %}" 
+                   href="{{ path('admin_faq_index') }}">
+                    <i class="bi bi-question-circle"></i>
+                    {{ 'nav.admin.faq'|trans }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_user' %}active{% endif %}" 
+                   href="{{ path('admin_user_index') }}">
+                    <i class="bi bi-people"></i>
+                    Потребители
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_social_posts' %}active{% endif %}" 
+                   href="{{ path('admin_social_posts') }}">
+                    <i class="bi bi-share"></i>
+                    Социални публикации
+                </a>
+            </li>
+             <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') == 'admin_payment_settings' %}active{% endif %}" 
+                   href="{{ path('admin_payment_settings') }}">
+                    <i class="bi bi-credit-card"></i>
+                    Настройки за плащане
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_settings' %}active{% endif %}" 
+                   href="{{ path('admin_settings') }}">
+                    <i class="bi bi-gear"></i>
+                    Настройки
+                </a>
+                
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_footer' %}active{% endif %}" 
+                   href="{{ path('admin_footer') }}">
+                    <i class="bi bi-layout-text-window-reverse"></i>
+                    Футър
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_about' %}active{% endif %}" 
+                   href="{{ path('admin_about') }}">
+                    <i class="bi bi-file-text"></i>
+                    За нас
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav> 

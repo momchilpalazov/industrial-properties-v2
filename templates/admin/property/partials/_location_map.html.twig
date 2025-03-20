@@ -1,0 +1,30 @@
+<div class="col-12">
+    <h5 class="mb-3">Локация</h5>
+    {{ form_row(form.location) }}
+    
+    <div class="mb-3">
+        <label for="address" class="form-label">Точен адрес (незадължително)</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="address" placeholder="Въведете точен адрес">
+            <button class="btn btn-outline-secondary" type="button" id="geocodeAddress">
+                <i class="bi bi-search"></i> Намери координати
+            </button>
+        </div>
+        <small class="form-text text-muted">Въведете точен адрес в Европа, за да получите автоматично координатите или въведете координатите ръчно</small>
+        <div id="geocodeResults" class="mt-2" style="display: none;">
+            <p class="mb-1">Намерени резултати:</p>
+            <ul id="geocodeResultsList" class="list-group"></ul>
+        </div>
+    </div>
+    
+    <div id="locationMap"></div>
+    
+    <div class="coordinates-wrapper">
+        <div class="form-group">
+            {{ form_row(form.latitude) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.longitude) }}
+        </div>
+    </div>
+</div> 

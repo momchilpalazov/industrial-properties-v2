@@ -2,6 +2,11 @@
 
 {% block title %}Нов тип имот{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('admin-property-type') }}
+{% endblock %}
+
 {% block body %}
     <div class="container-fluid px-4">
         <h1 class="mt-4">Нов тип имот</h1>
@@ -123,4 +128,9 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('admin-property-type') }}
 {% endblock %} 

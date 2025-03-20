@@ -5,117 +5,14 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" type="text/css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <style>
-        .property-form {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .form-section {
-            background: #fff;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-section-title {
-            color: #2c3e50;
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .nav-tabs {
-            border-bottom: 2px solid #e9ecef;
-        }
-        
-        .nav-tabs .nav-link {
-            border: none;
-            color: #6c757d;
-            padding: 0.75rem 1rem;
-            margin-bottom: -2px;
-        }
-        
-        .nav-tabs .nav-link.active {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-        }
-        
         #locationMap {
             width: 100%;
             height: 400px;
             border-radius: 0.5rem;
             margin-bottom: 1rem;
             border: 1px solid #e9ecef;
-        }
-        
-        .coordinates-wrapper {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .coordinates-wrapper .form-group {
-            flex: 1;
-        }
-        
-        .form-control:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-        }
-        
-        .btn-primary {
-            background-color: #3498db;
-            border-color: #3498db;
-        }
-        
-        .btn-primary:hover {
-            background-color: #2980b9;
-            border-color: #2980b9;
-        }
-        
-        .form-check-input:checked {
-            background-color: #3498db;
-            border-color: #3498db;
-        }
-        
-        /* Стилове за автоматичното предлагане на адреси */
-        .address-suggestions {
-            position: absolute;
-            z-index: 1000;
-            width: 100%;
-            max-height: 300px;
-            overflow-y: auto;
-            background-color: white;
-            border: 1px solid #ced4da;
-            border-radius: 0.25rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
-        }
-        
-        .address-suggestion-item {
-            padding: 10px 15px;
-            cursor: pointer;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .address-suggestion-item:hover,
-        .address-suggestion-item.active {
-            background-color: #f8f9fa;
-        }
-        
-        .address-suggestion-item .main-text {
-            font-weight: 500;
-        }
-        
-        .address-suggestion-item .secondary-text {
-            font-size: 0.85em;
-            color: #6c757d;
-        }
-        
-        .address-input-wrapper {
-            position: relative;
         }
     </style>
 {% endblock %}
@@ -125,16 +22,14 @@
     <div class="property-form">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3 mb-0">Добавяне на нов имот</h1>
+            <div>
+                <a href="{{ path('admin_property_index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Назад към списъка
+                </a>
+            </div>
         </div>
 
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        {% endfor %}
+        {% include 'admin/shared/alerts.html.twig' %}
 
         {{ form_start(form) }}
         
@@ -234,11 +129,11 @@
             <div class="mb-3">
                 {{ form_label(form.address) }}
                 <div class="address-input-wrapper">
-                <div class="input-group">
+                    <div class="input-group">
                         {{ form_widget(form.address, {'attr': {'class': 'form-control', 'autocomplete': 'off'}}) }}
-                    <button class="btn btn-outline-primary" type="button" id="geocodeAddress">
-                        <i class="bi bi-search"></i> Намери координати
-                    </button>
+                        <button class="btn btn-outline-primary" type="button" id="geocodeAddress">
+                            <i class="bi bi-search"></i> Намери координати
+                        </button>
                     </div>
                     <div id="addressSuggestions" class="address-suggestions"></div>
                 </div>
@@ -250,15 +145,16 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-6">
+            <div id="locationMap"></div>
+
+            <div class="coordinates-wrapper">
+                <div class="form-group">
                     {{ form_row(form.latitude) }}
                 </div>
-                <div class="col-md-6">
+                <div class="form-group">
                     {{ form_row(form.longitude) }}
                 </div>
             </div>
-            <div id="locationMap" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
         </div>
 
         <!-- PDF Expose -->
@@ -292,9 +188,10 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // CKEditor initialization
@@ -334,370 +231,127 @@
                 }
             });
             
-            // Проверяваме дали елементите съществуват
-            const latitudeField = document.getElementById('property_latitude');
-            const longitudeField = document.getElementById('property_longitude');
-            const mapElement = document.getElementById('locationMap');
-            const addressField = document.getElementById('property_address');
-            const geocodeButton = document.getElementById('geocodeAddress');
-            const geocodeResults = document.getElementById('geocodeResults');
-            const geocodeResultsList = document.getElementById('geocodeResultsList');
-            const addressSuggestions = document.getElementById('addressSuggestions');
-            
-            if (!latitudeField || !longitudeField || !mapElement) {
-                console.error('Не са намерени необходимите елементи за картата');
-                return;
-            }
-            
-            // Задаваме начални стойности за координатите (център на България)
-            let latitude = latitudeField.value || 42.7339;
-            let longitude = longitudeField.value || 25.4858;
-            
-            // Инициализираме OpenStreetMap
-            const map = L.map('locationMap').setView([latitude, longitude], 8);
-            
-            // Добавяме слой с плочки от OpenStreetMap
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-            
-            // Добавяме маркер
-            let marker = L.marker([latitude, longitude], {
-                draggable: true
-            }).addTo(map);
-            
-            // Добавяме попъп с информация
-            marker.bindPopup(`<div>
-                <strong>Координати:</strong><br>
-                Lat: ${latitude}<br>
-                Lng: ${longitude}
-            </div>`);
-            
-            // Актуализираме координатите при преместване на маркера
-            marker.on('dragend', function(e) {
-                const position = marker.getLatLng();
-                latitudeField.value = position.lat.toFixed(6);
-                longitudeField.value = position.lng.toFixed(6);
-                
-                // Актуализираме попъпа
-                marker.setPopupContent(`<div>
-                    <strong>Координати:</strong><br>
-                    Lat: ${position.lat.toFixed(6)}<br>
-                    Lng: ${position.lng.toFixed(6)}
-                </div>`);
-                
-                marker.openPopup();
+            // Select2 initialization for type field
+            $('#property_type').select2({
+                theme: 'bootstrap-5',
+                placeholder: "Изберете тип имот",
+                allowClear: true,
+                templateResult: formatPropertyTypeOption
             });
             
-            // Функция за намиране на координати по адрес
-            function findCoordinates(address) {
+            function formatPropertyTypeOption(option) {
+                if (!option.id) {
+                    return option.text;
+                }
+                
+                const $option = $(option.element);
+                const isChild = $option.data('is-child');
+                
+                if (isChild) {
+                    return $('<span class="child-option"></span>').text(option.text);
+                }
+                
+                return option.text;
+            }
+
+            // Leaflet map initialization
+            const mapContainer = document.getElementById('locationMap');
+            
+            if (mapContainer) {
+                const map = L.map('locationMap').setView([42.6977, 23.3219], 13);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+                
+                let marker;
+                const latInput = document.getElementById('property_latitude');
+                const lngInput = document.getElementById('property_longitude');
+                
+                // Initialize marker if coordinates exist
+                if (latInput.value && lngInput.value) {
+                    const lat = parseFloat(latInput.value);
+                    const lng = parseFloat(lngInput.value);
+                    
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        map.setView([lat, lng], 15);
+                        marker = L.marker([lat, lng]).addTo(map);
+                    }
+                }
+                
+                // Update coordinates when clicking on map
+                map.on('click', function(e) {
+                    if (marker) {
+                        map.removeLayer(marker);
+                    }
+                    
+                    marker = L.marker(e.latlng).addTo(map);
+                    
+                    latInput.value = e.latlng.lat.toFixed(6);
+                    lngInput.value = e.latlng.lng.toFixed(6);
+                });
+                
+                // Geocode address
+                const geocodeButton = document.getElementById('geocodeAddress');
+                const addressInput = document.getElementById('property_address');
+                const geocodeResults = document.getElementById('geocodeResults');
+                const geocodeResultsList = document.getElementById('geocodeResultsList');
+                
+                geocodeButton.addEventListener('click', function() {
+                    const address = addressInput.value;
+                    
                     if (!address) {
-                        alert('Моля, въведете адрес');
                         return;
                     }
-
-                    // Показваме индикатор за зареждане
-                    geocodeButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Търсене...';
-                    geocodeButton.disabled = true;
-
-                // Използваме OpenStreetMap Nominatim API за геокодиране
-                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=5`)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Резултат от геокодиране:', data);
-                        
-                        if (data && data.length > 0) {
-                            // Показваме първия резултат на картата
-                            const firstResult = data[0];
-                            const coords = {
-                                lat: parseFloat(firstResult.lat),
-                                lng: parseFloat(firstResult.lon)
-                            };
+                    
+                    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=5`;
+                    
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            geocodeResultsList.innerHTML = '';
                             
-                            // Актуализираме полетата за координати
-                            latitudeField.value = coords.lat.toFixed(6);
-                            longitudeField.value = coords.lng.toFixed(6);
-
-                            // Актуализираме маркера и центрираме картата
-                            marker.setLatLng(coords);
-                            map.setView(coords, 15);
-                            
-                            // Актуализираме попъпа
-                            marker.setPopupContent(`<div>
-                                <strong>Адрес:</strong> ${firstResult.display_name}<br>
-                                <strong>Координати:</strong><br>
-                                Lat: ${coords.lat.toFixed(6)}<br>
-                                Lng: ${coords.lng.toFixed(6)}
-                            </div>`);
-                            
-                            marker.openPopup();
-                            
-                            // Показваме всички резултати, ако има повече от един
-                            if (data.length > 1) {
-                                // Изчистваме предишните резултати
-                                geocodeResultsList.innerHTML = '';
+                            if (data.length > 0) {
+                                geocodeResults.style.display = 'block';
                                 
-                                // Добавяме всеки резултат като опция
-                                data.forEach((item, index) => {
+                                data.forEach(result => {
                                     const li = document.createElement('li');
-                                    li.className = 'list-group-item list-group-item-action' + (index === 0 ? ' active' : '');
+                                    li.className = 'list-group-item';
+                                    li.textContent = result.display_name;
+                                    li.style.cursor = 'pointer';
                                     
-                                    // Форматираме адреса
-                                    li.innerHTML = item.display_name;
-                                    
-                                    // Добавяме обработчик на събития
                                     li.addEventListener('click', function() {
-                                        // Премахваме активния клас от всички елементи
-                                        geocodeResultsList.querySelectorAll('li').forEach(el => el.classList.remove('active'));
-                                        // Добавяме активен клас към текущия елемент
-                                        this.classList.add('active');
+                                        const lat = parseFloat(result.lat);
+                                        const lng = parseFloat(result.lon);
                                         
-                                        // Актуализираме картата и полетата
-                                        const itemCoords = {
-                                            lat: parseFloat(item.lat),
-                                            lng: parseFloat(item.lon)
-                                        };
+                                        if (marker) {
+                                            map.removeLayer(marker);
+                                        }
                                         
-                                        // Актуализираме маркера и центрираме картата
-                                        marker.setLatLng(itemCoords);
-                                        map.setView(itemCoords, 15);
+                                        map.setView([lat, lng], 15);
+                                        marker = L.marker([lat, lng]).addTo(map);
                                         
-                                        // Актуализираме полетата за координати
-                                        latitudeField.value = itemCoords.lat.toFixed(6);
-                                        longitudeField.value = itemCoords.lng.toFixed(6);
+                                        latInput.value = lat.toFixed(6);
+                                        lngInput.value = lng.toFixed(6);
                                         
-                                        // Актуализираме попъпа
-                                        marker.setPopupContent(`<div>
-                                            <strong>Адрес:</strong> ${item.display_name}<br>
-                                            <strong>Координати:</strong><br>
-                                            Lat: ${itemCoords.lat.toFixed(6)}<br>
-                                            Lng: ${itemCoords.lng.toFixed(6)}
-                                        </div>`);
-                                        
-                                        marker.openPopup();
+                                        geocodeResults.style.display = 'none';
                                     });
                                     
                                     geocodeResultsList.appendChild(li);
                                 });
-                                
-                                // Показваме контейнера с резултати
+                            } else {
                                 geocodeResults.style.display = 'block';
-                            } else {
-                                // Скриваме контейнера с резултати, ако има само един резултат
-                                geocodeResults.style.display = 'none';
-                            }
-                        } else {
-                            console.error('Не са намерени резултати за адрес:', address);
-                            alert('Не можахме да намерим координатите за този адрес. Моля, опитайте с по-точен адрес или въведете координатите ръчно.');
-                            // Скриваме контейнера с резултати
-                            geocodeResults.style.display = 'none';
-                        }
-                        
-                        // Възстановяваме бутона
-                        geocodeButton.innerHTML = '<i class="bi bi-search"></i> Намери координати';
-                        geocodeButton.disabled = false;
-                    })
-                    .catch(error => {
-                        console.error('Грешка при геокодиране:', error);
-                        alert('Възникна грешка при търсенето на координати: ' + error.message);
-                        
-                        // Възстановяваме бутона
-                        geocodeButton.innerHTML = '<i class="bi bi-search"></i> Намери координати';
-                        geocodeButton.disabled = false;
-                    });
-            }
-            
-            // Функция за търсене на предложения за адреси
-            let searchTimeout;
-            function searchAddressSuggestions(query) {
-                if (!query || query.length < 3) {
-                    addressSuggestions.style.display = 'none';
-                    return;
-                }
-                
-                // Изчакваме малко преди да изпратим заявката, за да избегнем твърде много заявки
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    // Използваме OpenStreetMap Nominatim API за предложения
-                    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
-                        .then(response => response.json())
-                        .then(data => {
-                            // Изчистваме предишните предложения
-                            addressSuggestions.innerHTML = '';
-                            
-                            if (data && data.length > 0) {
-                                // Добавяме всеки резултат като предложение
-                                data.forEach(item => {
-                                    const suggestionItem = document.createElement('div');
-                                    suggestionItem.className = 'address-suggestion-item';
-                                    
-                                    // Форматираме адреса
-                                    const parts = item.display_name.split(', ');
-                                    const mainPart = parts.slice(0, 2).join(', ');
-                                    const secondaryPart = parts.slice(2).join(', ');
-                                    
-                                    suggestionItem.innerHTML = `
-                                        <div class="main-text">${mainPart}</div>
-                                        <div class="secondary-text">${secondaryPart}</div>
-                                    `;
-                                    
-                                    // Добавяме обработчик на събития
-                                    suggestionItem.addEventListener('click', function() {
-                                        // Задаваме адреса в полето
-                                        addressField.value = item.display_name;
-                                        
-                                        // Скриваме предложенията
-                                        addressSuggestions.style.display = 'none';
-                                        
-                                        // Актуализираме координатите и картата
-                                        const coords = {
-                                            lat: parseFloat(item.lat),
-                                            lng: parseFloat(item.lon)
-                                        };
-                                        
-                                        // Актуализираме полетата за координати
-                                        latitudeField.value = coords.lat.toFixed(6);
-                                        longitudeField.value = coords.lng.toFixed(6);
-                                        
-                                        // Актуализираме маркера и центрираме картата
-                                        marker.setLatLng(coords);
-                                        map.setView(coords, 15);
-                                        
-                                        // Актуализираме попъпа
-                                        marker.setPopupContent(`<div>
-                                            <strong>Адрес:</strong> ${item.display_name}<br>
-                                            <strong>Координати:</strong><br>
-                                            Lat: ${coords.lat.toFixed(6)}<br>
-                                            Lng: ${coords.lng.toFixed(6)}
-                                        </div>`);
-                                        
-                                        marker.openPopup();
-                                    });
-                                    
-                                    addressSuggestions.appendChild(suggestionItem);
-                                });
-                                
-                                // Показваме контейнера с предложения
-                                addressSuggestions.style.display = 'block';
-                            } else {
-                                // Скриваме контейнера с предложения, ако няма резултати
-                                addressSuggestions.style.display = 'none';
+                                const li = document.createElement('li');
+                                li.className = 'list-group-item';
+                                li.textContent = 'Не са намерени резултати. Опитайте с по-точен адрес.';
+                                geocodeResultsList.appendChild(li);
                             }
                         })
                         .catch(error => {
-                            console.error('Грешка при търсене на предложения:', error);
-                            addressSuggestions.style.display = 'none';
+                            console.error('Error geocoding address:', error);
                         });
-                }, 300); // Изчакваме 300ms преди да изпратим заявката
-            }
-            
-            // Добавяме слушател за бутона за намиране на координати
-            if (geocodeButton) {
-                geocodeButton.addEventListener('click', function() {
-                    findCoordinates(addressField.value);
                 });
             }
-            
-            // Добавяме слушател за въвеждане в полето за адрес
-            if (addressField) {
-                addressField.addEventListener('input', function() {
-                    searchAddressSuggestions(this.value);
-                });
-                
-                // Обработка на клавиша Enter в полето за адрес
-                addressField.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        
-                        // Ако има видими предложения, избираме първото
-                        if (addressSuggestions.style.display === 'block' && addressSuggestions.children.length > 0) {
-                            addressSuggestions.children[0].click();
-                        } else {
-                            findCoordinates(this.value);
-                        }
-                    }
-                });
-                
-                // Обработка на клавишите стрелка нагоре/надолу за навигация в предложенията
-                addressField.addEventListener('keydown', function(e) {
-                    if (addressSuggestions.style.display === 'block') {
-                        const items = addressSuggestions.querySelectorAll('.address-suggestion-item');
-                        let activeIndex = -1;
-                        
-                        // Намираме активния елемент
-                        items.forEach((item, index) => {
-                            if (item.classList.contains('active')) {
-                                activeIndex = index;
-                            }
-                        });
-                        
-                        if (e.key === 'ArrowDown') {
-                            e.preventDefault();
-                            
-                            // Премахваме активния клас от текущия елемент
-                            if (activeIndex >= 0) {
-                                items[activeIndex].classList.remove('active');
-                            }
-                            
-                            // Избираме следващия елемент или първия, ако сме в края
-                            activeIndex = (activeIndex + 1) % items.length;
-                            items[activeIndex].classList.add('active');
-                            items[activeIndex].scrollIntoView({ block: 'nearest' });
-                        } else if (e.key === 'ArrowUp') {
-                            e.preventDefault();
-                            
-                            // Премахваме активния клас от текущия елемент
-                            if (activeIndex >= 0) {
-                                items[activeIndex].classList.remove('active');
-                            }
-                            
-                            // Избираме предишния елемент или последния, ако сме в началото
-                            activeIndex = (activeIndex - 1 + items.length) % items.length;
-                            items[activeIndex].classList.add('active');
-                            items[activeIndex].scrollIntoView({ block: 'nearest' });
-                        } else if (e.key === 'Escape') {
-                            // Скриваме предложенията при натискане на Escape
-                            addressSuggestions.style.display = 'none';
-                        } else if (e.key === 'Tab') {
-                            // Скриваме предложенията при натискане на Tab
-                            addressSuggestions.style.display = 'none';
-                        }
-                    }
-                });
-                
-                // Скриваме предложенията при клик извън полето
-                document.addEventListener('click', function(e) {
-                    if (!addressField.contains(e.target) && !addressSuggestions.contains(e.target)) {
-                        addressSuggestions.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Добавяме слушател за клик върху картата
-            map.on('click', function(e) {
-                const coords = e.latlng;
-                
-                // Актуализираме полетата за координати
-                latitudeField.value = coords.lat.toFixed(6);
-                longitudeField.value = coords.lng.toFixed(6);
-                
-                // Актуализираме маркера
-                marker.setLatLng(coords);
-                
-                // Актуализираме попъпа
-                marker.setPopupContent(`<div>
-                    <strong>Координати:</strong><br>
-                    Lat: ${coords.lat.toFixed(6)}<br>
-                    Lng: ${coords.lng.toFixed(6)}
-                </div>`);
-                
-                marker.openPopup();
-            });
-            
-            // Обработка на промяна на размера на прозореца
-            window.addEventListener('resize', function() {
-                map.invalidateSize();
-            });
         });
     </script>
 {% endblock %} 
