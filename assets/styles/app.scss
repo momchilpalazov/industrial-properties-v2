@@ -1,9 +1,14 @@
 @import "~bootstrap/scss/bootstrap";
 @import "~pannellum/build/pannellum.css";
 @import "./property";
+@import "components/property/show";
+@import "components/auction/index";
+@import "components/auction/show";
+@import "components/renting/index";
 
 body {
     background-color: #f8f9fa;
+    font-family: 'Roboto', sans-serif;
 }
 
 .property-360-viewer {

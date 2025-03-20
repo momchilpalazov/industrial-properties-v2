@@ -1,0 +1,214 @@
+/* Стилове за страницата с търгове */
+
+/* Филтри */
+.filter-section {
+    background: #f8f9fa;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    
+    &.show {
+        max-height: 1000px;
+        opacity: 1;
+        padding: 2rem 0;
+    }
+}
+
+.filters-wrapper {
+    position: relative;
+    padding-top: 70px;
+}
+
+.filter-toggle-container {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: white;
+    padding: 15px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.filter-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 50px;
+    border: none;
+    background: #007bff;
+    color: white;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+    
+    &:hover {
+        background: #0056b3;
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+        transform: translateY(-1px);
+    }
+    
+    &.active {
+        background: #dc3545;
+        
+        &:hover {
+            background: #c82333;
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
+        }
+    }
+    
+    i {
+        margin-right: 8px;
+        font-size: 18px;
+    }
+}
+
+.property-filter-section {
+    padding: 20px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.filter-button {
+    background: #007bff;
+    color: white;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+    }
+}
+
+.reset-button {
+    background: #6c757d;
+    color: white;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+    }
+}
+
+/* Карти от Here Maps */
+.map-container-wrapper {
+    position: fixed;
+    top: 120px;
+    right: -400px;
+    width: 400px;
+    height: calc(100vh - 140px);
+    z-index: 1050;
+    transition: right 0.3s ease-in-out;
+    background: white;
+    box-shadow: -3px 0 10px rgba(0,0,0,0.1);
+    border-radius: 10px 0 0 10px;
+    overflow: hidden;
+    
+    &.show {
+        right: 0;
+    }
+}
+
+#map-container {
+    width: 100%;
+    height: 100%;
+}
+
+.map-toggle {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 100px;
+    background: #e91e63;
+    color: white;
+    border: none;
+    border-radius: 10px 0 0 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    z-index: 1051;
+    font-size: 24px;
+    animation: pulse-button 2s infinite;
+    
+    i {
+        font-size: 24px;
+    }
+}
+
+@keyframes pulse-button {
+    0% {
+        box-shadow: 0 0 0 0 rgba(233, 30, 99, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(233, 30, 99, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(233, 30, 99, 0);
+    }
+}
+
+/* Карти с имоти */
+.property-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+}
+
+.property-image {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.property-card:hover .property-image {
+    transform: scale(1.05);
+}
+
+.status-icon {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+/* Оформление на дъщерни опции в падащото меню */
+.child-option {
+    padding-left: 15px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Стилове за адаптивен дизайн */
+@media (max-width: 767px) {
+    .d-flex.gap-2 {
+        flex-direction: column;
+        gap: 5px !important;
+    }
+    
+    .form-group {
+        margin-bottom: 10px;
+    }
+    
+    .map-container-wrapper {
+        width: 300px;
+        right: -300px;
+    }
+} 

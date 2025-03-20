@@ -4,152 +4,209 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    {{ encore_entry_link_tags('renting-index') }}
 {% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1 class="mb-4">{{ category.getLocalizedName(app.request.locale) }}</h1>
-        
-        {% if category.getLocalizedDescription(app.request.locale) %}
-            <p class="mb-4">{{ category.getLocalizedDescription(app.request.locale) }}</p>
-        {% endif %}
-
-        <div class="row mb-4">
-            <div class="col-12">
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
-                    <i class="bi bi-funnel"></i> {{ 'property.filter_toggle'|trans }}
+    <div class="filters-wrapper">
+        <!-- Filter Toggle Button -->
+        <div class="filter-toggle-container">
+            <div class="container">
+                <button class="filter-toggle" id="filterToggle">
+                    <i class="material-icons">tune</i>
+                    <span>Филтри</span>
                 </button>
             </div>
         </div>
 
-        <div class="collapse mb-4" id="filterCollapse">
-            <div class="card card-body">
-                <h4 class="mb-3">{{ 'property.filter_title'|trans }}</h4>
-                <form method="get" action="{{ path('app_renting') }}">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label for="type" class="form-label">{{ 'property.type'|trans }}</label>
-                            <select class="form-select" id="type" name="type">
-                                <option value="">{{ 'property.all_types'|trans }}</option>
-                                {% for type in property_types|default([]) %}
-                                    <option value="{{ type.id }}" {% if filters.type is defined and filters.type == type.id|toString %}selected{% endif %}>
-                                        {{ type.getLocalizedName(app.request.locale) }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        
-                        <div class="col-md-4">
-                            <label for="location" class="form-label">{{ 'property.location'|trans }}</label>
-                            <input type="text" class="form-control" id="location" name="location" value="{{ filters.location|default('') }}" placeholder="{{ 'property.location_placeholder'|trans({'default': 'Въведете локация'}) }}">
-                        </div>
-                        
-                        <div class="col-md-4">
-                            <label for="sort" class="form-label">{{ 'property.sort'|trans }}</label>
-                            <select class="form-select" id="sort" name="sort">
-                                <option value="newest" {% if filters.sort is not defined or filters.sort == 'newest' %}selected{% endif %}>{{ 'property.sort_newest'|trans }}</option>
-                                <option value="oldest" {% if filters.sort is defined and filters.sort == 'oldest' %}selected{% endif %}>{{ 'property.sort_oldest'|trans }}</option>
-                                <option value="price_asc" {% if filters.sort is defined and filters.sort == 'price_asc' %}selected{% endif %}>{{ 'property.sort_price_asc'|trans }}</option>
-                                <option value="price_desc" {% if filters.sort is defined and filters.sort == 'price_desc' %}selected{% endif %}>{{ 'property.sort_price_desc'|trans }}</option>
-                                <option value="area_asc" {% if filters.sort is defined and filters.sort == 'area_asc' %}selected{% endif %}>{{ 'property.sort_area_asc'|trans }}</option>
-                                <option value="area_desc" {% if filters.sort is defined and filters.sort == 'area_desc' %}selected{% endif %}>{{ 'property.sort_area_desc'|trans }}</option>
-                            </select>
-                        </div>
-                        
-                        <div class="col-md-3">
-                            <label for="min_price" class="form-label">{{ 'property.min_price'|trans }}</label>
-                            <input type="number" class="form-control" id="min_price" name="min_price" value="{{ filters.min_price|default('') }}">
-                        </div>
-                        
-                        <div class="col-md-3">
-                            <label for="max_price" class="form-label">{{ 'property.max_price'|trans }}</label>
-                            <input type="number" class="form-control" id="max_price" name="max_price" value="{{ filters.max_price|default('') }}">
-                        </div>
-                        
-                        <div class="col-md-3">
-                            <label for="min_area" class="form-label">{{ 'property.min_area'|trans }}</label>
-                            <input type="number" class="form-control" id="min_area" name="min_area" value="{{ filters.min_area|default('') }}">
-                        </div>
-                        
-                        <div class="col-md-3">
-                            <label for="max_area" class="form-label">{{ 'property.max_area'|trans }}</label>
-                            <input type="number" class="form-control" id="max_area" name="max_area" value="{{ filters.max_area|default('') }}">
-                        </div>
-                        
-                        <div class="col-12 mt-3">
-                            <button type="submit" class="btn btn-primary">{{ 'property.search'|trans }}</button>
-                            <a href="{{ path('app_renting') }}" class="btn btn-secondary">{{ 'property.reset_filters'|trans }}</a>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="row">
-            {% if properties|length > 0 %}
-                {% for property in properties %}
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100">
-                            {% if property.images is defined and property.images.count > 0 %}
-                                {% set mainImage = null %}
-                                {% for image in property.images %}
-                                    {% if mainImage is null or image.isMain %}
-                                        {% set mainImage = image %}
-                                    {% endif %}
-                                {% endfor %}
-                                {% if mainImage %}
-                                    <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ mainImage.filename) }}" class="card-img-top" alt="{{ property.getTitle(app.request.locale) }}">
-                                {% else %}
-                                    <img src="{{ asset('img/no-image.jpg') }}" class="card-img-top" alt="No image">
-                                {% endif %}
-                            {% else %}
-                                <img src="{{ asset('img/no-image.jpg') }}" class="card-img-top" alt="No image">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title">{{ property.getTitle(app.request.locale) }}</h5>
-                                <p class="card-text">
-                                    <strong>{{ 'property.price'|trans }}:</strong> {{ property.price|number_format(0, '.', ' ') }} €<br>
-                                    <strong>{{ 'property.area'|trans }}:</strong> {{ property.area }} m²<br>
-                                    <strong>{{ 'property.type'|trans }}:</strong> 
-                                    {% if property.type %}
-                                        {{ property.type.getLocalizedName(app.request.locale) }}
-                                    {% else %}
-                                        {{ 'property.no_type'|trans({'default': 'Няма тип'}) }}
-                                    {% endif %}<br>
-                                    <strong>{{ 'property.location'|trans }}:</strong> {{ property.getLocation(app.request.locale) }}
-                                </p>
-                                <a href="{{ path('app_property_show', {'id': property.id}) }}" class="btn btn-primary">{{ 'property.view_details'|trans }}</a>
+        <!-- Filter Section -->
+        <section class="filter-section" id="filterSection">
+            <div class="container">
+                <div class="property-filter-section">
+                    <h4 class="mb-3">Филтриране на имоти под наем</h4>
+                    <form method="get" action="{{ path('app_renting') }}" class="row g-3">
+                        <!-- Първи ред - основни филтри -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="type" class="form-label">{{ 'property.type'|trans }}</label>
+                                <select class="form-select property-type-filter" id="type" name="type">
+                                    <option value="">{{ 'property.all_types'|trans }}</option>
+                                    {% for type in property_types|default([]) %}
+                                        <option value="{{ type.id }}" {% if filters.type is defined and filters.type == type.id|toString %}selected{% endif %}>
+                                            {{ type.getLocalizedName(app.request.locale) }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">Изберете тип имот</small>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div class="col-12">
-                    <div class="alert alert-info">
-                        {{ 'property.no_properties_found'|trans }}
-                    </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="location" class="form-label">{{ 'property.location'|trans }}</label>
+                                <input type="text" class="form-control" id="location" name="location" value="{{ filters.location|default('') }}" placeholder="{{ 'property.location_placeholder'|trans({'default': 'Въведете локация'}) }}">
+                            </div>
+                        </div>
+                        
+                        <!-- Втори ред - ценови филтри -->
+                        <div class="col-md-6">
+                            <div class="d-flex gap-2">
+                                <div class="flex-grow-1">
+                                    <label for="min_price" class="form-label">{{ 'property.min_price'|trans }}</label>
+                                    <input type="number" class="form-control" id="min_price" name="min_price" value="{{ filters.min_price|default('') }}" placeholder="От">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <label for="max_price" class="form-label">{{ 'property.max_price'|trans }}</label>
+                                    <input type="number" class="form-control" id="max_price" name="max_price" value="{{ filters.max_price|default('') }}" placeholder="До">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Трети ред - филтри за площ -->
+                        <div class="col-md-6">
+                            <div class="d-flex gap-2">
+                                <div class="flex-grow-1">
+                                    <label for="min_area" class="form-label">{{ 'property.min_area'|trans }}</label>
+                                    <input type="number" class="form-control" id="min_area" name="min_area" value="{{ filters.min_area|default('') }}" placeholder="От">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <label for="max_area" class="form-label">{{ 'property.max_area'|trans }}</label>
+                                    <input type="number" class="form-control" id="max_area" name="max_area" value="{{ filters.max_area|default('') }}" placeholder="До">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Четвърти ред - сортиране и бутони -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sort" class="form-label">{{ 'property.sort'|trans }}</label>
+                                <select class="form-select" id="sort" name="sort">
+                                    <option value="newest" {% if filters.sort is not defined or filters.sort == 'newest' %}selected{% endif %}>{{ 'property.sort_newest'|trans }}</option>
+                                    <option value="oldest" {% if filters.sort is defined and filters.sort == 'oldest' %}selected{% endif %}>{{ 'property.sort_oldest'|trans }}</option>
+                                    <option value="price_asc" {% if filters.sort is defined and filters.sort == 'price_asc' %}selected{% endif %}>{{ 'property.sort_price_asc'|trans }}</option>
+                                    <option value="price_desc" {% if filters.sort is defined and filters.sort == 'price_desc' %}selected{% endif %}>{{ 'property.sort_price_desc'|trans }}</option>
+                                    <option value="area_asc" {% if filters.sort is defined and filters.sort == 'area_asc' %}selected{% endif %}>{{ 'property.sort_area_asc'|trans }}</option>
+                                    <option value="area_desc" {% if filters.sort is defined and filters.sort == 'area_desc' %}selected{% endif %}>{{ 'property.sort_area_desc'|trans }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group d-flex gap-2">
+                                <div class="flex-grow-1">
+                                    <label class="form-label">Действия</label>
+                                    <button type="submit" class="btn filter-button w-100">
+                                        <i class="bi bi-search"></i> Търси имоти
+                                    </button>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <label class="form-label">&nbsp;</label>
+                                    <a href="{{ path('app_renting') }}" class="btn reset-button w-100">
+                                        <i class="bi bi-x-circle"></i> Изчисти филтрите
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            {% endif %}
-        </div>
-
-        <div class="navigation">
-            {{ knp_pagination_render(properties) }}
-        </div>
+            </div>
+        </section>
     </div>
+
+    <!-- Properties List -->
+    <section class="py-5">
+        <div class="container">
+            <h1 class="mb-4">{{ category.getLocalizedName(app.request.locale) }}</h1>
+            
+            {% if category.getLocalizedDescription(app.request.locale) %}
+                <p class="lead mb-4">{{ category.getLocalizedDescription(app.request.locale) }}</p>
+            {% endif %}
+
+            <div class="row g-4">
+                {% if properties|length > 0 %}
+                    {% for property in properties %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card property-card">
+                                <div class="position-relative">
+                                    <span class="status-badge">Под наем</span>
+                                    {% if property.images is defined and property.images.count > 0 %}
+                                        {% set mainImage = null %}
+                                        {% for image in property.images %}
+                                            {% if mainImage is null or image.isMain %}
+                                                {% set mainImage = image %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if mainImage %}
+                                            <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ mainImage.filename) }}" 
+                                                class="card-img-top property-image" 
+                                                alt="{{ property.getTitle(app.request.locale) }}">
+                                        {% else %}
+                                            <img src="{{ asset('img/no-image.jpg') }}" 
+                                                class="card-img-top property-image" 
+                                                alt="No image">
+                                        {% endif %}
+                                    {% else %}
+                                        <img src="{{ asset('img/no-image.jpg') }}" 
+                                            class="card-img-top property-image" 
+                                            alt="No image">
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ property.getTitle(app.request.locale) }}</h5>
+                                    
+                                    <div class="property-price">
+                                        <i class="bi bi-tag"></i> {{ property.price|number_format(0, '.', ' ') }} €
+                                    </div>
+                                    
+                                    <ul class="property-features">
+                                        <li>
+                                            <i class="bi bi-arrows-angle-expand"></i>
+                                            {{ property.area }} m²
+                                        </li>
+                                        <li>
+                                            <i class="bi bi-building"></i>
+                                            {% if property.type %}
+                                                {{ property.type.getLocalizedName(app.request.locale) }}
+                                            {% else %}
+                                                {{ 'property.no_type'|trans({'default': 'Няма тип'}) }}
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                    
+                                    <div class="property-location">
+                                        <i class="bi bi-geo-alt"></i>
+                                        {{ property.getLocation(app.request.locale) }}
+                                    </div>
+                                    
+                                    <a href="{{ path('app_property_show', {'id': property.id}) }}" class="btn property-details-btn w-100">
+                                        {{ 'property.view_details'|trans }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            {{ 'property.no_properties_found'|trans }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(properties) }}
+            </div>
+        </div>
+    </section>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#type').select2({
-                theme: 'bootstrap-5',
-                width: '100%',
-                placeholder: "{{ 'property.all_types'|trans }}"
-            });
-        });
-    </script>
+    {{ encore_entry_script_tags('renting-index') }}
 {% endblock %} 

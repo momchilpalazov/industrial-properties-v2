@@ -7,29 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
-    <style>
-        .gdpr-link {
-            color: #007bff;
-            text-decoration: underline;
-        }
-        .recaptcha-container {
-            margin-bottom: 1rem;
-        }
-        #property-map {
-            width: 100%;
-            height: 400px;
-            margin: 20px 0;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .map-section {
-            margin-bottom: 30px;
-        }
-        .map-section h2 {
-            margin-bottom: 15px;
-        }
-    </style>
+    {{ encore_entry_link_tags('auction-show') }}
 {% endblock %}
 
 {% block body %}
@@ -198,7 +176,13 @@
                 {% if property.latitude is not empty and property.longitude is not empty %}
                     <div class="map-section">
                         <h2><i class="bi bi-geo-alt-fill"></i> {{ 'property.location_map'|trans }}</h2>
-                        <div id="property-map"></div>
+                        <div id="property-map"
+                             data-lat="{{ property.latitude }}"
+                             data-lng="{{ property.longitude }}"
+                             data-title="{{ property.title(app.request.locale) }}"
+                             data-location="{{ property.location(app.request.locale) }}"
+                             {% if property.price %}data-price="{{ property.price|number_format(0, '.', ' ') }}"{% endif %}
+                             data-api-key="{{ here_maps_api_key|default('') }}"></div>
                     </div>
                 {% endif %}
             </div>
@@ -253,8 +237,6 @@
     {{ parent() }}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
@@ -262,269 +244,5 @@
     <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
     {{ encore_entry_script_tags('property-360-viewer') }}
     {{ encore_entry_script_tags('property-inquiry') }}
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Инициализиране на tooltips
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-
-            // Инициализиране на Clipboard.js
-            var clipboard = new ClipboardJS('.copy-link');
-            
-            clipboard.on('success', function(e) {
-                // Показване на toastr съобщение
-                toastr.success('{{ "property.share.copied"|trans }}');
-                
-                // Скриване на tooltip-а
-                var tooltip = bootstrap.Tooltip.getInstance(e.trigger);
-                if (tooltip) {
-                    tooltip.hide();
-                }
-                
-                e.clearSelection();
-            });
-
-            // Валидация на формата за запитване
-            document.getElementById('inquiryForm').addEventListener('submit', function(event) {
-                // Проверка за reCAPTCHA
-                var recaptchaResponse = grecaptcha.getResponse();
-                if (recaptchaResponse.length === 0) {
-                    event.preventDefault();
-                    toastr.error('{{ "common.recaptcha_error"|trans }}');
-                    return false;
-                }
-                
-                // Проверка за съгласие с политиката за лични данни
-                if (!document.getElementById('gdprConsent').checked) {
-                    event.preventDefault();
-                    toastr.error('{{ "common.gdpr_consent_error"|trans }}');
-                    return false;
-                }
-            });
-
-            // Функционалност за принтиране
-            document.querySelector('.print-property').addEventListener('click', function() {
-                // Скриване на tooltip-а преди принтиране
-                var tooltip = bootstrap.Tooltip.getInstance(this);
-                if (tooltip) {
-                    tooltip.hide();
-                }
-                
-                // Добавяне на стилове за принтиране
-                var printStyles = `
-                    <style>
-                        @media print {
-                            /* Показване на хедъра за принтиране */
-                            .print-header {
-                                display: block !important;
-                                margin-bottom: 20px;
-                                border-bottom: 1px solid #ddd;
-                                padding-bottom: 15px;
-                            }
-
-                            .print-header h3 {
-                                font-size: 18pt;
-                                margin: 0;
-                                color: #000;
-                            }
-
-                            .print-header p {
-                                font-size: 12pt;
-                                color: #666;
-                            }
-
-                            /* Скриване само на ненужните елементи */
-                            .card-body form,
-                            .carousel-control-prev,
-                            .carousel-control-next,
-                            .share-buttons,
-                            footer,
-                            nav,
-                            .btn {
-                                display: none !important;
-                            }
-
-                            /* Показване на контейнера на цялата ширина */
-                            .container {
-                                width: 100% !important;
-                                max-width: none !important;
-                                padding: 0 20px !important;
-                                margin: 0 !important;
-                            }
-
-                            /* Оптимизация на изображенията */
-                            .carousel-item {
-                                display: block !important;
-                                page-break-inside: avoid;
-                                margin-bottom: 20px;
-                            }
-
-                            img {
-                                max-width: 100% !important;
-                                height: auto !important;
-                                page-break-inside: avoid;
-                            }
-
-                            /* Стилове за текст и линкове */
-                            body {
-                                font-size: 12pt;
-                                line-height: 1.5;
-                                color: #000;
-                            }
-
-                            h1, h2, h3, h4, h5 {
-                                page-break-after: avoid;
-                            }
-
-                            a {
-                                text-decoration: none !important;
-                                color: #000 !important;
-                            }
-
-                            /* Добавяне на разстояния между секциите */
-                            .property-description,
-                            .property-details {
-                                margin-bottom: 20px;
-                                page-break-inside: avoid;
-                            }
-
-                            /* Показване на всички детайли в една колона */
-                            .col-md-8 {
-                                width: 100% !important;
-                                max-width: 100% !important;
-                                flex: 0 0 100% !important;
-                            }
-
-                            /* Скриване на дясната колона с формата */
-                            .col-md-4 {
-                                display: none !important;
-                            }
-
-                            /* Добавяне на рамка около основната информация */
-                            .property-details {
-                                border: 1px solid #ddd;
-                                padding: 15px;
-                                margin: 15px 0;
-                            }
-
-                            /* Добавяне на дата на принтиране */
-                            .property-details::after {
-                                content: "Дата на принтиране: " attr(data-print-date);
-                                display: block;
-                                margin-top: 20px;
-                                font-size: 10pt;
-                                color: #666;
-                            }
-
-                            /* Стил за 360° изображения */
-                            .property-360-section {
-                                page-break-before: always;
-                            }
-                            
-                            /* Скриване на картата при принтиране */
-                            .map-section {
-                                display: none !important;
-                            }
-                        }
-                    </style>
-                `;
-                
-                // Добавяне на текуща дата към детайлите
-                var propertyDetails = document.querySelector('.property-details');
-                if (propertyDetails) {
-                    var currentDate = new Date().toLocaleDateString('bg-BG');
-                    propertyDetails.setAttribute('data-print-date', currentDate);
-                }
-
-                // Добавяне на стиловете към head
-                document.head.insertAdjacentHTML('beforeend', printStyles);
-                
-                // Извикване на принтиране
-                window.print();
-            });
-            
-            // Инициализиране на Here Maps
-            {% if property.latitude is not empty and property.longitude is not empty %}
-            (function initializePropertyMap() {
-                try {
-                    // Създаваме Here Maps платформа с API ключа
-                    const apiKey = "{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}";
-                    
-                    const platform = new H.service.Platform({
-                        apiKey: apiKey
-                    });
-                    
-                    // Създаваме слоеве
-                    const defaultLayers = platform.createDefaultLayers();
-                    
-                    // Създаваме картата
-                    const map = new H.Map(
-                        document.getElementById('property-map'),
-                        defaultLayers.vector.normal.map,
-                        {
-                            center: { 
-                                lat: {{ property.latitude }}, 
-                                lng: {{ property.longitude }} 
-                            },
-                            zoom: 15
-                        }
-                    );
-                    
-                    // Добавяме интерактивност и контроли
-                    const ui = H.ui.UI.createDefault(map, defaultLayers);
-                    const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-                    
-                    // Добавяме маркер за имота
-                    const marker = new H.map.Marker({ 
-                        lat: {{ property.latitude }}, 
-                        lng: {{ property.longitude }} 
-                    });
-                    
-                    // Създаваме балон с информация за имота - по-компактен
-                    marker.setData(`
-                        <div style="padding: 8px; min-width: 150px; max-width: 200px;">
-                            <h5 style="font-size: 14px; margin-bottom: 5px;">{{ property.title(app.request.locale)|escape('js') }}</h5>
-                            <p style="margin-bottom: 5px; font-size: 12px;">{{ property.location(app.request.locale)|escape('js') }}</p>
-                            {% if property.price %}
-                            <p style="margin-bottom: 0; font-size: 12px;"><strong>{{ 'property.price'|trans|escape('js') }}:</strong> {{ property.price|number_format(0, '.', ' ') }} €</p>
-                            {% endif %}
-                        </div>
-                    `);
-                    
-                    // Добавяме маркера към картата
-                    map.addObject(marker);
-                    
-                    // Добавяме слушател за клик върху маркера
-                    marker.addEventListener('tap', function(evt) {
-                        const bubble = new H.ui.InfoBubble(
-                            evt.target.getGeometry(), 
-                            { content: evt.target.getData() }
-                        );
-                        ui.addBubble(bubble);
-                    });
-                    
-                    // Отваряме балона автоматично
-                    setTimeout(function() {
-                        const bubble = new H.ui.InfoBubble(
-                            marker.getGeometry(), 
-                            { content: marker.getData() }
-                        );
-                        ui.addBubble(bubble);
-                    }, 1000);
-                    
-                    // Ресайз на картата при промяна на размера на прозореца
-                    window.addEventListener('resize', () => {
-                        map.getViewPort().resize();
-                    });
-                } catch (error) {
-                    console.error('Грешка при инициализиране на Here Maps:', error);
-                    document.getElementById('property-map').innerHTML = '<div class="alert alert-danger">Грешка при зареждане на картата</div>';
-                }
-            })();
-            {% endif %}
-        });
-    </script>
+    {{ encore_entry_script_tags('auction-show') }}
 {% endblock %} 
