@@ -13,6 +13,7 @@ Encore
     .addEntry('layout', './assets/js/layout.js')
     .addEntry('property-index', './assets/js/property-index.js')
     .addEntry('home', './assets/js/home.js')
+    .addEntry('property-show', './assets/js/property-show.js')
     .splitEntryChunks()
     .enableSingleRuntimeChunk()
     .cleanupOutputBeforeBuild()

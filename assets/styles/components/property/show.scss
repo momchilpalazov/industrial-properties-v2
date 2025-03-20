@@ -1,0 +1,144 @@
+/**
+ * Property Show Page Styles
+ */
+
+.gdpr-link {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.recaptcha-container {
+    margin-bottom: 1rem;
+}
+
+#property-map {
+    width: 100%;
+    height: 400px;
+    margin: 20px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.map-section {
+    margin-bottom: 30px;
+}
+
+.map-section h2 {
+    margin-bottom: 15px;
+}
+
+/* Print Styles */
+@media print {
+    /* Показване на хедъра за принтиране */
+    .print-header {
+        display: block !important;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 15px;
+    }
+
+    .print-header h3 {
+        font-size: 18pt;
+        margin: 0;
+        color: #000;
+    }
+
+    .print-header p {
+        font-size: 12pt;
+        color: #666;
+    }
+
+    /* Скриване само на ненужните елементи */
+    .card-body form,
+    .carousel-control-prev,
+    .carousel-control-next,
+    .share-buttons,
+    footer,
+    nav,
+    .btn {
+        display: none !important;
+    }
+
+    /* Показване на контейнера на цялата ширина */
+    .container {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 0 20px !important;
+        margin: 0 !important;
+    }
+
+    /* Оптимизация на изображенията */
+    .carousel-item {
+        display: block !important;
+        page-break-inside: avoid;
+        margin-bottom: 20px;
+    }
+
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+        page-break-inside: avoid;
+    }
+
+    /* Стилове за текст и линкове */
+    body {
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000;
+    }
+
+    h1, h2, h3, h4, h5 {
+        page-break-after: avoid;
+    }
+
+    a {
+        text-decoration: none !important;
+        color: #000 !important;
+    }
+
+    /* Добавяне на разстояния между секциите */
+    .property-description,
+    .property-details {
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+    }
+
+    /* Показване на всички детайли в една колона */
+    .col-md-8 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+
+    /* Скриване на дясната колона с формата */
+    .col-md-4 {
+        display: none !important;
+    }
+
+    /* Добавяне на рамка около основната информация */
+    .property-details {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 15px 0;
+    }
+
+    /* Добавяне на дата на принтиране */
+    .property-details::after {
+        content: "Дата на принтиране: " attr(data-print-date);
+        display: block;
+        margin-top: 20px;
+        font-size: 10pt;
+        color: #666;
+    }
+
+    /* Стил за 360° изображения */
+    .property-360-section {
+        page-break-before: always;
+    }
+    
+    /* Скриване на картата при принтиране */
+    .map-section {
+        display: none !important;
+    }
+} 
