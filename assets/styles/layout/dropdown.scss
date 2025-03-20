@@ -1,0 +1,28 @@
+/**
+ * Dropdown menu styles
+ */
+.dropdown-menu {
+    display: none;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-toggle.show + .dropdown-menu {
+    display: block;
+}
+
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+@media (max-width: 991.98px) {
+    .nav-item.dropdown:hover .dropdown-menu {
+        display: none;
+    }
+    
+    .nav-item.dropdown .dropdown-menu.show {
+        display: block;
+    }
+} 

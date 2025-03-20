@@ -10,6 +10,7 @@ Encore
     .addEntry('app', './assets/app.js')
     .addEntry('property-360-viewer', './assets/js/property-360-viewer.js')
     .addEntry('property-inquiry', './assets/js/property-inquiry.js')
+    .addEntry('layout', './assets/js/layout.js')
     .splitEntryChunks()
     .enableSingleRuntimeChunk()
     .cleanupOutputBeforeBuild()
