@@ -8,246 +8,27 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    {{ encore_entry_link_tags('property-index') }}
     <style>
+        /* Критични стилове за филтрите */
         .filter-section {
             background: #f8f9fa;
             padding: 0;
             max-height: 0;
             overflow: hidden;
             opacity: 0;
-            transition: all 0.3s ease-in-out;
+            visibility: hidden;
+            transition: all 0.5s ease-in-out;
         }
         
         .filter-section.show {
-            max-height: 1000px;
+            max-height: 2000px;
             opacity: 1;
+            visibility: visible;
             padding: 2rem 0;
         }
 
-        .filters-wrapper {
-            position: relative;
-            padding-top: 70px;
-        }
-
-        .filter-toggle-container {
-            position: fixed;
-            top: 50px;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: white;
-            padding: 15px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .filter-toggle {
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            padding: 12px 24px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: 'Roboto', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            width: fit-content;
-        }
-
-        .filter-toggle:hover {
-            background: #f5f5f5;
-            border-color: #d0d0d0;
-        }
-
-        .filter-toggle i {
-            transition: transform 0.3s ease;
-            font-size: 18px;
-            color: #666;
-        }
-
-        .filter-toggle.active {
-            background: #1976d2;
-            color: white;
-            border-color: #1976d2;
-        }
-
-        .filter-toggle.active i {
-            transform: rotate(180deg);
-            color: white;
-        }
-
-        .property-card {
-            transition: transform 0.3s;
-        }
-        .property-card:hover {
-            transform: translateY(-5px);
-        }
-        .property-image {
-            height: 200px;
-            object-fit: cover;
-        }
-        .property-features {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .property-features li {
-            display: inline-block;
-            margin-right: 1rem;
-            color: #6c757d;
-        }
-        .property-features li i {
-            margin-right: 0.5rem;
-        }
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.2);
-                opacity: 0.8;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-        .status-icon {
-            display: inline-block;
-            animation: pulse 2s infinite ease-in-out;
-        }
-        
-        /* Стилове за Select2 с типове имоти */
-        .select2-container--bootstrap-5 .select2-results__option {
-            padding: 6px 12px;
-            font-size: 0.9rem;
-        }
-        
-        .select2-container--bootstrap-5 .select2-results__group {
-            padding: 8px 12px;
-            font-weight: bold;
-            color: #1976d2;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
-        }
-        
-        .select2-container--bootstrap-5 .child-option {
-            padding-left: 25px;
-            position: relative;
-        }
-        
-        .select2-container--bootstrap-5 .child-option:before {
-            content: "—";
-            position: absolute;
-            left: 10px;
-            color: #6c757d;
-        }
-        
-        .select2-container--bootstrap-5 .select2-dropdown {
-            border-color: #80bdff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-        
-        /* Подобрения на филтрите */
-        .property-filter-section {
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
-        }
-        
-        .property-filter-section h4 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f4f4f4;
-            font-weight: 600;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-group label {
-            font-weight: 500;
-            color: #444;
-            margin-bottom: 5px;
-            display: block;
-        }
-        
-        .form-control, .form-select {
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            box-shadow: none;
-            padding: 10px 15px;
-            height: auto;
-            font-size: 14px;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.2);
-            border-color: #1976d2;
-        }
-        
-        .filter-button,
-        .reset-button {
-            margin-top: 0;
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            display: block;
-            width: 100%;
-            height: 44px;
-            transition: all 0.3s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        
-        .filter-button {
-            background-color: #1976d2;
-            border-color: #1976d2;
-            color: #fff;
-        }
-        
-        .filter-button:hover {
-            background-color: #0d47a1;
-            border-color: #0d47a1;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-        }
-        
-        .reset-button {
-            border: 1px solid #e0e0e0;
-            background-color: white;
-            color: #666;
-        }
-        
-        .reset-button:hover {
-            background-color: #f5f5f5;
-            color: #333;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .filter-button i,
-        .reset-button i {
-            font-size: 14px;
-            margin-right: 5px;
-        }
-        
-        /* Размери на полета */
-        .d-flex.gap-2 {
-            gap: 10px !important;
-        }
-        
-        /* Here Maps Styles */
+        /* Стилове за карта */
         .map-container-wrapper {
             position: fixed;
             top: 120px;
@@ -264,65 +45,6 @@
         
         .map-container-wrapper.show {
             right: 0;
-        }
-        
-        #map-container {
-            width: 100%;
-            height: 100%;
-        }
-        
-        .map-toggle {
-            position: fixed;
-            top: 50%;
-            right: 0;
-            transform: translateY(-50%);
-            width: 50px;
-            height: 100px;
-            background: #e91e63;
-            color: white;
-            border: none;
-            border-radius: 10px 0 0 10px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-            z-index: 1051;
-            font-size: 24px;
-            animation: pulse-button 2s infinite;
-        }
-        
-        @keyframes pulse-button {
-            0% {
-                box-shadow: 0 0 0 0 rgba(233, 30, 99, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(233, 30, 99, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(233, 30, 99, 0);
-            }
-        }
-        
-        .map-toggle i {
-            font-size: 24px;
-        }
-        
-        /* Responsive design */
-        @media (max-width: 767px) {
-            .d-flex.gap-2 {
-                flex-direction: column;
-                gap: 5px !important;
-            }
-            
-            .form-group {
-                margin-bottom: 10px;
-            }
-            
-            .map-container-wrapper {
-                width: 300px;
-                right: -300px;
-            }
         }
     </style>
 {% endblock %}
@@ -346,7 +68,7 @@
         <!-- Filter Toggle Button -->
         <div class="filter-toggle-container">
             <div class="container">
-                <button class="filter-toggle" id="filterToggle">
+                <button type="button" class="filter-toggle" id="filterToggle">
                     <i class="material-icons">tune</i>
                     <span>Филтри</span>
                 </button>
@@ -363,7 +85,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ form_label(form.type) }}
-                                {{ form_widget(form.type) }}
+                                {{ form_widget(form.type, {'attr': {'class': 'property-type-filter'}}) }}
                                 <small class="form-text text-muted">Изберете тип имот или подкатегория</small>
                             </div>
                         </div>
@@ -441,10 +163,27 @@
 
     <!-- Here Maps Container -->
     <div class="map-container-wrapper" id="mapWrapper">
-        <button class="map-toggle" id="mapToggle">
+        <button type="button" class="map-toggle" id="mapToggle">
             <i class="material-icons">map</i>
         </button>
         <div id="map-container"></div>
+    </div>
+
+    <!-- Properties JSON Data for JavaScript -->
+    <div id="properties-data" 
+        data-properties='[
+            {% for property in properties %}
+                {% if property.latitude is not empty and property.longitude is not empty %}
+                    {
+                        "id": {{ property.id }},
+                        "title": "{{ property.title(app.request.locale)|escape('js') }}",
+                        "latitude": {{ property.latitude }},
+                        "longitude": {{ property.longitude }}
+                    }{% if not loop.last %},{% endif %}
+                {% endif %}
+            {% endfor %}
+        ]'
+        data-api-key="{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}">
     </div>
 
     <!-- Properties List -->
@@ -526,208 +265,82 @@
     <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    {{ encore_entry_script_tags('property-index') }}
     <script>
+        // Директен JS за филтрите в шаблона - резервен вариант
         document.addEventListener('DOMContentLoaded', function() {
-            // Филтри
-            const filterToggle = document.getElementById('filterToggle');
-            const filterSection = document.getElementById('filterSection');
-            const filtersWrapper = document.querySelector('.filters-wrapper');
+            // Директен код, който гарантира работата на филтрите
+            var filterToggle = document.getElementById('filterToggle');
+            var filterSection = document.getElementById('filterSection');
             
-            // Проверяваме запазеното състояние на филтрите
-            const isFilterVisible = localStorage.getItem('filterVisible') === 'true';
-            
-            // Задаваме първоначалното състояние на филтрите
-            if (isFilterVisible) {
-                filterSection.classList.add('show');
-                filterToggle.classList.add('active');
-            }
-            
-            filterToggle.addEventListener('click', function() {
-                filterSection.classList.toggle('show');
-                filterToggle.classList.toggle('active');
+            if (filterToggle && filterSection) {
+                console.log("Инициализиране на филтри - директно в шаблона");
                 
-                // Запазваме състоянието на филтрите
-                localStorage.setItem('filterVisible', filterSection.classList.contains('show'));
+                // Инициално състояние от localStorage
+                var isFilterVisible = localStorage.getItem('filterVisible') === 'true';
+                console.log("Начално състояние:", isFilterVisible);
                 
-                // Ако филтрите са показани, скролваме до тях плавно
-                if (filterSection.classList.contains('show')) {
-                    window.scrollTo({
-                        top: filtersWrapper.offsetTop - 70,
-                        behavior: 'smooth'
-                    });
+                // Задаване на първоначалното състояние
+                if (isFilterVisible) {
+                    filterSection.classList.add('show');
+                    filterToggle.classList.add('active');
+                } else {
+                    filterSection.classList.remove('show');
+                    filterToggle.classList.remove('active');
                 }
-            });
-            
-            // Инициализираме Select2 за по-добра визуализация (използвайки jQuery)
-            if(jQuery && jQuery().select2) {
-                jQuery('.property-type-filter').select2({
-                    theme: 'bootstrap-5',
-                    width: '100%',
-                    placeholder: 'Изберете тип имот',
-                    allowClear: true,
-                    templateResult: formatPropertyType
+                
+                // Обработка на клик
+                filterToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log("Бутон филтри кликнат - директно в шаблона");
+                    
+                    // Превключване на видимостта
+                    isFilterVisible = !isFilterVisible;
+                    
+                    // Актуализиране на UI
+                    if (isFilterVisible) {
+                        filterSection.classList.add('show');
+                        filterToggle.classList.add('active');
+                    } else {
+                        filterSection.classList.remove('show');
+                        filterToggle.classList.remove('active');
+                    }
+                    
+                    // Запазване в localStorage
+                    localStorage.setItem('filterVisible', isFilterVisible);
+                    console.log("Актуализирано състояние:", isFilterVisible);
                 });
+            }
+            
+            // Директен код за Here Maps
+            var mapToggle = document.getElementById('mapToggle');
+            var mapWrapper = document.getElementById('mapWrapper');
+            
+            if (mapToggle && mapWrapper) {
+                console.log("Инициализиране на карта - директно в шаблона");
                 
-                // Форматиране на опциите в падащото меню
-                function formatPropertyType(state) {
-                    if (!state.id) {
-                        return state.text; // Placeholder
-                    }
-                    
-                    // Добавяме клас за подкатегория
-                    if (state.text.startsWith('—')) {
-                        let $state = jQuery(
-                            '<span class="child-option">' + state.text.substring(2) + '</span>'
-                        );
-                        return $state;
-                    }
-                    
-                    return state.text;
+                // Инициално състояние от localStorage
+                var isMapVisible = localStorage.getItem('mapVisible') === 'true';
+                console.log("Начално състояние на картата:", isMapVisible);
+                
+                // Задаване на първоначалното състояние
+                if (isMapVisible) {
+                    mapWrapper.classList.add('show');
                 }
-            }
-            
-            // Here Maps интеграция
-            const mapToggle = document.getElementById('mapToggle');
-            const mapWrapper = document.getElementById('mapWrapper');
-            
-            // Уверяваме се, че елементите са намерени
-            if(!mapToggle || !mapWrapper) {
-                console.error('Map toggle или map wrapper не са намерени!');
-                return;
-            }
-            
-            console.log('Map toggle и map wrapper са намерени успешно!');
-            
-            // Проверяваме запазеното състояние на картата
-            const isMapVisible = localStorage.getItem('mapVisible') === 'true';
-            
-            // Задаваме първоначалното състояние на картата
-            if (isMapVisible) {
-                mapWrapper.classList.add('show');
-            }
-            
-            mapToggle.addEventListener('click', function() {
-                console.log('Map toggle е кликнат!');
-                mapWrapper.classList.toggle('show');
                 
-                // Запазваме състоянието на картата
-                localStorage.setItem('mapVisible', mapWrapper.classList.contains('show'));
-                
-                // Ако картата се показва за първи път, инициализираме я
-                if (mapWrapper.classList.contains('show') && !window.hereMapInitialized) {
-                    initializeHereMap();
-                }
-            });
-            
-            // Инициализиране на Here Maps
-            function initializeHereMap() {
-                console.log('Инициализиране на Here Maps...');
-                
-                // Отбелязваме, че картата е инициализирана
-                window.hereMapInitialized = true;
-                
-                try {
-                    // Създаваме Here Maps платформа с API ключа
-                    const apiKey = "{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}";
-                    console.log('API ключ:', apiKey);
+                // Обработка на клик
+                mapToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log("Бутон карта кликнат - директно в шаблона");
                     
-                    const platform = new H.service.Platform({
-                        apiKey: apiKey
-                    });
+                    // Превключване на видимостта
+                    mapWrapper.classList.toggle('show');
                     
-                    // Създаваме слоеве
-                    const defaultLayers = platform.createDefaultLayers();
-                    
-                    // Създаваме картата
-                    const map = new H.Map(
-                        document.getElementById('map-container'),
-                        defaultLayers.vector.normal.map,
-                        {
-                            center: { lat: 42.6977, lng: 23.3219 }, // София по подразбиране
-                            zoom: 13
-                        }
-                    );
-                    
-                    // Добавяме интерактивност и контроли
-                    const ui = H.ui.UI.createDefault(map, defaultLayers);
-                    const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-                    
-                    // Добавяме маркери за всеки имот
-                    const markers = [];
-                    {% for property in properties %}
-                        {% if property.latitude is not empty and property.longitude is not empty %}
-                            markers.push({
-                                lat: {{ property.latitude }},
-                                lng: {{ property.longitude }},
-                                title: "{{ property.title(app.request.locale)|escape('js') }}",
-                                id: {{ property.id }}
-                            });
-                        {% endif %}
-                    {% endfor %}
-                    
-                    console.log('Брой маркери:', markers.length);
-                    
-                    // Добавяме маркери на картата
-                    markers.forEach(marker => {
-                        const mapMarker = new H.map.Marker({ 
-                            lat: marker.lat, 
-                            lng: marker.lng 
-                        });
-                        
-                        // Създаваме балон с информация за имота
-                        mapMarker.setData(`
-                            <div style="padding: 10px;">
-                                <h5>${marker.title}</h5>
-                                <a href="/bg/property/${marker.id}" class="btn btn-sm btn-primary">Детайли</a>
-                            </div>
-                        `);
-                        
-                        // Добавяме маркера към картата
-                        map.addObject(mapMarker);
-                        
-                        // Добавяме слушател за клик върху маркера
-                        mapMarker.addEventListener('tap', function(evt) {
-                            const bubble = new H.ui.InfoBubble(
-                                evt.target.getGeometry(), 
-                                { content: evt.target.getData() }
-                            );
-                            ui.addBubble(bubble);
-                        });
-                    });
-                    
-                    // Коригираме зума, за да се виждат всички маркери
-                    if (markers.length > 0) {
-                        // Ако има само един маркер, центрираме картата върху него
-                        if (markers.length === 1) {
-                            map.setCenter({ lat: markers[0].lat, lng: markers[0].lng });
-                            map.setZoom(15);
-                        } else {
-                            // Ако има повече маркери, мащабираме картата, за да се виждат всички
-                            const group = new H.map.Group();
-                            markers.forEach(marker => {
-                                group.addObject(new H.map.Marker({ lat: marker.lat, lng: marker.lng }));
-                            });
-                            map.addObject(group);
-                            map.getViewModel().setLookAtData({
-                                bounds: group.getBoundingBox()
-                            });
-                        }
-                    }
-                    
-                    // Ресайз на картата при промяна на размера на прозореца
-                    window.addEventListener('resize', () => {
-                        map.getViewPort().resize();
-                    });
-                    
-                    console.log('Here Maps инициализирана успешно!');
-                } catch (error) {
-                    console.error('Грешка при инициализиране на Here Maps:', error);
-                }
-            }
-            
-            // Ако картата трябва да бъде показана при зареждане, инициализираме я
-            if (isMapVisible) {
-                initializeHereMap();
+                    // Запазване в localStorage
+                    var isNowVisible = mapWrapper.classList.contains('show');
+                    localStorage.setItem('mapVisible', isNowVisible);
+                    console.log("Актуализирано състояние на картата:", isNowVisible);
+                });
             }
         });
     </script>

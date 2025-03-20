@@ -1,0 +1,34 @@
+/**
+ * Select2 Component Styles for Property Pages
+ */
+
+/* Стилове за Select2 с типове имоти */
+.select2-container--bootstrap-5 .select2-results__option {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+}
+
+.select2-container--bootstrap-5 .select2-results__group {
+    padding: 8px 12px;
+    font-weight: bold;
+    color: #1976d2;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.select2-container--bootstrap-5 .child-option {
+    padding-left: 25px;
+    position: relative;
+}
+
+.select2-container--bootstrap-5 .child-option:before {
+    content: "—";
+    position: absolute;
+    left: 10px;
+    color: #6c757d;
+}
+
+.select2-container--bootstrap-5 .select2-dropdown {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+} 
