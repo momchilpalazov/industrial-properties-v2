@@ -4,65 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        .blog-card {
-            height: 100%;
-            transition: transform 0.3s;
-        }
-        .blog-card:hover {
-            transform: translateY(-5px);
-        }
-        .blog-meta {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.875rem;
-            color: #6c757d;
-            margin-bottom: 0.5rem;
-        }
-        .blog-actions {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-        .blog-status {
-            position: absolute;
-            top: 0.5rem;
-            left: 0.5rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        .status-published {
-            background-color: var(--bs-success);
-            color: white;
-        }
-        .status-draft {
-            background-color: var(--bs-warning);
-            color: white;
-        }
-        .blog-category {
-            position: absolute;
-            bottom: 0.5rem;
-            right: 0.5rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            background-color: rgba(0,0,0,0.5);
-            color: white;
-        }
-        .form-switch {
-            padding-left: 2.5em;
-        }
-        .form-switch .form-check-input {
-            width: 3em;
-        }
-        .btn-group {
-            gap: 0.25rem;
-        }
-    </style>
+    {{ encore_entry_link_tags('admin_blog_styles') }}
 {% endblock %}
 
 {% block body %}
@@ -71,9 +13,20 @@
         <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body"></div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Затвори"></button>
             </div>
         </div>
+    </div>
+
+    <!-- Скрити преводи за JavaScript -->
+    <div class="d-none js-translations">
+        <span data-translation="published">{{ 'blog.admin.published'|trans }}</span>
+        <span data-translation="draft">{{ 'blog.admin.draft'|trans }}</span>
+        <span data-translation="publish">{{ 'blog.admin.publish'|trans }}</span>
+        <span data-translation="hide">{{ 'blog.admin.hide'|trans }}</span>
+        <span data-translation="publish_success">{{ 'blog.admin.publish_success'|trans }}</span>
+        <span data-translation="hide_success">{{ 'blog.admin.hide_success'|trans }}</span>
+        <span data-translation="error_message">{{ 'blog.admin.error_message'|trans }}</span>
     </div>
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
@@ -90,26 +43,26 @@
         {% for post in posts %}
             <div class="col-md-6 col-lg-4">
                 <div class="card blog-card">
-                    <div class="blog-actions">
-                        <div class="btn-group">
-                            <a href="{{ path('admin_blog_edit', {'id': post.id}) }}" 
-                               class="btn btn-sm btn-primary" 
-                               title="{{ 'blog.admin.edit_post'|trans }}">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <button type="button" 
-                                    class="btn btn-sm btn-danger delete-post" 
-                                    data-id="{{ post.id }}" 
-                                    title="{{ 'blog.admin.delete_post'|trans }}">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                    <div class="card-header d-flex justify-content-between align-items-center p-2">
+                        <div class="blog-status {% if post.isPublished %}status-published{% else %}status-draft{% endif %}">
+                            {{ post.isPublished ? 'blog.admin.published'|trans : 'blog.admin.draft'|trans }}
+                        </div>
+                        <div class="blog-actions">
+                            <div class="btn-group">
+                                <a href="{{ path('admin_blog_edit', {'id': post.id}) }}" 
+                                class="btn btn-sm btn-primary" 
+                                title="{{ 'blog.admin.edit_post'|trans }}">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button type="button" 
+                                        class="btn btn-sm btn-danger delete-post" 
+                                        data-id="{{ post.id }}" 
+                                        title="{{ 'blog.admin.delete'|trans }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="blog-status {% if post.isPublished %}status-published{% else %}status-draft{% endif %}">
-                        {{ post.isPublished ? 'blog.admin.published'|trans : 'blog.admin.draft'|trans }}
-                    </div>
-
                     <div class="card-body">
                         <h5 class="card-title">{{ post.getTitle(app.request.locale) }}</h5>
                         <div class="blog-meta">
@@ -129,7 +82,7 @@
                                    role="switch" 
                                    {% if post.isPublished %}checked{% endif %}
                                    data-post-id="{{ post.id }}"
-                                   title="{% if post.isPublished %}Скрий{% else %}Публикувай{% endif %}">
+                                   title="{% if post.isPublished %}{{ 'blog.admin.hide'|trans }}{% else %}{{ 'blog.admin.publish'|trans }}{% endif %}">
                         </div>
                     </div>
                 </div>
@@ -161,7 +114,7 @@
                 </div>
                 <div class="modal-footer">
                     <form method="post" id="deleteForm">
-                        <input type="hidden" name="_token" value="">
+                        <input type="hidden" name="_token" data-token="{{ csrf_token('delete') }}" value="">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             {{ 'blog.admin.cancel'|trans }}
                         </button>
@@ -177,48 +130,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-            const deleteForm = document.getElementById('deleteForm');
-            const tokenInput = deleteForm.querySelector('input[name="_token"]');
-
-            // Обработка на бутоните за изтриване
-            document.querySelectorAll('.delete-post').forEach(button => {
-                button.addEventListener('click', function() {
-                    const postId = this.dataset.id;
-                    deleteForm.action = `{{ path('admin_blog_delete', {'id': 'POST_ID'}) }}`.replace('POST_ID', postId);
-                    tokenInput.value = `{{ csrf_token('delete') }}${postId}`;
-                    deleteModal.show();
-                });
-            });
-
-            // Обработка на превключвателите за публикуване
-            document.querySelectorAll('.toggle-published').forEach(toggle => {
-                toggle.addEventListener('change', function() {
-                    const postId = this.dataset.postId;
-                    fetch(`{{ path('admin_blog_toggle_published', {'id': 'POST_ID'}) }}`.replace('POST_ID', postId), {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            const status = this.closest('.card').querySelector('.blog-status');
-                            status.textContent = data.published ? '{{ 'blog.admin.published'|trans }}' : '{{ 'blog.admin.draft'|trans }}';
-                            status.classList.toggle('status-published');
-                            status.classList.toggle('status-draft');
-                            this.title = data.published ? 'Скрий' : 'Публикувай';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        this.checked = !this.checked;
-                    });
-                });
-            });
-        });
-    </script>
+    {{ encore_entry_script_tags('admin_blog') }}
 {% endblock %} 

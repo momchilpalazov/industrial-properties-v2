@@ -232,6 +232,14 @@ blog:
     created_at: 'Created at'
     updated_at: 'Updated at'
     published_at: 'Published at'
+    edit_post: 'Edit'
+    publish: 'Publish'
+    hide: 'Hide'
+    publish_success: 'Post was successfully published'
+    hide_success: 'Post was successfully hidden'
+    error_message: 'An error occurred while processing the request'
+    confirm_delete_message: 'Are you sure you want to delete this post?'
+    cancel: 'Cancel'
 
 # About page translations
 about:

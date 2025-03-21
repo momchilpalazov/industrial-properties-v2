@@ -1,0 +1,128 @@
+.faq-card {
+    transition: all 0.3s ease;
+    position: relative;
+    border-radius: 5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    
+    &:hover {
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-title {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+    }
+    
+    .text-muted {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .badge {
+        font-weight: 500;
+        padding: 0.4em 0.6em;
+    }
+    
+    .form-switch {
+        margin-top: 10px;
+    }
+}
+
+.faq-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    text-align: left;
+}
+
+.faq-actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 2;
+}
+
+.faq-status {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    z-index: 2;
+}
+
+.status-active {
+    background-color: var(--bs-success);
+    color: white;
+}
+
+.status-inactive {
+    background-color: var(--bs-warning);
+    color: white;
+}
+
+.form-switch {
+    padding-left: 2.5em;
+    text-align: left;
+    
+    .form-check-input {
+        width: 3em;
+    }
+}
+
+.btn-group {
+    gap: 0.25rem;
+}
+
+.sortable-ghost {
+    opacity: 0.5;
+    background: #f8f9fa;
+}
+
+/* Стилове за пагинацията */
+.pagination {
+    .page-item {
+        .page-link {
+            color: #007bff;
+            padding: 0.4rem 0.75rem;
+            border-radius: 4px;
+            margin: 0 3px;
+            
+            &:hover {
+                background-color: #e9ecef;
+            }
+        }
+        
+        &.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+        
+        &.disabled .page-link {
+            color: #6c757d;
+            opacity: 0.6;
+        }
+    }
+}
+
+/* Подравняване на контейнера */
+#faq-list {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* Стилове за бутоните */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.765625rem;
+} 

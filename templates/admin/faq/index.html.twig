@@ -4,126 +4,86 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        .faq-card {
-            transition: transform 0.3s;
-        }
-        .faq-card:hover {
-            transform: translateY(-5px);
-        }
-        .faq-meta {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.875rem;
-            color: #6c757d;
-            margin-bottom: 0.5rem;
-        }
-        .faq-actions {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-        .faq-status {
-            position: absolute;
-            top: 0.5rem;
-            left: 0.5rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        .status-active {
-            background-color: var(--bs-success);
-            color: white;
-        }
-        .status-inactive {
-            background-color: var(--bs-warning);
-            color: white;
-        }
-        .form-switch {
-            padding-left: 2.5em;
-        }
-        .form-switch .form-check-input {
-            width: 3em;
-        }
-        .btn-group {
-            gap: 0.25rem;
-        }
-        .sortable-ghost {
-            opacity: 0.5;
-            background: #f8f9fa;
-        }
-    </style>
+    {{ encore_entry_link_tags('admin_faq_styles') }}
 {% endblock %}
 
 {% block body %}
+    <!-- Toast нотификация -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2">{{ 'faq.admin.title'|trans }}</h1>
+        <h1 class="h2">Често задавани въпроси</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="{{ path('admin_faq_new') }}" class="btn btn-sm btn-primary">
-                <i class="bi bi-plus-lg"></i> {{ 'faq.admin.new'|trans }}
+                <i class="bi bi-plus-lg"></i> Нов въпрос
             </a>
         </div>
     </div>
 
     <!-- Списък с въпроси -->
-    <div class="row g-4" id="faq-list">
-        {% for faq in faqs %}
-            <div class="col-12" data-id="{{ faq.id }}">
-                <div class="card faq-card">
-                    <div class="faq-actions">
-                        <div class="btn-group">
-                            <button type="button" 
-                                    class="btn btn-sm btn-secondary handle" 
-                                    title="{{ 'faq.admin.reorder'|trans }}">
-                                <i class="bi bi-grip-vertical"></i>
-                            </button>
-                            <a href="{{ path('admin_faq_edit', {'id': faq.id}) }}" 
-                               class="btn btn-sm btn-primary" 
-                               title="{{ 'faq.admin.edit'|trans }}">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <button type="button" 
-                                    class="btn btn-sm btn-danger delete-faq" 
-                                    data-id="{{ faq.id }}" 
-                                    title="{{ 'faq.admin.delete'|trans }}">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="faq-status {% if faq.isActive %}status-active{% else %}status-inactive{% endif %}">
-                        {{ faq.isActive ? 'faq.admin.active'|trans : 'faq.admin.inactive'|trans }}
-                    </div>
-
-                    <div class="card-body">
-                        <h5 class="card-title">{{ faq.getQuestion(app.request.locale) }}</h5>
-                        <div class="faq-meta">
-                            <span>
-                                <i class="bi bi-folder"></i>
-                                {{ categories[faq.category]|trans }}
-                            </span>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input toggle-active" 
-                                   type="checkbox" 
-                                   role="switch" 
-                                   {% if faq.isActive %}checked{% endif %}
-                                   data-faq-id="{{ faq.id }}"
-                                   title="{% if faq.isActive %}Деактивирай{% else %}Активирай{% endif %}">
+    <div class="container-fluid px-0">
+        <div class="row g-4" id="faq-list">
+            {% for faq in faqs %}
+                <div class="col-md-8" data-id="{{ faq.id }}">
+                    <div class="card faq-card">
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                                <div class="badge bg-{{ faq.isActive ? 'success' : 'secondary' }}">
+                                    {{ faq.isActive ? 'Активен' : 'Неактивен' }}
+                                </div>
+                                <div class="d-flex gap-1">
+                                    <a href="{{ path('admin_faq_edit', {'id': faq.id}) }}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-danger delete-faq" data-id="{{ faq.id }}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="p-3">
+                                <h5 class="card-title mb-3">{{ faq.getQuestion(app.request.locale) }}</h5>
+                                
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="text-muted">
+                                        <i class="bi bi-folder me-1"></i>
+                                        {{ categories[faq.category]|trans }}
+                                    </div>
+                                </div>
+                                
+                                {% if faq.getAnswer(app.request.locale)|length > 100 %}
+                                    <div class="text-muted mb-3">{{ faq.getAnswer(app.request.locale)|striptags|slice(0, 100) }}...</div>
+                                {% else %}
+                                    <div class="text-muted mb-3">{{ faq.getAnswer(app.request.locale)|striptags }}</div>
+                                {% endif %}
+                                
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input toggle-active" 
+                                        type="checkbox" 
+                                        role="switch" 
+                                        {% if faq.isActive %}checked{% endif %}
+                                        data-faq-id="{{ faq.id }}"
+                                        title="{% if faq.isActive %}Деактивирай{% else %}Активирай{% endif %}">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        {% else %}
-            <div class="col-12">
-                <div class="alert alert-info text-center">
-                    {{ 'faq.admin.no_items'|trans }}
+            {% else %}
+                <div class="col-md-8">
+                    <div class="alert alert-info text-center">
+                        Няма добавени въпроси
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 
     <!-- Пагинация -->
@@ -136,20 +96,20 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ 'faq.admin.confirm_delete'|trans }}</h5>
+                    <h5 class="modal-title">Потвърждение за изтриване</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    {{ 'faq.admin.confirm_delete_message'|trans }}
+                    Сигурни ли сте, че искате да изтриете този въпрос?
                 </div>
                 <div class="modal-footer">
                     <form method="post" id="deleteForm">
-                        <input type="hidden" name="_token" value="">
+                        <input type="hidden" name="_token" data-token="{{ csrf_token('delete') }}" value="">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            {{ 'faq.admin.cancel'|trans }}
+                            Отказ
                         </button>
                         <button type="submit" class="btn btn-danger">
-                            {{ 'faq.admin.delete'|trans }}
+                            Изтрий
                         </button>
                     </form>
                 </div>
@@ -160,76 +120,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-            const deleteForm = document.getElementById('deleteForm');
-            const tokenInput = deleteForm.querySelector('input[name="_token"]');
-
-            // Инициализация на Sortable.js за drag-and-drop пренареждане
-            const faqList = document.getElementById('faq-list');
-            new Sortable(faqList, {
-                handle: '.handle',
-                animation: 150,
-                ghostClass: 'sortable-ghost',
-                onEnd: function() {
-                    const items = faqList.children;
-                    const positions = {};
-                    
-                    Array.from(items).forEach((item, index) => {
-                        positions[item.dataset.id] = index;
-                    });
-
-                    fetch('{{ path('admin_faq_reorder') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        body: new URLSearchParams({
-                            positions: positions
-                        })
-                    });
-                }
-            });
-
-            // Обработка на бутоните за изтриване
-            document.querySelectorAll('.delete-faq').forEach(button => {
-                button.addEventListener('click', function() {
-                    const faqId = this.dataset.id;
-                    deleteForm.action = `{{ path('admin_faq_delete', {'id': 'FAQ_ID'}) }}`.replace('FAQ_ID', faqId);
-                    tokenInput.value = `{{ csrf_token('delete') }}${faqId}`;
-                    deleteModal.show();
-                });
-            });
-
-            // Обработка на превключвателите за активност
-            document.querySelectorAll('.toggle-active').forEach(toggle => {
-                toggle.addEventListener('change', function() {
-                    const faqId = this.dataset.faqId;
-                    fetch(`{{ path('admin_faq_toggle_active', {'id': 'FAQ_ID'}) }}`.replace('FAQ_ID', faqId), {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            const status = this.closest('.card').querySelector('.faq-status');
-                            status.textContent = data.active ? '{{ 'faq.admin.active'|trans }}' : '{{ 'faq.admin.inactive'|trans }}';
-                            status.classList.toggle('status-active');
-                            status.classList.toggle('status-inactive');
-                            this.title = data.active ? 'Деактивирай' : 'Активирай';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        this.checked = !this.checked;
-                    });
-                });
-            });
-        });
-    </script>
+    {{ encore_entry_script_tags('admin_faq') }}
 {% endblock %} 

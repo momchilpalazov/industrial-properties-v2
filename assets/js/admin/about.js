@@ -28,7 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
                             ]
                         },
-                        language: editorId.slice(-2).toLowerCase()
+                        language: editorId.slice(-2).toLowerCase(),
+                        licenseKey: '0', // Лицензионен ключ за безплатна версия на CKEditor
                     })
                     .catch(error => {
                         console.error(`Грешка при инициализиране на CKEditor за ${editorId}:`, error);

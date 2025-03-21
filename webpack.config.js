@@ -22,6 +22,20 @@ Encore
     .addEntry('admin-property-form', './assets/js/admin/property-form.js')
     .addEntry('admin-about', './assets/js/admin/about.js')
     .addEntry('admin-property-type', './assets/js/admin/property-type.js')
+    .addEntry('admin_blog', './assets/js/admin/blog.js')
+    .addEntry('admin_faq', './assets/js/admin/faq.js')
+    .addEntry('admin_user', './assets/js/admin/user.js')
+    .addEntry('admin/user-edit', [
+        './assets/js/admin/user-edit.js',
+        './assets/styles/admin/user-edit.scss'
+    ])
+    .addEntry('admin/user-new', [
+        './assets/js/admin/user-new.js',
+        './assets/styles/admin/user-new.scss'
+    ])
+    .addStyleEntry('admin_blog_styles', './assets/styles/admin/blog.scss')
+    .addStyleEntry('admin_faq_styles', './assets/styles/admin/faq.scss')
+    .addStyleEntry('admin_user_styles', './assets/styles/admin/user.scss')
     .splitEntryChunks()
     .enableSingleRuntimeChunk()
     .cleanupOutputBeforeBuild()

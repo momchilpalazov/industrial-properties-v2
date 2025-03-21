@@ -4,47 +4,12 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        .user-form {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .form-section {
-            background: #fff;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-section-title {
-            color: #2c3e50;
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-control:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-        }
-        
-        .btn-primary {
-            background-color: #3498db;
-            border-color: #3498db;
-        }
-        
-        .btn-primary:hover {
-            background-color: #2980b9;
-            border-color: #2980b9;
-        }
-        
-        .form-check-input:checked {
-            background-color: #3498db;
-            border-color: #3498db;
-        }
-    </style>
+    {{ encore_entry_link_tags('admin/user-edit') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('admin/user-edit') }}
 {% endblock %}
 
 {% block body %}
@@ -76,23 +41,32 @@
                 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        {{ form_row(form.name) }}
-                        {{ form_row(form.email) }}
-                        {{ form_row(form.plainPassword) }}
+                        {{ form_row(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Въведете име на потребителя'}}) }}
+                        {{ form_row(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Въведете имейл адрес'}}) }}
+                        {{ form_row(form.plainPassword, {'attr': {'class': 'form-control', 'placeholder': 'Въведете парола'}}) }}
                     </div>
                     <div class="col-md-6">
-                        {{ form_row(form.roles) }}
-                        <div class="form-check mt-4">
-                            {{ form_widget(form.isActive) }}
-                            {{ form_label(form.isActive) }}
-                        </div>
+                        <!-- Роли и Статус ще бъдат вмъкнати тук чрез JavaScript -->
+                        {{ form_row(form.roles, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_widget(form.isActive) }}
+                        {{ form_label(form.isActive) }}
 
-                        <div class="mt-4">
-                            <h5 class="mb-3">Информация</h5>
-                            <div class="text-muted">
-                                <small>Създаден на</small><br>
-                                {{ user.createdAt|date('d.m.Y H:i') }}
+                        <div class="user-info-block mt-4">
+                            <h5 class="user-info-title">Информация</h5>
+                            <div class="user-info-item">
+                                <span class="user-info-label">Създаден на</span>
+                                <span class="user-info-value">{{ user.createdAt|date('d.m.Y H:i') }}</span>
                             </div>
+                            <div class="user-info-item">
+                                <span class="user-info-label">Последна промяна</span>
+                                <span class="user-info-value">{{ user.updatedAt|date('d.m.Y H:i') }}</span>
+                            </div>
+                            {% if user.lastLoginAt %}
+                            <div class="user-info-item">
+                                <span class="user-info-label">Последно влизане</span>
+                                <span class="user-info-value">{{ user.lastLoginAt|date('d.m.Y H:i') }}</span>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
