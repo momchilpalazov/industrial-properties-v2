@@ -7,6 +7,8 @@
         <h1 class="h2">Управление на футъра</h1>
     </div>
 
+    {% include 'admin/shared/alerts.html.twig' %}
+
     <div class="card">
         <div class="card-body">
             <form method="post" action="{{ path('admin_footer_save') }}">

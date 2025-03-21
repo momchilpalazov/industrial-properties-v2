@@ -5,12 +5,104 @@
 {% block stylesheets %}
     {{ parent() }}
     {{ encore_entry_link_tags('admin-about') }}
+    <style>
+        .image-preview {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .image-preview img {
+            max-height: 150px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        
+        .image-preview img:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .delete-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 30px;
+            height: 30px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            line-height: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .delete-image:hover {
+            opacity: 1;
+        }
+        
+        .team-member-img {
+            max-height: 150px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
     {{ encore_entry_script_tags('admin-about') }}
+    <script>
+        // Функция за изтриване на снимката на компанията
+        function deleteCompanyImage(button) {
+            if (confirm('Сигурни ли сте, че искате да изтриете тази снимка?')) {
+                const preview = button.closest('.image-preview');
+                const hiddenInput = document.getElementById('delete_company_image');
+                
+                // Маркираме снимката за изтриване
+                hiddenInput.value = '1';
+                
+                // Визуализираме изтриването
+                preview.style.opacity = '0.3';
+                button.disabled = true;
+                
+                // Показваме съобщение
+                const message = document.createElement('div');
+                message.className = 'alert alert-warning mt-2';
+                message.innerHTML = '<small>Снимката ще бъде изтрита след запазване на промените.</small>';
+                preview.parentNode.appendChild(message);
+            }
+        }
+        
+        // Функция за изтриване на снимка на член от екипа
+        function deleteTeamMemberImage(button, memberIndex) {
+            if (confirm('Сигурни ли сте, че искате да изтриете тази снимка?')) {
+                const preview = button.closest('.image-preview');
+                const hiddenInput = document.getElementById(`delete_team_image_${memberIndex}`);
+                
+                // Маркираме снимката за изтриване
+                hiddenInput.value = '1';
+                
+                // Визуализираме изтриването
+                preview.style.opacity = '0.3';
+                button.disabled = true;
+                
+                // Показваме съобщение
+                const message = document.createElement('div');
+                message.className = 'alert alert-warning mt-2';
+                message.innerHTML = '<small>Снимката ще бъде изтрита след запазване на промените.</small>';
+                preview.parentNode.appendChild(message);
+            }
+        }
+    </script>
 {% endblock %}
 
 {% block body %}
@@ -321,8 +413,10 @@
                         {% if settings.company_image %}
                             <div class="image-preview">
                                 <img src="{{ asset(settings.company_image) }}" alt="Company Image" class="img-thumbnail">
-                                <button type="button" class="btn delete-image" onclick="deleteCompanyImage(this)" title="Изтрий снимката">&times;</button>
-                                <input type="hidden" name="delete_company_image" value="0">
+                                <button type="button" class="btn delete-image" onclick="deleteCompanyImage(this)" title="Изтрий снимката">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <input type="hidden" name="delete_company_image" value="0" id="delete_company_image">
                             </div>
                         {% endif %}
                         <input type="file" class="form-control mt-2" id="company_image" name="company_image" accept="image/*">
@@ -356,8 +450,10 @@
                                     {% if member.image is defined and member.image %}
                                         <div class="image-preview">
                                             <img src="{{ asset(member.image) }}" alt="{{ member.name }}" class="img-thumbnail">
-                                            <button type="button" class="btn delete-image" onclick="deleteTeamMemberImage(this, {{ key }})" title="Изтрий снимката">&times;</button>
-                                            <input type="hidden" name="delete_team_image[{{ key }}]" value="0">
+                                            <button type="button" class="btn delete-image" onclick="deleteTeamMemberImage(this, {{ key }})" title="Изтрий снимката">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                            <input type="hidden" name="delete_team_image[{{ key }}]" value="0" id="delete_team_image_{{ key }}">
                                         </div>
                                     {% else %}
                                         <img src="{{ asset('/uploads/about/team/default-avatar.jpg') }}" alt="{{ member.name }}" class="team-member-img mb-3">

@@ -49,21 +49,20 @@ class AdminController extends AbstractController
     #[Route('/', name: 'dashboard')]
     public function dashboard(): Response
     {
-        $queryBuilder = $this->inquiryRepository->createQueryBuilder('i')
-            ->select('COUNT(i.id)')
-            ->where('i.isRead = :isRead')
-            ->setParameter('isRead', false);
+        $stats = [
+            'properties' => $this->propertyRepository->count([]),
+            'inquiries' => $this->inquiryRepository->count([]),
+            'posts' => $this->blogPostRepository->count([]),
+            'users' => $this->userRepository->count([]),
+        ];
 
-        return $this->render('admin/dashboard.html.twig', [
-            'user' => $this->getUser(),
-            'stats' => [
-                'properties' => $this->propertyRepository->count([]),
-                'inquiries' => $queryBuilder->getQuery()->getSingleScalarResult(),
-                'posts' => $this->blogPostRepository->count([]),
-                'users' => $this->userRepository->count([])
-            ],
-            'latest_properties' => $this->propertyRepository->findBy([], ['createdAt' => 'DESC'], 5),
-            'latest_inquiries' => $this->inquiryRepository->findBy([], ['createdAt' => 'DESC'], 5)
+        $latestProperties = $this->propertyRepository->findBy([], ['createdAt' => 'DESC'], 5);
+        $latestInquiries = $this->inquiryRepository->findBy([], ['createdAt' => 'DESC'], 5);
+
+        return $this->render('admin/dashboard/index.html.twig', [
+            'stats' => $stats,
+            'latest_properties' => $latestProperties,
+            'latest_inquiries' => $latestInquiries,
         ]);
     }
 
@@ -142,7 +141,7 @@ class AdminController extends AbstractController
     {
         $settings = $this->footerSettingsRepository->getSettings();
 
-        return $this->render('admin/footer.html.twig', [
+        return $this->render('admin/settings/footer.html.twig', [
             'footer_settings' => [
                 'description' => $settings->getDescription(),
                 'address' => $settings->getAddress(),

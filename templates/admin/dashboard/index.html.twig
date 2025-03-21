@@ -101,7 +101,7 @@
                                         <h6 class="mb-1">{{ property.titleBg }}</h6>
                                         <small class="text-muted">{{ property.createdAt|date('d.m.Y') }}</small>
                                     </div>
-                                    <p class="mb-1">{{ property.type }} - {{ property.area }}m²</p>
+                                    <p class="mb-1">{{ property.type ? property.type.name : 'Без тип' }} - {{ property.area }}m²</p>
                                     <small class="text-muted">{{ property.locationBg }}</small>
                                 </div>
                             {% endfor %}
