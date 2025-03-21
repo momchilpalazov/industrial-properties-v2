@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% if category %}{{ category.getLocalizedName(app.request.locale) }}{% else %}{{ 'promotion.active_promotions'|trans }}{% endif %}{% endblock %}
+{% block title %}{% if category %}{{ category.getLocalizedName(app.request.locale) }}{% else %}{{ 'promotion.active_promotions'|trans }}{% endif %} - {{ 'auctions.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -12,11 +12,20 @@
 {% endblock %}
 
 {% block body %}
+    <!-- Page Title -->
+    <div class="container mt-5 pt-5">
+        <h1 class="mb-4">{% if category %}{{ category.getLocalizedName(app.request.locale) }}{% else %}{{ 'promotion.active_promotions'|trans }}{% endif %}</h1>
+        {% if category and category.getLocalizedDescription(app.request.locale) %}
+            <p class="lead mb-4">{{ category.getLocalizedDescription(app.request.locale) }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Filter Section -->
     <div class="filters-wrapper">
         <!-- Filter Toggle Button -->
         <div class="filter-toggle-container">
             <div class="container">
-                <button class="filter-toggle" id="filterToggle">
+                <button type="button" class="filter-toggle" id="filterToggle">
                     <i class="material-icons">tune</i>
                     <span>Филтри</span>
                 </button>
@@ -110,8 +119,8 @@
     </div>
 
     <!-- Here Maps Container -->
-    <div class="map-container-wrapper" id="mapWrapper">
-        <button class="map-toggle" id="mapToggle">
+    <div class="map-container-wrapper mb-0" id="mapWrapper">
+        <button type="button" class="map-toggle" id="mapToggle">
             <i class="material-icons">map</i>
         </button>
         <div id="map-container" 
@@ -122,12 +131,8 @@
     </div>
 
     <!-- Properties List -->
-    <section class="py-5">
+    <section class="pt-0 pb-4">
         <div class="container">
-            <h1 class="mb-4">{% if category %}{{ category.getLocalizedName(app.request.locale) }}{% else %}{{ 'promotion.active_promotions'|trans }}{% endif %}</h1>
-            {% if category and category.getLocalizedDescription(app.request.locale) %}
-                <p class="lead mb-4">{{ category.getLocalizedDescription(app.request.locale) }}</p>
-            {% endif %}
             <div class="row g-4">
                 {% for property in properties %}
                     <div class="col-md-4">

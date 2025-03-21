@@ -132,7 +132,7 @@ class RentalPropertyController extends AbstractController
             ]
         );
 
-        return $this->render('property/rental_index.html.twig', [
+        return $this->render('renting/index.html.twig', [
             'properties' => $pagination,
             'types' => self::PROPERTY_TYPES,
             'form' => $form->createView(),

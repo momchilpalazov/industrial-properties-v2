@@ -1,5 +1,6 @@
 // Импортираме стиловете за страницата с имоти под наем
 import '../../styles/components/renting/index.scss';
+import { initializeHereMaps } from '../components/property/hereMaps';
 
 /**
  * Функционалност за страницата със списък на имоти за отдаване под наем
@@ -8,7 +9,33 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFilterToggle();
     initializeSelect2();
     initializeAnimations();
+    initializeMap();
 });
+
+/**
+ * Инициализира Here Maps картата
+ */
+function initializeMap() {
+    const propertiesDataElement = document.getElementById('properties-data');
+    
+    if (!propertiesDataElement) {
+        console.error('Properties data element not found!');
+        return;
+    }
+    
+    try {
+        const properties = JSON.parse(propertiesDataElement.dataset.properties || '[]');
+        const apiKey = propertiesDataElement.dataset.apiKey || '';
+        
+        if (properties.length > 0 && apiKey) {
+            initializeHereMaps(properties, apiKey);
+        } else {
+            console.warn('No properties with coordinates found or API key missing');
+        }
+    } catch (error) {
+        console.error('Error initializing map:', error);
+    }
+}
 
 /**
  * Инициализира функционалността на бутона за филтри

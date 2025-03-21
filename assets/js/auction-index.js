@@ -1,5 +1,7 @@
 // Импортираме стиловете за страницата с търгове
 import '../styles/components/auction/index.scss';
+import '../styles/components/property/map.scss';
+import '../styles/components/property/filters.scss';
 
 /**
  * Функционалност за страницата със списък на имоти от категория "Търгове"
@@ -14,36 +16,60 @@ document.addEventListener('DOMContentLoaded', function() {
  * Инициализира функционалността на бутона за филтри
  */
 function initializeFilterToggle() {
+    // Вземаме елементите
     const filterToggle = document.getElementById('filterToggle');
     const filterSection = document.getElementById('filterSection');
     const filtersWrapper = document.querySelector('.filters-wrapper');
     
-    if (!filterToggle || !filterSection) return;
-    
-    // Проверяваме запазеното състояние на филтрите
-    const isFilterVisible = localStorage.getItem('filterVisible') === 'true';
-    
-    // Задаваме първоначалното състояние на филтрите
-    if (isFilterVisible) {
-        filterSection.classList.add('show');
-        filterToggle.classList.add('active');
+    if (!filterToggle || !filterSection) {
+        console.error('Не са намерени елементите за филтриране!');
+        return;
     }
     
-    filterToggle.addEventListener('click', function() {
-        filterSection.classList.toggle('show');
-        filterToggle.classList.toggle('active');
+    // Доколко е показан филтъра е запазено в localStorage
+    let isFilterVisible = localStorage.getItem('filterVisible') === 'true';
+    
+    // Задаваме първоначалното състояние на филтрите
+    updateFilterVisibility(isFilterVisible);
+    
+    // Опростена функция за обработка на клик
+    function handleFilterToggle(e) {
+        e.preventDefault();
         
-        // Запазваме състоянието
-        localStorage.setItem('filterVisible', filterSection.classList.contains('show'));
+        // Превключваме стойността
+        isFilterVisible = !isFilterVisible;
         
-        // Ако филтрите са показани, скролваме до тях плавно
-        if (filterSection.classList.contains('show')) {
+        // Обновяваме UI според новата стойност
+        updateFilterVisibility(isFilterVisible);
+        
+        // Запазваме състоянието в localStorage
+        localStorage.setItem('filterVisible', isFilterVisible);
+        
+        // Ако филтрите са показани, скролваме до тях 
+        if (isFilterVisible && filtersWrapper) {
             window.scrollTo({
                 top: filtersWrapper.offsetTop - 70,
                 behavior: 'smooth'
             });
         }
-    });
+    }
+    
+    // Функция за обновяване на видимостта
+    function updateFilterVisibility(isVisible) {
+        if (isVisible) {
+            filterSection.classList.add('show');
+            filterToggle.classList.add('active');
+        } else {
+            filterSection.classList.remove('show');
+            filterToggle.classList.remove('active');
+        }
+    }
+    
+    // Изчистваме всички съществуващи event listeners (за всеки случай)
+    filterToggle.removeEventListener('click', handleFilterToggle);
+    
+    // Добавяме event listener
+    filterToggle.addEventListener('click', handleFilterToggle);
 }
 
 /**

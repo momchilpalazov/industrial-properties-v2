@@ -1,5 +1,8 @@
 /* Стилове за страницата с имоти под наем */
 
+/* Импортираме стиловете на филтрите от страницата с имоти */
+@import '../property/filters.scss';
+
 /* Филтри */
 .filter-section {
     background: #f8f9fa;
@@ -18,7 +21,7 @@
 
 .filters-wrapper {
     position: relative;
-    padding-top: 70px;
+    padding-top: 17px;
 }
 
 .filter-toggle-container {
@@ -39,20 +42,20 @@
     padding: 8px 16px;
     border-radius: 50px;
     border: none;
-    background: #28a745;
+    background: #1976d2;
     color: white;
     font-weight: 500;
     transition: all 0.2s ease;
     box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
     
     &:hover {
-        background: #218838;
+        background: #1976d2;
         box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
         transform: translateY(-1px);
     }
     
     &.active {
-        background: #dc3545;
+        background: #1976d2;
         
         &:hover {
             background: #c82333;
@@ -74,26 +77,26 @@
 }
 
 .filter-button {
-    background: #28a745;
+    background: #1976d2;
     color: white;
     transition: all 0.2s ease;
     
     &:hover {
-        background: #218838;
+        background: #1976d2;
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
     }
 }
 
 .reset-button {
-    background: #6c757d;
-    color: white;
-    transition: all 0.2s ease;
+    border: 1px solid #e0e0e0;
+    background-color: white;
+    color: #666;
     
     &:hover {
-        background: #5a6268;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+        background-color: #f5f5f5;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 }
 
@@ -138,7 +141,7 @@
         i {
             margin-right: 5px;
             font-size: 16px;
-            color: #28a745;
+            color: #1976d2;
         }
     }
 }
@@ -146,7 +149,7 @@
 .property-price {
     font-size: 18px;
     font-weight: 700;
-    color: #28a745;
+    color: #1976d2;
     margin-bottom: 15px;
 }
 
@@ -159,12 +162,12 @@
     
     i {
         margin-right: 5px;
-        color: #dc3545;
+        color: #e91e63;
     }
 }
 
 .property-details-btn {
-    background: #28a745;
+    background: #1976d2;
     color: white;
     border: none;
     border-radius: 4px;
@@ -172,25 +175,67 @@
     transition: all 0.3s ease;
     
     &:hover {
-        background: #218838;
+        background: #0d47a1;
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
     }
 }
 
-/* Статусна лента */
-.status-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #28a745;
+/* Използваме същите стилове за картата като property/map.scss */
+.map-container-wrapper {
+    position: fixed;
+    top: 120px;
+    right: -400px;
+    width: 400px;
+    height: calc(100vh - 140px);
+    z-index: 1050;
+    transition: right 0.3s ease-in-out;
+    background: white;
+    box-shadow: -3px 0 10px rgba(0,0,0,0.1);
+    border-radius: 10px 0 0 10px;
+    overflow: hidden;
+}
+
+.map-container-wrapper.show {
+    right: 0;
+}
+
+#map-container {
+    width: 100%;
+    height: 100%;
+}
+
+.map-toggle {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 100px;
+    background: #e91e63;
     color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    z-index: 10;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    border: none;
+    border-radius: 10px 0 0 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    z-index: 1051;
+    font-size: 24px;
+    animation: pulse-button 2s infinite;
+}
+
+@keyframes pulse-button {
+    0% {
+        box-shadow: 0 0 0 0 rgba(233, 30, 99, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(233, 30, 99, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(233, 30, 99, 0);
+    }
 }
 
 /* Оформление на дъщерни опции в падащото меню */
@@ -202,6 +247,11 @@
 
 /* Стилове за адаптивен дизайн */
 @media (max-width: 767px) {
+    .map-container-wrapper {
+        width: 300px;
+        right: -300px;
+    }
+    
     .d-flex.gap-2 {
         flex-direction: column;
         gap: 5px !important;
