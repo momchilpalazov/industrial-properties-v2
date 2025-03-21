@@ -27,7 +27,7 @@
             <div class="container">
                 <button type="button" class="filter-toggle" id="filterToggle">
                     <i class="material-icons">tune</i>
-                    <span>Филтри</span>
+                    <span>{{ 'renting.filters.button'|trans }}</span>
                 </button>
             </div>
         </div>
@@ -36,14 +36,14 @@
         <section class="filter-section" id="filterSection">
             <div class="container">
                 <div class="property-filter-section">
-                    <h4 class="mb-3">Филтриране на имоти</h4>
+                    <h4 class="mb-3">{{ 'renting.filters.title'|trans }}</h4>
                     {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
                         <!-- Първи ред - основни филтри -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ form_label(form.type) }}
                                 {{ form_widget(form.type, {'attr': {'class': 'property-type-filter'}}) }}
-                                <small class="form-text text-muted">Изберете тип имот или подкатегория</small>
+                                <small class="form-text text-muted">{{ 'renting.filters.type'|trans }}</small>
                             </div>
                         </div>
                         
@@ -59,11 +59,11 @@
                             <div class="d-flex gap-2">
                                 <div class="flex-grow-1">
                                     {{ form_label(form.min_price) }}
-                                    {{ form_widget(form.min_price, {'attr': {'placeholder': 'От', 'class': 'form-control'}}) }}
+                                    {{ form_widget(form.min_price, {'attr': {'placeholder': 'renting.filters.price_min'|trans, 'class': 'form-control'}}) }}
                                 </div>
                                 <div class="flex-grow-1">
                                     {{ form_label(form.max_price) }}
-                                    {{ form_widget(form.max_price, {'attr': {'placeholder': 'До', 'class': 'form-control'}}) }}
+                                    {{ form_widget(form.max_price, {'attr': {'placeholder': 'renting.filters.price_max'|trans, 'class': 'form-control'}}) }}
                                 </div>
                             </div>
                         </div>
@@ -73,11 +73,11 @@
                             <div class="d-flex gap-2">
                                 <div class="flex-grow-1">
                                     {{ form_label(form.min_area) }}
-                                    {{ form_widget(form.min_area, {'attr': {'placeholder': 'От', 'class': 'form-control'}}) }}
+                                    {{ form_widget(form.min_area, {'attr': {'placeholder': 'renting.filters.area_min'|trans, 'class': 'form-control'}}) }}
                                 </div>
                                 <div class="flex-grow-1">
                                     {{ form_label(form.max_area) }}
-                                    {{ form_widget(form.max_area, {'attr': {'placeholder': 'До', 'class': 'form-control'}}) }}
+                                    {{ form_widget(form.max_area, {'attr': {'placeholder': 'renting.filters.area_max'|trans, 'class': 'form-control'}}) }}
                                 </div>
                             </div>
                         </div>
@@ -99,15 +99,15 @@
                         <div class="col-md-6">
                             <div class="form-group d-flex gap-2">
                                 <div class="flex-grow-1">
-                                    <label class="form-label">Действия</label>
+                                    <label class="form-label">{{ 'renting.filters.actions'|trans }}</label>
                                     <button type="submit" class="btn filter-button w-100">
-                                        <i class="bi bi-search"></i> Търси имоти
+                                        <i class="bi bi-search"></i> {{ 'renting.filters.search'|trans }}
                                     </button>
                                 </div>
                                 <div class="flex-grow-1">
                                     <label class="form-label">&nbsp;</label>
                                     <a href="{{ path('app_rental_property_index') }}" class="btn reset-button w-100">
-                                        <i class="bi bi-x-circle"></i> Изчисти филтрите
+                                        <i class="bi bi-x-circle"></i> {{ 'renting.filters.reset'|trans }}
                                     </a>
                                 </div>
                             </div>
@@ -200,7 +200,7 @@
                 {% else %}
                     <div class="col-12">
                         <div class="alert alert-info">
-                            {{ 'properties.list.no_results'|trans }}
+                            {{ 'renting.no_results'|trans }}
                         </div>
                     </div>
                 {% endfor %}

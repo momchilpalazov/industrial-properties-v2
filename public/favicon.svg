@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="faviconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D3748" />
+      <stop offset="100%" stop-color="#1A202C" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="64" height="64" rx="8" fill="url(#faviconGradient)" />
+  
+  <!-- Индустриални елементи - фабрика -->
+  <g fill="none" stroke="#718096" stroke-width="1.5" transform="translate(12, 15)">
+    <!-- Основна сграда -->
+    <rect x="3" y="13" width="25" height="20" fill="#4A5568" stroke-width="2" />
+    <!-- Комин 1 -->
+    <rect x="7" y="5" width="4" height="8" fill="#4A5568" />
+    <!-- Комин 2 -->
+    <rect x="15" y="2" width="5" height="11" fill="#4A5568" />
+    <!-- Покрив -->
+    <polygon points="3,13 9,5 22,5 28,13" fill="#2D3748" stroke-width="2" />
+    <!-- Прозорци -->
+    <rect x="7" y="18" width="4" height="4" fill="#A0AEC0" />
+    <rect x="15" y="18" width="4" height="4" fill="#A0AEC0" />
+    <rect x="23" y="18" width="4" height="4" fill="#A0AEC0" />
+    <rect x="11" y="25" width="10" height="8" fill="#A0AEC0" />
+  </g>
+  
+  <!-- Шестерня -->
+  <g transform="translate(46, 18)">
+    <circle cx="0" cy="0" r="8" fill="#4299E1" opacity="0.8" />
+    <circle cx="0" cy="0" r="3" fill="#2D3748" />
+    <path d="M0,-10 L1.5,-8 L-1.5,-8 Z" fill="#4A5568" transform="rotate(0)" />
+    <path d="M0,-10 L1.5,-8 L-1.5,-8 Z" fill="#4A5568" transform="rotate(90)" />
+    <path d="M0,-10 L1.5,-8 L-1.5,-8 Z" fill="#4A5568" transform="rotate(180)" />
+    <path d="M0,-10 L1.5,-8 L-1.5,-8 Z" fill="#4A5568" transform="rotate(270)" />
+  </g>
+  
+  <!-- IP инициали -->
+  <text x="28" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="20" fill="#4299E1">IP</text>
+</svg> 
