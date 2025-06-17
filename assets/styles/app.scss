@@ -1,5 +1,9 @@
 @import "~bootstrap/scss/bootstrap";
 @import "~pannellum/build/pannellum.css";
+@import "./_variables";
+@import "./layout/header";
+@import "./layout/footer";
+@import "./home";
 @import "./property";
 @import "components/property/show";
 @import "components/auction/index";

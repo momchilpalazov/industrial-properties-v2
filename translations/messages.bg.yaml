@@ -34,6 +34,7 @@ home:
     cta: 'Разгледайте всички имоти'
   property_types:
     title: 'Видове имоти'
+    subtitle: 'Изберете типа имот, който отговаря на вашите бизнес нужди'
     industrial_land: 'Индустриални терени'
     industrial_land_desc: 'Парцели за вашите бизнес нужди'
     logistics_center: 'Логистични центрове'

@@ -6,6 +6,30 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    
+    <!-- Performance optimizations -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#1976d2">
+    <meta name="color-scheme" content="light">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Industrial Properties">
+    
+    <!-- SEO Meta tags -->
+    <meta name="description" content="{% block description %}Модерна платформа за индустриални имоти - намерете идеалния складов комплекс, производствена база или логистичен център{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}индустриални имоти, складове, производствени бази, логистични центрове, наем, продажба{% endblock %}">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Industrial Properties">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="{% block og_title %}{{ block('title') }} | Industrial Properties{% endblock %}">
+    <meta property="og:description" content="{{ block('description') }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ app.request.uri }}">
+    <meta property="og:site_name" content="Industrial Properties">
+    
     <title>{% block title %}Начало{% endblock %} | Industrial Properties</title>
     
     <!-- Favicon -->
@@ -13,25 +37,20 @@
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="{{ asset('css/style.css') }}?v=1.0.1" rel="stylesheet">
-    <link href="{{ asset('css/logo.css') }}?v=1.0.0" rel="stylesheet">
     <!-- Webpack assets -->
     {{ encore_entry_link_tags('app') }}
     {{ encore_entry_link_tags('layout') }}
     {% block stylesheets %}{% endblock %}
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+<body>    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-industrial fixed-top" id="mainNavbar">
         <div class="container">
             <a class="navbar-brand" href="{{ path('app_home') }}">
-                <img src="{{ asset('images/logo.svg') }}" alt="Industrial Properties" height="40">
+                <img src="{{ asset('images/logo.svg') }}" alt="Industrial Properties" height="42">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -56,21 +75,9 @@
                         <a class="nav-link {% if app.request.get('_route') == 'app_services' %}active{% endif %}" 
                            href="{{ path('app_services') }}">{{ 'nav.services'|trans }}</a>
                     </li>
-                    {#<li class="nav-item">
-                        <a class="nav-link {% if app.request.get('_route') starts with 'app_blog' %}active{% endif %}" 
-                           href="{{ path('app_blog_index') }}">{{ 'nav.blog'|trans }}</a>
-                    </li>#}
-                    {#<li class="nav-item">
-                        <a class="nav-link {% if app.request.get('_route') == 'app_about' %}active{% endif %}" 
-                           href="{{ path('app_about') }}">{{ 'nav.about'|trans }}</a>
-                    </li>#}
-                    {#<li class="nav-item">
-                        <a class="nav-link {% if app.request.get('_route') == 'app_contact' %}active{% endif %}" 
-                           href="{{ path('app_contact') }}">{{ 'nav.contact'|trans }}</a>
-                    </li>#}
                 </ul>
                 <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown language-dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
                             <i class="bi bi-globe"></i>
                             {{ app.request.locale|upper }}
@@ -86,43 +93,56 @@
             </div>
         </div>
     </nav>
+                    {#<li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') starts with 'app_blog' %}active{% endif %}" 
+                           href="{{ path('app_blog_index') }}">{{ 'nav.blog'|trans }}</a>
+                    </li>#}
+                    {#<li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'app_about' %}active{% endif %}" 
+                           href="{{ path('app_about') }}">{{ 'nav.about'|trans }}</a>
+                    </li>#}
+                    {#<li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'app_contact' %}active{% endif %}" 
+                           href="{{ path('app_contact') }}">{{ 'nav.contact'|trans }}</a>
+                    </li>#}                </ul>
+            </div>
+        </div>
+    </nav>
 
     <!-- Main Content -->
     <main class="flex-shrink-0">
         {% block body %}{% endblock %}
-    </main>
-
-    <!-- Footer -->
+    </main>    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 mb-4">
                     <h5>Industrial Properties</h5>
                     <p>{{ footer_settings.description|default('Вашият надежден партньор в индустриалните имоти') }}</p>
-                    <div class="social-links mt-3">
+                    <div class="social-links">
                         {% if footer_settings.social_links.facebook|default %}
-                            <a href="{{ footer_settings.social_links.facebook }}" target="_blank">
+                            <a href="{{ footer_settings.social_links.facebook }}" target="_blank" rel="noopener">
                                 <i class="bi bi-facebook"></i>
                             </a>
                         {% endif %}
                         {% if footer_settings.social_links.linkedin|default %}
-                            <a href="{{ footer_settings.social_links.linkedin }}" target="_blank">
+                            <a href="{{ footer_settings.social_links.linkedin }}" target="_blank" rel="noopener">
                                 <i class="bi bi-linkedin"></i>
                             </a>
                         {% endif %}
                         {% if footer_settings.social_links.instagram|default %}
-                            <a href="{{ footer_settings.social_links.instagram }}" target="_blank">
+                            <a href="{{ footer_settings.social_links.instagram }}" target="_blank" rel="noopener">
                                 <i class="bi bi-instagram"></i>
                             </a>
                         {% endif %}
                         {% if footer_settings.social_links.youtube|default %}
-                            <a href="{{ footer_settings.social_links.youtube }}" target="_blank">
+                            <a href="{{ footer_settings.social_links.youtube }}" target="_blank" rel="noopener">
                                 <i class="bi bi-youtube"></i>
                             </a>
                         {% endif %}
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 mb-4">
                     <h5>{{ 'footer.quick_links'|trans }}</h5>
                     <ul class="list-unstyled">
                         <li><a href="{{ path('app_home') }}">{{ 'nav.home'|trans }}</a></li>
@@ -136,7 +156,7 @@
                         <li><a href="{{ path('app_faq_index') }}">{{ 'nav.faq'|trans }}</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 mb-4">
                     <h5>{{ 'footer.contact_us'|trans }}</h5>
                     <ul class="list-unstyled contact-info">
                         <li><i class="bi bi-geo-alt"></i> {{ footer_settings.address|default('София, България') }}</li>
@@ -145,20 +165,18 @@
                     </ul>
                 </div>
             </div>
-            <hr class="my-4">
-            <div class="row">
+            <hr>
+            <div class="row footer-bottom">
                 <div class="col-md-6">
-                    <p class="mb-0">&copy; {{ "now"|date("Y") }} Industrial Properties. {{ 'footer.rights'|trans }}</p>
+                    <p>&copy; {{ "now"|date("Y") }} Industrial Properties. {{ 'footer.rights'|trans }}</p>
                 </div>
-                <div class="col-md-6 text-end">
-                    <a href="{{ path('privacy_policy') }}" class="text-white me-3">{{ 'footer.privacy_policy'|trans({}, 'messages')|default('Политика за поверителност') }}</a>
-                    <a href="#" id="cookie-settings-menu-link" class="text-white">{{ 'footer.cookie_settings'|trans({}, 'messages')|default('Настройки на бисквитки') }}</a>
+                <div class="col-md-6 text-end footer-links">
+                    <a href="{{ path('privacy_policy') }}">{{ 'footer.privacy_policy'|trans({}, 'messages')|default('Политика за поверителност') }}</a>
+                    <a href="#" id="cookie-settings-menu-link">{{ 'footer.cookie_settings'|trans({}, 'messages')|default('Настройки на бисквитки') }}</a>
                 </div>
             </div>
         </div>
-    </footer>
-
-    <!-- Cookie Consent Banner -->
+    </footer><!-- Cookie Consent Banner -->
     {% include 'partials/_cookie_consent.html.twig' %}
 
     <!-- Bootstrap JS -->
@@ -169,5 +187,20 @@
     {{ encore_entry_script_tags('app') }}
     {{ encore_entry_script_tags('layout') }}
     {% block javascripts %}{% endblock %}
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker регистриран успешно:', registration);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker регистрацията неуспешна:', error);
+                    });
+            });
+        }
+    </script>
 </body>
-</html> 
+</html>

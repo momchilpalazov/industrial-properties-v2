@@ -8,6 +8,7 @@ import './styles/cookie-consent.css';
 
 // import JS files
 import './js/cookie-consent.js';
+import './js/navigation.js';
 
 // import Bootstrap components
 import { Tooltip, Toast, Popover } from 'bootstrap';

@@ -13,20 +13,13 @@
 
 {% block body %}
     <!-- Page Title -->
-    <div class="container mt-5 pt-5">
-        {% if category is defined %}
-            <h1 class="mb-4">{{ category.getLocalizedName(app.request.locale) }}</h1>
-            {% if category.getLocalizedDescription(app.request.locale) %}
-                <p class="lead mb-4">{{ category.getLocalizedDescription(app.request.locale) }}</p>
-            {% endif %}
-        {% else %}
-            <h1 class="mb-4">{{ 'property.list_title'|trans }}</h1>
-            <p class="lead mb-4">{{ 'property.list_subtitle'|trans }}</p>
-        {% endif %}
+    <div class="container mt-4 pt-4">
+        <div class="section-header">
+            
+        </div>
     </div>
     
     <div class="filters-wrapper">
-    
         <!-- Filter Toggle Button -->
         <div class="filter-toggle-container">
             <div class="container">
@@ -37,11 +30,29 @@
             </div>
         </div>
 
+        <!-- Page Title -->
+    <div class="container mt-4 pt-4">
+        <div class="section-header">
+            {% if category is defined %}
+                <h1>{{ category.getLocalizedName(app.request.locale) }}</h1>
+                {% if category.getLocalizedDescription(app.request.locale) %}
+                    <p>{{ category.getLocalizedDescription(app.request.locale) }}</p>
+                {% endif %}
+            {% else %}
+                <h1>{{ 'property.list_title'|trans }}</h1>
+                <p>{{ 'property.list_subtitle'|trans }}</p>
+            {% endif %}
+        </div>
+    </div>
+        
         <!-- Filter Section -->
         <section class="filter-section" id="filterSection">
             <div class="container">
                 <div class="property-filter-section">
-                    <h4 class="mb-3">Филтриране на имоти</h4>
+                    <div class="section-header filter-header">
+                        <h4>Филтриране на имоти</h4>
+                        <p>Използвайте филтрите за да намерите точно това, което търсите</p>
+                    </div>
                     {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
                         <!-- Първи ред - основни филтри -->
                         <div class="col-md-6">
@@ -146,14 +157,12 @@
             {% endfor %}
         ]'
         data-api-key="{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}">
-    </div>
-
-    <!-- Properties List -->
-    <section class="pt-0 pb-4">
+    </div>    <!-- Properties List -->
+    <section class="py-4">
         <div class="container">   
-            <div class="row g-4">
+            <div class="row g-3">
                 {% for property in properties %}
-                    <div class="col-md-4">
+                    <div class="col-lg-4 col-md-6">
                         <div class="card h-100 property-card">
                             <a href="{{ path('app_property_show', {'id': property.id}) }}" class="text-decoration-none">
                                 <div class="position-relative">
@@ -169,35 +178,48 @@
                                 </div>
                                 <div class="card-body">
                                     <h5 class="card-title">{{ property.title(app.request.locale) }}</h5>
-                                    <p class="card-text">
-                                        <small class="text-muted d-block mb-2">
-                                            <i class="bi bi-upc-scan"></i> {{ property.referenceNumber }}
-                                        </small>
-                                        <small class="text-muted">
-                                            <i class="bi bi-building"></i> 
-                                            {% if property.type %}
-                                                {{ property.type.getLocalizedName(app.request.locale) }}
-                                            {% else %}
-                                                {{ 'property.no_type'|trans({'default': 'Няма тип'}) }}
-                                            {% endif %}<br>
-                                            <i class="bi bi-arrows-angle-expand"></i> {{ property.area }} m²<br>
+                                    <div class="property-meta">
+                                        <div class="reference-number mb-2">
+                                            <i class="bi bi-upc-scan"></i> 
+                                            <span>{{ property.referenceNumber }}</span>
+                                        </div>
+                                        <div class="property-details">
+                                            <div class="detail-item">
+                                                <i class="bi bi-building"></i> 
+                                                <span>
+                                                    {% if property.type %}
+                                                        {{ property.type.getLocalizedName(app.request.locale) }}
+                                                    {% else %}
+                                                        {{ 'property.no_type'|trans({'default': 'Няма тип'}) }}
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <i class="bi bi-arrows-angle-expand"></i> 
+                                                <span>{{ property.area }} m²</span>
+                                            </div>
                                             {% if property.price %}
-                                                <i class="bi bi-tag"></i> {{ property.price|number_format(0, '.', ' ') }} €<br>
+                                                <div class="detail-item">
+                                                    <i class="bi bi-tag"></i> 
+                                                    <span>{{ property.price|number_format(0, '.', ' ') }} €</span>
+                                                </div>
                                             {% endif %}
-                                            <i class="bi bi-circle-fill status-icon text-{{ property.status == 'available' ? 'success' : 
-                                                property.status == 'sold' ? 'danger' : 
-                                                property.status == 'reserved' ? 'warning' : 
-                                                property.status == 'rented' ? 'info' : 
-                                                property.status == 'auction' ? 'primary' : 'secondary' }}"></i>
-                                            <span class="text-{{ property.status == 'available' ? 'success' : 
-                                                property.status == 'sold' ? 'danger' : 
-                                                property.status == 'reserved' ? 'warning' : 
-                                                property.status == 'rented' ? 'info' : 
-                                                property.status == 'auction' ? 'primary' : 'secondary' }}">
-                                                {{ ('property.status.' ~ property.status)|trans }}
-                                            </span>
-                                        </small>
-                                    </p>
+                                            <div class="detail-item status-item">
+                                                <i class="bi bi-circle-fill status-icon text-{{ property.status == 'available' ? 'success' : 
+                                                    property.status == 'sold' ? 'danger' : 
+                                                    property.status == 'reserved' ? 'warning' : 
+                                                    property.status == 'rented' ? 'info' : 
+                                                    property.status == 'auction' ? 'primary' : 'secondary' }}"></i>
+                                                <span class="status-text text-{{ property.status == 'available' ? 'success' : 
+                                                    property.status == 'sold' ? 'danger' : 
+                                                    property.status == 'reserved' ? 'warning' : 
+                                                    property.status == 'rented' ? 'info' : 
+                                                    property.status == 'auction' ? 'primary' : 'secondary' }}">
+                                                    {{ ('property.status.' ~ property.status)|trans }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </a>
                         </div>
