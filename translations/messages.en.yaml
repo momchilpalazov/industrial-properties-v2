@@ -78,6 +78,11 @@ property.status.pending: Pending
 property.status.auction: 'On Auction'
 property.360_images: '360° Images'
 property.360_instructions: 'Click and hold to rotate the image. Use scroll to zoom.'
+property.image: 'Image'
+property.gallery:
+  photos: 'photos'
+  more: 'more'
+  click_to_enlarge: 'Click to enlarge'
 common.gdpr_consent: 'I agree with the'
 common.privacy_policy: 'privacy policy'
 common.recaptcha_prompt: 'Please confirm that you are not a robot.'

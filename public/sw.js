@@ -1,30 +1,27 @@
 // Service Worker за кеширане на ресурси
-const CACHE_NAME = 'industrial-properties-v2.8';
+const CACHE_NAME = 'industrial-properties-v2.9';
 const STATIC_CACHE = [
     '/',
-    '/build/app.b34add55.css',
-    '/build/layout.ea2b205e.css',
-    '/build/app.30701032.js',
-    '/build/layout.6589baba.js',
-    '/build/runtime.806624b5.js',
-    '/build/831.2819befb.js',
-    '/build/11.c63a6796.js',
-    '/build/392.9b9a3e98.js',
-    '/build/987.fe0aeba8.js',
-    '/build/505.c45fab96.js',
     '/favicon.svg',
-    '/favicon.ico',
-    '/images/hero-bg.jpg',
-    '/images/logo.svg'
+    '/favicon.ico'
+    // Добавете други реални файлове тук, след като ги проверите
 ];
 
 // Инсталиране на Service Worker
 self.addEventListener('install', (event) => {
+    console.log('Service Worker: Installing...');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('Кеширане на основни ресурси');
-                return cache.addAll(STATIC_CACHE);
+                console.log('Service Worker: Caching basic resources');
+                // Кешираме само основните файлове, които със сигурност съществуват
+                return cache.addAll(STATIC_CACHE.filter(url => {
+                    // Филтрираме само основните файлове
+                    return url === '/' || url.includes('favicon');
+                }));
+            })
+            .catch((error) => {
+                console.error('Service Worker: Cache addAll failed:', error);
             })
     );
 });

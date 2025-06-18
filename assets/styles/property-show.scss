@@ -1,0 +1,950 @@
+/**
+ * ===============================================================
+ * PROPERTY SHOW - CONSOLIDATED STYLES
+ * ===============================================================
+ * 
+ * Този файл съдържа всички стилове за property show страницата.
+ * Преди консолидацията стиловете бяха разделени между:
+ * - assets/styles/property-show.scss (този файл)
+ * - assets/styles/components/property/show.scss (сега изчистен)
+ * 
+ * Консолидацията включва:
+ * ✅ Gallery стилове (property-gallery, overlays, thumbnails)
+ * ✅ Main image стилове (property-main-image с inline стилове)
+ * ✅ Map стилове (#property-map с размери)
+ * ✅ Print стилове (@media print)
+ * ✅ Mobile responsive стилове
+ * ✅ GDPR и reCAPTCHA стилове
+ * 
+ * Файловата структура е запазена, но дублирането е премахнато.
+ * ===============================================================
+ */
+
+/* Industrial Property Show Styles */
+body {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-top: 76px; /* Compensation for fixed navbar */
+}
+
+.container {
+    position: relative;
+}
+
+/* Property Title Styling */
+h1 {
+    color: #2c3e50 !important;
+    font-weight: 700;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-bottom: 3px solid #34495e;
+    padding-bottom: 1rem;
+    display: inline-block;
+}
+
+/* Image Carousel Enhancements */
+.carousel {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+}
+
+.carousel-inner {
+    border-radius: 15px;
+}
+
+.carousel-item img {
+    transition: transform 0.3s ease;
+}
+
+.carousel:hover .carousel-item img {
+    transform: scale(1.02);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(44, 62, 80, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    top: 50%;
+    transform: translateY(-50%);    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.carousel-control-prev {
+    left: 20px;
+}
+
+.carousel-control-next {
+    right: 20px;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background: rgba(52, 73, 94, 0.95);
+    border-color: #ffffff;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* 360° Section Styling */
+.property-360-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin: 2rem 0;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.property-360-section h3 {
+    color: #2c3e50 !important;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.property-360-section h3 i {
+    color: #34495e;
+    font-size: 1.2rem;
+}
+
+.property-360-description {
+    background: rgba(52, 73, 94, 0.1);
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    color: #6c757d;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 4px solid #34495e;
+}
+
+.property-360-viewer {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.viewer-controls {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+    display: flex;
+    gap: 8px;
+}
+
+.viewer-control-btn {
+    background: rgba(44, 62, 80, 0.9);
+    border: none;
+    color: #ffffff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.viewer-control-btn:hover {
+    background: rgba(52, 73, 94, 0.95);
+    transform: scale(1.1);
+}
+
+/* Property Details Section */
+.property-details {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #34495e;
+}
+
+.property-details p {
+    margin-bottom: 1rem;
+    color: #495057 !important;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    line-height: 1.6;
+}
+
+.property-details i {
+    color: #34495e;
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.property-details .status-icon {
+    font-size: 0.75rem;
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+}
+
+.property-details strong {
+    color: #2c3e50 !important;
+    margin-right: 8px;
+}
+
+.property-details a {
+    color: #34495e !important;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.property-details a:hover {
+    color: #2c3e50 !important;
+    text-decoration: underline;
+}
+
+/* Share Buttons Section */
+.share-buttons {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.share-buttons h5 {
+    color: #2c3e50 !important;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.share-buttons h5 i {
+    color: #34495e;
+    font-size: 1.2rem;
+}
+
+.share-buttons .btn {
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    position: relative;
+    overflow: hidden;
+}
+
+.share-buttons .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.share-buttons .btn:hover::before {
+    left: 100%;
+}
+
+.share-buttons .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Property Description */
+.property-description {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.property-description h2 {
+    color: #2c3e50 !important;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #34495e;
+    display: inline-block;
+}
+
+.property-description p {
+    color: #495057 !important;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.property-description ul,
+.property-description ol {
+    color: #495057 !important;
+    padding-left: 1.5rem;
+}
+
+.property-description li {
+    color: #495057 !important;
+    margin-bottom: 0.5rem;
+}
+
+/* Map Section */
+.map-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.map-section h2 {
+    color: #2c3e50 !important;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.map-section h2 i {
+    color: #34495e;
+    font-size: 1.2rem;
+}
+
+#property-map {
+    width: 100%;
+    height: 400px;
+    margin: 20px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Contact Card */
+.card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid #dee2e6;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    position: sticky;
+    top: 20px;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card-title {
+    color: #2c3e50 !important;
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #34495e;
+}
+
+.form-label {
+    color: #2c3e50 !important;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    color: #495057 !important;
+}
+
+.form-control:focus {
+    border-color: #34495e;
+    box-shadow: 0 0 0 0.25rem rgba(52, 73, 94, 0.15);
+    background: #ffffff;
+}
+
+.form-check-input:checked {
+    background-color: #34495e;
+    border-color: #34495e;
+}
+
+.form-check-input:focus {
+    border-color: #34495e;
+    box-shadow: 0 0 0 0.25rem rgba(52, 73, 94, 0.15);
+}
+
+.form-check-label {
+    color: #495057 !important;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.gdpr-link {
+    color: #34495e !important;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.gdpr-link:hover {
+    color: #2c3e50 !important;
+    text-decoration: underline;
+}
+
+.recaptcha-container {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.recaptcha-container .text-muted {
+    font-size: 0.85rem;
+    margin-top: 8px;
+    color: #6c757d !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    border: none;
+    border-radius: 10px;
+    padding: 14px 30px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2c3e50, #1a252f);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(44, 62, 80, 0.3);
+}
+
+.recaptcha-container {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.recaptcha-container .text-muted {
+    font-size: 0.85rem;
+    margin-top: 8px;
+    color: #6c757d !important;
+}
+
+/* Print Header */
+.print-header h3 {
+    color: #2c3e50 !important;
+}
+
+.print-header .text-muted {
+    color: #6c757d !important;
+}
+
+/* Status Icons */
+.status-icon {
+    margin-right: 8px !important;
+    vertical-align: middle;
+    display: inline-block;
+    font-size: 0.8rem;
+    position: relative;
+    top: -1px;
+}
+
+/* Gallery Styles - Consolidated */
+.property-gallery {
+    .gallery-counter {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: #6c757d;
+        
+        i {
+            font-size: 1.2rem;
+        }
+    }
+    
+    .main-image-container {
+        .property-main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            
+            &:hover {
+                transform: scale(1.02);
+            }
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 8px;
+            pointer-events: none;
+            
+            .gallery-overlay-content {
+                color: white;
+                text-align: center;
+                
+                i {
+                    font-size: 2rem;
+                    margin-bottom: 0.5rem;
+                    display: block;
+                }
+                
+                span {
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                }
+            }
+        }
+        
+        &:hover .gallery-overlay {
+            opacity: 1;
+        }
+    }
+    
+    .property-thumbnail {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        
+        &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+    }
+    
+    // Gallery overlay for thumbnails
+    .row .col-6, .row .col-md-3 {
+        .position-relative {
+            &:hover .gallery-overlay {
+                opacity: 1;
+            }
+            
+            .gallery-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.4);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                border-radius: 4px;
+                pointer-events: none;
+                
+                .gallery-overlay-content {
+                    color: white;
+                    text-align: center;
+                    
+                    i {
+                        font-size: 1.5rem;
+                    }
+                }
+            }
+        }
+    }
+    
+    .more-images-indicator {
+        height: 120px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        
+        &:hover {
+            background: rgba(0, 0, 0, 0.8) !important;
+            transform: scale(1.05);
+        }
+        
+        i {
+            margin-bottom: 0.5rem;
+        }
+        
+        div {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+    }
+}
+
+.gallery-counter {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Fancybox Customization */
+.fancybox__container {
+    --fancybox-bg: rgba(24, 24, 27, 0.92);
+}
+
+.fancybox__slide {
+    padding: 44px 0;
+}
+
+.fancybox__content > .carousel__button.is-close {
+    top: 20px;
+    right: 20px;
+    color: #fff;
+}
+
+/* Additional Fancybox customizations */
+.fancybox-info {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    z-index: 99999;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
+.fancybox-info-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.property-watermark {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.watermark-content span {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.watermark-content small {
+    opacity: 0.8;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+        text-align: center;
+    }
+
+    .property-details,
+    .share-buttons,
+    .property-description,
+    .map-section,
+    .property-360-section {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .property-details p {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 40px;
+        height: 40px;
+    }
+
+    .carousel-control-prev {
+        left: 15px;
+    }
+
+    .carousel-control-next {
+        right: 15px;
+    }
+
+    .card {
+        position: static;
+        margin-top: 2rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .share-buttons .d-flex {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .share-buttons .btn {
+        margin: 0.25rem;
+        font-size: 0.9rem;
+    }
+
+    #property-map {
+        height: 300px;
+    }
+
+    .property-360-viewer {
+        height: 250px;
+    }
+
+    .fancybox-info {
+        bottom: 80px;
+        font-size: 12px;
+        padding: 8px 16px;
+    }
+
+    .property-watermark {
+        bottom: 10px;
+        left: 10px;
+        padding: 8px 12px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 576px) {
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    .property-details,
+    .share-buttons,
+    .property-description,
+    .map-section,
+    .property-360-section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .carousel img {
+        height: 250px !important;
+    }
+}
+
+/* Print Styles - Consolidated */
+@media print {
+    /* Показване на хедъра за принтиране */
+    .print-header {
+        display: block !important;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 15px;
+    }
+
+    .print-header h3 {
+        font-size: 18pt;
+        margin: 0;
+        color: #000;
+    }
+
+    .print-header p {
+        font-size: 12pt;
+        color: #666;
+    }
+
+    /* Скриване само на ненужните елементи */
+    .card-body form,
+    .share-buttons,
+    footer,
+    nav,
+    .btn,
+    .property-thumbnail,
+    .more-images-indicator {
+        display: none !important;
+    }
+
+    /* Показване на контейнера на цялата ширина */
+    .container {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 0 20px !important;
+        margin: 0 !important;
+    }
+
+    /* Оптимизация на изображенията */
+    .main-image-container {
+        display: block !important;
+        page-break-inside: avoid;
+        margin-bottom: 20px;
+    }
+
+    .property-main-image {
+        max-width: 100% !important;
+        height: auto !important;
+        page-break-inside: avoid;
+    }
+
+    /* Стилове за текст и линкове */
+    body {
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000;
+    }
+
+    h1, h2, h3, h4, h5 {
+        page-break-after: avoid;
+    }
+
+    a {
+        text-decoration: none !important;
+        color: #000 !important;
+    }
+
+    /* Добавяне на разстояния между секциите */
+    .property-description,
+    .property-details {
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+    }
+
+    /* Показване на всички детайли в една колона */
+    .col-md-8 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+
+    /* Скриване на дясната колона с формата */
+    .col-md-4 {
+        display: none !important;
+    }
+
+    /* Добавяне на рамка около основната информация */
+    .property-details {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 15px 0;
+    }
+
+    /* Скриване на картата при принтиране */
+    .map-section {
+        display: none !important;
+    }
+}
+
+/* Mobile Responsiveness for Gallery */
+@media (max-width: 768px) {
+    .property-gallery {
+        .main-image-container .property-main-image {
+            height: 250px !important;
+        }
+        
+        .property-thumbnail {
+            height: 80px !important;
+        }
+        
+        .more-images-indicator {
+            height: 80px !important;
+            
+            i {
+                font-size: 1.5rem !important;
+            }
+            
+            div {
+                font-size: 0.8rem !important;
+            }
+        }
+    }
+}
+
+/* Accessibility & Performance */
+@media (prefers-reduced-motion: reduce) {
+    .carousel-item img,
+    .btn-primary,
+    .share-buttons .btn,
+    .gallery-overlay,
+    .thumbnail-link {
+        transition: none;
+    }
+}
+
+@media (prefers-contrast: high) {
+    .property-details,
+    .card,
+    .share-buttons,
+    .property-description,
+    .map-section {
+        border-width: 2px;
+    }
+    
+    .gallery-overlay {
+        background: rgba(0, 0, 0, 0.8);
+    }
+}

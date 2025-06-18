@@ -1502,6 +1502,11 @@
   resolved "https://registry.npmjs.org/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz"
   integrity sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==
 
+"@fancyapps/ui@^6.0.3":
+  version "6.0.3"
+  resolved "https://registry.npmjs.org/@fancyapps/ui/-/ui-6.0.3.tgz"
+  integrity sha512-Uo/h8dKLa4HNdaoP3BfX+EyI/4MlNGLd3EaNDU27kFvpq8E/EGet1tloL6DPsQ7X8AUdKf2AHm5PtbKZxemVFg==
+
 "@jest/schemas@^29.6.3":
   version "29.6.3"
   resolved "https://registry.npmjs.org/@jest/schemas/-/schemas-29.6.3.tgz"

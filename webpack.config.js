@@ -13,7 +13,11 @@ Encore
     .addEntry('layout', './assets/js/layout.js')
     .addEntry('property-index', './assets/js/property-index.js')
     .addEntry('home', './assets/js/home.js')
-    .addEntry('property-show', './assets/js/property-show.js')
+    .addEntry('property-show', './assets/js/property-show.js')    .addEntry('property-show-main', [
+        './assets/js/property-show-main.js',
+        './assets/styles/property-show.scss'
+    ])
+    .addEntry('gallery-test', './assets/js/gallery-test.js')
     .addEntry('auction-index', './assets/js/auction-index.js')
     .addEntry('auction-show', './assets/js/auction-show.js')    .addEntry('renting-index', './assets/js/renting/index.js')
     .addEntry('contact-index', './assets/js/contact/index.js')

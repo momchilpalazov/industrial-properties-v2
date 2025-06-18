@@ -5,551 +5,9 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
     {{ encore_entry_link_tags('property-show') }}
-    <style>
-        /* Industrial Property Show Styles */
-        body {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding-top: 76px; /* Compensation for fixed navbar */
-        }
-
-        .container {
-            position: relative;
-        }
-
-        /* Property Title Styling */
-        h1 {
-            color: #2c3e50 !important;
-            font-weight: 700;
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-bottom: 3px solid #34495e;
-            padding-bottom: 1rem;
-            display: inline-block;
-        }
-
-        /* Image Carousel Enhancements */
-        .carousel {
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            background: #ffffff;
-            border: 1px solid #dee2e6;
-        }
-
-        .carousel-inner {
-            border-radius: 15px;
-        }
-
-        .carousel-item img {
-            transition: transform 0.3s ease;
-        }
-
-        .carousel:hover .carousel-item img {
-            transform: scale(1.02);
-        }
-
-        .carousel-control-prev,
-        .carousel-control-next {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(44, 62, 80, 0.9);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            top: 50%;
-            transform: translateY(-50%);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .carousel-control-prev {
-            left: 20px;
-        }
-
-        .carousel-control-next {
-            right: 20px;
-        }
-
-        .carousel-control-prev:hover,
-        .carousel-control-next:hover {
-            background: rgba(52, 73, 94, 0.95);
-            border-color: #ffffff;
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        /* 360° Section Styling */
-        .property-360-section {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            padding: 2rem;
-            border-radius: 15px;
-            margin: 2rem 0;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        }
-
-        .property-360-section h3 {
-            color: #2c3e50 !important;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .property-360-section h3 i {
-            color: #34495e;
-            font-size: 1.2rem;
-        }
-
-        .property-360-description {
-            background: rgba(52, 73, 94, 0.1);
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            color: #6c757d;
-            font-style: italic;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-left: 4px solid #34495e;
-        }
-
-        .property-360-viewer {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        .viewer-controls {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 10;
-            display: flex;
-            gap: 8px;
-        }
-
-        .viewer-control-btn {
-            background: rgba(44, 62, 80, 0.9);
-            border: none;
-            color: #ffffff;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .viewer-control-btn:hover {
-            background: rgba(52, 73, 94, 0.95);
-            transform: scale(1.1);
-        }
-
-        /* Property Details Section */
-        .property-details {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-            border-left: 4px solid #34495e;
-        }
-
-        .property-details p {
-            margin-bottom: 1rem;
-            color: #495057 !important;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .property-details i {
-            color: #34495e;
-            width: 20px;
-            text-align: center;
-            font-size: 1.1rem;
-        }
-
-        .property-details strong {
-            color: #2c3e50 !important;
-            margin-right: 8px;
-        }
-
-        .property-details a {
-            color: #34495e !important;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-
-        .property-details a:hover {
-            color: #2c3e50 !important;
-            text-decoration: underline;
-        }
-
-        /* Share Buttons Section */
-        .share-buttons {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        }
-
-        .share-buttons h5 {
-            color: #2c3e50 !important;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .share-buttons h5 i {
-            color: #34495e;
-            font-size: 1.2rem;
-        }
-
-        .share-buttons .btn {
-            border-radius: 10px;
-            padding: 12px 18px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: 2px solid;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .share-buttons .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .share-buttons .btn:hover::before {
-            left: 100%;
-        }
-
-        .share-buttons .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Property Description */
-        .property-description {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        }
-
-        .property-description h2 {
-            color: #2c3e50 !important;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid #34495e;
-            display: inline-block;
-        }
-
-        .property-description p {
-            color: #495057 !important;
-            line-height: 1.8;
-            margin-bottom: 1rem;
-        }
-
-        .property-description ul,
-        .property-description ol {
-            color: #495057 !important;
-            padding-left: 1.5rem;
-        }
-
-        .property-description li {
-            color: #495057 !important;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Map Section */
-        .map-section {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        }
-
-        .map-section h2 {
-            color: #2c3e50 !important;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .map-section h2 i {
-            color: #34495e;
-            font-size: 1.2rem;
-        }
-
-        #property-map {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        /* Contact Card */
-        .card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border: 1px solid #dee2e6;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-            overflow: hidden;
-            position: sticky;
-            top: 20px;
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-
-        .card-title {
-            color: #2c3e50 !important;
-            font-weight: 600;
-            font-size: 1.4rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #34495e;
-        }
-
-        .form-label {
-            color: #2c3e50 !important;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-control {
-            border: 2px solid #dee2e6;
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            background: #ffffff;
-            color: #495057 !important;
-        }
-
-        .form-control:focus {
-            border-color: #34495e;
-            box-shadow: 0 0 0 0.25rem rgba(52, 73, 94, 0.15);
-            background: #ffffff;
-        }
-
-        .form-check-input:checked {
-            background-color: #34495e;
-            border-color: #34495e;
-        }
-
-        .form-check-input:focus {
-            border-color: #34495e;
-            box-shadow: 0 0 0 0.25rem rgba(52, 73, 94, 0.15);
-        }
-
-        .form-check-label {
-            color: #495057 !important;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .gdpr-link {
-            color: #34495e !important;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .gdpr-link:hover {
-            color: #2c3e50 !important;
-            text-decoration: underline;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #34495e, #2c3e50);
-            border: none;
-            border-radius: 10px;
-            padding: 14px 30px;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #2c3e50, #1a252f);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(44, 62, 80, 0.3);
-        }
-
-        .recaptcha-container {
-            margin: 1.5rem 0;
-            text-align: center;
-        }
-
-        .recaptcha-container .text-muted {
-            font-size: 0.85rem;
-            margin-top: 8px;
-            color: #6c757d !important;
-        }
-
-        /* Print Header */
-        .print-header h3 {
-            color: #2c3e50 !important;
-        }
-
-        .print-header .text-muted {
-            color: #6c757d !important;
-        }
-
-        /* Status Icons */
-        .status-icon {
-            margin-right: 8px !important;
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-                text-align: center;
-            }
-
-            .property-details,
-            .share-buttons,
-            .property-description,
-            .map-section,
-            .property-360-section {
-                padding: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .property-details p {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-
-            .carousel-control-prev,
-            .carousel-control-next {
-                width: 40px;
-                height: 40px;
-            }
-
-            .carousel-control-prev {
-                left: 15px;
-            }
-
-            .carousel-control-next {
-                right: 15px;
-            }
-
-            .card {
-                position: static;
-                margin-top: 2rem;
-            }
-
-            .card-body {
-                padding: 1.5rem;
-            }
-
-            .share-buttons .d-flex {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .share-buttons .btn {
-                margin: 0.25rem;
-                font-size: 0.9rem;
-            }
-
-            #property-map {
-                height: 300px;
-            }
-
-            .property-360-viewer {
-                height: 250px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            h1 {
-                font-size: 1.75rem;
-            }
-
-            .property-details,
-            .share-buttons,
-            .property-description,
-            .map-section,
-            .property-360-section {
-                padding: 1rem;
-                margin-bottom: 1rem;
-            }
-
-            .carousel img {
-                height: 250px !important;
-            }
-        }
-
-        /* Accessibility & Performance */
-        @media (prefers-reduced-motion: reduce) {
-            .carousel-item img,
-            .btn-primary,
-            .share-buttons .btn {
-                transition: none;
-            }
-        }
-
-        @media (prefers-contrast: high) {
-            .property-details,
-            .card,
-            .share-buttons,
-            .property-description,
-            .map-section {
-                border-width: 2px;
-            }
-        }
-    </style>
+    {{ encore_entry_link_tags('property-show-main') }}
 {% endblock %}
 
 {% block body %}
@@ -561,30 +19,85 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8">
-                {% if property.images|length > 0 %}
-                    <div id="propertyCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            {% for image in property.images %}
-                                <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                    <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ image.filename) }}" 
-                                         class="d-block w-100" 
-                                         alt="{{ property.title(app.request.locale) }}"
-                                         style="height: 400px; object-fit: cover;">
-                                </div>
-                            {% endfor %}
+            <div class="col-md-8">                {% if property.images|length > 0 %}
+                    <div class="property-gallery mb-4">
+                        {# Gallery Counter #}
+                        <div class="gallery-counter mb-3">
+                            <i class="bi bi-images"></i>
+                            <span>{{ property.images|length }} {{ 'property.gallery.photos'|trans }}</span>
                         </div>
+                        
+                        {# Main image #}
+                        {% set firstImage = property.images|first %}
+                        <div class="main-image-container mb-3">
+                            <div class="position-relative">
+                                <a href="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ firstImage.filename) }}" 
+                                   data-fancybox="property-gallery"
+                                   data-caption="{{ property.title(app.request.locale) }} - {{ 'property.image'|trans }} 1">
+                                    <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ firstImage.filename) }}" 
+                                         class="img-fluid property-main-image" 
+                                         alt="{{ property.title(app.request.locale) }}"
+                                         style="width: 100%; height: 400px; object-fit: cover; cursor: pointer; border-radius: 8px;">
+                                </a>
+                                <div class="gallery-overlay">
+                                    <div class="gallery-overlay-content">
+                                        <i class="bi bi-zoom-in"></i>
+                                        <span>{{ 'property.gallery.click_to_enlarge'|trans }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {# Thumbnail grid for remaining images #}
                         {% if property.images|length > 1 %}
-                            <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
+                            <div class="row g-2">
+                                {% for image in property.images|slice(1) %}
+                                    <div class="col-6 col-md-3">
+                                        <div class="position-relative">
+                                            <a href="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ image.filename) }}" 
+                                               data-fancybox="property-gallery"
+                                               data-caption="{{ property.title(app.request.locale) }} - {{ 'property.image'|trans }} {{ loop.index + 1 }}">
+                                                <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ image.filename) }}" 
+                                                     class="img-fluid property-thumbnail" 
+                                                     alt="{{ property.title(app.request.locale) }}"
+                                                     style="width: 100%; height: 120px; object-fit: cover; cursor: pointer; border-radius: 4px;">
+                                            </a>
+                                            <div class="gallery-overlay">
+                                                <div class="gallery-overlay-content">
+                                                    <i class="bi bi-zoom-in"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                
+                                {# Show more indicator if there are many images #}
+                                {% if property.images|length > 5 %}
+                                    <div class="col-6 col-md-3">
+                                        <div class="more-images-indicator d-flex align-items-center justify-content-center" 
+                                             style="height: 120px; background: rgba(0,0,0,0.7); color: white; border-radius: 4px; cursor: pointer;"
+                                             onclick="document.querySelector('[data-fancybox=\"property-gallery\"]').click()">
+                                            <div class="text-center">
+                                                <i class="bi bi-plus-circle" style="font-size: 2rem;"></i>
+                                                <div>+{{ property.images|length - 4 }} {{ 'property.gallery.more'|trans }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        
+                        {# Hidden images for fancybox (if more than shown in grid) #}
+                        {% if property.images|length > 5 %}
+                            {% for image in property.images|slice(5) %}
+                                <a href="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ image.filename) }}" 
+                                   data-fancybox="property-gallery"
+                                   data-caption="{{ property.title(app.request.locale) }} - {{ 'property.image'|trans }} {{ loop.index + 5 }}"
+                                   style="display: none;"></a>
+                            {% endfor %}
                         {% endif %}
                     </div>
+
                 {% else %}
                     <img src="{{ asset('img/no-image.jpg') }}" 
                          class="img-fluid mb-4" 
@@ -798,4 +311,92 @@
     {{ encore_entry_script_tags('property-360-viewer') }}
     {{ encore_entry_script_tags('property-inquiry') }}
     {{ encore_entry_script_tags('property-show') }}
-{% endblock %} 
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing property gallery...');
+            
+            // Wait for Fancybox to load
+            function waitForFancybox() {
+                return new Promise((resolve) => {
+                    const checkFancybox = () => {
+                        if (typeof Fancybox !== 'undefined') {
+                            resolve();
+                        } else {
+                            setTimeout(checkFancybox, 100);
+                        }
+                    };
+                    checkFancybox();
+                });
+            }
+            
+            waitForFancybox().then(() => {
+                console.log('Fancybox loaded, binding gallery...');
+                
+                try {
+                    Fancybox.bind("[data-fancybox='property-gallery']", {
+                        Toolbar: {
+                            display: {
+                                left: ["infobar"],
+                                middle: ["zoomIn", "zoomOut", "rotateCCW", "rotateCW"],
+                                right: ["slideshow", "thumbs", "close"],
+                            },
+                        },
+                        Thumbs: {
+                            autoStart: false,
+                        },
+                        l10n: {
+                            CLOSE: "Затвори",
+                            NEXT: "Следваща", 
+                            PREV: "Предишна",
+                            ERROR: "Грешка при зареждане",
+                            IMAGE_ERROR: "Снимката не може да бъде заредена",
+                        }
+                    });
+                    
+                    console.log('✅ Fancybox gallery initialized successfully!');
+                    
+                    // Test if gallery items are found
+                    const galleryItems = document.querySelectorAll("[data-fancybox='property-gallery']");
+                    console.log(`Found ${galleryItems.length} gallery items`);
+                    
+                } catch (error) {
+                    console.error('❌ Error initializing Fancybox:', error);
+                }
+            });
+            
+            // Initialize other features
+            initOtherFeatures();
+        });
+        
+        function initOtherFeatures() {
+            // Copy to clipboard
+            if (typeof ClipboardJS !== 'undefined') {
+                const clipboard = new ClipboardJS('.copy-link');
+                clipboard.on('success', function(e) {
+                    if (typeof toastr !== 'undefined') {
+                        toastr.success('Линкът е копиран!');
+                    } else {
+                        alert('Линкът е копиран!');
+                    }
+                    e.clearSelection();
+                });
+            }
+            
+            // Print functionality
+            const printButton = document.querySelector('.print-property');
+            if (printButton) {
+                printButton.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+              // Initialize map if it exists
+            if (typeof initializePropertyMap === 'function') {
+                initializePropertyMap();
+            }
+        }
+    </script>
+    
+    {{ encore_entry_script_tags('property-show-main') }}
+    </script>
+{% endblock %}
