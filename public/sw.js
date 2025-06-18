@@ -1,11 +1,11 @@
 // Service Worker за кеширане на ресурси
-const CACHE_NAME = 'industrial-properties-v2.6';
+const CACHE_NAME = 'industrial-properties-v2.8';
 const STATIC_CACHE = [
     '/',
-    '/build/app.0c5d2c6c.css',
+    '/build/app.b34add55.css',
     '/build/layout.ea2b205e.css',
-    '/build/app.241dd87f.js',
-    '/build/layout.422aba18.js',
+    '/build/app.30701032.js',
+    '/build/layout.6589baba.js',
     '/build/runtime.806624b5.js',
     '/build/831.2819befb.js',
     '/build/11.c63a6796.js',

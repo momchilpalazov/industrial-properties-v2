@@ -37,10 +37,23 @@ class BlogPostRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('b')
             ->where('b.isPublished = :published')
-            ->andWhere('b.language = :language')
             ->setParameter('published', true)
-            ->setParameter('language', $language)
             ->orderBy('b.publishedAt', 'DESC');
+
+        // Филтрираме само статии които имат съдържание на избрания език
+        if ($language === 'en') {
+            $qb->andWhere('b.titleEn IS NOT NULL')
+               ->andWhere('b.titleEn != :empty')
+               ->andWhere('b.contentEn IS NOT NULL')
+               ->andWhere('b.contentEn != :empty')
+               ->setParameter('empty', '');
+        } else {
+            $qb->andWhere('b.titleBg IS NOT NULL')
+               ->andWhere('b.titleBg != :empty')
+               ->andWhere('b.contentBg IS NOT NULL')
+               ->andWhere('b.contentBg != :empty')
+               ->setParameter('empty', '');
+        }
 
         if ($category) {
             $qb->andWhere('b.category = :category')
@@ -52,46 +65,83 @@ class BlogPostRepository extends ServiceEntityRepository
 
     public function findLatest(int $limit = 5, string $language = 'bg')
     {
-        return $this->createQueryBuilder('b')
+        $qb = $this->createQueryBuilder('b')
             ->where('b.isPublished = :published')
-            ->andWhere('b.language = :language')
             ->setParameter('published', true)
-            ->setParameter('language', $language)
             ->orderBy('b.publishedAt', 'DESC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults($limit);
+
+        // Филтрираме само статии които имат съдържание на избрания език
+        if ($language === 'en') {
+            $qb->andWhere('b.titleEn IS NOT NULL')
+               ->andWhere('b.titleEn != :empty')
+               ->andWhere('b.contentEn IS NOT NULL')
+               ->andWhere('b.contentEn != :empty')
+               ->setParameter('empty', '');
+        } else {
+            $qb->andWhere('b.titleBg IS NOT NULL')
+               ->andWhere('b.titleBg != :empty')
+               ->andWhere('b.contentBg IS NOT NULL')
+               ->andWhere('b.contentBg != :empty')
+               ->setParameter('empty', '');
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function findByCategory(string $category, string $language = 'bg')
     {
-        return $this->createQueryBuilder('b')
+        $qb = $this->createQueryBuilder('b')
             ->where('b.category = :category')
             ->andWhere('b.isPublished = :published')
-            ->andWhere('b.language = :language')
             ->setParameter('category', $category)
             ->setParameter('published', true)
-            ->setParameter('language', $language)
-            ->orderBy('b.publishedAt', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('b.publishedAt', 'DESC');
+
+        // Филтрираме само статии които имат съдържание на избрания език
+        if ($language === 'en') {
+            $qb->andWhere('b.titleEn IS NOT NULL')
+               ->andWhere('b.titleEn != :empty')
+               ->andWhere('b.contentEn IS NOT NULL')
+               ->andWhere('b.contentEn != :empty')
+               ->setParameter('empty', '');
+        } else {
+            $qb->andWhere('b.titleBg IS NOT NULL')
+               ->andWhere('b.titleBg != :empty')
+               ->andWhere('b.contentBg IS NOT NULL')
+               ->andWhere('b.contentBg != :empty')
+               ->setParameter('empty', '');
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function search(string $query, string $language = 'bg')
     {
-        return $this->createQueryBuilder('b')
-            ->where('b.titleBg LIKE :query')
-            ->orWhere('b.titleEn LIKE :query')
-            ->orWhere('b.contentBg LIKE :query')
-            ->orWhere('b.contentEn LIKE :query')
+        $qb = $this->createQueryBuilder('b')
             ->andWhere('b.isPublished = :published')
-            ->andWhere('b.language = :language')
             ->setParameter('query', '%' . $query . '%')
             ->setParameter('published', true)
-            ->setParameter('language', $language)
-            ->orderBy('b.publishedAt', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('b.publishedAt', 'DESC');
+
+        // Търсим в полетата според избрания език
+        if ($language === 'en') {
+            $qb->andWhere('(b.titleEn LIKE :query OR b.contentEn LIKE :query)')
+               ->andWhere('b.titleEn IS NOT NULL')
+               ->andWhere('b.titleEn != :empty')
+               ->andWhere('b.contentEn IS NOT NULL')
+               ->andWhere('b.contentEn != :empty')
+               ->setParameter('empty', '');
+        } else {
+            $qb->andWhere('(b.titleBg LIKE :query OR b.contentBg LIKE :query)')
+               ->andWhere('b.titleBg IS NOT NULL')
+               ->andWhere('b.titleBg != :empty')
+               ->andWhere('b.contentBg IS NOT NULL')
+               ->andWhere('b.contentBg != :empty')
+               ->setParameter('empty', '');
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function getCategories(): array

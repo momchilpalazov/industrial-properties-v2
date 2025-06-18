@@ -474,16 +474,7 @@
         letter-spacing: -0.02em;
         text-align: left;
         
-        &::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #1976d2, #ff6b35);
-            border-radius: 2px;
-        }
+
     }
     
     p {

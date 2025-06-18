@@ -10,45 +10,64 @@ class ServicesController extends AbstractController
 {
     #[Route('/services', name: 'app_services')]
     public function index(): Response
-    {
-        $services = [
+    {        $services = [
             [
-                'icon' => 'bi-graph-up',
+                'icon' => 'trending_up',
                 'title' => 'services.market_analysis.title',
                 'description' => 'services.market_analysis.description',
+                'features' => [
+                    'Детайлни пазарни отчети',
+                    'Прогнози за цените',
+                    'Анализ на конкуренцията'
+                ]
             ],
             [
-                'icon' => 'bi-building-gear',
+                'icon' => 'business',
                 'title' => 'services.property_management.title',
                 'description' => 'services.property_management.description',
+                'features' => [
+                    '24/7 технически support',
+                    'Управление на наематели',
+                    'Редовни инспекции'
+                ]
             ],
             [
-                'icon' => 'bi-cash-coin',
+                'icon' => 'savings',
                 'title' => 'services.cost_optimization.title',
                 'description' => 'services.cost_optimization.description',
             ],
             [
-                'icon' => 'bi-file-text',
+                'icon' => 'gavel',
                 'title' => 'services.legal.title',
                 'description' => 'services.legal.description',
+                'features' => [
+                    'Правна експертиза',
+                    'Изготвяне на договори',
+                    'Съдействие при разрешителни'
+                ]
             ],
             [
-                'icon' => 'bi-people',
+                'icon' => 'groups',
                 'title' => 'services.hr.title',
                 'description' => 'services.hr.description',
             ],
             [
-                'icon' => 'bi-translate',
+                'icon' => 'public',
                 'title' => 'services.international.title',
                 'description' => 'services.international.description',
             ],
             [
-                'icon' => 'bi-bank',
+                'icon' => 'account_balance',
                 'title' => 'services.financial.title',
                 'description' => 'services.financial.description',
+                'features' => [
+                    'Инвестиционни стратегии',
+                    'Финансиране на проекти',
+                    'ROI анализи'
+                ]
             ],
             [
-                'icon' => 'bi-shield-check',
+                'icon' => 'support_agent',
                 'title' => 'services.consulting.title',
                 'description' => 'services.consulting.description',
             ]

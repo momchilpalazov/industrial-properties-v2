@@ -4,215 +4,101 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        .blog-hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('{{ asset('img/blog-hero.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 8rem 0;
-            margin-top: 56px;
-            text-align: center;
-        }
-        
-        .blog-hero h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        
-        .blog-hero p {
-            font-size: 1.25rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .blog-categories {
-            background: #f8f9fa;
-            padding: 2rem 0;
-            margin-bottom: 3rem;
-        }
-
-        .blog-categories .nav-link {
-            color: #6c757d;
-            padding: 0.5rem 1rem;
-            margin: 0 0.5rem;
-            border-radius: 2rem;
-            transition: all 0.3s;
-        }
-
-        .blog-categories .nav-link:hover,
-        .blog-categories .nav-link.active {
-            background: var(--bs-primary);
-            color: white;
-        }
-
-        .blog-search {
-            margin-bottom: 3rem;
-        }
-
-        .blog-card {
-            height: 100%;
-            transition: transform 0.3s;
-            border: none;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        }
-
-        .blog-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-        }
-
-        .blog-card .card-body {
-            padding: 1.5rem;
-        }
-
-        .blog-card .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #212529;
-        }
-
-        .blog-card .card-text {
-            color: #6c757d;
-            margin-bottom: 1.5rem;
-        }
-
-        .blog-card .card-meta {
-            font-size: 0.875rem;
-            color: #6c757d;
-        }
-
-        .blog-card .category-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            background: var(--bs-primary);
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            .blog-hero {
-                padding: 6rem 0;
-            }
-            
-            .blog-hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .blog-hero p {
-                font-size: 1.1rem;
-            }
-
-            .blog-categories .nav {
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                padding-bottom: 1rem;
-            }
-
-            .blog-categories .nav-link {
-                white-space: nowrap;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    {{ encore_entry_link_tags('blog') }}
 {% endblock %}
 
 {% block body %}
-    <!-- Hero Section -->
-    <section class="blog-hero">
-        <div class="container">
-            <h1>{{ 'blog.title'|trans }}</h1>
-            <p>{{ 'blog.subtitle'|trans }}</p>
-        </div>
-    </section>
-
-    <!-- Categories -->
-    <section class="blog-categories">
-        <div class="container">
-            <nav class="nav nav-pills justify-content-center">
-                <a class="nav-link {% if not currentCategory %}active{% endif %}" 
-                   href="{{ path('app_blog_index') }}">
-                    {{ 'blog.categories.all'|trans }}
-                </a>
-                {% for key, label in categories %}
-                    <a class="nav-link {% if currentCategory == key %}active{% endif %}" 
-                       href="{{ path('app_blog_index', {'category': key}) }}">
-                        {{ label|trans }}
-                    </a>
-                {% endfor %}
-            </nav>
-        </div>
-    </section>
-
-    <!-- Search -->
-    <section class="blog-search">
-        <div class="container">
-            <form method="get" action="{{ path('app_blog_index') }}" class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <input type="text" 
-                               name="q" 
-                               class="form-control" 
-                               placeholder="{{ 'blog.search.placeholder'|trans }}"
-                               value="{{ searchQuery }}">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="bi bi-search"></i>
-                            {{ 'blog.search.submit'|trans }}
-                        </button>
-                    </div>
+    <div class="blog-page">
+        <!-- Hero Section -->
+        <section class="blog-hero">
+            <div class="container">
+                <div class="section-header">
+                    <h1>{{ 'blog.title'|trans }}</h1>
+                    <p>{{ 'blog.subtitle'|trans }}</p>
                 </div>
-            </form>
-        </div>
-    </section>
+            </div>
+        </section>
 
-    <!-- Blog Posts -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row g-4">
-                {% for post in posts %}
-                    <div class="col-md-6 col-lg-4">
-                        <article class="card blog-card">
-                            <span class="category-badge">
-                                {{ categories[post.category]|trans }}
-                            </span>
+        <!-- Categories -->
+        <section class="blog-categories">
+            <div class="container">
+                <nav class="nav nav-pills">
+                    <a class="nav-link {% if not currentCategory %}active{% endif %}" 
+                       href="{{ path('app_blog_index') }}">
+                        {{ 'blog.categories.all'|trans }}
+                    </a>
+                    {% for key, label in categories %}
+                        <a class="nav-link {% if currentCategory == key %}active{% endif %}" 
+                           href="{{ path('app_blog_index', {'category': key}) }}">
+                            {{ label|trans }}
+                        </a>
+                    {% endfor %}
+                </nav>
+            </div>
+        </section>
 
-                            <div class="card-body">
-                                <h2 class="card-title">{{ post.title(app.request.locale) }}</h2>
-                                <p class="card-text">{{ post.excerpt(app.request.locale) }}</p>
-                                <div class="card-meta d-flex justify-content-between align-items-center">
-                                    <span>
-                                        <i class="bi bi-calendar"></i>
-                                        {{ post.publishedAt|date('d.m.Y') }}
+        <!-- Blog Posts -->
+        <section class="blog-content">
+            <div class="container">
+                <div class="row g-4">
+                    {% for post in posts %}
+                        <div class="col-md-6 col-lg-4">
+                            <article class="blog-card">
+                                {% if post.category is defined %}
+                                    <span class="category-badge">
+                                        {{ categories[post.category]|trans }}
                                     </span>
-                                    <a href="{{ path('app_blog_show', {'slug': post.slug}) }}" 
-                                       class="btn btn-primary btn-sm">
-                                        {{ 'blog.read_more'|trans }}
-                                    </a>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                {% else %}
-                    <div class="col-12">
-                        <div class="alert alert-info text-center">
-                            {{ 'blog.search.no_results'|trans }}
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+                                {% endif %}
 
-            <!-- Pagination -->
-            <div class="d-flex justify-content-center mt-4">
-                {{ knp_pagination_render(posts) }}
+                                {% if post.image_path is defined %}
+                                    <img src="{{ '/uploads/blog/' ~ post.image_path }}" 
+                                         class="card-img-top" 
+                                         alt="{{ post.title(app.request.locale) }}"
+                                         loading="lazy">
+                                {% endif %}
+
+                                <div class="card-body">
+                                    <h2 class="card-title">{{ post.title(app.request.locale) }}</h2>
+                                    <p class="card-text">{{ post.excerpt(app.request.locale) }}</p>
+                                    <div class="card-meta">
+                                        <span>
+                                            <i class="bi bi-calendar-event"></i>
+                                            {{ post.publishedAt|date('d.m.Y') }}
+                                        </span>
+                                        <a href="{{ path('app_blog_show', {'slug': post.slug}) }}" 
+                                           class="btn btn-primary btn-sm">
+                                            {{ 'blog.read_more'|trans }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    {% else %}
+                        <div class="col-12">
+                            <div class="alert alert-info text-center">
+                                <div class="no-results-icon">
+                                    <i class="bi bi-journal-text"></i>
+                                </div>
+                                <h3>{{ 'blog.search.no_results'|trans }}</h3>
+                                <p>{{ 'blog.search.no_results_text'|trans }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if posts.pageCount > 1 %}
+                    <div class="d-flex justify-content-center mt-5">
+                        {{ knp_pagination_render(posts) }}
+                    </div>
+                {% endif %}
             </div>
-        </div>
-    </section>
-{% endblock %} 
+        </section>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('blog') }}
+{% endblock %}

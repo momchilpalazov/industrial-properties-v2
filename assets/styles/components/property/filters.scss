@@ -19,17 +19,25 @@
         position: relative;
         z-index: 100; /* Увеличаваме z-index от 10 на 100 */
 
-        &::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(45deg, #3498db, #2980b9);
-            border-radius: 2px;
-        }
-    }    p {
+
+    }
+
+    /* FORCE REMOVE ALL H1, H2 & H4 UNDERLINES */
+    h1::after,
+    h1::before,
+    h2::after,
+    h2::before,
+    h4::after,
+    h4::before {
+        display: none !important;
+        content: none !important;
+        background: none !important;
+        border: none !important;
+        border-bottom: none !important;
+        text-decoration: none !important;
+    }
+
+    p {
         font-size: 1rem;
         color: #5d6d7e;
         text-align: left;
@@ -138,11 +146,7 @@ button.filter-toggle {
         color: #2c3e50;
         margin-bottom: 0.5rem;
         
-        &::after {
-            width: 40px;
-            height: 3px;
-            bottom: -6px;
-        }
+
     }
     
     p {

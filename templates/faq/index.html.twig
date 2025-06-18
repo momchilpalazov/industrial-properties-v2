@@ -4,129 +4,25 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        .faq-hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('{{ asset('img/faq-hero.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 8rem 0;
-            margin-top: 56px;
-            text-align: center;
-        }
-        
-        .faq-hero h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        
-        .faq-hero p {
-            font-size: 1.25rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .faq-categories {
-            background: #f8f9fa;
-            padding: 2rem 0;
-            margin-bottom: 3rem;
-        }
-
-        .faq-categories .nav-link {
-            color: #6c757d;
-            padding: 0.5rem 1rem;
-            margin: 0 0.5rem;
-            border-radius: 2rem;
-            transition: all 0.3s;
-        }
-
-        .faq-categories .nav-link:hover,
-        .faq-categories .nav-link.active {
-            background: var(--bs-primary);
-            color: white;
-        }
-
-        .faq-search {
-            margin-bottom: 3rem;
-        }
-
-        .accordion-button:not(.collapsed) {
-            background-color: var(--bs-primary);
-            color: white;
-        }
-
-        .accordion-button:not(.collapsed)::after {
-            filter: brightness(0) invert(1);
-        }
-
-        .accordion-item {
-            border: none;
-            margin-bottom: 1rem;
-            border-radius: 0.5rem !important;
-            overflow: hidden;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        }
-
-        .accordion-button {
-            border-radius: 0.5rem;
-            padding: 1.25rem;
-            font-weight: 500;
-        }
-
-        .accordion-body {
-            padding: 1.5rem;
-            background: #f8f9fa;
-        }
-
-        .category-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            background: var(--bs-primary);
-            color: white;
-            margin-left: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .faq-hero {
-                padding: 6rem 0;
-            }
-            
-            .faq-hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .faq-hero p {
-                font-size: 1.1rem;
-            }
-
-            .faq-categories .nav {
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                padding-bottom: 1rem;
-            }
-
-            .faq-categories .nav-link {
-                white-space: nowrap;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    {{ encore_entry_link_tags('faq-index') }}
 {% endblock %}
 
 {% block body %}
     <!-- Hero Section -->
     <section class="faq-hero">
         <div class="container">
-            <h1>{{ 'faq.title'|trans }}</h1>
-            <p>{{ 'faq.subtitle'|trans }}</p>
+            <div class="section-header">
+                <h1>{{ 'faq.title'|trans }}</h1>
+                <p>{{ 'faq.subtitle'|trans }}</p>
+            </div>
         </div>
     </section>
 
     <!-- Categories -->
     <section class="faq-categories">
         <div class="container">
-            <nav class="nav nav-pills justify-content-center">
+            <nav class="nav nav-pills">
                 <a class="nav-link {% if not currentCategory %}active{% endif %}" 
                    href="{{ path('app_faq_index') }}">
                     {{ 'faq.categories.all'|trans }}
@@ -141,38 +37,19 @@
         </div>
     </section>
 
-    <!-- Search -->
-    <section class="faq-search">
+    <!-- FAQ Content -->
+    <section class="faq-content">
         <div class="container">
-            <form method="get" action="{{ path('app_faq_index') }}" class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <input type="text" 
-                               name="q" 
-                               class="form-control" 
-                               placeholder="{{ 'faq.search.placeholder'|trans }}"
-                               value="{{ searchQuery }}">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="bi bi-search"></i>
-                            {{ 'faq.search.submit'|trans }}
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </section>
-
-    <!-- FAQ Accordion -->
-    <section class="py-5">
-        <div class="container">
-            <div class="accordion" id="faqAccordion">
+            <div class="accordion faq-accordion" id="faqAccordion">
                 {% for faq in faqs %}
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" 
                                     type="button" 
                                     data-bs-toggle="collapse" 
-                                    data-bs-target="#faq{{ faq.id }}">
+                                    data-bs-target="#faq{{ faq.id }}"
+                                    aria-expanded="false"
+                                    aria-controls="faq{{ faq.id }}">
                                 {{ faq.question(app.request.locale) }}
                                 <span class="category-badge">
                                     {{ categories[faq.category]|trans }}
@@ -188,15 +65,24 @@
                         </div>
                     </div>
                 {% else %}
-                    <div class="alert alert-info text-center">
-                        {{ 'faq.search.no_results'|trans }}
+                    <div class="faq-no-results">
+                        <div class="no-results-icon">
+                            <i class="bi bi-question-circle"></i>
+                        </div>
+                        <h3>{{ 'faq.search.no_results'|trans }}</h3>
+                        <p>{{ 'faq.search.no_results_text'|trans }}</p>
                     </div>
                 {% endfor %}
             </div>
         </div>
     </section>
+{% endblock %}
 
-    <!-- FAQ Schema -->
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('faq-index') }}
+    
+    <!-- FAQ Schema for SEO -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -205,10 +91,10 @@
             {% for faq in faqs %}
             {
                 "@type": "Question",
-                "name": "{{ faq.question(app.request.locale) }}",
+                "name": "{{ faq.question(app.request.locale)|e('js') }}",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "{{ faq.answer(app.request.locale)|striptags }}"
+                    "text": "{{ faq.answer(app.request.locale)|striptags|e('js') }}"
                 }
             }{% if not loop.last %},{% endif %}
             {% endfor %}
@@ -216,35 +102,3 @@
     }
     </script>
 {% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Отваряне на акордеона ако има хеш в URL
-            const hash = window.location.hash;
-            if (hash) {
-                const targetAccordion = document.querySelector(hash);
-                if (targetAccordion) {
-                    const accordionButton = targetAccordion.querySelector('.accordion-button');
-                    if (accordionButton) {
-                        accordionButton.click();
-                        targetAccordion.scrollIntoView({ behavior: 'smooth' });
-                    }
-                }
-            }
-
-            // Добавяне на хеш в URL при отваряне на акордеон
-            document.querySelectorAll('.accordion-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    const accordionId = this.getAttribute('data-bs-target');
-                    if (!this.classList.contains('collapsed')) {
-                        window.location.hash = accordionId;
-                    } else {
-                        history.pushState('', document.title, window.location.pathname + window.location.search);
-                    }
-                });
-            });
-        });
-    </script>
-{% endblock %} 

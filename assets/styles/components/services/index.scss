@@ -1,0 +1,431 @@
+// Services Index Page Styles
+// Спазва дизайн системата на Industrial Properties v2
+
+// Variables (from design system)
+$primary-dark: #0f172a;
+$primary-medium: #1e293b;
+$primary-light: #334155;
+$secondary-blue: #3b82f6;
+$secondary-light: #e2e8f0;
+$secondary-bg: #f8fafc;
+$text-primary: #1a202c;
+$text-secondary: #64748b;
+$text-muted: #94a3b8;
+
+// Hero Section
+.services-hero {
+    background: linear-gradient(135deg, $primary-dark 0%, $primary-medium 50%, $primary-light 100%);
+    color: white;
+    padding: 5rem 0;
+    margin-top: 76px;
+    position: relative;
+    overflow: hidden;
+    text-align: center; // Допълнително осигуряване на центриране
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 80px,
+            rgba(255, 255, 255, 0.02) 80px,
+            rgba(255, 255, 255, 0.02) 81px
+        );
+        pointer-events: none;
+    }    .section-header {
+        text-align: center !important; // Форсиране на центриране
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+          h1 {
+            font-size: 3rem;
+            font-weight: 200;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            color: white;
+            text-align: center !important; // Форсиране на центриране за заглавието
+            
+            @media (max-width: 768px) {
+                font-size: 2.2rem;
+            }
+            
+            // Премахваме всички подчертавания
+            &::after,
+            &::before {
+                display: none !important;
+            }
+        }
+          p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            line-height: 1.7;
+            margin: 0 auto;
+            color: white;
+            text-align: center !important; // Форсиране на центриране за параграфа
+            max-width: 600px; // Ограничаване на ширината за по-добра четимост
+        }
+    }
+}
+
+// Services Content Section
+.services-content {
+    background: $secondary-bg;
+      .section-header {
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 200;
+            color: $text-primary;
+            margin-bottom: 1rem;
+            position: relative;
+            text-align: left;
+            
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: -12px;
+                left: 0;
+                width: 60px;
+                height: 3px;
+                background: linear-gradient(90deg, #1976d2, #ff6b35);
+                border-radius: 2px;
+            }
+            
+            @media (max-width: 768px) {
+                font-size: 2rem;
+            }
+        }
+        
+        p {
+            font-size: 1.1rem;
+            color: $text-secondary;
+            max-width: 600px;
+            margin: 0;
+            line-height: 1.6;
+            text-align: left;
+        }
+    }
+}
+
+// Service Card
+.service-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 1px solid $secondary-light;
+    position: relative;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, $secondary-blue, #1976d2, #ff6b35);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+        transform-origin: left;
+    }
+    
+    &:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        
+        &::before {
+            transform: scaleX(1);
+        }
+        
+        .service-icon {
+            transform: scale(1.1);
+            color: #ff6b35;
+        }
+    }
+}
+
+.service-card-inner {
+    padding: 2.5rem 2rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.service-icon-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.service-icon {
+    font-size: 3rem;
+    color: $secondary-blue;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.service-content {
+    flex-grow: 1;
+    margin-bottom: 2rem;
+}
+
+.service-title {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: $text-primary;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.service-description {
+    color: $text-secondary;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.service-features {
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+        
+        li {
+            display: flex;
+            align-items: center;
+            color: $text-secondary;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            
+            .material-icons {
+                font-size: 1.2rem;
+                color: #10b981;
+                margin-right: 0.5rem;
+                flex-shrink: 0;
+            }
+        }
+    }
+}
+
+.service-action {
+    margin-top: auto;
+}
+
+// Service Button
+.btn-service {
+    background: linear-gradient(135deg, $secondary-blue, #1976d2);
+    border: none;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        color: white;
+        
+        &::before {
+            left: 100%;
+        }
+    }
+    
+    .material-icons {
+        font-size: 1.2rem;
+    }
+}
+
+// CTA Section
+.services-cta {
+    background: linear-gradient(135deg, $primary-dark 0%, $primary-medium 100%);
+    color: white;
+    padding: 4rem 0;
+    position: relative;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 255, 255, 0.02) 2px,
+            rgba(255, 255, 255, 0.02) 4px
+        );
+        pointer-events: none;
+    }
+    
+    .cta-content {
+        position: relative;
+        z-index: 2;
+        
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            
+            @media (max-width: 768px) {
+                font-size: 1.8rem;
+                text-align: center;
+            }
+        }
+        
+        p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0;
+            
+            @media (max-width: 768px) {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+        }
+    }
+}
+
+.btn-cta {
+    background: #ff6b35;
+    border: 2px solid #ff6b35;
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background: white;
+        transition: width 0.3s ease;
+        z-index: -1;
+    }
+    
+    &:hover {
+        color: #ff6b35;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        
+        &::before {
+            width: 100%;
+        }
+    }
+    
+    .material-icons {
+        font-size: 1.3rem;
+    }
+    
+    @media (max-width: 991px) {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .services-hero {
+        padding: 4rem 0;
+        
+        .section-header h1 {
+            font-size: 2.2rem;
+        }
+    }
+    
+    .service-card-inner {
+        padding: 2rem 1.5rem;
+    }
+    
+    .services-cta {
+        padding: 3rem 0;
+        text-align: center;
+    }
+}
+
+// Animation utilities
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.service-card {
+    animation: fadeInUp 0.6s ease-out;
+    
+    &:nth-child(1) { animation-delay: 0.1s; }
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.3s; }
+    &:nth-child(4) { animation-delay: 0.4s; }
+    &:nth-child(5) { animation-delay: 0.5s; }
+    &:nth-child(6) { animation-delay: 0.6s; }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+    .service-card,
+    .btn-service,
+    .btn-cta {
+        animation: none;
+        transition: none;
+    }
+    
+    .service-card:hover {
+        transform: none;
+    }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+    .service-card {
+        border: 2px solid $text-primary;
+        
+        &:hover {
+            border-color: $secondary-blue;
+        }
+    }
+    
+    .btn-service,
+    .btn-cta {
+        border: 2px solid currentColor;
+    }
+}

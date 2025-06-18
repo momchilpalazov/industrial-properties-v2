@@ -25,12 +25,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 isScrolling = true;
             }
         });
-    }
-    
-    // Smooth scrolling for anchor links
+    }    // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
-            const target = document.querySelector(this.getAttribute('href'));
+            const href = this.getAttribute('href');
+            // Skip empty anchors or just '#'
+            if (!href || href === '#') {
+                return;
+            }
+            
+            const target = document.querySelector(href);
             if (target) {
                 e.preventDefault();
                 const navbarHeight = navbar ? navbar.offsetHeight : 0;

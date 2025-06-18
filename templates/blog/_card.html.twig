@@ -1,19 +1,35 @@
-<div class="col-lg-4">
-    <div class="card blog-card h-100">
-        <div class="position-relative">
-            <img src="{{ post.image_path ? '/uploads/blog/' ~ post.image_path : '/assets/images/no-image.jpg' }}" 
-                 class="card-img-top" alt="{{ post.post_title }}"
-                 style="height: 200px; object-fit: cover;">
-            <div class="post-date">
-                {{ post.created_at|date('d M Y') }}
+<div class="col-md-6 col-lg-4">
+    <article class="blog-card">
+        {% if post.category is defined %}
+            <span class="category-badge">
+                {{ categories[post.category]|trans }}
+            </span>
+        {% endif %}
+
+        {% if post.image_path is defined %}
+            <img src="{{ '/uploads/blog/' ~ post.image_path }}" 
+                 class="card-img-top" 
+                 alt="{{ post.title(app.request.locale) }}"
+                 loading="lazy">
+        {% else %}
+            <div class="card-img-placeholder">
+                <i class="bi bi-journal-text"></i>
+            </div>
+        {% endif %}
+
+        <div class="card-body">
+            <h2 class="card-title">{{ post.title(app.request.locale) }}</h2>
+            <p class="card-text">{{ post.excerpt(app.request.locale) }}</p>
+            <div class="card-meta">
+                <span class="card-date">
+                    <i class="bi bi-calendar-event"></i>
+                    {{ post.publishedAt|date('d.m.Y') }}
+                </span>
+                <a href="{{ path('app_blog_show', {'slug': post.slug}) }}" 
+                   class="btn btn-primary btn-sm">
+                    {{ 'blog.read_more'|trans }}
+                </a>
             </div>
         </div>
-        <div class="card-body p-4">
-            <h5 class="card-title h4 mb-3">{{ post.post_title }}</h5>
-            <p class="card-text">{{ post.post_content|striptags|slice(0, 150) }}...</p>
-            <a href="/blog/{{ post.slug }}" class="btn btn-outline-primary">
-                {{ translations.blog.read_more }}
-            </a>
-        </div>
-    </div>
-</div> 
+    </article>
+</div>

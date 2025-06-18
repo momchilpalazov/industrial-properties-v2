@@ -131,8 +131,12 @@ services.financial.title: 'Financial Consulting'
 services.financial.description: 'We offer expert financial consulting for budgeting, financing, and investment strategies in the industrial property sector.'
 services.consulting.title: 'Business Consulting'
 services.consulting.description: 'Our business consultants help you develop successful strategies for growing your business in the industrial sector.'
+services.cta.title: 'Need personalized consultation?'
+services.cta.subtitle: 'Contact us and we will find the best solution for your business'
+services.cta.button: 'Get in Touch'
 blog.title: Blog
 blog.subtitle: 'Latest news and articles from the world of industrial properties'
+blog.categories.title: Categories
 blog.categories.all: 'All Categories'
 blog.categories.industry_news: 'Industry News'
 blog.categories.market_trends: 'Market Trends'
@@ -221,7 +225,6 @@ faq.admin.back_to_list: 'Back to list'
 faq.admin.success_created: 'Question was successfully created'
 faq.admin.success_updated: 'Question was successfully updated'
 faq.admin.success_deleted: 'Question was successfully deleted'
-faq.categories.general: 'General Questions'
 contact.title: 'Contact Us'
 contact.info: 'Contact Information'
 contact.address: Address
@@ -239,35 +242,131 @@ contact.form.message: Message
 contact.form.submit: Send
 contact.form.success: 'Your message has been sent successfully. We will contact you soon.'
 contact.form.error: 'An error occurred while sending your message. Please try again.'
-property.brochure.filename: __property.brochure.filename
-auctions.title: __auctions.title
-property.no_type: __property.no_type
-properties.list.no_results: __properties.list.no_results
-app.title: __app.title
-app.tagline: __app.tagline
-faq.title: __faq.title
-faq.subtitle: __faq.subtitle
-faq.categories.all: __faq.categories.all
-faq.search.placeholder: __faq.search.placeholder
-faq.search.submit: __faq.search.submit
-faq.search.no_results: __faq.search.no_results
-property.contact.title: __property.contact.title
-property.contact.phone: __property.contact.phone
-property.contact.email: __property.contact.email
-property.brochure.generated_at: __property.brochure.generated_at
-filters.show: __filters.show
-property.featured: __property.featured
-property.inquiry.submit: __property.inquiry.submit
-properties.list.try_different_filters: __properties.list.try_different_filters
-property.brochure.download: __property.brochure.download
-renting.filters.button: __renting.filters.button
-renting.filters.title: __renting.filters.title
-renting.filters.type: __renting.filters.type
-renting.filters.price_min: __renting.filters.price_min
-renting.filters.price_max: __renting.filters.price_max
-renting.filters.area_min: __renting.filters.area_min
-renting.filters.area_max: __renting.filters.area_max
-renting.filters.actions: __renting.filters.actions
-renting.filters.search: __renting.filters.search
-renting.filters.reset: __renting.filters.reset
-renting.no_results: __renting.no_results
+property.brochure.filename: 'Property Brochure'
+auctions.title: 'Auctions'
+property.no_type: 'Property Type Not Specified'
+properties.list.no_results: 'No properties found'
+app.title: 'Industrial Properties'
+app.tagline: 'Your Partner in Industrial Real Estate'
+
+# Blog Translations
+blog:
+  title: 'Blog'
+  subtitle: 'Latest news and articles from the world of industrial properties'
+  categories:
+    title: 'Categories'
+    all: 'All Categories'
+    industry_news: 'Industry News'
+    market_trends: 'Market Trends'
+    property_management: 'Property Management'
+    investment: 'Investment'
+    legal: 'Legal Issues'
+    advice: 'Useful Tips'
+    industry_articles: 'Industry Articles'
+    sector_news: 'Sector News'
+    investor_tips: 'Investor Tips'
+  search:
+    placeholder: 'Search the blog...'
+    submit: 'Search'
+    no_results: 'No results found. Please try a different search.'
+  read_more: 'Read More'
+  latest_posts: 'Latest Posts'
+  back_to_blog: 'Back to Blog'
+  meta:
+    share: 'Share this article'
+  social:
+    facebook: 'Share on Facebook'
+    linkedin: 'Share on LinkedIn'
+    twitter: 'Share on Twitter'
+  admin:
+    title: 'Blog'
+    new_post: 'New Post'
+    published: 'Published'
+    draft: 'Draft'
+    edit: 'Edit Post'
+    delete: 'Delete'
+    confirm_delete: 'Are you sure you want to delete this post?'
+    title_field: 'Title'
+    content: 'Content'
+    excerpt: 'Excerpt'
+    category: 'Category'
+    image: 'Image'
+    date: 'Date'
+    save: 'Save'
+    back_to_list: 'Back to list'
+    success_created: 'Post was successfully created'
+    success_updated: 'Post was successfully updated'
+    success_deleted: 'Post was successfully deleted'
+    featured_image: 'Featured Image'
+    seo_title: 'SEO Title'
+    seo_description: 'SEO Description'
+    seo_keywords: 'SEO Keywords'
+    author: 'Author'
+    status: 'Status'
+    created_at: 'Created at'
+    updated_at: 'Updated at'
+    published_at: 'Published at'
+    edit_post: 'Edit'
+    publish: 'Publish'
+    hide: 'Hide'
+    publish_success: 'Post was successfully published'
+    hide_success: 'Post was successfully hidden'
+
+# FAQ Translations
+faq:
+  title: 'Frequently Asked Questions'
+  subtitle: 'Find answers to the most frequently asked questions about our services and properties'
+  categories:
+    all: 'All Categories'
+    general: 'General Questions'
+    buying: 'Property Purchase'
+    renting: 'Property Rental'
+    selling: 'Property Sale'
+    legal: 'Legal Questions'
+    financing: 'Financing'
+    property_info: 'Property Information'
+    rent_sale: 'Rent & Sale'
+  search:
+    placeholder: 'Search for a question...'
+    submit: 'Search'
+    no_results: 'No questions found matching your search'
+    no_results_text: 'Please try a different category or contact us directly.'
+  admin:
+    title: 'Frequently Asked Questions'
+    new: 'New Question'
+    active: 'Active'
+    edit: 'Edit Question'
+    save: 'Save'
+    delete: 'Delete'
+    confirm_delete: 'Are you sure you want to delete this question?'
+    question: 'Question'
+    answer: 'Answer'
+    category: 'Category'
+    order: 'Order'
+    created_at: 'Created at'
+    updated_at: 'Updated at'
+    back_to_list: 'Back to list'
+    success_created: 'Question was successfully created'
+    success_updated: 'Question was successfully updated'
+    success_deleted: 'Question was successfully deleted'
+
+property.contact.title: 'Contact Information'
+property.contact.phone: 'Phone'
+property.contact.email: 'Email'
+property.brochure.generated_at: 'Generated at'
+filters.show: 'Show Filters'
+property.featured: 'Featured'
+property.inquiry.submit: 'Submit Inquiry'
+properties.list.try_different_filters: 'Try different filters'
+property.brochure.download: 'Download Brochure'
+renting.filters.button: 'Filters'
+renting.filters.title: 'Filter Properties'
+renting.filters.type: 'Property Type'
+renting.filters.price_min: 'Min Price'
+renting.filters.price_max: 'Max Price'
+renting.filters.area_min: 'Min Area'
+renting.filters.area_max: 'Max Area'
+renting.filters.actions: 'Actions'
+renting.filters.search: 'Search Properties'
+renting.filters.reset: 'Reset Filters'
+renting.no_results: 'No properties found matching your criteria'
