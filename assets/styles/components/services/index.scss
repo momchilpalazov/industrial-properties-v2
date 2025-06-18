@@ -1,5 +1,5 @@
 // Services Index Page Styles
-// Спазва дизайн системата на Industrial Properties v2
+// Следва консистентната дизайн система на Industrial Properties v2
 
 // Variables (from design system)
 $primary-dark: #0f172a;
@@ -14,13 +14,13 @@ $text-muted: #94a3b8;
 
 // Hero Section
 .services-hero {
-    background: linear-gradient(135deg, $primary-dark 0%, $primary-medium 50%, $primary-light 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
     color: white;
-    padding: 5rem 0;
+    padding: 8rem 0 6rem;
     margin-top: 76px;
     position: relative;
     overflow: hidden;
-    text-align: center; // Допълнително осигуряване на центриране
+    text-align: center;
     
     &::before {
         content: '';
@@ -37,23 +37,23 @@ $text-muted: #94a3b8;
             rgba(255, 255, 255, 0.02) 81px
         );
         pointer-events: none;
-    }    .section-header {
-        text-align: center !important; // Форсиране на центриране
+    }
+
+    .section-header {
+        text-align: center;
         max-width: 800px;
         margin: 0 auto;
         position: relative;
         z-index: 2;
-          h1 {
-            font-size: 3rem;
+        
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
             font-weight: 200;
             margin-bottom: 1.5rem;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             color: white;
-            text-align: center !important; // Форсиране на центриране за заглавието
-            
-            @media (max-width: 768px) {
-                font-size: 2.2rem;
-            }
+            letter-spacing: -0.02em;
+            line-height: 1.1;
             
             // Премахваме всички подчертавания
             &::after,
@@ -61,65 +61,61 @@ $text-muted: #94a3b8;
                 display: none !important;
             }
         }
-          p {
+        
+        p {
             font-size: 1.2rem;
             opacity: 0.9;
             line-height: 1.7;
             margin: 0 auto;
             color: white;
-            text-align: center !important; // Форсиране на центриране за параграфа
-            max-width: 600px; // Ограничаване на ширината за по-добра четимост
+            max-width: 600px;
+            font-weight: 300;
         }
     }
 }
 
 // Services Content Section
 .services-content {
-    background: $secondary-bg;
-      .section-header {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    padding: 6rem 0;
+    
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+        
         h2 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 4vw, 2.5rem);
             font-weight: 200;
-            color: $text-primary;
+            color: #2c3e50;
             margin-bottom: 1rem;
             position: relative;
-            text-align: left;
             
-            &::after {
-                content: '';
-                position: absolute;
-                bottom: -12px;
-                left: 0;
-                width: 60px;
-                height: 3px;
-                background: linear-gradient(90deg, #1976d2, #ff6b35);
-                border-radius: 2px;
-            }
-            
-            @media (max-width: 768px) {
-                font-size: 2rem;
+            // Премахваме всички подчертавания
+            &::after,
+            &::before {
+                display: none !important;
             }
         }
         
         p {
             font-size: 1.1rem;
-            color: $text-secondary;
+            color: #64748b;
             max-width: 600px;
-            margin: 0;
+            margin: 0 auto;
             line-height: 1.6;
-            text-align: left;
+            font-weight: 300;
         }
     }
 }
 
 // Service Card
 .service-card {
-    background: white;
-    border-radius: 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    border: 1px solid $secondary-light;
+    border: 1px solid #e2e8f0;
     position: relative;
     
     &::before {
@@ -129,7 +125,7 @@ $text-muted: #94a3b8;
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, $secondary-blue, #1976d2, #ff6b35);
+        background: linear-gradient(90deg, #34495e, #2c3e50);
         transform: scaleX(0);
         transition: transform 0.4s ease;
         transform-origin: left;
@@ -138,20 +134,22 @@ $text-muted: #94a3b8;
     &:hover {
         transform: translateY(-8px);
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        border-color: #34495e;
         
         &::before {
             transform: scaleX(1);
         }
         
         .service-icon {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
             transform: scale(1.1);
-            color: #ff6b35;
         }
     }
 }
 
 .service-card-inner {
-    padding: 2.5rem 2rem;
+    padding: 2.5rem;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -159,14 +157,20 @@ $text-muted: #94a3b8;
 }
 
 .service-icon-wrapper {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .service-icon {
-    font-size: 3rem;
-    color: $secondary-blue;
+    font-size: 3.5rem;
+    color: #34495e;
+    background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s ease;
-    display: inline-block;
 }
 
 .service-content {
@@ -175,17 +179,18 @@ $text-muted: #94a3b8;
 }
 
 .service-title {
-    font-size: 1.4rem;
-    font-weight: 500;
-    color: $text-primary;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
     margin-bottom: 1rem;
     line-height: 1.4;
 }
 
 .service-description {
-    color: $text-secondary;
+    color: #64748b;
     line-height: 1.6;
     margin-bottom: 1.5rem;
+    font-weight: 300;
 }
 
 .service-features {
@@ -198,14 +203,15 @@ $text-muted: #94a3b8;
         li {
             display: flex;
             align-items: center;
-            color: $text-secondary;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            gap: 0.75rem;
             
             .material-icons {
                 font-size: 1.2rem;
-                color: #10b981;
-                margin-right: 0.5rem;
+                color: #34495e;
                 flex-shrink: 0;
             }
         }
@@ -214,55 +220,14 @@ $text-muted: #94a3b8;
 
 .service-action {
     margin-top: auto;
-}
-
-// Service Button
-.btn-service {
-    background: linear-gradient(135deg, $secondary-blue, #1976d2);
-    border: none;
-    color: white;
-    padding: 0.75rem 2rem;
-    border-radius: 50px;
-    font-weight: 500;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s ease;
-    }
-    
-    &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-        color: white;
-        
-        &::before {
-            left: 100%;
-        }
-    }
-    
-    .material-icons {
-        font-size: 1.2rem;
-    }
+    text-align: center;
 }
 
 // CTA Section
 .services-cta {
-    background: linear-gradient(135deg, $primary-dark 0%, $primary-medium 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
     color: white;
-    padding: 4rem 0;
+    padding: 6rem 0;
     position: relative;
     
     &::before {
@@ -287,13 +252,16 @@ $text-muted: #94a3b8;
         z-index: 2;
         
         h2 {
-            font-size: 2.2rem;
-            font-weight: 300;
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            font-weight: 200;
             margin-bottom: 1rem;
+            color: white;
+            letter-spacing: -0.02em;
             
-            @media (max-width: 768px) {
-                font-size: 1.8rem;
-                text-align: center;
+            // Премахваме всички подчертавания
+            &::after,
+            &::before {
+                display: none !important;
             }
         }
         
@@ -301,8 +269,77 @@ $text-muted: #94a3b8;
             font-size: 1.1rem;
             opacity: 0.9;
             margin: 0;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+    }
+}
+
+// CTA Button специфичен стил
+.btn-cta {
+    border-color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    
+    &::before {
+        background: rgba(255, 255, 255, 0.2);
+    }
+    
+    &:hover {
+        color: #0f172a;
+        border-color: white;
+        background: rgba(255, 255, 255, 0.95);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        
+        &::before {
+            background: white;
+        }
+    }
+    
+    .material-icons {
+        font-size: 1.3rem;
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .services-hero {
+        padding: 6rem 0 4rem;
+    }
+    
+    .services-content {
+        padding: 4rem 0;
+    }
+    
+    .service-card-inner {
+        padding: 2rem;
+    }
+    
+    .service-icon {
+        font-size: 3rem;
+        width: 60px;
+        height: 60px;
+    }
+    
+    .services-cta {
+        padding: 4rem 0;
+        text-align: center;
+        
+        .cta-content {
+            h2 {
+                text-align: center;
+                margin-bottom: 1rem;
+            }
             
-            @media (max-width: 768px) {
+            p {
                 text-align: center;
                 margin-bottom: 2rem;
             }
@@ -310,70 +347,24 @@ $text-muted: #94a3b8;
     }
 }
 
-.btn-cta {
-    background: #ff6b35;
-    border: 2px solid #ff6b35;
-    color: white;
-    padding: 1rem 2.5rem;
-    border-radius: 50px;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 0;
-        height: 100%;
-        background: white;
-        transition: width 0.3s ease;
-        z-index: -1;
-    }
-    
-    &:hover {
-        color: #ff6b35;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
-        
-        &::before {
-            width: 100%;
-        }
-    }
-    
-    .material-icons {
-        font-size: 1.3rem;
-    }
-    
-    @media (max-width: 991px) {
-        width: 100%;
-        justify-content: center;
-    }
-}
-
-// Responsive adjustments
-@media (max-width: 768px) {
+@media (max-width: 576px) {
     .services-hero {
-        padding: 4rem 0;
-        
-        .section-header h1 {
-            font-size: 2.2rem;
-        }
+        padding: 4rem 0 3rem;
     }
     
     .service-card-inner {
-        padding: 2rem 1.5rem;
+        padding: 1.5rem;
     }
     
-    .services-cta {
-        padding: 3rem 0;
-        text-align: center;
+    .service-title {
+        font-size: 1.3rem;
+    }
+    
+    .btn-cta {
+        padding: 0.9rem 2rem;
+        font-size: 1rem;
+        width: 100%;
+        justify-content: center;
     }
 }
 
@@ -390,7 +381,8 @@ $text-muted: #94a3b8;
 }
 
 .service-card {
-    animation: fadeInUp 0.6s ease-out;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
     
     &:nth-child(1) { animation-delay: 0.1s; }
     &:nth-child(2) { animation-delay: 0.2s; }
@@ -402,11 +394,9 @@ $text-muted: #94a3b8;
 
 // Accessibility improvements
 @media (prefers-reduced-motion: reduce) {
-    .service-card,
-    .btn-service,
-    .btn-cta {
+    .service-card {
         animation: none;
-        transition: none;
+        opacity: 1;
     }
     
     .service-card:hover {
@@ -417,15 +407,10 @@ $text-muted: #94a3b8;
 // High contrast mode support
 @media (prefers-contrast: high) {
     .service-card {
-        border: 2px solid $text-primary;
+        border: 2px solid #2c3e50;
         
         &:hover {
-            border-color: $secondary-blue;
+            border-color: #34495e;
         }
-    }
-    
-    .btn-service,
-    .btn-cta {
-        border: 2px solid currentColor;
     }
 }

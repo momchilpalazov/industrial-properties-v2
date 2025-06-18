@@ -1,322 +1,329 @@
-// Contact Page Styles
+// Contact Page Styles - Industrial Properties v2
+// Консистентна дизайн система с останалите компоненти
 
-// Дефиниране на цветове и променливи
-$primary: #1976d2;
-$secondary: #6c757d;
+// Industrial color palette (консистентно с FAQ, About, Services, Blog)
+$industrial-dark: #212529;
+$industrial-medium: #34495e;
+$industrial-light: #ecf0f1;
+$white: #ffffff;
+$text-primary: #495057;
+$text-secondary: #6c757d;
+$text-muted: #94a3b8;
+$border-color: #dee2e6;
+$bg-light: #f8f9fa;
 $success: #198754;
-$info: #0dcaf0;
-$warning: #ffc107;
 $danger: #dc3545;
-$light: #f8f9fa;
-$dark: #343a40;
 
-$white: #fff;
-$gray-100: #f8f9fa;
-$gray-200: #e9ecef;
-$gray-300: #dee2e6;
-$gray-400: #ced4da;
-$gray-500: #adb5bd;
-$gray-600: #6c757d;
-$gray-700: #495057;
-$gray-800: #343a40;
-$gray-900: #212529;
-$black: #000;
+// Global contact page styles
+body.contact-page {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);   
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding-top: 76px; // Compensation for fixed navbar
+}
 
-.contact-page {
-  // Animations
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  @keyframes pulseIcon {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-  }
+// Animations
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-  @keyframes floatIn {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
+@keyframes pulseIcon {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes floatIn {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
 
   // Hero section
   .contact-hero {
-    padding: 5rem 0;
-    background: linear-gradient(135deg, rgba(25, 118, 210, 0.8), rgba(33, 150, 243, 0.6)), url('../../../images/contact-bg.jpg') no-repeat center center;
-    background-size: cover;
-    color: white;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  color: white;
+  padding: 8rem 0 6rem;
+  position: relative;
+  overflow: hidden;
+  margin-top: 76px;
+  text-align: center;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    z-index: 1;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .container {
     position: relative;
-    overflow: hidden;
-    margin-bottom: 3rem;
+    z-index: 2;
+  }
+  
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 200;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+    &::after,
+    &::before {
+      display: none !important;
+    }
+  }
+  
+  .lead {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-weight: 300;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+    color: white !important;
+  }
+}
+
+// Content sections
+.content-section {
+  padding: 5rem 0;
+  
+  &.bg-light {
+    background: $bg-light;
+    position: relative;
     
-    &:before {
-      content: "";
+    &::before {
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      bottom: 0;
-      background: url('../../../images/pattern.png');
-      opacity: 0.1;
-      z-index: 1;
-    }
-    
-    .container {
-      position: relative;
-      z-index: 2;
-    }
-    
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    p {
-      font-size: 1.2rem;
-      max-width: 600px;
-      opacity: 0.9;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, $industrial-medium, transparent);
     }
   }
+}
+
+// Contact info cards
+.contact-info-card {
+  background: linear-gradient(135deg, $white 0%, $bg-light 100%);
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border: 1px solid $border-color;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   
-  // Основни стилове
-  .heading-divider {
-    height: 4px;
-    width: 60px;
-    background-color: $primary;
-    margin-bottom: 2rem;
-  }
-  
-  // Контактна информация
-  .contact-info-card {
-    transition: all 0.3s ease;
-    overflow: hidden;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
     height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(44, 62, 80, 0.1), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: $industrial-medium;
     
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    &::before {
+      left: 100%;
+    }
+    
+    .contact-info-icon {
+      transform: scale(1.2) rotate(5deg);
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      animation: pulseIcon 1s ease infinite;
     }
   }
   
-  .contact-info-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    transition: all 0.3s ease;
-    
-    &:hover {
-      .contact-info-icon {
-        animation: pulseIcon 1s ease infinite;
-        background-color: darken($primary, 10%);
-      }
-    }
+  h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $industrial-dark;
+    margin-bottom: 1rem;
   }
   
-  .contact-info-icon {
-    width: 56px;
-    height: 56px;
-    background-color: $primary;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1.2rem;
-    font-size: 1.4rem;
-    box-shadow: 0 4px 8px rgba($primary, 0.3);
-    transition: all 0.3s ease;
-  }
-  
-  .contact-info-content {
-    flex: 1;
+  p {
+    color: $text-secondary;
+    line-height: 1.6;
+    margin-bottom: 0;
     
-    h5 {
-      margin-bottom: 0.4rem;
-      font-weight: 600;
-      color: $gray-800;
-    }
-    
-    p {
-      margin-bottom: 0;
-      color: $gray-600;
-      
-      a {
-        color: $primary;
-        text-decoration: none;
-        transition: color 0.2s ease;
-        
-        &:hover {
-          color: darken($primary, 15%);
-          text-decoration: underline;
-        }
-      }
-    }
-  }
-  
-  // Социални медии
-  .social-media-links {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-    
-    .social-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      background-color: #f5f5f5;
-      color: $gray-700;
+    a {
+      color: $industrial-medium;
       text-decoration: none;
+      transition: color 0.2s ease;
       
       &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-      }
-      
-      &.facebook {
-        &:hover {
-          background-color: #3b5998;
-          color: white;
-        }
-      }
-      
-      &.linkedin {
-        &:hover {
-          background-color: #0077b5;
-          color: white;
-        }
-      }
-      
-      &.twitter {
-        &:hover {
-          background-color: #1da1f2;
-          color: white;
-        }
-      }
-      
-      i {
-        font-size: 1.2rem;
+        color: $industrial-dark;
+        text-decoration: underline;
       }
     }
   }
+}
+
+.contact-info-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+  color: white;
+  font-size: 2rem;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 16px rgba(44, 62, 80, 0.3);
+}
+
+// Contact form
+.contact-form-card {
+  background: linear-gradient(135deg, $white 0%, $bg-light 100%);
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid $border-color;
   
-  // Форма за контакт
-  .contact-form-card {
-    border: none;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    
-    &:hover {
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-    
-    .card-body {
-      padding: 2rem;
-    }
-    
-    .card-title {
-      font-weight: 700;
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-      color: $gray-800;
-      position: relative;
-      
-      &:after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -10px;
-        width: 50px;
-        height: 3px;
-        background-color: $primary;
-      }
-    }
-  }
-  
-  .form-control {
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    border: 1px solid $gray-300;
-    font-size: 1rem;
-    transition: all 0.2s ease-in-out;
-    
-    &:focus {
-      border-color: $primary;
-      box-shadow: 0 0 0 0.25rem rgba($primary, 0.25);
-    }
-  }
-  
-  .form-label {
-    font-weight: 500;
-    color: $gray-700;
-    margin-bottom: 0.5rem;
-  }
-  
-  .form-group {
-    margin-bottom: 1.5rem;
-  }
-  
-  .btn-submit {
-    background: linear-gradient(135deg, $primary, darken($primary, 10%));
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
+  h2 {
+    font-size: 2rem;
     font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba($primary, 0.3);
+    color: $industrial-dark;
+    margin-bottom: 2rem;
+    text-align: center;
+    position: relative;
     
-    &:hover {
-      background: linear-gradient(135deg, darken($primary, 5%), darken($primary, 15%));
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba($primary, 0.4);
-    }
-    
-    &:active {
-      transform: translateY(1px);
-      box-shadow: 0 2px 5px rgba($primary, 0.2);
-    }
-    
-    .spinner-border {
-      width: 1.2rem;
-      height: 1.2rem;
-      margin-right: 0.5rem;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      border-radius: 2px;
     }
   }
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  font-weight: 500;
+  color: $text-primary;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.form-control {
+  border: 2px solid $border-color;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
   
-  // Карта
-  .map-container {
-    height: 450px;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    
-    &-wrapper {
-      margin-top: 2rem;
-    }
+  &:focus {
+    outline: none;
+    border-color: $industrial-medium;
+    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
   }
   
-  // Анимации за секциите
-  .animated-section {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.6s ease;
-    
-    &.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  &::placeholder {
+    color: $text-muted;
+  }
+}
+
+// Map section
+.map-section {
+  position: relative;
+  overflow: hidden;
+  
+  #home-contact-map {
+    width: 100%;
+    height: 500px;
+    border-radius: 0;
+  }
+}
+
+.map-overlay {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-width: 300px;
+  border: 1px solid $border-color;
+  
+  h5 {
+    font-weight: 600;
+    color: $industrial-dark;
+    margin-bottom: 1rem;
   }
   
-  // Уведомления
-  .alert-float {
+  p {
+    color: $text-secondary;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Alerts
+.alert {
+  border-radius: 12px;
+  border: none;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  
+  &-success {
+    background: rgba($success, 0.1);
+    color: darken($success, 10%);
+    border-left: 4px solid $success;
+  }
+  
+  &-danger {
+    background: rgba($danger, 0.1);
+    color: darken($danger, 10%);
+    border-left: 4px solid $danger;
+  }
+  
+  &-float {
     position: fixed;
     top: 20px;
     right: 20px;
@@ -325,33 +332,165 @@ $black: #000;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     animation: floatIn 0.3s ease forwards;
   }
+}
+
+// Social media links
+.social-media-links {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
   
-  // Респонсивност
-  @media (max-width: 767px) {
-    .contact-hero {
-      padding: 3rem 0;
-      
-      h1 {
-        font-size: 2rem;
-      }
-      
-      p {
-        font-size: 1rem;
+  .social-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    background-color: $bg-light;
+    color: $text-secondary;
+    text-decoration: none;
+    border: 1px solid $border-color;
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    &.facebook {
+      &:hover {
+        background-color: #3b5998;
+        color: white;
+        border-color: #3b5998;
       }
     }
     
-    .contact-info-item {
-      margin-bottom: 1.2rem;
+    &.linkedin {
+      &:hover {
+        background-color: #0077b5;
+        color: white;
+        border-color: #0077b5;
+      }
     }
     
-    .contact-info-icon {
-      width: 50px;
-      height: 50px;
+    &.twitter {
+      &:hover {
+        background-color: #1da1f2;
+        color: white;
+        border-color: #1da1f2;
+      }
+    }
+    
+    i {
       font-size: 1.2rem;
     }
+  }
+}
+
+// Animation utilities
+.animated-section {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+  animation: fadeIn 0.6s ease-out;
+  animation-fill-mode: both;
+  
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  &:nth-child(1) { animation-delay: 0.1s; }
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.3s; }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  body.contact-page {
+    padding-top: 60px;
+  }
+  
+  .contact-hero {
+    padding: 6rem 0 4rem;
+    margin-top: 60px;
+  }
+  
+  .content-section {
+    padding: 3rem 0;
+  }
+  
+  .contact-info-card,
+  .contact-form-card {
+    margin-bottom: 2rem;
+    padding: 2rem 1.5rem;
+  }
+  
+  .contact-info-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 1.8rem;
+  }
+  
+  .map-overlay {
+    position: static;
+    margin: 1rem;
+    margin-bottom: 0;
+    max-width: none;
+  }
+  
+  #home-contact-map {
+    height: 400px;
+  }
+}
+
+@media (max-width: 576px) {
+  .contact-info-card,
+  .contact-form-card {
+    padding: 1.5rem;
+  }
+  
+  .contact-info-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+  
+  #home-contact-map {
+    height: 350px;
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .contact-info-card,
+  .contact-info-icon,
+  .social-btn {
+    animation: none;
+    transition: none;
     
-    .map-container {
-      height: 300px;
+    &:hover {
+      transform: none;
+    }
+  }
+  
+  .animated-section {
+    animation: none;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .contact-info-card,
+  .contact-form-card,
+  .map-overlay {
+    border: 2px solid $industrial-dark;
+    
+    &:hover {
+      border-color: $industrial-medium;
     }
   }
 } 

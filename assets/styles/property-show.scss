@@ -799,6 +799,44 @@ h1 {
 }
 
 /* Print Styles - Consolidated */
+/* No image placeholder styles */
+.no-image-placeholder {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border: 2px dashed #dee2e6 !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%) !important;
+        border-color: #adb5bd !important;
+    }
+    
+    .text-muted {
+        color: #6c757d !important;
+        font-weight: 500;
+        
+        i {
+            display: block;
+            margin-bottom: 0.5rem;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+        
+        p {
+            margin: 0;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+    }
+    
+    &:hover .text-muted i {
+        opacity: 0.8;
+    }
+}
+
 @media print {
     /* Показване на хедъра за принтиране */
     .print-header {

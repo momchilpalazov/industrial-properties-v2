@@ -104,17 +104,29 @@
     .dropdown-toggle {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        letter-spacing: 0.1em;
+        padding: 0.75rem 1rem;
         
-        i {
-            font-size: 1.1rem;
+        // Премахваме подчертаването и Bootstrap dropdown arrow
+        &::after {
+            display: none !important;
         }
+        
+        // Премахваме hover подчертаването от nav-link
+        &:hover::after {
+            display: none !important;
+        }
+        
+        // Премахваме custom arrow - Bootstrap ще управлява dropdown функционалността
     }
 }
 
 // Mobile responsive adjustments
 @media (max-width: 991.98px) {
-    .navbar-industrial {        .navbar-collapse {
+    .navbar-industrial {
+        .navbar-collapse {
             background: rgba(15, 23, 42, 0.98);
             -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
@@ -128,6 +140,22 @@
             .nav-link {
                 margin: 0.25rem 0;
                 text-align: center;
+            }
+        }
+        
+        // Language dropdown specific mobile fixes
+        .language-dropdown {
+            .dropdown-menu {
+                position: static !important;
+                transform: none !important;
+                margin-top: 0.5rem;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .dropdown-toggle {
+                justify-content: center;
+                width: 100%;
             }
         }
     }

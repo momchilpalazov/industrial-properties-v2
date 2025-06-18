@@ -13,7 +13,8 @@
     <meta name="color-scheme" content="light">    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="manifest" href="/manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+            <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Industrial Properties">
     
@@ -78,8 +79,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown language-dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
-                            <i class="bi bi-globe"></i>
+                        <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
                             {{ app.request.locale|upper }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -172,7 +172,7 @@
                 </div>
                 <div class="col-md-6 text-end footer-links">
                     <a href="{{ path('privacy_policy') }}">{{ 'footer.privacy_policy'|trans({}, 'messages')|default('Политика за поверителност') }}</a>
-                    <a href="#" id="cookie-settings-menu-link">{{ 'footer.cookie_settings'|trans({}, 'messages')|default('Настройки на бисквитки') }}</a>
+                    <a href="javascript:void(0)" id="cookie-settings-menu-link">{{ 'footer.cookie_settings'|trans({}, 'messages')|default('Настройки на бисквитки') }}</a>
                 </div>
             </div>
         </div>

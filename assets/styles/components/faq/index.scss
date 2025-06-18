@@ -1,23 +1,15 @@
 // FAQ Index Page Styles
 // Industrial Properties v2 - Modern FAQ Component
 
-// Design System Variables
-$primary-dark: #0f172a;
-$primary-medium: #1e293b;
-$primary-light: #334155;
-$secondary-blue: #3b82f6;
-$secondary-light: #e2e8f0;
-$secondary-bg: #f8fafc;
+// Industrial color palette (консистентно с другите страници)
+$industrial-dark: #34495e;
+$industrial-medium: #2c3e50;
+$industrial-light: #ecf0f1;
+$white: #ffffff;
+$bg-light: #f8fafc;
 $text-primary: #1a202c;
 $text-secondary: #64748b;
-$text-muted: #94a3b8;
-$white: #ffffff;
-
-// Industrial color palette
-$industrial-dark: #2c3e50;
-$industrial-medium: #34495e;
-$industrial-light: #ecf0f1;
-$industrial-accent: #1976d2;
+$border-color: #e2e8f0;
 
 // Base body styles for FAQ page
 body {
@@ -31,7 +23,7 @@ body {
 
 /* FAQ Hero Section - Consistent with other pages */
 .faq-hero {
-    background: linear-gradient(135deg, $primary-dark 0%, $primary-medium 50%, $primary-light 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
     color: white;
     padding: 5rem 0;
     margin-top: 76px;
@@ -150,7 +142,7 @@ body {
         }
 
         &.active {
-            background: linear-gradient(135deg, $industrial-medium, $industrial-dark);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
             color: $white;
             border-color: $industrial-medium;
             box-shadow: 0 4px 16px rgba(44, 62, 80, 0.25);
@@ -241,7 +233,7 @@ body {
     }
 
     .category-badge {
-        background: linear-gradient(135deg, $industrial-medium, $industrial-dark);
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
         color: $white;
         padding: 4px 12px;
         border-radius: 20px;

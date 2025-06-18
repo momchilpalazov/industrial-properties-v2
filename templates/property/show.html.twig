@@ -99,10 +99,13 @@
                     </div>
 
                 {% else %}
-                    <img src="{{ asset('img/no-image.jpg') }}" 
-                         class="img-fluid mb-4" 
-                         alt="No image"
-                         style="height: 400px; width: 100%; object-fit: cover;">
+                    <div class="no-image-placeholder mb-4" 
+                         style="height: 400px; width: 100%; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 2px dashed #dee2e6;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-image" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                            <p class="mb-0">{{ 'property.no_image'|trans({}, 'messages')|default('Няма изображение') }}</p>
+                        </div>
+                    </div>
                 {% endif %}
 
                 {# 360° Изображения #}

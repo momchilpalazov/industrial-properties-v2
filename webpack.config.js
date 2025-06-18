@@ -13,6 +13,7 @@ Encore
     .addEntry('layout', './assets/js/layout.js')
     .addEntry('property-index', './assets/js/property-index.js')
     .addEntry('home', './assets/js/home.js')
+    .addEntry('about', './assets/styles/components/about.scss')
     .addEntry('property-show', './assets/js/property-show.js')    .addEntry('property-show-main', [
         './assets/js/property-show-main.js',
         './assets/styles/property-show.scss'

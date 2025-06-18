@@ -8,13 +8,32 @@ export function initializeDropdowns() {
         return new bootstrap.Dropdown(dropdownToggleEl);
     });
     
-    // Специфично за езиковия dropdown
+    // Специфично за езиковия dropdown - подобрена логика
     const languageDropdown = document.getElementById('languageDropdown');
     if (languageDropdown) {
-        languageDropdown.addEventListener('click', function(e) {
-            e.preventDefault();
-            const dropdown = bootstrap.Dropdown.getInstance(languageDropdown) || new bootstrap.Dropdown(languageDropdown);
-            dropdown.toggle();
+        // Премахваме старите event listeners
+        languageDropdown.removeEventListener('click', handleLanguageDropdown);
+        
+        // Добавяме нов event listener
+        languageDropdown.addEventListener('click', handleLanguageDropdown);
+        
+        // Обработваме mobile touch events
+        languageDropdown.addEventListener('touchstart', function(e) {
+            e.stopPropagation();
         });
+    }
+}
+
+function handleLanguageDropdown(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const dropdown = bootstrap.Dropdown.getInstance(this) || new bootstrap.Dropdown(this);
+    
+    // Проверяваме дали dropdown е вече отворен
+    if (this.getAttribute('aria-expanded') === 'true') {
+        dropdown.hide();
+    } else {
+        dropdown.show();
     }
 }

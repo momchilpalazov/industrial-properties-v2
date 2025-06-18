@@ -20,19 +20,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Loading animations
     initLoadingAnimations();
     
-    // Preload critical images
-    const criticalImages = [
-        '/images/hero-bg.jpg',
-        '/images/no-image.jpg'
-    ];
+    // Preload critical images only when needed
+    const heroSection = document.querySelector('.hero-section');
+    const propertyImages = document.querySelectorAll('.property-image, .vip-property-image');
     
-    criticalImages.forEach(src => {
-        const link = document.createElement('link');
-        link.rel = 'preload';
-        link.href = src;
-        link.as = 'image';
-        document.head.appendChild(link);
-    });
+    // Only preload images that are actually visible on the page
+    if (heroSection && document.querySelector('[style*="hero-bg.jpg"]')) {
+        const heroImageLink = document.createElement('link');
+        heroImageLink.rel = 'preload';
+        heroImageLink.href = '/images/hero-bg.jpg';
+        heroImageLink.as = 'image';
+        document.head.appendChild(heroImageLink);
+    }
     
     // Enhanced image loading with fade-in effect
     const images = document.querySelectorAll('img[data-src]');
@@ -80,13 +79,25 @@ function initSmoothScrolling() {
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach(link => {
         link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            
+            // Проверяваме дали href не е празен или само "#"
+            if (!href || href === '#' || href.length <= 1) {
+                return; // Не правим нищо за празни селектори
+            }
+            
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+            
+            try {
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            } catch (error) {
+                console.warn('Invalid selector:', href);
             }
         });
     });
