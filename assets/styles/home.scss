@@ -1,8 +1,8 @@
 .hero-section {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-    padding: 8rem 0 6rem;
+    padding: 8rem 0 4rem;
     margin-top: 76px;
-    min-height: 100vh;
+    min-height: 85vh;
     display: flex;
     align-items: center;
     color: white;
@@ -46,6 +46,112 @@
     }
 }
 
+/* Modern scroll indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        transform: translateX(-50%) translateY(-5px);
+        
+        .scroll-text {
+            opacity: 1;
+        }
+        
+        .scroll-arrow {
+            &::after {
+                border-top-color: rgba(255, 255, 255, 0.9);
+            }
+            
+            &::before {
+                background: linear-gradient(to bottom, #34495e, rgba(52, 73, 94, 0.5));
+            }
+        }
+    }
+    
+    .scroll-text {
+        font-size: 0.9rem;
+        font-weight: 300;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.9;
+    }
+    
+    .scroll-arrow {
+        width: 2px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.6);
+        margin: 0 auto;
+        position: relative;
+        border-radius: 2px;
+        
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid rgba(255, 255, 255, 0.6);
+            animation: bounce 2s infinite;
+        }
+        
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(to bottom, #34495e, transparent);
+            border-radius: 2px;
+            animation: scrollProgress 2s infinite;
+        }
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    40% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+    60% {
+        transform: translateX(-50%) translateY(-5px);
+    }
+}
+
+@keyframes scrollProgress {
+    0% {
+        height: 0;
+    }
+    50% {
+        height: 30px;
+    }
+    100% {
+        height: 0;
+    }
+}
+
+@keyframes heroFadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .hero-title {
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 200;
@@ -53,6 +159,9 @@
     letter-spacing: -0.02em;
     line-height: 1.1;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(30px);
+    animation: heroFadeInUp 1s ease-out 0.3s forwards;
     
     @media (max-width: 768px) {
         font-size: 2.5rem;
@@ -66,13 +175,15 @@
 .hero-subtitle {
     font-size: 1.2rem;
     margin-bottom: 3rem;
-    opacity: 0.9;
+    opacity: 0;
     font-weight: 300;
     max-width: 650px;
     margin-left: auto;
     margin-right: auto;
     line-height: 1.7;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    transform: translateY(30px);
+    animation: heroFadeInUp 1s ease-out 0.6s forwards;
 }
 
 /* Section header improvements */
@@ -111,6 +222,62 @@
     }
 }
 
+/* Hero responsive improvements */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 80vh;
+        padding: 6rem 0 3rem;
+        
+        .hero-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-cta {
+            padding: 0.9rem 2rem;
+            font-size: 1rem;
+        }
+        
+        .scroll-indicator {
+            bottom: 1rem;
+            
+            .scroll-text {
+                font-size: 0.8rem;
+                margin-bottom: 0.8rem;
+            }
+            
+            .scroll-arrow {
+                height: 30px;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        min-height: 75vh;
+        padding: 4rem 0 2rem;
+        
+        .hero-title {
+            font-size: 2.2rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1rem;
+            padding: 0 1rem;
+        }
+        
+        .scroll-indicator .scroll-text {
+            display: none;
+        }
+    }
+}
+
 /* GLOBAL H2 UNDERLINE REMOVAL */
 h2::after,
 h2::before {
@@ -123,9 +290,10 @@ h2::before {
 }
 
 .property-types {
-    padding: 5rem 0;
+    padding: 6rem 0;
     background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
     position: relative;
+    margin-top: -2rem;
     
     &::before {
         content: '';
@@ -134,7 +302,19 @@ h2::before {
         left: 0;
         right: 0;
         height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(25, 118, 210, 0.3), transparent);
+        background: linear-gradient(90deg, transparent, #34495e, transparent);
+        opacity: 0.3;
+    }
+    
+    &::after {
+        content: '';
+        position: absolute;
+        top: -2rem;
+        left: 0;
+        right: 0;
+        height: 2rem;
+        background: linear-gradient(180deg, transparent, #f8fafc);
+        pointer-events: none;
     }
 }
 
@@ -582,6 +762,36 @@ h2::before {
     
     &:active {
         transform: scale(0.98);
+    }
+}
+
+/* Hero CTA specific styling */
+.hero-cta {
+    border-color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transform: translateY(30px);
+    animation: heroFadeInUp 1s ease-out 0.9s forwards;
+    
+    &::before {
+        background: rgba(255, 255, 255, 0.2);
+    }
+    
+    &:hover {
+        color: #0f172a;
+        border-color: white;
+        background: rgba(255, 255, 255, 0.95);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        
+        &::before {
+            background: white;
+        }
     }
 }
 

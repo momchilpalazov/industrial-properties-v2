@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Smooth scrolling for anchor links
     initSmoothScrolling();
     
+    // Scroll indicator functionality
+    initScrollIndicator();
+    
     // Scroll-triggered animations
     initScrollAnimations();
     
@@ -87,6 +90,46 @@ function initSmoothScrolling() {
             }
         });
     });
+}
+
+function initScrollIndicator() {
+    const scrollIndicator = document.querySelector('.scroll-indicator');
+    const propertyTypesSection = document.querySelector('.property-types');
+    
+    if (scrollIndicator && propertyTypesSection) {
+        // Click handler for scroll indicator
+        scrollIndicator.addEventListener('click', function() {
+            propertyTypesSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+        
+        // Hide scroll indicator when user starts scrolling
+        let scrollTimeout;
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            
+            if (scrolled > 100) {
+                scrollIndicator.style.opacity = '0';
+                scrollIndicator.style.transform = 'translateX(-50%) translateY(20px)';
+            } else {
+                scrollIndicator.style.opacity = '1';
+                scrollIndicator.style.transform = 'translateX(-50%) translateY(0)';
+            }
+            
+            // Clear timeout and set a new one
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                if (scrolled < 50) {
+                    scrollIndicator.style.opacity = '1';
+                }
+            }, 1000);
+        });
+        
+        // Add cursor pointer
+        scrollIndicator.style.cursor = 'pointer';
+    }
 }
 
 function initScrollAnimations() {
