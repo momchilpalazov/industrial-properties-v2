@@ -42,24 +42,24 @@
     padding: 8px 16px;
     border-radius: 50px;
     border: none;
-    background: #1976d2;
+    background: #34495e;
     color: white;
     font-weight: 500;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
+    box-shadow: 0 2px 5px rgba(52, 73, 94, 0.3);
     
     &:hover {
-        background: #1976d2;
-        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+        background: #2c3e50;
+        box-shadow: 0 4px 8px rgba(52, 73, 94, 0.4);
         transform: translateY(-1px);
     }
     
     &.active {
-        background: #1976d2;
+        background: #2c3e50;
         
         &:hover {
-            background: #c82333;
-            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
+            background: #1a252f;
+            box-shadow: 0 4px 8px rgba(52, 73, 94, 0.4);
         }
     }
     
@@ -77,14 +77,14 @@
 }
 
 .filter-button {
-    background: #1976d2;
+    background: #34495e;
     color: white;
     transition: all 0.2s ease;
     
     &:hover {
-        background: #1976d2;
+        background: #2c3e50;
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        box-shadow: 0 4px 8px rgba(52, 73, 94, 0.3);
     }
 }
 
@@ -141,7 +141,7 @@
         i {
             margin-right: 5px;
             font-size: 16px;
-            color: #1976d2;
+            color: #34495e;
         }
     }
 }
@@ -149,7 +149,7 @@
 .property-price {
     font-size: 18px;
     font-weight: 700;
-    color: #1976d2;
+    color: #34495e;
     margin-bottom: 15px;
 }
 
@@ -167,7 +167,7 @@
 }
 
 .property-details-btn {
-    background: #1976d2;
+    background: #34495e;
     color: white;
     border: none;
     border-radius: 4px;
@@ -175,9 +175,9 @@
     transition: all 0.3s ease;
     
     &:hover {
-        background: #0d47a1;
+        background: #2c3e50;
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
+        box-shadow: 0 4px 8px rgba(52, 73, 94, 0.3);
     }
 }
 
