@@ -4,8 +4,427 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     {{ encore_entry_link_tags('blog') }}
+    <style>
+        /* Industrial Blog Show Styles - Following Property Show Template */
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 76px; /* Compensation for fixed navbar */
+        }
+
+        .container {
+            position: relative;
+        }
+
+        /* Blog Page Wrapper */
+        .blog-page {
+            min-height: 100vh;
+        }
+
+        /* Blog Header */
+        .blog-header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #34495e;
+        }
+
+        .blog-title {
+            color: #2c3e50 !important;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .meta-item i {
+            color: #34495e;
+            font-size: 1.1rem;
+        }
+
+        .category-tag {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .blog-content {
+            padding: 2rem 0;
+        }
+
+        .content-wrapper {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .content-wrapper p {
+            color: #495057 !important;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .content-wrapper h1, .content-wrapper h2, .content-wrapper h3,
+        .content-wrapper h4, .content-wrapper h5, .content-wrapper h6 {
+            color: #2c3e50 !important;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .content-wrapper ul, .content-wrapper ol {
+            color: #495057 !important;
+            padding-left: 1.5rem;
+        }
+
+        .content-wrapper li {
+            color: #495057 !important;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Share Section */
+        .share-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .share-title {
+            color: #2c3e50 !important;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .share-button {
+            border-radius: 10px;
+            padding: 12px 18px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .share-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .share-button:hover::before {
+            left: 100%;
+        }
+
+        .share-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            text-decoration: none;
+        }
+
+        .share-facebook {
+            background: #3b5998;
+            border-color: #3b5998;
+            color: #ffffff;
+        }
+
+        .share-facebook:hover {
+            background: #2d4373;
+            border-color: #2d4373;
+            color: #ffffff;
+        }
+
+        .share-linkedin {
+            background: #0077b5;
+            border-color: #0077b5;
+            color: #ffffff;
+        }
+
+        .share-linkedin:hover {
+            background: #005582;
+            border-color: #005582;
+            color: #ffffff;
+        }
+
+        .share-twitter {
+            background: #1da1f2;
+            border-color: #1da1f2;
+            color: #ffffff;
+        }
+
+        .share-twitter:hover {
+            background: #0d8bd9;
+            border-color: #0d8bd9;
+            color: #ffffff;
+        }
+
+        /* Sidebar */
+        .blog-sidebar {
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid #dee2e6;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-card .card-header {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            padding: 1.5rem;
+            border-bottom: none;
+        }
+
+        .sidebar-card .card-title {
+            color: #ffffff !important;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 0;
+        }
+
+        .sidebar-card .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Latest Posts */
+        .latest-posts {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .latest-post {
+            padding: 1rem;
+            border-radius: 10px;
+            background: rgba(52, 73, 94, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .latest-post:hover {
+            background: rgba(52, 73, 94, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .latest-post-title {
+            color: #2c3e50 !important;
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .latest-post-title:hover {
+            color: #34495e !important;
+            text-decoration: underline;
+        }
+
+        .latest-post-date {
+            color: #6c757d;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Categories List */
+        .categories-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .category-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            background: rgba(52, 73, 94, 0.05);
+            color: #2c3e50 !important;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .category-link:hover {
+            background: rgba(52, 73, 94, 0.1);
+            color: #34495e !important;
+            text-decoration: none;
+            transform: translateX(5px);
+        }
+
+        .category-count {
+            background: #34495e;
+            color: #ffffff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Back to Blog Button */
+        .btn-primary {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            border: none;
+            border-radius: 10px;
+            padding: 14px 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            color: #ffffff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2c3e50, #1a252f);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 62, 80, 0.3);
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .blog-title {
+                font-size: 2rem;
+                text-align: center;
+            }
+
+            .blog-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .content-wrapper,
+            .share-section,
+            .sidebar-card {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .share-buttons {
+                justify-content: center;
+            }
+
+            .share-button {
+                font-size: 0.9rem;
+                padding: 10px 15px;
+            }
+
+            .blog-sidebar {
+                position: static;
+                margin-top: 2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .blog-title {
+                font-size: 1.75rem;
+            }
+
+            .content-wrapper,
+            .share-section,
+            .sidebar-card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .sidebar-card .card-header,
+            .sidebar-card .card-body {
+                padding: 1rem;
+            }
+        }
+
+        /* Accessibility & Performance */
+        @media (prefers-reduced-motion: reduce) {
+            .share-button,
+            .btn-primary,
+            .latest-post,
+            .category-link {
+                transition: none;
+            }
+        }
+
+        @media (prefers-contrast: high) {
+            .content-wrapper,
+            .sidebar-card,
+            .share-section,
+            .blog-header {
+                border-width: 2px;
+            }
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -43,7 +462,10 @@
 
                         <!-- Share Buttons -->
                         <div class="share-section">
-                            <h3 class="share-title">{{ 'blog.meta.share'|trans }}</h3>
+                            <h3 class="share-title">
+                                <i class="bi bi-share"></i>
+                                {{ 'blog.meta.share'|trans }}
+                            </h3>
                             <div class="share-buttons">
                                 <a href="https://www.facebook.com/sharer/sharer.php?u={{ url('app_blog_show', {'slug': post.slug})|url_encode }}" 
                                    class="share-button share-facebook" 
