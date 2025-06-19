@@ -5,7 +5,252 @@
 {% block stylesheets %}
     {{ parent() }}
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    {{ encore_entry_link_tags('property-index') }}
+    <style>
+    /* Services Styles - Inline until build issue is resolved */
+    .services-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        color: white;
+        padding: 8rem 0 6rem;
+        margin-top: 76px;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .services-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 80px,
+            rgba(255, 255, 255, 0.02) 80px,
+            rgba(255, 255, 255, 0.02) 81px
+        );
+        pointer-events: none;
+    }
+
+    .services-hero .section-header {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+
+    .services-hero h1 {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 200;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        color: white;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+    }
+
+    .services-hero p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        line-height: 1.7;
+        margin: 0 auto;
+        color: white;
+        max-width: 600px;
+        font-weight: 300;
+    }
+
+    .services-content {
+        background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+        padding: 6rem 0;
+    }
+
+    .services-content .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .services-content h2 {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-weight: 200;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    .services-content p {
+        font-size: 1.1rem;
+        color: #64748b;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+        font-weight: 300;
+    }
+
+    .service-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        border: 1px solid #e2e8f0;
+        position: relative;
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #34495e, #2c3e50);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+        transform-origin: left;
+    }
+
+    .service-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        border-color: #34495e;
+    }
+
+    .service-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .service-card:hover .service-icon {
+        background: linear-gradient(135deg, #34495e, #2c3e50);
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .service-card-inner {
+        padding: 2.5rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .service-icon-wrapper {
+        margin-bottom: 2rem;
+    }
+
+    .service-icon {
+        font-size: 3.5rem;
+        color: #34495e;
+        background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .service-content {
+        flex-grow: 1;
+        margin-bottom: 2rem;
+    }
+
+    .service-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        line-height: 1.4;
+    }
+
+    .service-description {
+        color: #64748b;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-weight: 300;
+    }
+
+    .service-features .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+    }
+
+    .service-features .feature-list li {
+        display: flex;
+        align-items: center;
+        color: #64748b;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        gap: 0.75rem;
+    }
+
+    .service-features .feature-list li .material-icons {
+        font-size: 1.2rem;
+        color: #34495e;
+        flex-shrink: 0;
+    }
+
+    .service-action {
+        margin-top: auto;
+        text-align: center;
+    }
+
+    .services-cta {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        color: white;
+        padding: 6rem 0;
+        position: relative;
+    }
+
+    .services-cta::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 255, 255, 0.02) 2px,
+            rgba(255, 255, 255, 0.02) 4px
+        );
+        pointer-events: none;
+    }
+
+    .btn-industrial {
+        background: linear-gradient(135deg, #34495e, #2c3e50);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .btn-industrial:hover {
+        background: linear-gradient(135deg, #2c3e50, #1a252f);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-cta {
+        font-size: 1.1rem;
+        padding: 1rem 2rem;
+    }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -85,5 +330,4 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('property-index') }}
 {% endblock %}

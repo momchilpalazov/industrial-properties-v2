@@ -7,7 +7,6 @@ import '../styles/components/property/filters.scss';
 import '../styles/components/property/card.scss';
 import '../styles/components/property/map.scss';
 import '../styles/components/property/select2.scss';
-import '../styles/components/services/index.scss';
 import '../styles/components/faq/index.scss';
 
 // Import components
