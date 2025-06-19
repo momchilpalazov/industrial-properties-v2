@@ -22,14 +22,17 @@
     overflow-y: auto;
 }
 
-.navbar-brand {
-    padding-top: .75rem;
-    padding-bottom: .75rem;
-}
+// Admin specific navbar styles - only apply to admin pages
+.admin-navbar {
+    .navbar-brand {
+        padding-top: .75rem;
+        padding-bottom: .75rem;
+    }
 
-.navbar .navbar-toggler {
-    top: .25rem;
-    right: 1rem;
+    .navbar-toggler {
+        top: .25rem;
+        right: 1rem;
+    }
 }
 
 .sidebar .nav-link {

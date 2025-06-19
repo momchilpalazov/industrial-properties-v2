@@ -11,7 +11,7 @@ import './js/cookie-consent.js';
 import './js/navigation.js';
 
 // import Bootstrap components
-import { Tooltip, Toast, Popover } from 'bootstrap';
+import { Tooltip, Toast, Popover, Dropdown, Collapse } from 'bootstrap';
 
 // start the Stimulus application
 // import './bootstrap'; 

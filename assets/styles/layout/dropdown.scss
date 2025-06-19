@@ -1,28 +1,89 @@
 /**
- * Dropdown menu styles
+ * Dropdown menu styles - Fixed for mobile compatibility
  */
-.dropdown-menu {
-    display: none;
-}
 
-.dropdown-menu.show {
-    display: block;
-}
-
-.dropdown-toggle.show + .dropdown-menu {
-    display: block;
-}
-
-.nav-item.dropdown:hover .dropdown-menu {
-    display: block;
-}
-
-@media (max-width: 991.98px) {
+// Desktop hover behavior (optional enhancement)
+@media (min-width: 992px) {
     .nav-item.dropdown:hover .dropdown-menu {
-        display: none;
-    }
-    
-    .nav-item.dropdown .dropdown-menu.show {
         display: block;
     }
-} 
+}
+
+// Mobile specific fixes
+@media (max-width: 991.98px) {
+    // Fix for collapsed navbar dropdown issues
+    .navbar-collapse {
+        .dropdown {
+            position: relative !important;
+        }
+        
+        .dropdown-menu {
+            position: static !important;
+            transform: none !important;
+            inset: auto !important;
+            margin: 0.5rem 0 !important;
+            width: 100% !important;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(15, 23, 42, 0.95) !important;
+            
+            // Force visibility when Bootstrap shows dropdown
+            &.show {
+                display: block !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                position: static !important;
+            }
+            
+            .dropdown-item {
+                padding: 0.75rem 1rem;
+                font-size: 1rem;
+                color: #ffffff;
+                
+                &:hover, &:focus {
+                    background: rgba(25, 118, 210, 0.3) !important;
+                    color: #ffffff;
+                }
+            }
+        }
+        
+        .dropdown-toggle {
+            width: 100%;
+            text-align: center;
+            padding: 0.75rem 1rem;
+            
+            &[aria-expanded="true"] {
+                background: rgba(25, 118, 210, 0.2);
+                
+                + .dropdown-menu {
+                    display: block !important;
+                }
+            }
+            
+            // Remove caret on mobile for cleaner look
+            &::after {
+                display: inline-block;
+                margin-left: 0.255em;
+                vertical-align: 0.255em;
+            }
+        }
+    }
+    
+    // Language dropdown specific mobile adjustments
+    .language-dropdown {
+        .dropdown-toggle {
+            background: rgba(25, 118, 210, 0.1) !important;
+            border-radius: 0.375rem;
+            
+            &:hover {
+                background: rgba(25, 118, 210, 0.2) !important;
+            }
+        }
+        
+        .dropdown-menu {
+            text-align: center;
+            box-shadow: none;
+            border-radius: 0.375rem;
+            margin-top: 0.25rem !important;
+        }
+    }
+}
