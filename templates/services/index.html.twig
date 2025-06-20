@@ -4,17 +4,39 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    <style>
     /* Services Styles - Inline until build issue is resolved */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        --secondary-gradient: linear-gradient(135deg, #34495e, #2c3e50);
+        --card-gradient: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        --icon-gradient: linear-gradient(135deg, #ecf0f1, #bdc3c7);
+        --content-gradient: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+        
+        --primary-color: #34495e;
+        --secondary-color: #2c3e50;
+        --text-muted: #64748b;
+        --light-gray: #e2e8f0;
+        
+        --font-light: 200;
+        --font-normal: 300;
+        --font-medium: 500;
+        --font-semibold: 600;
+        
+        --border-radius-lg: 20px;
+        --border-radius-md: 0.5rem;
+        --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        --transition-fast: all 0.3s ease;
+    }
+    
     .services-hero {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        background: var(--primary-gradient);
         color: white;
         padding: 8rem 0 6rem;
         margin-top: 76px;
         position: relative;
         overflow: hidden;
-        text-align: center;
+        text-align: left;
     }
 
     .services-hero::before {
@@ -32,70 +54,62 @@
             rgba(255, 255, 255, 0.02) 81px
         );
         pointer-events: none;
-    }
-
-    .services-hero .section-header {
-        text-align: center;
+    }    .services-hero .section-header {
+        text-align: left !important;
         max-width: 800px;
-        margin: 0 auto;
+        margin: 0;
         position: relative;
         z-index: 2;
-    }
-
-    .services-hero h1 {
+    }    .services-hero h1 {
         font-size: clamp(2.5rem, 5vw, 3.5rem);
-        font-weight: 200;
+        font-weight: var(--font-light);
         margin-bottom: 1.5rem;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         color: white;
         letter-spacing: -0.02em;
         line-height: 1.1;
-    }
-
-    .services-hero p {
+        text-align: left !important;
+    }    .services-hero p {
         font-size: 1.2rem;
         opacity: 0.9;
         line-height: 1.7;
-        margin: 0 auto;
+        margin: 0;
         color: white;
         max-width: 600px;
-        font-weight: 300;
+        font-weight: var(--font-normal);
+        text-align: left !important;
     }
 
     .services-content {
-        background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+        background: var(--content-gradient);
         padding: 6rem 0;
-    }
-
-    .services-content .section-header {
-        text-align: center;
+    }.services-content .section-header {
+        text-align: left !important;
         margin-bottom: 4rem;
-    }
-
-    .services-content h2 {
+    }    .services-content h2 {
         font-size: clamp(2rem, 4vw, 2.5rem);
-        font-weight: 200;
-        color: #2c3e50;
+        font-weight: var(--font-light);
+        color: var(--secondary-color);
         margin-bottom: 1rem;
         position: relative;
+        text-align: left !important;
     }
 
     .services-content p {
         font-size: 1.1rem;
-        color: #64748b;
+        color: var(--text-muted);
         max-width: 600px;
-        margin: 0 auto;
+        margin: 0;
         line-height: 1.6;
-        font-weight: 300;
-    }
-
-    .service-card {
-        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-        border-radius: 20px;
+        font-weight: var(--font-normal);
+        text-align: left !important;
+    }    .service-card {
+        background: var(--card-gradient);
+        border-radius: var(--border-radius-lg);
         overflow: hidden;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        border: 1px solid #e2e8f0;
+        transition: var(--transition-smooth);
+        border: 1px solid var(--light-gray);
         position: relative;
     }
 
@@ -106,7 +120,7 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, #34495e, #2c3e50);
+        background: var(--secondary-gradient);
         transform: scaleX(0);
         transition: transform 0.4s ease;
         transform-origin: left;
@@ -115,7 +129,7 @@
     .service-card:hover {
         transform: translateY(-8px);
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
-        border-color: #34495e;
+        border-color: var(--primary-color);
     }
 
     .service-card:hover::before {
@@ -123,7 +137,7 @@
     }
 
     .service-card:hover .service-icon {
-        background: linear-gradient(135deg, #34495e, #2c3e50);
+        background: var(--secondary-gradient);
         color: white;
         transform: scale(1.1);
     }
@@ -138,19 +152,17 @@
 
     .service-icon-wrapper {
         margin-bottom: 2rem;
-    }
-
-    .service-icon {
+    }    .service-icon {
         font-size: 3.5rem;
-        color: #34495e;
-        background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
+        color: var(--primary-color);
+        background: var(--icon-gradient);
         width: 80px;
         height: 80px;
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s ease;
+        transition: var(--transition-fast);
     }
 
     .service-content {
@@ -160,17 +172,17 @@
 
     .service-title {
         font-size: 1.5rem;
-        font-weight: 600;
-        color: #2c3e50;
+        font-weight: var(--font-semibold);
+        color: var(--secondary-color);
         margin-bottom: 1rem;
         line-height: 1.4;
     }
 
     .service-description {
-        color: #64748b;
+        color: var(--text-muted);
         line-height: 1.6;
         margin-bottom: 1.5rem;
-        font-weight: 300;
+        font-weight: var(--font-normal);
     }
 
     .service-features .feature-list {
@@ -178,34 +190,36 @@
         padding: 0;
         margin: 0;
         text-align: left;
-    }
-
-    .service-features .feature-list li {
+    }    .service-features .feature-list li {
         display: flex;
         align-items: center;
-        color: #64748b;
+        color: var(--text-muted);
         margin-bottom: 0.75rem;
         font-size: 0.95rem;
-        font-weight: 500;
+        font-weight: var(--font-medium);
         gap: 0.75rem;
     }
 
     .service-features .feature-list li .material-icons {
         font-size: 1.2rem;
-        color: #34495e;
+        color: var(--primary-color);
         flex-shrink: 0;
     }
 
     .service-action {
         margin-top: auto;
         text-align: center;
-    }
-
-    .services-cta {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    }    .services-cta {
+        background: var(--primary-gradient);
         color: white;
         padding: 6rem 0;
         position: relative;
+        text-align: left !important;
+    }
+
+    .services-cta h2,
+    .services-cta p {
+        text-align: left !important;
     }
 
     .services-cta::before {
@@ -223,24 +237,22 @@
             rgba(255, 255, 255, 0.02) 4px
         );
         pointer-events: none;
-    }
-
-    .btn-industrial {
-        background: linear-gradient(135deg, #34495e, #2c3e50);
+    }    .btn-industrial {
+        background: var(--secondary-gradient);
         color: white;
         border: none;
         padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
+        border-radius: var(--border-radius-md);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        transition: all 0.3s ease;
-        font-weight: 500;
+        transition: var(--transition-fast);
+        font-weight: var(--font-medium);
     }
 
     .btn-industrial:hover {
-        background: linear-gradient(135deg, #2c3e50, #1a252f);
+        background: linear-gradient(135deg, var(--secondary-color), #1a252f);
         color: white;
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);

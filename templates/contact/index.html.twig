@@ -6,15 +6,45 @@
 {{ parent() }}
 <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
 {{ encore_entry_link_tags('contact-index') }}
+<style>
+/* Contact Page Left Alignment Styles - More Specific */
+.contact-hero,
+.contact-hero h1,
+.contact-hero p,
+.contact-hero .lead,
+.contact-info-card,
+.contact-info-card h4,
+.contact-info-card h5,
+.contact-info-card p,
+.contact-form-card,
+.contact-form-card h4,
+.contact-form-card h5,
+.contact-form-card p,
+.card-title {
+    text-align: left !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+.contact-hero .container,
+.contact-hero .container h1,
+.contact-hero .container p {
+    text-align: left !important;
+}
+
+.contact-hero .lead {
+    margin: 0 !important;
+    text-align: left !important;
+}
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="contact-page">
-    <!-- Hero Section -->
+<div class="contact-page">    <!-- Hero Section -->
     <section class="contact-hero">
         <div class="container">
-            <h1 class="mb-2">{{ translations.contact.title }}</h1>
-            <p>{{ translations.contact.subtitle|default('Свържете се с нас за повече информация относно нашите имоти и услуги.') }}</p>
+            <h1 class="mb-2" style="text-align: left !important;">{{ translations.contact.title }}</h1>
+            <p style="text-align: left !important;">{{ translations.contact.subtitle|default('Свържете се с нас за повече информация относно нашите имоти и услуги.') }}</p>
         </div>
     </section>
 
@@ -216,4 +246,4 @@
 <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
 <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
 {{ encore_entry_script_tags('contact-index') }}
-{% endblock %} 
+{% endblock %}

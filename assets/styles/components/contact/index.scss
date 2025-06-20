@@ -42,11 +42,10 @@ body.contact-page {
   .contact-hero {
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
   color: white;
-  padding: 8rem 0 6rem;
-  position: relative;
+  padding: 8rem 0 6rem;  position: relative;
   overflow: hidden;
   margin-top: 76px;
-  text-align: center;
+  text-align: left;
   
   &::before {
     content: '';
@@ -75,8 +74,7 @@ body.contact-page {
     position: relative;
     z-index: 2;
   }
-  
-  h1 {
+    h1 {
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 200;
     margin-bottom: 1.5rem;
@@ -84,6 +82,7 @@ body.contact-page {
     letter-spacing: -0.02em;
     color: white !important;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-align: left !important;
 
     &::after,
     &::before {
@@ -96,9 +95,10 @@ body.contact-page {
     font-weight: 300;
     opacity: 0.9;
     max-width: 600px;
-    margin: 0 auto;
+    margin: 0;
     line-height: 1.6;
     color: white !important;
+    text-align: left !important;
   }
 }
 
@@ -123,11 +123,10 @@ body.contact-page {
 }
 
 // Contact info cards
-.contact-info-card {
-  background: linear-gradient(135deg, $white 0%, $bg-light 100%);
+.contact-info-card {  background: linear-gradient(135deg, $white 0%, $bg-light 100%);
   border-radius: 20px;
   padding: 3rem 2rem;
-  text-align: center;
+  text-align: left;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   border: 1px solid $border-color;
   position: relative;
@@ -211,11 +210,10 @@ body.contact-page {
   border: 1px solid $border-color;
   
   h2 {
-    font-size: 2rem;
-    font-weight: 600;
+    font-size: 2rem;    font-weight: 600;
     color: $industrial-dark;
     margin-bottom: 2rem;
-    text-align: center;
+    text-align: left;
     position: relative;
     
     &::after {
