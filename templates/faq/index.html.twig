@@ -6,23 +6,54 @@
     {{ parent() }}
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     {{ encore_entry_link_tags('faq-index') }}
+    
+    <style>
+    /* Maximum specificity styles for FAQ left alignment */
+    html body .faq-hero,
+    html body .faq-hero *,
+    html body .faq-hero h1,
+    html body .faq-hero p,
+    html body .faq-hero .section-header,
+    html body .faq-categories,
+    html body .faq-categories *,
+    html body .faq-content,
+    html body .faq-content *,
+    html body .faq-no-results,
+    html body .faq-no-results * {
+        text-align: left !important;
+    }
+
+    html body .faq-categories .nav {
+        justify-content: flex-start !important;
+    }
+
+    /* Override Bootstrap utility classes */
+    html body .faq-hero .text-center,
+    html body .faq-categories .text-center,
+    html body .faq-content .text-center,
+    html body .faq-hero .mx-auto,
+    html body .faq-categories .mx-auto,
+    html body .faq-content .mx-auto {
+        text-align: left !important;
+        justify-content: flex-start !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+    }
+    </style>
 {% endblock %}
 
-{% block body %}
-    <!-- Hero Section -->
-    <section class="faq-hero">
+{% block body %}    <!-- Hero Section -->
+    <section class="faq-hero" style="text-align: left !important;">
         <div class="container">
-            <div class="section-header">
-                <h1>{{ 'faq.title'|trans }}</h1>
-                <p>{{ 'faq.subtitle'|trans }}</p>
+            <div class="section-header" style="text-align: left !important;">
+                <h1 style="text-align: left !important;">{{ 'faq.title'|trans }}</h1>
+                <p style="text-align: left !important;">{{ 'faq.subtitle'|trans }}</p>
             </div>
         </div>
-    </section>
-
-    <!-- Categories -->
-    <section class="faq-categories">
+    </section>    <!-- Categories -->
+    <section class="faq-categories" style="text-align: left !important;">
         <div class="container">
-            <nav class="nav nav-pills">
+            <nav class="nav nav-pills" style="justify-content: flex-start !important;">
                 <a class="nav-link {% if not currentCategory %}active{% endif %}" 
                    href="{{ path('app_faq_index') }}">
                     {{ 'faq.categories.all'|trans }}
@@ -35,12 +66,10 @@
                 {% endfor %}
             </nav>
         </div>
-    </section>
-
-    <!-- FAQ Content -->
-    <section class="faq-content">
-        <div class="container">
-            <div class="accordion faq-accordion" id="faqAccordion">
+    </section>    <!-- FAQ Content -->
+    <section class="faq-content" style="text-align: left !important;">
+        <div class="container" style="text-align: left !important;">
+            <div class="accordion faq-accordion" id="faqAccordion" style="text-align: left !important; margin: 0 !important; margin-left: 0 !important;">
                 {% for faq in faqs %}
                     <div class="accordion-item">
                         <h2 class="accordion-header">
@@ -64,13 +93,12 @@
                             </div>
                         </div>
                     </div>
-                {% else %}
-                    <div class="faq-no-results">
+                {% else %}                    <div class="faq-no-results" style="text-align: left !important;">
                         <div class="no-results-icon">
                             <i class="bi bi-question-circle"></i>
                         </div>
-                        <h3>{{ 'faq.search.no_results'|trans }}</h3>
-                        <p>{{ 'faq.search.no_results_text'|trans }}</p>
+                        <h3 style="text-align: left !important;">{{ 'faq.search.no_results'|trans }}</h3>
+                        <p style="text-align: left !important;">{{ 'faq.search.no_results_text'|trans }}</p>
                     </div>
                 {% endfor %}
             </div>

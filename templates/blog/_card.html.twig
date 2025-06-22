@@ -15,11 +15,9 @@
             <div class="card-img-placeholder">
                 <i class="bi bi-journal-text"></i>
             </div>
-        {% endif %}
-
-        <div class="card-body">
-            <h2 class="card-title">{{ post.title(app.request.locale) }}</h2>
-            <p class="card-text">{{ post.excerpt(app.request.locale) }}</p>
+        {% endif %}        <div class="card-body">
+            <h2 class="card-title" style="text-align: left !important;">{{ post.title(app.request.locale) }}</h2>
+            <p class="card-text" style="text-align: left !important;">{{ post.excerpt(app.request.locale) }}</p>
             <div class="card-meta">
                 <span class="card-date">
                     <i class="bi bi-calendar-event"></i>

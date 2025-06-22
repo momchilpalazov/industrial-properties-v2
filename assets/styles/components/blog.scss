@@ -31,7 +31,7 @@ body.blog-page {
     margin-top: 76px;
     position: relative;
     overflow: hidden;
-    text-align: center;
+    text-align: left;
 
     &::before {
         content: '';
@@ -53,22 +53,19 @@ body.blog-page {
     .container {
         position: relative;
         z-index: 2;
-    }
-
-    .section-header {
-        text-align: center;
+    }    .section-header {
+        text-align: left;
         margin-bottom: 0;
         max-width: 800px;
-        margin: 0 auto;
+        margin: 0;
     }
 
     .section-header h1 {
         font-size: clamp(2rem, 5vw, 3rem);
         font-weight: 200;
-        margin-bottom: 1.5rem;
-        line-height: 1.1;
+        margin-bottom: 1.5rem;        line-height: 1.1;
         color: white !important;
-        text-align: center;
+        text-align: left;
         letter-spacing: -0.02em;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 
@@ -80,13 +77,12 @@ body.blog-page {
 
     .section-header p {
         font-size: clamp(1rem, 2.5vw, 1.2rem);
-        margin-bottom: 0;
-        color: white !important;
+        margin-bottom: 0;        color: white !important;
         max-width: 600px;
-        margin-left: auto;
+        margin-left: 0;
         margin-right: auto;
         line-height: 1.7;
-        text-align: center;
+        text-align: left;
         font-weight: 300;
         opacity: 0.9;
     }
@@ -257,7 +253,7 @@ body.blog-page {
     border: 1px solid $border-color;
     border-radius: 15px;
     color: $text-primary;
-    text-align: center;
+    text-align: left;
     padding: 60px 20px;
     font-size: 1.1rem;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
@@ -291,7 +287,7 @@ body.blog-page {
     margin-top: 76px;
     position: relative;
     overflow: hidden;
-    text-align: center;
+    text-align: left;
 
     &::before {
         content: '';
@@ -324,14 +320,29 @@ body.blog-page {
     color: white !important;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     letter-spacing: -0.02em;
+    text-align: left !important;
+}
+
+/* Специфични стилове за blog header елементи */
+.blog-header h1,
+.blog-header .blog-title {
+    text-align: left !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+.blog-header .col-lg-8,
+.blog-header .col-lg-8.mx-auto {
+    text-align: left !important;
 }
 
 .blog-meta {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 2rem;
     margin-top: 1rem;
     flex-wrap: wrap;
+    text-align: left !important;
     
     .meta-item {
         display: flex;
@@ -340,6 +351,7 @@ body.blog-page {
         color: white;
         font-size: 1rem;
         opacity: 0.9;
+        text-align: left !important;
     }
     
     .category-tag {
@@ -349,6 +361,13 @@ body.blog-page {
         font-size: 0.75rem;
         font-weight: 600;
     }
+}
+
+/* Допълнителни стилове за презаписване */
+.blog-header .blog-meta,
+.blog-header .meta-item {
+    text-align: left !important;
+    justify-content: flex-start !important;
 }
 
 .content-wrapper {
@@ -731,4 +750,66 @@ body.blog-page {
             border-color: $industrial-medium;
         }
     }
-} 
+}
+
+/* Силно специфично правило за презаписване на всички центриращи стилове */
+.blog-page .blog-header h1,
+.blog-page .blog-header .blog-title,
+.blog-page .blog-header .blog-meta,
+.blog-page .blog-header .meta-item,
+.blog-page .blog-header .col-lg-8,
+.blog-page .blog-header .col-lg-8.mx-auto,
+.blog-page .blog-header .container .row .col-lg-8 {
+    text-align: left !important;
+    justify-content: flex-start !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+/* Презаписване на Bootstrap text-center */
+.blog-page .blog-header .text-center,
+.blog-page .blog-header .text-center h1,
+.blog-page .blog-header .text-center .blog-title,
+.blog-page .blog-header .text-center .blog-meta {
+    text-align: left !important;
+}
+
+/* Силно специфични стилове за блог страниците - презаписват всичко */
+.blog-page,
+.blog-page * {
+    text-align: left !important;
+}
+
+.blog-page h1,
+.blog-page h2,
+.blog-page h3,
+.blog-page h4,
+.blog-page h5,
+.blog-page h6,
+.blog-page p,
+.blog-page div,
+.blog-page span {
+    text-align: left !important;
+}
+
+/* Специално за блог заглавия и мета */
+.blog-page .blog-header,
+.blog-page .blog-header *,
+.blog-page .blog-title,
+.blog-page .blog-meta,
+.blog-page .meta-item,
+.blog-page .section-header,
+.blog-page .hero-content {
+    text-align: left !important;
+}
+
+/* Презаписване на Bootstrap utility classes */
+.blog-page .text-center,
+.blog-page .text-center *,
+.blog-page .d-flex.justify-content-center,
+.blog-page .mx-auto {
+    text-align: left !important;
+    justify-content: flex-start !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}

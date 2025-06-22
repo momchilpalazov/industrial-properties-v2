@@ -22,6 +22,7 @@
                                 <th>Край</th>
                                 <th>Цена</th>
                                 <th>Статус</th>
+                                <th>VIP Статус</th>
                                 <th>Действия</th>
                             </tr>
                         </thead>
@@ -56,6 +57,20 @@
                                         {% endif %}
                                     </td>
                                     <td>
+                                        {% if promotion.type == 'vip' %}
+                                            {% if promotion.property.isVip %}
+                                                <span class="badge bg-warning">
+                                                    <i class="bi bi-star-fill"></i> Активен
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-light text-dark">
+                                                    <i class="bi bi-star"></i> Неактивен
+                                                </span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}                                    </td>
+                                    <td>
                                         <div class="btn-group">
                                             <a href="{{ path('admin_promotion_edit', {id: promotion.id}) }}" 
                                                class="btn btn-sm btn-primary">
@@ -69,6 +84,30 @@
                                                     <i class="bi bi-link-45deg"></i>
                                                 </a>
                                             {% endif %}
+
+                                            {% if promotion.type == 'vip' and promotion.isPaid %}
+                                                {% if promotion.property.isVip %}
+                                                    <form action="{{ path('admin_promotion_deactivate_vip', {id: promotion.id}) }}" 
+                                                          method="post" 
+                                                          onsubmit="return confirm('Сигурни ли сте, че искате да деактивирате VIP статуса на този имот?');"
+                                                          style="display: inline-block;">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('deactivate-vip' ~ promotion.id) }}">
+                                                        <button type="submit" class="btn btn-sm btn-warning" title="Деактивирай VIP статус">
+                                                            <i class="bi bi-star-fill"></i>
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    <form action="{{ path('admin_promotion_activate_vip', {id: promotion.id}) }}" 
+                                                          method="post" 
+                                                          onsubmit="return confirm('Сигурни ли сте, че искате да активирате VIP статуса на този имот?');"
+                                                          style="display: inline-block;">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('activate-vip' ~ promotion.id) }}">
+                                                        <button type="submit" class="btn btn-sm btn-success" title="Активирай VIP статус">
+                                                            <i class="bi bi-star"></i>
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                            {% endif %}
                                             
                                             <form action="{{ path('admin_promotion_delete', {id: promotion.id}) }}" 
                                                   method="post" 
@@ -79,12 +118,11 @@
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
-                                        </div>
-                                    </td>
+                                        </div>                                    </td>
                                 </tr>
                             {% else %}
                                 <tr>
-                                    <td colspan="8" class="text-center">Няма намерени промоции</td>
+                                    <td colspan="9" class="text-center">Няма намерени промоции</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

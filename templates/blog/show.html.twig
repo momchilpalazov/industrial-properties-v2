@@ -8,6 +8,75 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     {{ encore_entry_link_tags('blog') }}
+    <style>
+    /* Blog Show Left Alignment Styles - Максимална специфичност */
+    .blog-page .blog-header,
+    .blog-page .blog-header h1,
+    .blog-page .blog-header p,
+    .blog-page .blog-header .blog-title,
+    .blog-page .blog-header .blog-meta,
+    .blog-page .blog-header .blog-content h1,
+    .blog-page .blog-header .blog-content h2,
+    .blog-page .blog-header .blog-content h3,
+    .blog-page .blog-header .blog-content h4,
+    .blog-page .blog-header .blog-content h5,
+    .blog-page .blog-header .blog-content h6,
+    .blog-page .blog-header .blog-content p,
+    .blog-page .blog-header .card-title,
+    .blog-page .blog-header .card-text,
+    .blog-page .blog-header .meta-item,
+    .blog-page .blog-header .meta-item span {
+        text-align: left !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+        justify-content: flex-start !important;
+    }
+    
+    .blog-page .blog-header .col-lg-8,
+    .blog-page .blog-header .col-lg-8.mx-auto {
+        text-align: left !important;
+    }
+    
+    /* Презаписване на всякакво центриране от текст-center утилити */
+    .blog-page .text-center,
+    .blog-page .text-center h1,
+    .blog-page .text-center .blog-title,
+    .blog-page .text-center .blog-meta,
+    .blog-page .blog-header .text-center {
+        text-align: left !important;
+    }
+    
+    /* Още по-специфично правило */
+    body.blog-page .blog-header h1.blog-title,
+    body.blog-page .blog-header .blog-meta {
+        text-align: left !important;
+        justify-content: flex-start !important;
+    }
+    
+    /* Максимално специфични стилове за всичко в блог */
+    html body .blog-page,
+    html body .blog-page *,
+    html body .blog-page h1,
+    html body .blog-page h2,
+    html body .blog-page h3,
+    html body .blog-page p,
+    html body .blog-page div,
+    html body .blog-page .blog-header,
+    html body .blog-page .blog-title,
+    html body .blog-page .blog-meta {
+        text-align: left !important;
+    }
+    
+    /* Презаписване на Bootstrap utility classes с максимална специфичност */
+    html body .blog-page .text-center,
+    html body .blog-page .d-flex.justify-content-center,
+    html body .blog-page .mx-auto {
+        text-align: left !important;
+        justify-content: flex-start !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+    }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -16,9 +85,9 @@
         <header class="blog-header">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-8 mx-auto text-center">
-                        <h1 class="blog-title">{{ post.title(app.request.locale) }}</h1>
-                        <div class="blog-meta">
+                    <div class="col-lg-8" style="text-align: left !important; margin-left: 0 !important; margin-right: auto !important;">
+                        <h1 class="blog-title" style="text-align: left !important;">{{ post.title(app.request.locale) }}</h1>
+                        <div class="blog-meta" style="text-align: left !important;">
                             <div class="meta-item">
                                 <i class="bi bi-calendar-event"></i>
                                 <span>{{ post.publishedAt|date('d.m.Y') }}</span>
@@ -127,7 +196,7 @@
 
                             <!-- Back to Blog -->
                             <div class="sidebar-card">
-                                <div class="card-body text-center">
+                                <div class="card-body" style="text-align: left !important;">
                                     <a href="{{ path('app_blog_index') }}" 
                                        class="btn btn-industrial btn-lg">
                                         <i class="bi bi-arrow-left"></i>

@@ -6,6 +6,7 @@ use App\Entity\Property;
 use App\Entity\Promotion;
 use App\Form\PromotionType;
 use App\Repository\PromotionRepository;
+use App\Service\VipService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,13 +18,16 @@ class PromotionController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private PromotionRepository $promotionRepository;
+    private VipService $vipService;
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        PromotionRepository $promotionRepository
+        PromotionRepository $promotionRepository,
+        VipService $vipService
     ) {
         $this->entityManager = $entityManager;
         $this->promotionRepository = $promotionRepository;
+        $this->vipService = $vipService;
     }
 
     #[Route('/', name: 'admin_promotion_index', methods: ['GET'])]
@@ -90,5 +94,40 @@ class PromotionController extends AbstractController
         }
 
         return $this->redirectToRoute('admin_promotion_index');
+    }    #[Route('/{id}/activate-vip', name: 'admin_promotion_activate_vip', methods: ['POST'])]
+    public function activateVip(Request $request, Promotion $promotion): Response
+    {
+        if (!$this->isCsrfTokenValid('activate-vip'.$promotion->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Невалиден CSRF токен.');
+            return $this->redirectToRoute('admin_promotion_index');
+        }
+
+        try {
+            $this->vipService->activateVipFromPromotion($promotion);
+            $this->addFlash('success', 'VIP статусът на имота беше активиран успешно.');
+        } catch (\InvalidArgumentException $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('admin_promotion_index');
     }
-} 
+
+    #[Route('/{id}/deactivate-vip', name: 'admin_promotion_deactivate_vip', methods: ['POST'])]
+    public function deactivateVip(Request $request, Promotion $promotion): Response
+    {
+        if (!$this->isCsrfTokenValid('deactivate-vip'.$promotion->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Невалиден CSRF токен.');
+            return $this->redirectToRoute('admin_promotion_index');
+        }
+
+        if ($promotion->getType() !== 'vip') {
+            $this->addFlash('error', 'Само VIP промоции могат да бъдат деактивирани.');
+            return $this->redirectToRoute('admin_promotion_index');
+        }
+
+        $this->vipService->deactivateVip($promotion->getProperty());
+        $this->addFlash('success', 'VIP статусът на имота беше деактивиран успешно.');
+
+        return $this->redirectToRoute('admin_promotion_index');
+    }
+}

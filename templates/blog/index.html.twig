@@ -6,6 +6,27 @@
     {{ parent() }}
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     {{ encore_entry_link_tags('blog') }}
+    <style>
+    /* Blog Index Left Alignment Styles */
+    .blog-hero,
+    .blog-hero h1,
+    .blog-hero p,
+    .blog-hero .section-header,
+    .blog-hero .section-header h1,
+    .blog-hero .section-header p,
+    .blog-card h2,
+    .blog-card p,
+    .card-title,
+    .card-text {
+        text-align: left !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+    }
+    
+    .blog-hero .section-header {
+        margin: 0 !important;
+    }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -76,7 +97,7 @@
                         </div>
                     {% else %}
                         <div class="col-12">
-                            <div class="alert alert-info text-center">
+                            <div class="alert alert-info" style="text-align: left !important;">
                                 <div class="no-results-icon">
                                     <i class="bi bi-journal-text"></i>
                                 </div>

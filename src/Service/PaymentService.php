@@ -11,15 +11,18 @@ class PaymentService
     private EntityManagerInterface $entityManager;
     private SettingsService $settingsService;
     private UrlGeneratorInterface $urlGenerator;
+    private VipService $vipService;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         SettingsService $settingsService,
-        UrlGeneratorInterface $urlGenerator
+        UrlGeneratorInterface $urlGenerator,
+        VipService $vipService
     ) {
         $this->entityManager = $entityManager;
         $this->settingsService = $settingsService;
         $this->urlGenerator = $urlGenerator;
+        $this->vipService = $vipService;
     }
 
     public function createPaymentSession(Promotion $promotion): array
@@ -91,15 +94,18 @@ class PaymentService
             'cancel_url' => $cancelUrl,
             'test_mode' => $isTestMode,
         ];
-    }
-    
-    public function processPayment(Promotion $promotion, string $transactionId): void
+    }    public function processPayment(Promotion $promotion, string $transactionId): void
     {
         $promotion->setIsPaid(true);
         $promotion->setPaidAt(new \DateTime());
         $promotion->setTransactionId($transactionId);
         
         $this->entityManager->flush();
+        
+        // Автоматично активиране на VIP статус при платена VIP промоция
+        if ($promotion->getType() === 'vip') {
+            $this->vipService->activateVipFromPromotion($promotion);
+        }
     }
     
     public function calculateTotalPrice(Promotion $promotion): float

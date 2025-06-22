@@ -61,4 +61,60 @@ body {
     i {
         font-size: 1.2rem;
     }
-} 
+}
+
+/* HIGHEST PRIORITY: Force left alignment for all blog pages */
+.blog-page,
+.blog-page * {
+    text-align: left !important;
+}
+
+.blog-page h1,
+.blog-page h2,
+.blog-page h3,
+.blog-page h4,
+.blog-page h5,
+.blog-page h6,
+.blog-page p,
+.blog-page div,
+.blog-page span {
+    text-align: left !important;
+}
+
+/* Override Bootstrap text-center utility with maximum specificity */
+html body .blog-page .text-center,
+html body .blog-page .text-center *,
+html body .blog-page .d-flex.justify-content-center,
+html body .blog-page .mx-auto {
+    text-align: left !important;
+    justify-content: flex-start !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+/* HIGHEST PRIORITY: Force left alignment for all FAQ pages */
+.faq-hero,
+.faq-hero *,
+.faq-categories,
+.faq-categories *,
+.faq-content,
+.faq-content * {
+    text-align: left !important;
+}
+
+.faq-categories .nav {
+    justify-content: flex-start !important;
+}
+
+/* Override Bootstrap classes for FAQ with maximum specificity */
+html body .faq-hero .text-center,
+html body .faq-categories .text-center,
+html body .faq-content .text-center,
+html body .faq-hero .mx-auto,
+html body .faq-categories .mx-auto,
+html body .faq-content .mx-auto {
+    text-align: left !important;
+    justify-content: flex-start !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}

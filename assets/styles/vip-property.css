@@ -39,4 +39,37 @@
 .vip-property-section h2 i {
     color: #ffd700;
     margin-right: 10px;
-} 
+}
+
+/* VIP статус в администраторската част */
+.vip-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.vip-status-badge .bi {
+    font-size: 0.875rem;
+}
+
+.btn-group .btn.btn-warning {
+    color: #000;
+}
+
+.btn-group .btn.btn-success {
+    border-color: #198754;
+}
+
+/* Анимация за VIP звездичката */
+.vip-status-badge .bi-star-fill {
+    animation: vip-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes vip-glow {
+    from {
+        text-shadow: 0 0 5px #ffc107;
+    }
+    to {
+        text-shadow: 0 0 10px #ffc107, 0 0 15px #ffc107;
+    }
+}
