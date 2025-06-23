@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Public;
 
-use App\Form\PropertyFilterType;
+use App\Form\RentingPropertyFilterType;
 use App\Repository\PropertyRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,7 +48,7 @@ class RentalPropertyController extends AbstractController
     #[Route('', name: 'index')]
     public function index(Request $request): Response
     {
-        $form = $this->createForm(PropertyFilterType::class);
+        $form = $this->createForm(RentingPropertyFilterType::class);
         $form->handleRequest($request);
 
         // Намираме категорията "Под наем"

@@ -1,0 +1,65 @@
+# Renting page translations - Russian
+renting:
+  page_title: 'Недвижимость в аренду'
+  page_subtitle: 'Найдите идеальное промышленное пространство в аренду'
+  filters:
+    button: 'ФИЛЬТРЫ'
+    title: 'Фильтр недвижимости в аренду'
+    subtitle: 'Используйте фильтры, чтобы найти именно то, что вы ищете'
+    actions: 'ДЕЙСТВИЯ'
+    search: 'ПОИСК НЕДВИЖИМОСТИ'
+    reset: 'СБРОСИТЬ ФИЛЬТРЫ'
+
+# Property form translations for renting page
+property:
+  type_select_help: 'Выберите тип недвижимости или подкатегорию'
+  min_price_placeholder: 'От'
+  max_price_placeholder: 'До'
+  min_area_placeholder: 'От'
+  max_area_placeholder: 'До'
+  no_type: 'Нет типа'
+  form:
+    type_label: 'ТИП НЕДВИЖИМОСТИ'
+    status_label: 'СТАТУС'
+    min_price_label: 'Минимальная цена'
+    max_price_label: 'Максимальная цена'
+    min_area_label: 'Минимальная площадь'
+    max_area_label: 'Максимальная площадь'
+    sort_label: 'СОРТИРОВКА'
+    direction_label: 'НАПРАВЛЕНИЕ'
+    actions_label: 'ДЕЙСТВИЯ'
+    search_properties: 'ПОИСК НЕДВИЖИМОСТИ'
+    reset_filters: 'СБРОСИТЬ ФИЛЬТРЫ'
+    from_placeholder: 'От'
+    to_placeholder: 'До'
+    type_help: 'Выберите тип недвижимости или подкатегорию'
+    type_placeholder: 'Все типы'
+    sort_placeholder: 'Выберите сортировку'
+    status_choices:
+      all: 'Все статусы'
+      available: 'Доступно'
+      sold: 'Продано'
+      reserved: 'Зарезервировано'
+      rented: 'Сдано в аренду'
+      pending: 'Ожидает завершения'
+      auction: 'На аукционе'
+    sort_choices:
+      newest: 'Новейшие'
+      price_asc: 'Цена (по возрастанию)'
+      price_desc: 'Цена (по убыванию)'
+      area_asc: 'Площадь (по возрастанию)'
+      area_desc: 'Площадь (по убыванию)'
+    direction_choices:
+      asc: 'По возрастанию'
+      desc: 'По убыванию'
+  status:
+    available: 'Доступно'
+    sold: 'Продано'
+    reserved: 'Зарезервировано'
+    rented: 'Сдано в аренду'
+    pending: 'Ожидает завершения'
+    auction: 'На аукционе'
+
+properties:
+  list:
+    no_results: 'Не найдено недвижимости по указанным критериям.' 

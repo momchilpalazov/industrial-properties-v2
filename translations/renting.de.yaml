@@ -1,0 +1,65 @@
+# Renting page translations - German
+renting:
+  page_title: 'Mietobjekte'
+  page_subtitle: 'Finden Sie den perfekten Industriestandort zur Miete'
+  filters:
+    button: 'FILTER'
+    title: 'Mietobjekte filtern'
+    subtitle: 'Verwenden Sie Filter, um genau das zu finden, was Sie suchen'
+    actions: 'AKTIONEN'
+    search: 'IMMOBILIEN SUCHEN'
+    reset: 'FILTER ZURÜCKSETZEN'
+
+# Property form translations for renting page
+property:
+  type_select_help: 'Immobilientyp oder Unterkategorie wählen'
+  min_price_placeholder: 'Von'
+  max_price_placeholder: 'Bis'
+  min_area_placeholder: 'Von'
+  max_area_placeholder: 'Bis'
+  no_type: 'Kein Typ'
+  form:
+    type_label: 'IMMOBILIENTYP'
+    status_label: 'STATUS'
+    min_price_label: 'Mindestpreis'
+    max_price_label: 'Höchstpreis'
+    min_area_label: 'Mindestfläche'
+    max_area_label: 'Maximale Fläche'
+    sort_label: 'SORTIERUNG'
+    direction_label: 'RICHTUNG'
+    actions_label: 'AKTIONEN'
+    search_properties: 'IMMOBILIEN SUCHEN'
+    reset_filters: 'FILTER ZURÜCKSETZEN'
+    from_placeholder: 'Von'
+    to_placeholder: 'Bis'
+    type_help: 'Immobilientyp oder Unterkategorie wählen'
+    type_placeholder: 'Alle Typen'
+    sort_placeholder: 'Sortierung wählen'
+    status_choices:
+      all: 'Alle Status'
+      available: 'Verfügbar'
+      sold: 'Verkauft'
+      reserved: 'Reserviert'
+      rented: 'Vermietet'
+      pending: 'Ausstehend'
+      auction: 'Auktion'
+    sort_choices:
+      newest: 'Neueste'
+      price_asc: 'Preis (aufsteigend)'
+      price_desc: 'Preis (absteigend)'
+      area_asc: 'Fläche (aufsteigend)'
+      area_desc: 'Fläche (absteigend)'
+    direction_choices:
+      asc: 'Aufsteigend'
+      desc: 'Absteigend'
+  status:
+    available: 'Verfügbar'
+    sold: 'Verkauft'
+    reserved: 'Reserviert'
+    rented: 'Vermietet'
+    pending: 'Ausstehend'
+    auction: 'Auktion'
+
+properties:
+  list:
+    no_results: 'Keine Immobilien nach den angegebenen Kriterien gefunden.' 
