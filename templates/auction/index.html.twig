@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% if category %}{{ category.getLocalizedName(app.request.locale) }}{% else %}{{ 'promotion.active_promotions'|trans }}{% endif %} - {{ 'auctions.title'|trans }}{% endblock %}
+{% block title %}{% if category %}{{ category.getLocalizedName(app.request.locale) }}{% else %}{{ 'promotion.active_promotions'|trans({}, 'auction') }}{% endif %} - {{ 'auctions.title'|trans({}, 'auction') }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -26,7 +26,7 @@
             <div class="container">
                 <button type="button" class="filter-toggle" id="filterToggle">
                     <i class="material-icons">tune</i>
-                    <span>Филтри</span>
+                    <span>{{ 'property.filter.filters_label'|trans({}, 'auction') }}</span>
                 </button>
             </div>
         </div>
@@ -34,10 +34,8 @@
         <!-- Page Title -->
     <div class="container mt-4 pt-4">
         <div class="section-header">
-            <h1>{% if category %}{{ category.getLocalizedName(app.request.locale) }}{% else %}{{ 'promotion.active_promotions'|trans }}{% endif %}</h1>
-            {% if category and category.getLocalizedDescription(app.request.locale) %}
-                <p>{{ category.getLocalizedDescription(app.request.locale) }}</p>
-            {% endif %}
+            <h1>{{ 'auction.list.title'|trans({}, 'auction') }}</h1>
+            <p>{{ 'auction.list.subtitle'|trans({}, 'auction') }}</p>
         </div>
     </div>
 
@@ -46,16 +44,16 @@
             <div class="container">
                 <div class="property-filter-section">
                     <div class="section-header filter-header">
-                        <h4>Филтриране на търгове</h4>
-                        <p>Използвайте филтрите за да намерите точно това, което търсите</p>
+                        <h4>{{ 'auction.filter.title'|trans({}, 'auction') }}</h4>
+                        <p>{{ 'auction.filter.subtitle'|trans({}, 'auction') }}</p>
                     </div>
                     {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
-                        <!-- Първи ред - основни филтри -->
+                        <!-- First row - main filters -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ form_label(form.type) }}
                                 {{ form_widget(form.type, {'attr': {'class': 'property-type-filter'}}) }}
-                                <small class="form-text text-muted">Изберете тип имот или подкатегория</small>
+                                <small class="form-text text-muted">{{ 'property.form.type_help'|trans({}, 'auction') }}</small>
                             </div>
                         </div>
                         
@@ -66,35 +64,35 @@
                             </div>
                         </div>
                         
-                        <!-- Втори ред - ценови филтри -->
+                        <!-- Second row - price filters -->
                         <div class="col-md-6">
                             <div class="d-flex gap-2">
                                 <div class="flex-grow-1">
                                     {{ form_label(form.min_price) }}
-                                    {{ form_widget(form.min_price, {'attr': {'placeholder': 'От', 'class': 'form-control'}}) }}
+                                    {{ form_widget(form.min_price, {'attr': {'placeholder': ('property.form.from_placeholder'|trans({}, 'auction')), 'class': 'form-control'}}) }}
                                 </div>
                                 <div class="flex-grow-1">
                                     {{ form_label(form.max_price) }}
-                                    {{ form_widget(form.max_price, {'attr': {'placeholder': 'До', 'class': 'form-control'}}) }}
+                                    {{ form_widget(form.max_price, {'attr': {'placeholder': ('property.form.to_placeholder'|trans({}, 'auction')), 'class': 'form-control'}}) }}
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Трети ред - филтри за площ -->
+                        <!-- Third row - area filters -->
                         <div class="col-md-6">
                             <div class="d-flex gap-2">
                                 <div class="flex-grow-1">
                                     {{ form_label(form.min_area) }}
-                                    {{ form_widget(form.min_area, {'attr': {'placeholder': 'От', 'class': 'form-control'}}) }}
+                                    {{ form_widget(form.min_area, {'attr': {'placeholder': ('property.form.from_placeholder'|trans({}, 'auction')), 'class': 'form-control'}}) }}
                                 </div>
                                 <div class="flex-grow-1">
                                     {{ form_label(form.max_area) }}
-                                    {{ form_widget(form.max_area, {'attr': {'placeholder': 'До', 'class': 'form-control'}}) }}
+                                    {{ form_widget(form.max_area, {'attr': {'placeholder': ('property.form.to_placeholder'|trans({}, 'auction')), 'class': 'form-control'}}) }}
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Четвърти ред - сортиране и бутони -->
+                        <!-- Fourth row - sorting and buttons -->
                         <div class="col-md-6">
                             <div class="form-group d-flex gap-2">
                                 <div class="flex-grow-1">
@@ -111,15 +109,15 @@
                         <div class="col-md-6">
                             <div class="form-group d-flex gap-2">
                                 <div class="flex-grow-1">
-                                    <label class="form-label">Действия</label>
-                                    <button type="submit" class="btn filter-button w-100">
-                                        <i class="bi bi-search"></i> Търси имоти
-                                    </button>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <label class="form-label">&nbsp;</label>
-                                    <a href="{{ path('app_auctions_index') }}" class="btn reset-button w-100">
-                                        <i class="bi bi-x-circle"></i> Изчисти филтрите
+                                                                    <label class="form-label">{{ 'property.form.actions_label'|trans({}, 'auction') }}</label>
+                                <button type="submit" class="btn filter-button w-100">
+                                    <i class="bi bi-search"></i> {{ 'property.form.search_properties'|trans({}, 'auction') }}
+                                </button>
+                            </div>
+                            <div class="flex-grow-1">
+                                <label class="form-label">&nbsp;</label>
+                                <a href="{{ path('app_auctions_index') }}" class="btn reset-button w-100">
+                                    <i class="bi bi-x-circle"></i> {{ 'property.form.reset_filters'|trans({}, 'auction') }}
                                     </a>
                                 </div>
                             </div>
@@ -144,7 +142,8 @@
                 {% endif %}
             {% endfor %}
         ]'
-        data-api-key="{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}">
+        data-api-key="{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}"
+        data-translations='{"type_placeholder": "{{ 'property.form.type_placeholder'|trans({}, 'auction')|escape('js') }}"}'>
     </div>
 
     <!-- Here Maps Container -->
@@ -186,7 +185,7 @@
                                                     {% if property.type %}
                                                         {{ property.type.getLocalizedName(app.request.locale) }}
                                                     {% else %}
-                                                        {{ 'property.no_type'|trans({'default': 'Няма тип'}) }}
+                                                        {{ 'property.no_type'|trans({'default': 'Няма тип'}, 'auction') }}
                                                     {% endif %}
                                                 </span>
                                             </div>
@@ -211,7 +210,7 @@
                                                     property.status == 'reserved' ? 'warning' : 
                                                     property.status == 'rented' ? 'info' : 
                                                     property.status == 'auction' ? 'primary' : 'secondary' }}">
-                                                    {{ ('property.status.' ~ property.status)|trans }}
+                                                    {{ ('property.status.' ~ property.status)|trans({}, 'auction') }}
                                                 </span>
                                             </div>
                                         </div>
@@ -223,7 +222,7 @@
                 {% else %}
                     <div class="col-12">
                         <div class="alert alert-info">
-                            {{ 'properties.list.no_results'|trans }}
+                            {{ 'properties.list.no_results'|trans({}, 'auction') }}
                         </div>
                     </div>
                 {% endfor %}

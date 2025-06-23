@@ -1,4 +1,3 @@
-# Общи преводи за приложението
 app:
   title: 'Индустриални имоти'
   tagline: 'Вашият партньор в индустриалната недвижима собственост'
@@ -30,6 +29,20 @@ footer:
 language:
   bg: 'Български'
   en: 'English'
+  de: 'Deutsch'
+  ru: 'Русский'
+
+# Преводи за търгове/аукциони
+auctions:
+  title: 'Търгове'
+
+auction:
+  list:
+    title: 'Търгове'
+    subtitle: 'Намерете най-добрите инвестиционни възможности в индустриални имоти на търгове'
+  filter:
+    title: 'Филтриране на търговете'
+    subtitle: 'Използвайте филтрите, за да намерите точно това, което търсите'
 
 # Начална страница преводи
 home:
@@ -92,9 +105,12 @@ property:
   expose: 'Експозе'
   download_pdf: 'Изтегли PDF'
   brochure:
-    generated_at: 'Генерирана на'
     download: 'Изтегли брошура'
+    filename: 'Брошура на имота'
+    generated_at: 'Генерирана на'
   featured: 'Препоръчан'
+  no_type: 'Няма тип'
+  no_image: 'Няма изображение'
   inquiry:
     submit: 'Изпрати запитване'
     title: 'Запитване за имота'
@@ -116,6 +132,47 @@ property:
   360_images: '360° Изображения'
   360_instructions: 'Натиснете и задръжте мишката, за да завъртите изображението. Използвайте скрол за мащабиране.'
   image: 'Изображение'
+  filter:
+    filters_label: 'Филтри'
+  form:
+    status_label: 'Статус'
+    type_label: 'Тип имот'
+    min_price_label: 'Минимална цена'
+    max_price_label: 'Максимална цена'
+    min_area_label: 'Минимална площ'
+    max_area_label: 'Максимална площ'
+    sort_label: 'Подреждане'
+    direction_label: 'Посока'
+    actions_label: 'Действия'
+    search_properties: 'Търси имоти'
+    reset_filters: 'Изчисти филтрите'
+    from_placeholder: 'От'
+    to_placeholder: 'До'
+    type_help: 'Изберете тип имот или подкategория'
+    type_placeholder: 'Всички типове'
+    status_choices:
+      all: 'Всички статуси'
+      available: 'Налични'
+      sold: 'Продадени'
+      reserved: 'Резервирани'
+      rented: 'Отдадени под наем'
+      pending: 'В процес'
+      auction: 'На търг'
+    sort_choices:
+      newest: 'Най-нови'
+      price_asc: 'Цена (възходящо)'
+      price_desc: 'Цена (низходящо)'
+      area_asc: 'Площ (възходящо)'
+      area_desc: 'Площ (низходящо)'
+    sort_placeholder: 'Изберете подреждане'
+    direction_choices:
+      asc: 'Възходящо'
+      desc: 'Низходящо'
+  # Специфични placeholder ключове за съвместимост
+  min_price_placeholder: 'От'
+  max_price_placeholder: 'До'
+  min_area_placeholder: 'От'
+  max_area_placeholder: 'До'
   gallery:
     photos: 'снимки'
     more: 'още'
@@ -136,6 +193,39 @@ property:
     toggle_fullscreen: 'Цял екран'
     download: 'Изтегли'
     navigation_hint: 'Използвайте стрелките за навигация или докоснете за следваща снимка'
+
+# Допълнителни property.form ключове за съвместимост със другите езици
+property.form.status_label: 'Статус'
+property.form.type_label: 'Тип имот'
+property.form.min_price_label: 'Минимална цена'
+property.form.max_price_label: 'Максимална цена'
+property.form.min_area_label: 'Минимална площ'
+property.form.max_area_label: 'Максимална площ'
+property.form.sort_label: 'Подреждане'
+property.form.direction_label: 'Посока'
+property.form.actions_label: 'Действия'
+property.form.search_properties: 'Търси имоти'
+property.form.reset_filters: 'Изчисти филтрите'
+property.form.from_placeholder: 'От'
+property.form.to_placeholder: 'До'
+property.form.type_help: 'Изберете тип имот или подкategория'
+property.form.type_placeholder: 'Всички типове'
+property.form.sort_placeholder: 'Изберете подреждане'
+property.form.status_choices.all: 'Всички статуси'
+property.form.status_choices.available: 'Налични'
+property.form.status_choices.sold: 'Продадени'
+property.form.status_choices.reserved: 'Резервирани'
+property.form.status_choices.rented: 'Отдадени под наем'
+property.form.status_choices.pending: 'В процес'
+property.form.status_choices.auction: 'На търг'
+property.form.sort_choices.newest: 'Най-нови'
+property.form.sort_choices.price_asc: 'Цена (възходящо)'
+property.form.sort_choices.price_desc: 'Цена (низходящо)'
+property.form.sort_choices.area_asc: 'Площ (възходящо)'
+property.form.sort_choices.area_desc: 'Площ (низходящо)'
+property.form.direction_choices.asc: 'Възходящо'
+property.form.direction_choices.desc: 'Низходящо'
+property.form.filters_label: 'Филтри'
 
 # Общи преводи
 common:
@@ -367,6 +457,8 @@ contact:
 
 # Преводи за страницата с наеми
 renting:
+  page_title: 'Имоти под наем'
+  page_subtitle: 'Разгледайте нашите предложения за имоти под наем и намерете подходящо място за вашия бизнес'
   title: 'Имоти под наем'
   subtitle: 'Разгледайте нашите предложения за имоти под наем и намерете подходящо място за вашия бизнес'
   filters:
@@ -392,7 +484,12 @@ renting:
 filters:
   show: 'Покажи филтри'
 
+# Преводи за търгове - moved to top of file
+
 # Преводи за списъци с имоти
 properties:
   list:
     try_different_filters: 'Опитайте с различни филтри'
+    no_results: 'Няма намерени имоти отговарящи на посочените критерии.'
+    title: 'Имоти'
+    subtitle: 'Намерете перфектното индустриално място за вашия бизнес'

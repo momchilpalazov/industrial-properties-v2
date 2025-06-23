@@ -16,6 +16,8 @@ footer.privacy_policy: 'Privacy Policy'
 footer.cookie_settings: 'Cookie Settings'
 language.bg: Български
 language.en: English
+language.de: Deutsch
+language.ru: Русский
 home.hero.title: 'Industrial Properties in Bulgaria'
 home.hero.subtitle: 'Find the perfect location for your business'
 home.hero.cta: 'View all properties'
@@ -61,14 +63,33 @@ property.share.copied: 'Link copied to clipboard'
 property.print: Print
 property.expose: Exposé
 property.download_pdf: 'Download PDF'
-property.inquiry.title: 'Property Inquiry'
-property.inquiry.name: Name
-property.inquiry.email: Email
-property.inquiry.phone: Phone
-property.inquiry.message: Message
-property.inquiry.send: 'Send Inquiry'
-property.inquiry.success: 'Your inquiry has been sent successfully. We will contact you soon.'
-property.inquiry.error: 'An error occurred while sending your inquiry. Please try again.'
+property.filters: Filters
+property.filter_properties: 'Filter Properties'
+property.filter_instructions: 'Use filters to find exactly what you are looking for'
+property.min_price_label: 'Minimum Price'
+property.max_price_label: 'Maximum Price'
+property.min_area_label: 'Minimum Area'
+property.max_area_label: 'Maximum Area'
+property.sort_label: 'Sort'
+property.direction_label: 'Direction'
+property.filter.filters_label: 'Filters'
+property.actions_label: 'Actions'
+property.search_properties: 'Search Properties'
+property.clear_filters: 'Clear Filters'
+property.no_type: 'No Type'
+property.no_image: 'No Image'
+property.inquiry:
+    name: 'Name'
+    email: 'Email'
+    phone: 'Phone'
+    message: 'Message'
+    send: 'Send Inquiry'
+property.no_results: 'No properties found matching the specified criteria.'
+property.type_select_help: 'Select property type or subcategory'
+property.min_price_placeholder: 'From'
+property.max_price_placeholder: 'To'
+property.min_area_placeholder: 'From'
+property.max_area_placeholder: 'To'
 property.status.label: Status
 property.status.available: Available
 property.status.sold: Sold
@@ -249,7 +270,17 @@ contact.form.success: 'Your message has been sent successfully. We will contact 
 contact.form.error: 'An error occurred while sending your message. Please try again.'
 property.brochure.filename: 'Property Brochure'
 auctions.title: 'Auctions'
-property.no_type: 'Property Type Not Specified'
+
+auction:
+    list:
+        title: 'Auctions'
+        subtitle: 'Find the best investment opportunities in industrial properties at auctions'
+    filter:
+        title: 'Filter Auctions'
+        subtitle: 'Use filters to find exactly what you are looking for'
+
+# Auction section translations - handled above
+
 properties.list.no_results: 'No properties found'
 app.title: 'Industrial Properties'
 app.tagline: 'Your Partner in Industrial Real Estate'
@@ -364,9 +395,13 @@ property.featured: 'Featured'
 property.inquiry.submit: 'Submit Inquiry'
 properties.list.try_different_filters: 'Try different filters'
 property.brochure.download: 'Download Brochure'
+renting.page_title: 'For Rent'
+renting.page_subtitle: 'Properties for rent'
 renting.filters.button: 'Filters'
 renting.filters.title: 'Filter Properties'
+renting.filters.subtitle: 'Use filters to find exactly what you are looking for'
 renting.filters.type: 'Property Type'
+renting.filters.type_help: 'Select property type or subcategory'
 renting.filters.price_min: 'Min Price'
 renting.filters.price_max: 'Max Price'
 renting.filters.area_min: 'Min Area'
@@ -374,4 +409,44 @@ renting.filters.area_max: 'Max Area'
 renting.filters.actions: 'Actions'
 renting.filters.search: 'Search Properties'
 renting.filters.reset: 'Reset Filters'
+renting.filters.from_placeholder: 'From'
+renting.filters.to_placeholder: 'To'
 renting.no_results: 'No properties found matching your criteria'
+
+properties:
+  list:
+    title: 'Properties'
+    subtitle: 'Find the perfect industrial location for your business'
+    no_results: 'No properties found matching the specified criteria.'
+# Form labels and choices
+property.form.status_label: 'Status'
+property.form.type_label: 'Property Type'
+property.form.min_price_label: 'Minimum Price'
+property.form.max_price_label: 'Maximum Price'
+property.form.min_area_label: 'Minimum Area'
+property.form.max_area_label: 'Maximum Area'
+property.form.sort_label: 'Sort'
+property.form.direction_label: 'Direction'
+property.form.actions_label: 'Actions'
+property.form.search_properties: 'Search Properties'
+property.form.reset_filters: 'Reset Filters'
+property.form.from_placeholder: 'From'
+property.form.to_placeholder: 'To'
+property.form.type_help: 'Select property type or subcategory'
+property.form.filters_label: 'Filters'
+property.form.status_choices.all: 'All Statuses'
+property.form.status_choices.available: 'Available'
+property.form.status_choices.sold: 'Sold'
+property.form.status_choices.reserved: 'Reserved'
+property.form.status_choices.rented: 'Rented'
+property.form.status_choices.pending: 'Pending'
+property.form.status_choices.auction: 'On Auction'
+property.form.type_placeholder: 'All Types'
+property.form.sort_choices.newest: 'Newest'
+property.form.sort_choices.price_asc: 'Price (ascending)'
+property.form.sort_choices.price_desc: 'Price (descending)'
+property.form.sort_choices.area_asc: 'Area (ascending)'
+property.form.sort_choices.area_desc: 'Area (descending)'
+property.form.sort_placeholder: 'Select sorting'
+property.form.direction_choices.asc: 'Ascending'
+property.form.direction_choices.desc: 'Descending'

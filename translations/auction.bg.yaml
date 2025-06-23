@@ -1,0 +1,65 @@
+# Auction page translations - Bulgarian
+auction:
+  list:
+    title: 'Търгове'
+    subtitle: 'Намерете най-добрите инвестиционни възможности в индустриални имоти на търгове'
+  filter:
+    title: 'Филтриране на търговете'
+    subtitle: 'Използвайте филтрите, за да намерите точно това, което търсите'
+
+# Property form translations for auction page
+property:
+  filter:
+    filters_label: 'ФИЛТРИ'
+  form:
+    status_label: 'СТАТУС'
+    type_label: 'ТИП ИМОТ'
+    min_price_label: 'Минимална цена'
+    max_price_label: 'Максимална цена'
+    min_area_label: 'Минимална площ'
+    max_area_label: 'Максимална площ'
+    sort_label: 'ПОДРЕЖДАНЕ'
+    direction_label: 'ПОСОКА'
+    actions_label: 'ДЕЙСТВИЯ'
+    search_properties: 'ТЪРСИ ИМОТИ'
+    reset_filters: 'ИЗЧИСТИ ФИЛТРИТЕ'
+    from_placeholder: 'От'
+    to_placeholder: 'До'
+    type_help: 'Изберете тип имот или подкategория'
+    type_placeholder: 'Всички типове'
+    sort_placeholder: 'Изберете подреждане'
+    status_choices:
+      all: 'Всички статуси'
+      available: 'Налични'
+      sold: 'Продадени'
+      reserved: 'Резервирани'
+      rented: 'Отдадени под наем'
+      pending: 'В процес'
+      auction: 'На търг'
+    sort_choices:
+      newest: 'Най-нови'
+      price_asc: 'Цена (възходящо)'
+      price_desc: 'Цена (низходящо)'
+      area_asc: 'Площ (възходящо)'
+      area_desc: 'Площ (низходящо)'
+    direction_choices:
+      asc: 'Възходящо'
+      desc: 'Низходящо'
+  no_type: 'Няма тип'
+  status:
+    available: 'Наличен'
+    sold: 'Продаден'
+    reserved: 'Резервиран'
+    rented: 'Отдаден под наем'
+    pending: 'В процес на договаряне'
+    auction: 'На търг'
+
+properties:
+  list:
+    no_results: 'Няма намерени имоти отговарящи на посочените критерии.'
+
+auctions:
+  title: 'Търгове'
+
+promotion:
+  active_promotions: 'Активни търгове' 

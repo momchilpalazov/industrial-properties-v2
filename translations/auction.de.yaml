@@ -1,0 +1,65 @@
+# Auction page translations - German
+auction:
+  list:
+    title: 'Auktionen'
+    subtitle: 'Finden Sie die besten Investitionsmöglichkeiten in Industrieimmobilien bei Auktionen'
+  filter:
+    title: 'Auktionen filtern'
+    subtitle: 'Verwenden Sie Filter, um genau das zu finden, was Sie suchen'
+
+# Property form translations for auction page
+property:
+  filter:
+    filters_label: 'FILTER'
+  form:
+    status_label: 'STATUS'
+    type_label: 'IMMOBILIENTYP'
+    min_price_label: 'Mindestpreis'
+    max_price_label: 'Höchstpreis'
+    min_area_label: 'Mindestfläche'
+    max_area_label: 'Höchstfläche'
+    sort_label: 'SORTIERUNG'
+    direction_label: 'RICHTUNG'
+    actions_label: 'AKTIONEN'
+    search_properties: 'IMMOBILIEN SUCHEN'
+    reset_filters: 'FILTER ZURÜCKSETZEN'
+    from_placeholder: 'Von'
+    to_placeholder: 'Bis'
+    type_help: 'Immobilientyp oder Unterkategorie wählen'
+    type_placeholder: 'Alle Typen'
+    sort_placeholder: 'Sortierung wählen'
+    status_choices:
+      all: 'Alle Status'
+      available: 'Verfügbar'
+      sold: 'Verkauft'
+      reserved: 'Reserviert'
+      rented: 'Vermietet'
+      pending: 'Ausstehend'
+      auction: 'Auktion'
+    sort_choices:
+      newest: 'Neueste'
+      price_asc: 'Preis (aufsteigend)'
+      price_desc: 'Preis (absteigend)'
+      area_asc: 'Fläche (aufsteigend)'
+      area_desc: 'Fläche (absteigend)'
+    direction_choices:
+      asc: 'Aufsteigend'
+      desc: 'Absteigend'
+  no_type: 'Kein Typ'
+  status:
+    available: 'Verfügbar'
+    sold: 'Verkauft'
+    reserved: 'Reserviert'
+    rented: 'Vermietet'
+    pending: 'Ausstehend'
+    auction: 'Auktion'
+
+properties:
+  list:
+    no_results: 'Keine Immobilien nach den angegebenen Kriterien gefunden.'
+
+auctions:
+  title: 'Auktionen'
+
+promotion:
+  active_promotions: 'Aktive Auktionen' 

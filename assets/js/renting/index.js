@@ -76,12 +76,23 @@ function initializeFilterToggle() {
 /**
  * Инициализира Select2 за падащите менюта
  */
-function initializeSelect2() {
-    if (typeof $ !== 'undefined' && $.fn.select2) {
+function initializeSelect2() {    if (typeof $ !== 'undefined' && $.fn.select2) {
+        // Get translations from data attribute
+        const propertiesData = document.getElementById('properties-data');
+        let translations = { type_placeholder: 'Изберете тип имот' }; // Default fallback
+        
+        if (propertiesData && propertiesData.dataset.translations) {
+            try {
+                translations = JSON.parse(propertiesData.dataset.translations);
+            } catch (e) {
+                console.error('Failed to parse translations:', e);
+            }
+        }
+        
         $('.property-type-filter').select2({
             theme: 'bootstrap-5',
             width: '100%',
-            placeholder: 'Изберете тип имот',
+            placeholder: translations.type_placeholder,
             allowClear: true,
             templateResult: formatPropertyType
         });

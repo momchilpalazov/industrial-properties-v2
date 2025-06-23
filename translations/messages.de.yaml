@@ -4,11 +4,14 @@ app:
 
 nav:
     home: 'Startseite'
-    properties: 'Immobilien'
+    properties: 'Verkauf'
+    rental_properties: 'Vermietung'
+    promotions: 'Auktionen'
+    services: 'Dienstleistungen'
     blog: 'Blog'
     about: 'Über uns'
     contact: 'Kontakt'
-    language: 'Sprache'
+    faq: 'FAQ'
     admin:
         blog: 'Blog'
         faq: 'FAQ'
@@ -18,53 +21,169 @@ footer:
     quick_links: 'Schnellzugriff'
     contact_us: 'Kontaktieren Sie uns'
     rights: 'Alle Rechte vorbehalten'
+    privacy_policy: 'Datenschutzrichtlinie'
+    cookie_settings: 'Cookie-Einstellungen'
+
+language:
+    bg: 'Bulgarisch'
+    en: 'Englisch'
+    de: 'Deutsch'
+    ru: 'Russisch'
+
+home:
+    hero:
+        title: 'Industrieimmobilien in Bulgarien'
+        subtitle: 'Finden Sie den perfekten Standort für Ihr Unternehmen'
+        cta: 'Alle Immobilien ansehen'
+    property_types:
+        title: 'Immobilientypen'
+        subtitle: 'Wählen Sie den Immobilientyp, der Ihren Geschäftsanforderungen entspricht'
+        industrial_land: 'Industriegrundstücke'
+        industrial_land_desc: 'Grundstücke für Ihre Geschäftsanforderungen'
+        logistics_center: 'Logistikzentren'
+        logistics_center_desc: 'Lagerhäuser und Vertriebszentren'
+        production_facility: 'Produktionsanlagen'
+        production_facility_desc: 'Fertigungsstätten'
+        properties_count: '{count} Immobilien'
+    featured_properties:
+        title: 'Ausgewählte Immobilien'
+        subtitle: 'Entdecken Sie die besten Angebote in unserem Katalog'
+        view_all: 'Alle ansehen'
+    vip_properties:
+        title: 'VIP Immobilien'
+        subtitle: 'Exklusive Angebote unserer Partner'
+    latest_properties:
+        title: 'Neueste Immobilien'
+        subtitle: 'Kürzlich hinzugefügte Immobilien in unserer Datenbank'
+        view_all: 'Alle ansehen'
+    cta:
+        title: 'Suchen Sie eine bestimmte Immobilie?'
+        subtitle: 'Kontaktieren Sie uns und wir helfen Ihnen, genau das zu finden, was Sie brauchen'
+        button: 'Kontaktieren Sie uns'
+
+# Преводи за търгове/аукциони
+auctions:
+    title: 'Auktionen'
+
+auction:
+    list:
+        title: 'Auktionen'
+        subtitle: 'Finden Sie die besten Investitionsmöglichkeiten in Industrieimmobilien bei Auktionen'
+    filter:
+        title: 'Auktionen filtern'
+        subtitle: 'Verwenden Sie Filter, um genau das zu finden, was Sie suchen'
 
 property:
     list_title: 'Industrieimmobilien'
-    filter:
-        type: 'Immobilientyp'
-        all_types: 'Alle Typen'
-        area: 'Fläche'
-        price: 'Preis'
-        search: 'Suchen'
-    area: 'Fläche'
+    list_subtitle: 'Durchsuchen Sie unsere Industrieimmobilienangebote und finden Sie den perfekten Standort für Ihr Unternehmen'
+    reference: 'Referenznummer'
     location: 'Standort'
+    area: 'Fläche'
     type: 'Typ'
     price: 'Preis'
     description: 'Beschreibung'
+    features: 'Ausstattung'
+    contact_agent: 'Agent kontaktieren'
+    contact: 'Anfrage senden'
     view_details: 'Details ansehen'
+    view_brochure: 'Exposé ansehen'
+    download_pdf: 'PDF herunterladen'
+    expose: 'Exposé'
+    print: 'Drucken'
+    location_map: 'Standort auf der Karte'
+    360_images: '360° Ansichten'
+    360_instructions: 'Verwenden Sie die Maus zur Navigation in der 360° Ansicht'
     similar: 'Ähnliche Immobilien'
+    type_label: 'Typ'    # Добавени преводи за филтрите
+    filters: 'Filter'
+    filter:
+        filters_label: 'Filter'
+    filter_properties: 'Immobilien filtern'
+    filter_instructions: 'Verwenden Sie die Filter, um genau das zu finden, was Sie suchen'
+    min_price_label: 'Mindestpreis'
+    max_price_label: 'Höchstpreis'
+    min_area_label: 'Mindestfläche'
+    max_area_label: 'Maximale Fläche'
+    sort_label: 'Sortierung'
+    direction_label: 'Richtung'
+    actions_label: 'Aktionen'
+    search_properties: 'Immobilien suchen'
+    clear_filters: 'Filter zurücksetzen'
+    no_type: 'Kein Typ'
+    no_image: 'Kein Bild'
+    no_results: 'Keine Immobilien nach den angegebenen Kriterien gefunden.'
     inquiry:
-        title: 'Immobilienanfrage'
         name: 'Name'
         email: 'E-Mail'
         phone: 'Telefon'
         message: 'Nachricht'
-        submit: 'Anfrage senden'
-        success: 'Ihre Anfrage wurde erfolgreich gesendet!'
-        error: 'Beim Senden Ihrer Anfrage ist ein Fehler aufgetreten.'
-    share:
-        copied: 'Link in die Zwischenablage kopiert'
+        send: 'Anfrage senden'
+    type_select_help: 'Wählen Sie Immobilientyp oder Unterkategorie'
+    min_price_placeholder: 'Von'
+    max_price_placeholder: 'Bis'
+    min_area_placeholder: 'Von'
+    max_area_placeholder: 'Bis'
+    # Form labels и choices
+    form:
+        status_label: 'Status'
+        type_label: 'Immobilientyp'
+        min_price_label: 'Mindestpreis'
+        max_price_label: 'Höchstpreis'
+        min_area_label: 'Mindestfläche'
+        max_area_label: 'Maximale Fläche'
+        sort_label: 'Sortierung'
+        direction_label: 'Richtung'
+        status_choices:
+            all: 'Alle Status'
+            available: 'Verfügbar'
+            sold: 'Verkauft'
+            reserved: 'Reserviert'
+            rented: 'Vermietet'
+            pending: 'Ausstehend'
+            auction: 'Auktion'
+        type_placeholder: 'Alle Typen'
+        sort_choices:
+            newest: 'Neueste'
+            price_asc: 'Preis (aufsteigend)'
+            price_desc: 'Preis (absteigend)'
+            area_asc: 'Fläche (aufsteigend)'
+            area_desc: 'Fläche (absteigend)'
+        sort_placeholder: 'Sortierung wählen'
+        direction_choices:
+            asc: 'Aufsteigend'
+            desc: 'Absteigend'
     types:
-        industrial: 'Industriell'
         warehouse: 'Lagerhaus'
+        factory: 'Fabrik'
+        office: 'Büro'
+        retail: 'Geschäft'
+        land: 'Grundstück'
+        industrial: 'Industriell'
         logistics: 'Logistikzentrum'
         production: 'Produktion'
-        office: 'Büro'
-        retail: 'Einzelhandel'
         mixed: 'Gemischt'
         industrial_land: 'Industriegrundstück'
         logistics_center: 'Logistikzentrum'
         production_facility: 'Produktionsanlage'
         industrial_building: 'Industriegebäude'
-    features:
-        area: 'Fläche'
-        price: 'Preis'
-        location: 'Standort'
-        type: 'Typ'
+        
     status:
+        label: 'Status'
         available: 'Verfügbar'
+        sold: 'Verkauft'
+        reserved: 'Reserviert'
+        rented: 'Vermietet'
+        pending: 'Ausstehend'
+        auction: 'Auktion'
         unavailable: 'Nicht verfügbar'
+        success: 'Ihre Anfrage wurde erfolgreich gesendet!'
+        error: 'Beim Senden Ihrer Anfrage ist ein Fehler aufgetreten.'
+        
+    share:
+        title: 'Diese Immobilie teilen'
+        copy_link: 'Link kopieren'
+        copied: 'Link in die Zwischenablage kopiert!'
+        
     actions:
         view: 'Details'
         contact: 'Anfrage'
@@ -72,11 +191,23 @@ property:
         filter: 'Filter'
         clear: 'Zurücksetzen'
 
+search:
+    title: 'Immobiliensuche'
+    all_types: 'Alle Typen'
+    min_area: 'Mindestfläche (m²)'
+    max_area: 'Maximale Fläche (m²)'
+    min_price: 'Mindestpreis (€)'
+    max_price: 'Höchstpreis (€)'
+    submit: 'Suchen'
+
 blog:
     title: 'Blog'
     latest_posts: 'Neueste Beiträge'
     categories: 'Kategorien'
+    tags: 'Schlagwörter'
     read_more: 'Weiterlesen'
+    posted_on: 'Veröffentlicht am'
+    by: 'von'
     share: 'Teilen'
     related_posts: 'Ähnliche Beiträge'
     admin:
@@ -110,11 +241,15 @@ blog:
 
 contact:
     title: 'Kontakt'
-    info: 'Kontaktinformationen'
-    address: 'Adresse'
-    phone: 'Telefon'
+    name: 'Name'
     email: 'E-Mail'
+    phone: 'Telefon'
+    subject: 'Betreff'
+    message: 'Nachricht'
+    send: 'Senden'
+    address: 'Adresse'
     working_hours: 'Öffnungszeiten'
+    info: 'Kontaktinformationen'
     follow_us: 'Folgen Sie uns'
     form_title: 'Senden Sie uns eine Nachricht'
     form:
@@ -127,18 +262,21 @@ contact:
         success: 'Ihre Nachricht wurde erfolgreich gesendet!'
         error: 'Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten.'
 
-home:
-    hero:
-        title: 'Industrieimmobilien in Bulgarien'
-        subtitle: 'Finden Sie den perfekten Standort für Ihr Unternehmen'
-        cta: 'Alle Immobilien ansehen'
-    sections:
-        types: 'Immobilientypen'
-        featured: 'Ausgewählte Immobilien'
-        cta:
-            title: 'Suchen Sie eine bestimmte Immobilie?'
-            text: 'Kontaktieren Sie uns und wir helfen Ihnen, genau das zu finden, was Sie brauchen'
-            button: 'Kontaktieren Sie uns'
+admin:
+    login: 'Anmeldung'
+    logout: 'Abmeldung'
+    dashboard: 'Dashboard'
+    properties: 'Immobilien'
+    blog_posts: 'Blog-Beiträge'
+    users: 'Benutzer'
+    settings: 'Einstellungen'
+
+common:
+    gdpr_consent: 'Ich stimme der Datenschutzrichtlinie zu'
+    privacy_policy: 'Datenschutzrichtlinie'
+    recaptcha_prompt: 'Bitte bestätigen Sie, dass Sie kein Roboter sind.'
+    recaptcha_error: 'Bitte bestätigen Sie reCAPTCHA.'
+    gdpr_consent_error: 'Sie müssen der Datenschutzrichtlinie zustimmen.'
 
 form:
     labels:
@@ -154,25 +292,84 @@ form:
         min_area: 'Mindestfläche'
         max_area: 'Maximale Fläche'
 
-# FAQ Admin Panel Übersetzungen
 faq:
-  admin:
-    title: 'Häufig gestellte Fragen'
-    new: 'Neue Frage'
-    active: 'Aktiv'
-    edit: 'Frage bearbeiten'
-    save: 'Speichern'
-    delete: 'Löschen'
-    confirm_delete: 'Sind Sie sicher, dass Sie diese Frage löschen möchten?'
-    question: 'Frage'
-    answer: 'Antwort'
-    category: 'Kategorie'
-    order: 'Reihenfolge'
-    created_at: 'Erstellt am'
-    updated_at: 'Aktualisiert am'
-    back_to_list: 'Zurück zur Liste'
-    success_created: 'Die Frage wurde erfolgreich erstellt'
-    success_updated: 'Die Frage wurde erfolgreich aktualisiert'
-    success_deleted: 'Die Frage wurde erfolgreich gelöscht'
-  categories:
-    general: 'Allgemeine Fragen' 
+    admin:
+        title: 'Häufig gestellte Fragen'
+        new: 'Neue Frage'
+        active: 'Aktiv'
+        edit: 'Frage bearbeiten'
+        save: 'Speichern'
+        delete: 'Löschen'
+        confirm_delete: 'Sind Sie sicher, dass Sie diese Frage löschen möchten?'
+        question: 'Frage'
+        answer: 'Antwort'
+        category: 'Kategorie'
+        order: 'Reihenfolge'
+        created_at: 'Erstellt am'
+        updated_at: 'Aktualisiert am'
+        back_to_list: 'Zurück zur Liste'
+        success_created: 'Die Frage wurde erfolgreich erstellt'
+        success_updated: 'Die Frage wurde erfolgreich aktualisiert'
+        success_deleted: 'Die Frage wurde erfolgreich gelöscht'
+    categories:
+        general: 'Allgemeine Fragen'
+
+properties:
+    list:
+        title: 'Immobilien'
+        subtitle: 'Finden Sie den perfekten Industriestandort für Ihr Unternehmen'
+        no_results: 'Keine Immobilien nach den angegebenen Kriterien gefunden.'
+
+# Additional property form translations - consolidated above
+property.form.type_label: 'Immobilientyp'
+property.form.status_label: 'Status'
+property.form.min_price_label: 'Mindestpreis'
+property.form.max_price_label: 'Höchstpreis'
+property.form.min_area_label: 'Mindestfläche'
+property.form.max_area_label: 'Maximale Fläche'
+property.form.sort_label: 'Sortierung'
+property.form.direction_label: 'Richtung'
+property.form.actions_label: 'Aktionen'
+property.form.search_properties: 'Immobilien suchen'
+property.form.reset_filters: 'Filter zurücksetzen'
+property.form.from_placeholder: 'Von'
+property.form.to_placeholder: 'Bis'
+property.form.type_help: 'Immobilientyp oder Unterkategorie wählen'
+property.form.type_placeholder: 'Alle Typen'
+property.form.sort_placeholder: 'Sortierung wählen'
+property.form.status_choices.all: 'Alle Status'
+property.form.status_choices.available: 'Verfügbar'
+property.form.status_choices.sold: 'Verkauft'
+property.form.status_choices.reserved: 'Reserviert'
+property.form.status_choices.rented: 'Vermietet'
+property.form.status_choices.pending: 'Ausstehend'
+property.form.status_choices.auction: 'Auktion'
+property.form.sort_choices.newest: 'Neueste'
+property.form.sort_choices.price_asc: 'Preis (aufsteigend)'
+property.form.sort_choices.price_desc: 'Preis (absteigend)'
+property.form.sort_choices.area_asc: 'Fläche (aufsteigend)'
+property.form.sort_choices.area_desc: 'Fläche (absteigend)'
+property.form.direction_choices.asc: 'Aufsteigend'
+property.form.direction_choices.desc: 'Absteigend'
+property.form.filters_label: 'Filter'
+
+# Renting page translations
+renting.page_title: 'Vermietung'
+renting.page_subtitle: 'Immobilien zur Miete'
+renting.filters.button: 'Filter'
+renting.filters.title: 'Immobilien filtern'
+renting.filters.subtitle: 'Verwenden Sie die Filter, um genau das zu finden, was Sie suchen'
+renting.filters.type: 'Immobilientyp'
+renting.filters.type_help: 'Wählen Sie Immobilientyp oder Unterkategorie'
+renting.filters.price_min: 'Mindestpreis'
+renting.filters.price_max: 'Höchstpreis'
+renting.filters.area_min: 'Mindestfläche'
+renting.filters.area_max: 'Maximale Fläche'
+renting.filters.actions: 'Aktionen'
+renting.filters.search: 'Immobilien suchen'
+renting.filters.reset: 'Filter zurücksetzen'
+renting.filters.from_placeholder: 'Von'
+renting.filters.to_placeholder: 'Bis'
+renting.no_results: 'Keine Immobilien nach den angegebenen Kriterien gefunden'
+
+# auction section moved to top of file

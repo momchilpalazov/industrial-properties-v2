@@ -1,0 +1,65 @@
+# Auction page translations - Russian
+auction:
+  list:
+    title: 'Аукционы'
+    subtitle: 'Найдите лучшие инвестиционные возможности в промышленной недвижимости на аукционах'
+  filter:
+    title: 'Фильтр аукционов'
+    subtitle: 'Используйте фильтры, чтобы найти именно то, что вы ищете'
+
+# Property form translations for auction page
+property:
+  filter:
+    filters_label: 'ФИЛЬТРЫ'
+  form:
+    status_label: 'СТАТУС'
+    type_label: 'ТИП НЕДВИЖИМОСТИ'
+    min_price_label: 'Минимальная цена'
+    max_price_label: 'Максимальная цена'
+    min_area_label: 'Минимальная площадь'
+    max_area_label: 'Максимальная площадь'
+    sort_label: 'СОРТИРОВКА'
+    direction_label: 'НАПРАВЛЕНИЕ'
+    actions_label: 'ДЕЙСТВИЯ'
+    search_properties: 'ПОИСК НЕДВИЖИМОСТИ'
+    reset_filters: 'СБРОСИТЬ ФИЛЬТРЫ'
+    from_placeholder: 'От'
+    to_placeholder: 'До'
+    type_help: 'Выберите тип недвижимости или подкатегорию'
+    type_placeholder: 'Все типы'
+    sort_placeholder: 'Выберите сортировку'
+    status_choices:
+      all: 'Все статусы'
+      available: 'Доступно'
+      sold: 'Продано'
+      reserved: 'Зарезервировано'
+      rented: 'Сдано в аренду'
+      pending: 'Ожидает завершения'
+      auction: 'На аукционе'
+    sort_choices:
+      newest: 'Новейшие'
+      price_asc: 'Цена (по возрастанию)'
+      price_desc: 'Цена (по убыванию)'
+      area_asc: 'Площадь (по возрастанию)'
+      area_desc: 'Площадь (по убыванию)'
+    direction_choices:
+      asc: 'По возрастанию'
+      desc: 'По убыванию'
+  no_type: 'Нет типа'
+  status:
+    available: 'Доступно'
+    sold: 'Продано'
+    reserved: 'Зарезервировано'
+    rented: 'Сдано в аренду'
+    pending: 'Ожидает завершения'
+    auction: 'На аукционе'
+
+properties:
+  list:
+    no_results: 'Не найдено недвижимости по указанным критериям.'
+
+auctions:
+  title: 'Аукционы'
+
+promotion:
+  active_promotions: 'Активные аукционы' 

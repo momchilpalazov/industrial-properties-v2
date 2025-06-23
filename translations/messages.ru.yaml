@@ -19,21 +19,58 @@ footer:
     contact_us: 'Свяжитесь с нами'
     rights: 'Все права защищены'
 
+# Переводы для аукционов
+auctions:
+    title: 'Аукционы'
+
+auction:
+    list:
+        title: 'Аукционы'
+        subtitle: 'Найдите лучшие инвестиционные возможности в промышленной недвижимости на аукционах'
+    filter:
+        title: 'Фильтр аукционов'
+        subtitle: 'Используйте фильтры, чтобы найти именно то, что вы ищете'
+
 property:
     list_title: 'Промышленная недвижимость'
-    filter:
-        type: 'Тип недвижимости'
-        all_types: 'Все типы'
-        area: 'Площадь'
-        price: 'Цена'
-        search: 'Поиск'
-    area: 'Площадь'
-    location: 'Расположение'
-    type: 'Тип'
-    price: 'Цена'
-    description: 'Описание'
-    view_details: 'Подробнее'
-    similar: 'Похожие объекты'
+    # Добавени преводи за филтрите
+    filters: 'Фильтры'
+    filter_properties: 'Фильтр недвижимости'
+    filter_instructions: 'Используйте фильтры, чтобы найти именно то, что вы ищете'
+    min_price_label: 'Минимальная цена'
+    max_price_label: 'Максимальная цена'
+    min_area_label: 'Минимальная площадь'
+    max_area_label: 'Максимальная площадь'
+    sort_label: 'Сортировка'
+    direction_label: 'Направление'
+    actions_label: 'Действия'
+    search_properties: 'Поиск недвижимости'
+    clear_filters: 'Очистить фильтры'
+    no_type: 'Нет типа'
+    no_results: 'Не найдено недвижимости по указанным критериям.'
+    type_select_help: 'Выберите тип недвижимости или подкатегорию'
+    min_price_placeholder: 'От'
+    max_price_placeholder: 'До'
+    min_area_placeholder: 'От'
+    max_area_placeholder: 'До'
+    # Form labels и choices
+    form:
+        status_label: 'Статус'
+        type_label: 'Тип недвижимости'
+        min_price_label: 'Минимальная цена'
+        max_price_label: 'Максимальная цена'
+        min_area_label: 'Минимальная площадь'
+        max_area_label: 'Максимальная площадь'
+        sort_label: 'Сортировка'
+        direction_label: 'Направление'
+        status_choices:
+            all: 'Все статусы'
+            available: 'Доступно'
+            sold: 'Продано'
+            reserved: 'Зарезервировано'
+            rented: 'Сдано в аренду'
+            pending: 'Ожидает завершения'
+            auction: 'На аукционе'
     inquiry:
         title: 'Запрос о недвижимости'
         name: 'Имя'
@@ -162,9 +199,69 @@ faq:
     order: 'Порядок'
     created_at: 'Создан'
     updated_at: 'Обновлен'
-    back_to_list: 'Вернуться к списку'
+    back_to_list: 'Назад к списку'
     success_created: 'Вопрос успешно создан'
     success_updated: 'Вопрос успешно обновлен'
     success_deleted: 'Вопрос успешно удален'
-  categories:
-    general: 'Общие вопросы' 
+
+properties:
+  list:
+    title: 'Недвижимость'
+    subtitle: 'Найдите идеальное промышленное место для вашего бизнеса'
+    no_results: 'Не найдено недвижимости по указанным критериям.'
+
+# Additional property form translations - consolidated below
+
+# Renting page translations
+renting.page_title: 'Аренда'
+renting.page_subtitle: 'Недвижимость в аренду'
+renting.filters.button: 'Фильтры'
+renting.filters.title: 'Фильтр недвижимости'
+renting.filters.subtitle: 'Используйте фильтры, чтобы найти именно то, что вы ищете'
+renting.filters.type: 'Тип недвижимости'
+renting.filters.type_help: 'Выберите тип недвижимости или подкатегорию'
+renting.filters.price_min: 'Минимальная цена'
+renting.filters.price_max: 'Максимальная цена'
+renting.filters.area_min: 'Минимальная площадь'
+renting.filters.area_max: 'Максимальная площадь'
+renting.filters.actions: 'Действия'
+renting.filters.search: 'Искать недвижимость'
+renting.filters.reset: 'Сбросить фильтры'
+renting.filters.from_placeholder: 'От'
+renting.filters.to_placeholder: 'До'
+renting.no_results: 'Недвижимость по указанным критериям не найдена'
+
+# Дополнительные property.form ключи для совместимости с другими языками
+property.form.status_label: 'Статус'
+property.form.type_label: 'Тип недвижимости'
+property.form.min_price_label: 'Минимальная цена'
+property.form.max_price_label: 'Максимальная цена'
+property.form.min_area_label: 'Минимальная площадь'
+property.form.max_area_label: 'Максимальная площадь'
+property.form.sort_label: 'Сортировка'
+property.form.direction_label: 'Направление'
+property.form.actions_label: 'Действия'
+property.form.search_properties: 'Поиск недвижимости'
+property.form.reset_filters: 'Сбросить фильтры'
+property.form.from_placeholder: 'От'
+property.form.to_placeholder: 'До'
+property.form.type_help: 'Выберите тип недвижимости или подкатегорию'
+property.form.type_placeholder: 'Все типы'
+property.form.sort_placeholder: 'Выберите сортировку'
+property.form.status_choices.all: 'Все статусы'
+property.form.status_choices.available: 'Доступно'
+property.form.status_choices.sold: 'Продано'
+property.form.status_choices.reserved: 'Зарезервировано'
+property.form.status_choices.rented: 'Сдано в аренду'
+property.form.status_choices.pending: 'Ожидает завершения'
+property.form.status_choices.auction: 'На аукционе'
+property.form.sort_choices.newest: 'Новейшие'
+property.form.sort_choices.price_asc: 'Цена (по возрастанию)'
+property.form.sort_choices.price_desc: 'Цена (по убыванию)'
+property.form.sort_choices.area_asc: 'Площадь (по возрастанию)'
+property.form.sort_choices.area_desc: 'Площадь (по убыванию)'
+property.form.direction_choices.asc: 'По возрастанию'
+property.form.direction_choices.desc: 'По убыванию'
+property.form.filters_label: 'Фильтры'
+
+# auction section moved to top of file

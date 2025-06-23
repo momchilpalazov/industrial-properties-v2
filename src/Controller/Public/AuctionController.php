@@ -4,7 +4,7 @@ namespace App\Controller\Public;
 
 use App\Entity\Property;
 use App\Entity\PropertyCategory;
-use App\Form\PromotionFilterType;
+use App\Form\AuctionPropertyFilterType;
 use App\Repository\PromotionRepository;
 use App\Repository\PropertyRepository;
 use App\Repository\PropertyCategoryRepository;
@@ -42,7 +42,7 @@ class AuctionController extends AbstractController
     public function index(Request $request): Response
     {
         // Създаваме формата за филтриране
-        $form = $this->createForm(PromotionFilterType::class);
+        $form = $this->createForm(AuctionPropertyFilterType::class);
         $form->handleRequest($request);
 
         // Намираме категорията "Търгове"
