@@ -1,0 +1,37 @@
+# Blog page translations - English
+blog:
+  # Page meta
+  title: 'Blog'
+  subtitle: 'Latest news and analysis on industrial real estate and investments'
+  
+  # Categories
+  categories:
+    title: 'Categories'
+    all: 'All'
+    industry_articles: 'Industry Articles'
+    sector_news: 'Sector News'
+    investor_tips: 'Investor Tips'
+  
+  # Article actions
+  read_more: 'Read More'
+  back_to_blog: 'Back to Blog'
+  
+  # Latest posts
+  latest_posts: 'Latest Posts'
+  
+  # Meta and sharing
+  meta:
+    share: 'Share this article'
+    description: 'Discover the latest news, analysis and tips on industrial real estate and investments in our blog.'
+    keywords: 'blog, industrial properties, news, analysis, investments, tips'
+  
+  # Social sharing
+  social:
+    facebook: 'Facebook'
+    linkedin: 'LinkedIn'
+    twitter: 'Twitter'
+  
+  # Search and filtering
+  search:
+    no_results: 'No results found'
+    no_results_text: 'Try changing your search criteria or browse other categories.'

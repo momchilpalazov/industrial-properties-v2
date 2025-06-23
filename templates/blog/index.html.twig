@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'blog.title'|trans }}{% endblock %}
+{% block title %}{{ 'blog.title'|trans({}, 'blog') }}{% endblock %}
+
+{% block meta_description %}{{ 'blog.meta.description'|trans({}, 'blog') }}{% endblock %}
+
+{% block meta_keywords %}{{ 'blog.meta.keywords'|trans({}, 'blog') }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}

@@ -1,0 +1,37 @@
+# Blog page translations - Bulgarian
+blog:
+  # Page meta
+  title: 'Блог'
+  subtitle: 'Актуални новини и анализи за индустриалните имоти и инвестиции'
+  
+  # Categories
+  categories:
+    title: 'Категории'
+    all: 'Всички'
+    industry_articles: 'Индустриални статии'
+    sector_news: 'Новини от сектора'
+    investor_tips: 'Съвети за инвеститори'
+  
+  # Article actions
+  read_more: 'Прочети повече'
+  back_to_blog: 'Назад към блога'
+  
+  # Latest posts
+  latest_posts: 'Последни публикации'
+  
+  # Meta and sharing
+  meta:
+    share: 'Споделете тази статия'
+    description: 'Открийте актуални новини, анализи и съвети за индустриални имоти и инвестиции в нашия блог.'
+    keywords: 'блог, индустриални имоти, новини, анализи, инвестиции, съвети'
+  
+  # Social sharing
+  social:
+    facebook: 'Facebook'
+    linkedin: 'LinkedIn'
+    twitter: 'Twitter'
+  
+  # Search and filtering
+  search:
+    no_results: 'Няма намерени резултати'
+    no_results_text: 'Опитайте да промените критериите за търсене или разгледайте други категории.'

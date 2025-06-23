@@ -1,0 +1,37 @@
+# Blog page translations - German
+blog:
+  # Page meta
+  title: 'Blog'
+  subtitle: 'Aktuelle Nachrichten und Analysen zu Industrieimmobilien und Investitionen'
+  
+  # Categories
+  categories:
+    title: 'Kategorien'
+    all: 'Alle'
+    industry_articles: 'Industrieartikel'
+    sector_news: 'Branchennachrichten'
+    investor_tips: 'Investorentipps'
+  
+  # Article actions
+  read_more: 'Mehr lesen'
+  back_to_blog: 'Zurück zum Blog'
+  
+  # Latest posts
+  latest_posts: 'Neueste Beiträge'
+  
+  # Meta and sharing
+  meta:
+    share: 'Teilen Sie diesen Artikel'
+    description: 'Entdecken Sie die neuesten Nachrichten, Analysen und Tipps zu Industrieimmobilien und Investitionen in unserem Blog.'
+    keywords: 'Blog, Industrieimmobilien, Nachrichten, Analysen, Investitionen, Tipps'
+  
+  # Social sharing
+  social:
+    facebook: 'Facebook'
+    linkedin: 'LinkedIn'
+    twitter: 'Twitter'
+  
+  # Search and filtering
+  search:
+    no_results: 'Keine Ergebnisse gefunden'
+    no_results_text: 'Versuchen Sie, Ihre Suchkriterien zu ändern oder andere Kategorien zu durchsuchen.'

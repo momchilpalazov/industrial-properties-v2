@@ -2,6 +2,10 @@
 
 {% block title %}{{ post.title(app.request.locale) }}{% endblock %}
 
+{% block meta_description %}{{ post.excerpt(app.request.locale) ?: 'blog.meta.description'|trans({}, 'blog') }}{% endblock %}
+
+{% block meta_keywords %}{{ 'blog.meta.keywords'|trans({}, 'blog') }}{% endblock %}
+
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
@@ -94,7 +98,7 @@
                             </div>
                             <div class="meta-item">
                                 <i class="bi bi-folder"></i>
-                                <span class="category-tag">{{ categories[post.category]|trans }}</span>
+                                <span class="category-tag">{{ categories[post.category]|trans({}, 'blog') }}</span>
                             </div>
                         </div>
                     </div>
@@ -116,7 +120,7 @@
                         <div class="share-section">
                             <h3 class="share-title">
                                 <i class="bi bi-share"></i>
-                                {{ 'blog.meta.share'|trans }}
+                                {{ 'blog.meta.share'|trans({}, 'blog') }}
                             </h3>
                             <div class="share-buttons">
                                 <a href="https://www.facebook.com/sharer/sharer.php?u={{ url('app_blog_show', {'slug': post.slug})|url_encode }}" 
@@ -124,21 +128,21 @@
                                    target="_blank"
                                    rel="noopener noreferrer">
                                     <i class="bi bi-facebook"></i>
-                                    {{ 'blog.social.facebook'|trans }}
+                                    {{ 'blog.social.facebook'|trans({}, 'blog') }}
                                 </a>
                                 <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ url('app_blog_show', {'slug': post.slug})|url_encode }}&title={{ post.title(app.request.locale)|url_encode }}" 
                                    class="share-button share-linkedin" 
                                    target="_blank"
                                    rel="noopener noreferrer">
                                     <i class="bi bi-linkedin"></i>
-                                    {{ 'blog.social.linkedin'|trans }}
+                                    {{ 'blog.social.linkedin'|trans({}, 'blog') }}
                                 </a>
                                 <a href="https://twitter.com/intent/tweet?url={{ url('app_blog_show', {'slug': post.slug})|url_encode }}&text={{ post.title(app.request.locale)|url_encode }}" 
                                    class="share-button share-twitter" 
                                    target="_blank"
                                    rel="noopener noreferrer">
                                     <i class="bi bi-twitter"></i>
-                                    {{ 'blog.social.twitter'|trans }}
+                                    {{ 'blog.social.twitter'|trans({}, 'blog') }}
                                 </a>
                             </div>
                         </div>
@@ -150,7 +154,7 @@
                             <!-- Latest Posts -->
                             <div class="sidebar-card">
                                 <div class="card-header">
-                                    <h3 class="card-title">{{ 'blog.latest_posts'|trans }}</h3>
+                                    <h3 class="card-title">{{ 'blog.latest_posts'|trans({}, 'blog') }}</h3>
                                 </div>
                                 <div class="card-body">
                                     <div class="latest-posts">
@@ -177,14 +181,14 @@
                             <!-- Categories -->
                             <div class="sidebar-card">
                                 <div class="card-header">
-                                    <h3 class="card-title">{{ 'blog.categories.title'|trans }}</h3>
+                                    <h3 class="card-title">{{ 'blog.categories.title'|trans({}, 'blog') }}</h3>
                                 </div>
                                 <div class="card-body">
                                     <div class="categories-list">
                                         {% for key, label in categories %}
                                             <a href="{{ path('app_blog_index', {'category': key}) }}" 
                                                class="category-link">
-                                                <span>{{ label|trans }}</span>
+                                                <span>{{ label|trans({}, 'blog') }}</span>
                                                 <span class="category-count">
                                                     0
                                                 </span>
@@ -200,7 +204,7 @@
                                     <a href="{{ path('app_blog_index') }}" 
                                        class="btn btn-industrial btn-lg">
                                         <i class="bi bi-arrow-left"></i>
-                                        {{ 'blog.back_to_blog'|trans }}
+                                        {{ 'blog.back_to_blog'|trans({}, 'blog') }}
                                     </a>
                                 </div>
                             </div>

@@ -1,0 +1,37 @@
+# Blog page translations - Russian
+blog:
+  # Page meta
+  title: 'Блог'
+  subtitle: 'Последние новости и анализ промышленной недвижимости и инвестиций'
+  
+  # Categories
+  categories:
+    title: 'Категории'
+    all: 'Все'
+    industry_articles: 'Промышленные статьи'
+    sector_news: 'Новости сектора'
+    investor_tips: 'Советы для инвесторов'
+  
+  # Article actions
+  read_more: 'Читать далее'
+  back_to_blog: 'Назад к блогу'
+  
+  # Latest posts
+  latest_posts: 'Последние публикации'
+  
+  # Meta and sharing
+  meta:
+    share: 'Поделиться этой статьей'
+    description: 'Откройте для себя последние новости, анализы и советы по промышленной недвижимости и инвестициям в нашем блоге.'
+    keywords: 'блог, промышленная недвижимость, новости, анализы, инвестиции, советы'
+  
+  # Social sharing
+  social:
+    facebook: 'Facebook'
+    linkedin: 'LinkedIn'
+    twitter: 'Twitter'
+  
+  # Search and filtering
+  search:
+    no_results: 'Результаты не найдены'
+    no_results_text: 'Попробуйте изменить критерии поиска или просмотрите другие категории.'
