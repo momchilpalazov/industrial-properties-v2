@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'services.page_title'|trans }}{% endblock %}
+{% block title %}{{ 'services.page_title'|trans({}, 'services') }}{% endblock %}
+
+{% block meta_description %}{{ 'services.meta.description'|trans({}, 'services') }}{% endblock %}
+
+{% block meta_keywords %}{{ 'services.meta.keywords'|trans({}, 'services') }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -268,20 +272,18 @@
 {% block body %}
     <!-- Hero Section -->
     <section class="services-hero">
-        <div class="container">
-            <div class="section-header">
-                <h1>{{ 'services.hero.title'|trans }}</h1>
-                <p>{{ 'services.hero.subtitle'|trans }}</p>
+        <div class="container">            <div class="section-header">
+                <h1>{{ 'services.hero.title'|trans({}, 'services') }}</h1>
+                <p>{{ 'services.hero.subtitle'|trans({}, 'services') }}</p>
             </div>
         </div>
     </section>
 
     <!-- Services Section -->
     <section class="services-content py-5">
-        <div class="container">
-            <div class="section-header mb-5">
-                <h2>{{ 'services.section.title'|trans }}</h2>
-                <p>{{ 'services.section.subtitle'|trans }}</p>
+        <div class="container">            <div class="section-header mb-5">
+                <h2>{{ 'services.section.title'|trans({}, 'services') }}</h2>
+                <p>{{ 'services.section.subtitle'|trans({}, 'services') }}</p>
             </div>
 
             <div class="row g-4">
@@ -291,24 +293,22 @@
                             <div class="service-card-inner">
                                 <div class="service-icon-wrapper">
                                     <i class="material-icons service-icon">{{ service.icon|default('business') }}</i>
-                                </div>
-                                <div class="service-content">
-                                    <h3 class="service-title">{{ service.title|trans }}</h3>
-                                    <p class="service-description">{{ service.description|trans }}</p>
+                                </div>                                <div class="service-content">
+                                    <h3 class="service-title">{{ service.title|trans({}, 'services') }}</h3>
+                                    <p class="service-description">{{ service.description|trans({}, 'services') }}</p>
                                     <div class="service-features">
                                         {% if service.features is defined %}
                                             <ul class="feature-list">
                                                 {% for feature in service.features %}
-                                                    <li><i class="material-icons">check_circle</i> {{ feature|trans }}</li>
+                                                    <li><i class="material-icons">check_circle</i> {{ feature|trans({}, 'services') }}</li>
                                                 {% endfor %}
                                             </ul>
                                         {% endif %}
                                     </div>
-                                </div>
-                                <div class="service-action">
+                                </div>                                <div class="service-action">
                                     <a href="{{ path('app_contact') }}" class="btn btn-industrial">
                                         <i class="material-icons">contact_mail</i>
-                                        <span>{{ 'services.contact_button'|trans }}</span>
+                                        <span>{{ 'services.contact_button'|trans({}, 'services') }}</span>
                                     </a>
                                 </div>
                             </div>
@@ -321,17 +321,16 @@
 
     <!-- CTA Section -->
     <section class="services-cta">
-        <div class="container">
-            <div class="cta-content">
+        <div class="container">                <div class="cta-content">
                 <div class="row align-items-center">
                     <div class="col-lg-8">
-                        <h2>{{ 'services.cta.title'|trans }}</h2>
-                        <p>{{ 'services.cta.subtitle'|trans }}</p>
+                        <h2>{{ 'services.cta.title'|trans({}, 'services') }}</h2>
+                        <p>{{ 'services.cta.subtitle'|trans({}, 'services') }}</p>
                     </div>
                     <div class="col-lg-4 text-lg-end">
                         <a href="{{ path('app_contact') }}" class="btn btn-industrial btn-cta">
                             <i class="material-icons">phone</i>
-                            <span>{{ 'services.cta.button'|trans }}</span>
+                            <span>{{ 'services.cta.button'|trans({}, 'services') }}</span>
                         </a>
                     </div>
                 </div>

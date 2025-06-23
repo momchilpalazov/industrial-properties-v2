@@ -1,0 +1,70 @@
+# Services page translations - English
+services:
+  page_title: 'Services'
+  
+  meta:
+    description: 'Professional industrial real estate services in Bulgaria. Market analysis, property management, legal services, financial consulting and more.'
+    keywords: 'industrial property services, property management, market analysis, legal services, financial consulting, HR services, real estate consulting'
+  
+  hero:
+    title: 'Professional Industrial Real Estate Services'
+    subtitle: 'Complete range of specialized services for your business'
+  
+  section:
+    title: 'Our Services'
+    subtitle: 'We offer comprehensive solutions for industrial properties'
+  
+  contact_button: 'Contact Us'
+  
+  cta:
+    title: 'Ready for the next step?'
+    subtitle: 'Contact our team of experts for personalized consultation'
+    button: 'Contact Us'
+  
+  market_analysis:
+    title: 'Market Analysis'
+    description: 'Professional analysis of the industrial real estate market'
+    features:
+      market_reports: 'Detailed market reports'
+      price_forecasts: 'Price forecasts'
+      competition_analysis: 'Competition analysis'
+  
+  property_management:
+    title: 'Property Management'
+    description: 'Complete management and maintenance of your industrial properties'
+    features:
+      technical_support: '24/7 technical support'
+      tenant_management: 'Tenant management'
+      regular_inspections: 'Regular inspections'
+  
+  cost_optimization:
+    title: 'Cost Optimization'
+    description: 'Analysis and optimization of costs for your properties'
+  
+  legal:
+    title: 'Legal Services'
+    description: 'Professional legal consultations and services'
+    features:
+      legal_expertise: 'Legal expertise'
+      contract_preparation: 'Contract preparation'
+      permit_assistance: 'Permit assistance'
+  
+  hr:
+    title: 'HR Services'
+    description: 'Human resources and personnel management'
+  
+  international:
+    title: 'International Services'
+    description: 'Services for international investments and partnerships'
+  
+  financial:
+    title: 'Financial Services'
+    description: 'Financial planning and investment strategies'
+    features:
+      investment_strategies: 'Investment strategies'
+      project_financing: 'Project financing'
+      roi_analysis: 'ROI analysis'
+  
+  consulting:
+    title: 'Consulting Services'
+    description: 'Expert consultations on industrial properties'

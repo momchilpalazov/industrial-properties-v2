@@ -7,8 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ServicesController extends AbstractController
-{
-    #[Route('/services', name: 'app_services')]
+{    #[Route('/services', name: 'app_services')]
     public function index(): Response
     {        $services = [
             [
@@ -16,9 +15,9 @@ class ServicesController extends AbstractController
                 'title' => 'services.market_analysis.title',
                 'description' => 'services.market_analysis.description',
                 'features' => [
-                    'Детайлни пазарни отчети',
-                    'Прогнози за цените',
-                    'Анализ на конкуренцията'
+                    'services.market_analysis.features.market_reports',
+                    'services.market_analysis.features.price_forecasts',
+                    'services.market_analysis.features.competition_analysis'
                 ]
             ],
             [
@@ -26,9 +25,9 @@ class ServicesController extends AbstractController
                 'title' => 'services.property_management.title',
                 'description' => 'services.property_management.description',
                 'features' => [
-                    '24/7 технически support',
-                    'Управление на наематели',
-                    'Редовни инспекции'
+                    'services.property_management.features.technical_support',
+                    'services.property_management.features.tenant_management',
+                    'services.property_management.features.regular_inspections'
                 ]
             ],
             [
@@ -41,9 +40,9 @@ class ServicesController extends AbstractController
                 'title' => 'services.legal.title',
                 'description' => 'services.legal.description',
                 'features' => [
-                    'Правна експертиза',
-                    'Изготвяне на договори',
-                    'Съдействие при разрешителни'
+                    'services.legal.features.legal_expertise',
+                    'services.legal.features.contract_preparation',
+                    'services.legal.features.permit_assistance'
                 ]
             ],
             [
@@ -61,9 +60,9 @@ class ServicesController extends AbstractController
                 'title' => 'services.financial.title',
                 'description' => 'services.financial.description',
                 'features' => [
-                    'Инвестиционни стратегии',
-                    'Финансиране на проекти',
-                    'ROI анализи'
+                    'services.financial.features.investment_strategies',
+                    'services.financial.features.project_financing',
+                    'services.financial.features.roi_analysis'
                 ]
             ],
             [

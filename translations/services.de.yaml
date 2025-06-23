@@ -1,0 +1,70 @@
+# Services page translations - German
+services:
+  page_title: 'Dienstleistungen'
+  
+  meta:
+    description: 'Professionelle Dienstleistungen für Industrieimmobilien in Bulgarien. Marktanalyse, Immobilienverwaltung, Rechtsberatung, Finanzberatung und mehr.'
+    keywords: 'Industrieimmobilien Dienstleistungen, Immobilienverwaltung, Marktanalyse, Rechtsberatung, Finanzberatung, HR Dienstleistungen, Immobilienberatung'
+  
+  hero:
+    title: 'Professionelle Dienstleistungen für Industrieimmobilien'
+    subtitle: 'Komplettes Spektrum spezialisierter Dienstleistungen für Ihr Unternehmen'
+  
+  section:
+    title: 'Unsere Dienstleistungen'
+    subtitle: 'Wir bieten umfassende Lösungen für Industrieimmobilien'
+  
+  contact_button: 'Kontaktieren Sie uns'
+  
+  cta:
+    title: 'Bereit für den nächsten Schritt?'
+    subtitle: 'Kontaktieren Sie unser Expertenteam für eine persönliche Beratung'
+    button: 'Kontaktieren Sie uns'
+  
+  market_analysis:
+    title: 'Marktanalyse'
+    description: 'Professionelle Analyse des Industrieimmobilienmarktes'
+    features:
+      market_reports: 'Detaillierte Marktberichte'
+      price_forecasts: 'Preisprognosen'
+      competition_analysis: 'Wettbewerbsanalyse'
+  
+  property_management:
+    title: 'Immobilienverwaltung'
+    description: 'Vollständige Verwaltung und Wartung Ihrer Industrieimmobilien'
+    features:
+      technical_support: '24/7 technischer Support'
+      tenant_management: 'Mieterverwaltung'
+      regular_inspections: 'Regelmäßige Inspektionen'
+  
+  cost_optimization:
+    title: 'Kostenoptimierung'
+    description: 'Analyse und Optimierung der Kosten für Ihre Immobilien'
+  
+  legal:
+    title: 'Rechtsdienstleistungen'
+    description: 'Professionelle Rechtsberatung und Dienstleistungen'
+    features:
+      legal_expertise: 'Rechtliche Expertise'
+      contract_preparation: 'Vertragserstellung'
+      permit_assistance: 'Genehmigungsunterstützung'
+  
+  hr:
+    title: 'HR-Dienstleistungen'
+    description: 'Personalwesen und Mitarbeiterverwaltung'
+  
+  international:
+    title: 'Internationale Dienstleistungen'
+    description: 'Dienstleistungen für internationale Investitionen und Partnerschaften'
+  
+  financial:
+    title: 'Finanzdienstleistungen'
+    description: 'Finanzplanung und Investitionsstrategien'
+    features:
+      investment_strategies: 'Investitionsstrategien'
+      project_financing: 'Projektfinanzierung'
+      roi_analysis: 'ROI-Analyse'
+  
+  consulting:
+    title: 'Beratungsdienstleistungen'
+    description: 'Expertenberatung zu Industrieimmobilien'
