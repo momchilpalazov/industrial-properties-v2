@@ -1,0 +1,52 @@
+# Home page translations - English
+home:
+  meta:
+    description: 'Discover the best industrial properties in Bulgaria. Warehouses, production facilities, logistics centers for rent and sale.'
+    keywords: 'industrial properties Bulgaria, warehouses for rent, production facilities for sale, logistics centers, industrial zones'
+  
+  ui:
+    scroll_text: 'Explore our services'
+    no_image: 'No image available'
+    area_unit: 'm²'
+  
+  hero:
+    title: 'Industrial Properties in Bulgaria'
+    subtitle: 'Discover the best warehouses, production facilities and logistics centers for rent and sale'
+    cta: 'VIEW PROPERTIES'
+  
+  property_types:
+    title: 'Industrial Property Types'
+    subtitle: 'Variety of opportunities for every business'
+    industrial_land: 'Industrial Land'
+    industrial_land_desc: 'Land plots in industrial zones, ready for development'
+    logistics_center: 'Logistics Centers'
+    logistics_center_desc: 'Modern warehouses and distribution centers'
+    production_facility: 'Production Facilities'
+    production_facility_desc: 'Production halls and factories'
+    properties_count: '{count} properties'
+  
+  featured_properties:
+    title: 'Featured Properties'
+    subtitle: 'Recommended industrial properties with excellent characteristics'
+  
+  latest_properties:
+    subtitle: 'The latest added industrial properties in our database'
+  
+  cta:
+    title: 'Looking for a specific property?'
+    subtitle: 'Our team of experts will help you find exactly what you are looking for'
+    button: 'CONTACT US'
+
+# Property related translations for home page
+property:
+  vip_properties: 'VIP Properties'
+  details: 'DETAILS'
+  latest_properties: 'Latest Properties'
+  no_type: 'No type'
+  status:
+    available: 'Available'
+    sold: 'Sold'
+    reserved: 'Reserved'
+    rented: 'Rented'
+    pending: 'Pending'
+    auction: 'On Auction'

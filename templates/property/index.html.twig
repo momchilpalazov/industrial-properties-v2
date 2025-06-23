@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'property.list_title'|trans }}{% endblock %}
+{% block title %}{{ 'property.list_title'|trans({}, 'property') }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -24,7 +24,7 @@
         <div class="filter-toggle-container">
             <div class="container">                <button type="button" class="filter-toggle" id="filterToggle">
                     <i class="material-icons">tune</i>
-                    <span>{{ 'property.filters'|trans }}</span>
+                    <span>{{ 'property.filters'|trans({}, 'property') }}</span>
                 </button>
             </div>
         </div>
@@ -38,8 +38,8 @@
                     <p>{{ category.getLocalizedDescription(app.request.locale) }}</p>
                 {% endif %}
             {% else %}
-                <h1>{{ 'property.list_title'|trans }}</h1>
-                <p>{{ 'property.list_subtitle'|trans }}</p>
+                            <h1>{{ 'property.list_title'|trans({}, 'property') }}</h1>
+            <p>{{ 'property.list_subtitle'|trans({}, 'property') }}</p>
             {% endif %}
         </div>
     </div>
@@ -48,8 +48,8 @@
         <section class="filter-section" id="filterSection">
             <div class="container">
                 <div class="property-filter-section">                    <div class="section-header filter-header">
-                        <h4>{{ 'property.filter_properties'|trans }}</h4>
-                        <p>{{ 'property.filter_instructions'|trans }}</p>
+                        <h4>{{ 'property.filter_properties'|trans({}, 'property') }}</h4>
+                        <p>{{ 'property.filter_instructions'|trans({}, 'property') }}</p>
                     </div>
                     {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
                         <!-- Първи ред - основни филтри -->
@@ -57,7 +57,7 @@
                             <div class="form-group">
                                 {{ form_label(form.type) }}
                                 {{ form_widget(form.type, {'attr': {'class': 'property-type-filter'}}) }}
-                                <small class="form-text text-muted">{{ 'property.type_select_help'|trans }}</small>
+                                <small class="form-text text-muted">{{ 'property.type_select_help'|trans({}, 'property') }}</small>
                             </div>
                         </div>
                         
@@ -73,11 +73,11 @@
                             <div class="d-flex gap-2">
                                 <div class="flex-grow-1">
                                     {{ form_label(form.min_price) }}
-                                    {{ form_widget(form.min_price, {'attr': {'placeholder': 'property.min_price_placeholder'|trans({'default': 'От'}), 'class': 'form-control'}}) }}
+                                    {{ form_widget(form.min_price, {'attr': {'placeholder': 'property.min_price_placeholder'|trans({'default': 'От'}, 'property'), 'class': 'form-control'}}) }}
                                 </div>
                                 <div class="flex-grow-1">
                                     {{ form_label(form.max_price) }}
-                                    {{ form_widget(form.max_price, {'attr': {'placeholder': 'property.max_price_placeholder'|trans({'default': 'До'}), 'class': 'form-control'}}) }}
+                                    {{ form_widget(form.max_price, {'attr': {'placeholder': 'property.max_price_placeholder'|trans({'default': 'До'}, 'property'), 'class': 'form-control'}}) }}
                                 </div>
                             </div>
                         </div>
@@ -87,11 +87,11 @@
                             <div class="d-flex gap-2">
                                 <div class="flex-grow-1">
                                     {{ form_label(form.min_area) }}
-                                    {{ form_widget(form.min_area, {'attr': {'placeholder': 'property.min_area_placeholder'|trans({'default': 'От'}), 'class': 'form-control'}}) }}
+                                    {{ form_widget(form.min_area, {'attr': {'placeholder': 'property.min_area_placeholder'|trans({'default': 'От'}, 'property'), 'class': 'form-control'}}) }}
                                 </div>
                                 <div class="flex-grow-1">
                                     {{ form_label(form.max_area) }}
-                                    {{ form_widget(form.max_area, {'attr': {'placeholder': 'property.max_area_placeholder'|trans({'default': 'До'}), 'class': 'form-control'}}) }}
+                                    {{ form_widget(form.max_area, {'attr': {'placeholder': 'property.max_area_placeholder'|trans({'default': 'До'}, 'property'), 'class': 'form-control'}}) }}
                                 </div>
                             </div>
                         </div>
@@ -112,15 +112,15 @@
                         
                         <div class="col-md-6">
                             <div class="form-group d-flex gap-2">                                <div class="flex-grow-1">
-                                    <label class="form-label">{{ 'property.actions_label'|trans }}</label>
-                                    <button type="submit" class="btn filter-button w-100">
-                                        <i class="bi bi-search"></i> {{ 'property.search_properties'|trans }}
-                                    </button>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <label class="form-label">&nbsp;</label>
-                                    <a href="{{ path('app_property_index') }}" class="btn reset-button w-100">
-                                        <i class="bi bi-x-circle"></i> {{ 'property.clear_filters'|trans }}
+                                                                    <label class="form-label">{{ 'property.actions_label'|trans({}, 'property') }}</label>
+                                <button type="submit" class="btn filter-button w-100">
+                                    <i class="bi bi-search"></i> {{ 'property.search_properties'|trans({}, 'property') }}
+                                </button>
+                            </div>
+                            <div class="flex-grow-1">
+                                <label class="form-label">&nbsp;</label>
+                                <a href="{{ path('app_property_index') }}" class="btn reset-button w-100">
+                                    <i class="bi bi-x-circle"></i> {{ 'property.clear_filters'|trans({}, 'property') }}
                                     </a>
                                 </div>
                             </div>
@@ -152,7 +152,7 @@
                     }{% if not loop.last %},{% endif %}
                 {% endif %}
             {% endfor %}        ]'
-        data-api-key="{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}"        data-translations='{"type_placeholder": "{{ 'property.form.type_placeholder'|trans|escape('js') }}"}'>
+        data-api-key="{{ app.request.server.get('HERE_MAPS_API_KEY')|default('hPqhtsSWJaVWUUI1vQRnmRvDBlP23bj3Mu-GbOc') }}"        data-translations='{"type_placeholder": "{{ 'property.form.type_placeholder'|trans({}, 'property')|escape('js') }}"}'>
     </div><!-- Properties List -->
     <section class="py-4">
         <div class="container">   
@@ -186,7 +186,7 @@
                                                     {% if property.type %}
                                                         {{ property.type.getLocalizedName(app.request.locale) }}
                                                     {% else %}
-                                                        {{ 'property.no_type'|trans({'default': 'Няма тип'}) }}
+                                                        {{ 'property.no_type'|trans({'default': 'Няма тип'}, 'property') }}
                                                     {% endif %}
                                                 </span>
                                             </div>
@@ -211,7 +211,7 @@
                                                     property.status == 'reserved' ? 'warning' : 
                                                     property.status == 'rented' ? 'info' : 
                                                     property.status == 'auction' ? 'primary' : 'secondary' }}">
-                                                    {{ ('property.status.' ~ property.status)|trans }}
+                                                    {{ ('property.status.' ~ property.status)|trans({}, 'property') }}
                                                 </span>
                                             </div>
                                         </div>
@@ -223,7 +223,7 @@
                 {% else %}
                     <div class="col-12">
                         <div class="alert alert-info">
-                            {{ 'properties.list.no_results'|trans }}
+                            {{ 'properties.list.no_results'|trans({}, 'property') }}
                         </div>
                     </div>
                 {% endfor %}

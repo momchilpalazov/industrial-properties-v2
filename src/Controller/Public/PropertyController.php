@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Public;
 
-use App\Form\PropertyFilterType;
+use App\Form\PropertyPageFilterType;
 use App\Repository\PropertyRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,7 +42,7 @@ class PropertyController extends AbstractController
     #[Route('', name: 'index')]
     public function index(Request $request): Response
     {
-        $form = $this->createForm(PropertyFilterType::class);
+        $form = $this->createForm(PropertyPageFilterType::class);
         $form->handleRequest($request);
 
         $queryBuilder = $this->propertyRepository->createQueryBuilder('p')

@@ -24,6 +24,12 @@ class PropertyType
     #[ORM\Column(name: 'name_en', length: 255, nullable: true)]
     private ?string $nameEn = null;
 
+    #[ORM\Column(name: 'name_de', length: 255, nullable: true)]
+    private ?string $nameDe = null;
+
+    #[ORM\Column(name: 'name_ru', length: 255, nullable: true)]
+    private ?string $nameRu = null;
+
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
@@ -83,6 +89,28 @@ class PropertyType
     public function setNameEn(?string $nameEn): static
     {
         $this->nameEn = $nameEn;
+        return $this;
+    }
+
+    public function getNameDe(): ?string
+    {
+        return $this->nameDe;
+    }
+
+    public function setNameDe(?string $nameDe): static
+    {
+        $this->nameDe = $nameDe;
+        return $this;
+    }
+
+    public function getNameRu(): ?string
+    {
+        return $this->nameRu;
+    }
+
+    public function setNameRu(?string $nameRu): static
+    {
+        $this->nameRu = $nameRu;
         return $this;
     }
 
@@ -291,7 +319,12 @@ class PropertyType
 
     public function getLocalizedName(string $locale): string
     {
-        return $locale === 'en' ? ($this->nameEn ?? $this->name) : $this->name;
+        return match ($locale) {
+            'en' => $this->nameEn ?? $this->name,
+            'de' => $this->nameDe ?? $this->name,
+            'ru' => $this->nameRu ?? $this->name,
+            default => $this->name,
+        };
     }
 
     public function getCategory(): ?PropertyCategory

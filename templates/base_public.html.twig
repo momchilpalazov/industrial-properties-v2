@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Плащане{% endblock %}</title>
+    <title>{% block title %}{{ 'payment.title'|trans({}, 'layout') }}{% endblock %}</title>
     
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon-modern.svg') }}" type="image/svg+xml">
@@ -40,7 +40,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <p>&copy; {{ "now"|date("Y") }} Industrial Properties. Всички права запазени.</p>
+                    <p>&copy; {{ "now"|date("Y") }} Industrial Properties. {{ 'footer.rights'|trans({}, 'layout') }}</p>
                 </div>
             </div>
         </div>

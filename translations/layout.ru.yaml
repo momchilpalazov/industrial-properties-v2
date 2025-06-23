@@ -1,0 +1,32 @@
+# Layout translations - Russian
+nav:
+  home: 'Главная'
+  properties: 'Недвижимость'
+  rental_properties: 'Аренда'
+  promotions: 'Аукционы'
+  services: 'Услуги'
+  blog: 'Блог'
+  about: 'О нас'
+  contact: 'Контакты'
+  faq: 'Часто задаваемые вопросы'
+
+language:
+  bg: 'Български'
+  en: 'English'
+  de: 'Deutsch'
+
+footer:
+  quick_links: 'Быстрые ссылки'
+  contact_us: 'Свяжитесь с нами'
+  rights: 'Все права защищены.'
+  privacy_policy: 'Политика конфиденциальности'
+  cookie_settings: 'Настройки файлов cookie'
+  company_description: 'Ваш надежный партнер в сфере промышленной недвижимости'
+  default_address: 'София, Болгария'
+
+meta:
+  description: 'Современная платформа для промышленной недвижимости - найдите идеальный складской комплекс, производственную базу или логистический центр'
+  keywords: 'промышленная недвижимость, склады, производственные базы, логистические центры, аренда, продажа'
+
+payment:
+  title: 'Оплата' 

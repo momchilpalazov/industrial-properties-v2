@@ -1,0 +1,32 @@
+# Layout translations - Bulgarian
+nav:
+  home: 'Начало'
+  properties: 'Продажба'
+  rental_properties: 'Наем'
+  promotions: 'Търгове'
+  services: 'Услуги'
+  blog: 'Блог'
+  about: 'За нас'
+  contact: 'Контакти'
+  faq: 'Често задавани въпроси'
+
+language:
+  bg: 'Български'
+  en: 'English'
+  de: 'Deutsch'
+
+footer:
+  quick_links: 'Бързи връзки'
+  contact_us: 'Свържете се с нас'
+  rights: 'Всички права запазени.'
+  privacy_policy: 'Политика за поверителност'
+  cookie_settings: 'Настройки на бисквитки'
+  company_description: 'Вашият надежден партньор в индустриалните имоти'
+  default_address: 'София, България'
+
+meta:
+  description: 'Модерна платформа за индустриални имоти - намерете идеалния складов комплекс, производствена база или логистичен център'
+  keywords: 'индустриални имоти, складове, производствени бази, логистични центрове, наем, продажба'
+
+payment:
+  title: 'Плащане' 

@@ -19,8 +19,8 @@
     <meta name="apple-mobile-web-app-title" content="Industrial Properties">
     
     <!-- SEO Meta tags -->
-    <meta name="description" content="{% block description %}Модерна платформа за индустриални имоти - намерете идеалния складов комплекс, производствена база или логистичен център{% endblock %}">
-    <meta name="keywords" content="{% block keywords %}индустриални имоти, складове, производствени бази, логистични центрове, наем, продажба{% endblock %}">
+    <meta name="description" content="{% block description %}{{ 'meta.description'|trans({}, 'layout') }}{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}{{ 'meta.keywords'|trans({}, 'layout') }}{% endblock %}">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Industrial Properties">
     
@@ -31,7 +31,7 @@
     <meta property="og:url" content="{{ app.request.uri }}">
     <meta property="og:site_name" content="Industrial Properties">
     
-    <title>{% block title %}Начало{% endblock %} | Industrial Properties</title>
+    <title>{% block title %}{{ 'nav.home'|trans({}, 'layout') }}{% endblock %} | Industrial Properties</title>
     
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon-modern.svg') }}" type="image/svg+xml">
@@ -58,23 +58,23 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') == 'app_home' %}active{% endif %}" 
-                           href="{{ path('app_home') }}">{{ 'nav.home'|trans }}</a>
+                           href="{{ path('app_home') }}">{{ 'nav.home'|trans({}, 'layout') }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') starts with 'app_property' %}active{% endif %}" 
-                           href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans }}</a>
+                           href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans({}, 'layout') }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') starts with 'app_renting' %}active{% endif %}" 
-                           href="{{ path('app_renting') }}">{{ 'nav.rental_properties'|trans }}</a>
+                           href="{{ path('app_renting') }}">{{ 'nav.rental_properties'|trans({}, 'layout') }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') starts with 'app_auctions_' %}active{% endif %}" 
-                           href="{{ path('app_auctions_index') }}">{{ 'nav.promotions'|trans }}</a>
+                           href="{{ path('app_auctions_index') }}">{{ 'nav.promotions'|trans({}, 'layout') }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') == 'app_services' %}active{% endif %}" 
-                           href="{{ path('app_services') }}">{{ 'nav.services'|trans }}</a>
+                           href="{{ path('app_services') }}">{{ 'nav.services'|trans({}, 'layout') }}</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
@@ -83,11 +83,11 @@
                             {{ app.request.locale|upper }}
                         </a>                        <ul class="dropdown-menu dropdown-menu-end">
                             {% set route_params = app.request.attributes.get('_route_params')|merge({_locale: 'bg'}) %}
-                            <li><a class="dropdown-item" href="{{ path(app.request.get('_route', 'app_home'), route_params) }}">{{ 'language.bg'|trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path(app.request.get('_route', 'app_home'), route_params) }}">{{ 'language.bg'|trans({}, 'layout') }}</a></li>
                             {% set route_params = app.request.attributes.get('_route_params')|merge({_locale: 'en'}) %}
-                            <li><a class="dropdown-item" href="{{ path(app.request.get('_route', 'app_home'), route_params) }}">{{ 'language.en'|trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path(app.request.get('_route', 'app_home'), route_params) }}">{{ 'language.en'|trans({}, 'layout') }}</a></li>
                             {% set route_params = app.request.attributes.get('_route_params')|merge({_locale: 'de'}) %}
-                            <li><a class="dropdown-item" href="{{ path(app.request.get('_route', 'app_home'), route_params) }}">{{ 'language.de'|trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path(app.request.get('_route', 'app_home'), route_params) }}">{{ 'language.de'|trans({}, 'layout') }}</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -119,7 +119,7 @@
             <div class="row">
                 <div class="col-md-4 mb-4">
                     <h5>Industrial Properties</h5>
-                    <p>{{ footer_settings.description|default('Вашият надежден партньор в индустриалните имоти') }}</p>
+                    <p>{{ footer_settings.description|default('footer.company_description'|trans({}, 'layout')) }}</p>
                     <div class="social-links">
                         {% if footer_settings.social_links.facebook|default %}
                             <a href="{{ footer_settings.social_links.facebook }}" target="_blank" rel="noopener">
@@ -144,23 +144,23 @@
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <h5>{{ 'footer.quick_links'|trans }}</h5>
+                    <h5>{{ 'footer.quick_links'|trans({}, 'layout') }}</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ path('app_home') }}">{{ 'nav.home'|trans }}</a></li>
-                        <li><a href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans }}</a></li>
-                        <li><a href="{{ path('app_renting') }}">{{ 'nav.rental_properties'|trans }}</a></li>
-                        <li><a href="{{ path('app_auctions_index') }}">{{ 'nav.promotions'|trans }}</a></li>
-                        <li><a href="{{ path('app_services') }}">{{ 'nav.services'|trans }}</a></li>
-                        <li><a href="{{ path('app_blog_index') }}">{{ 'nav.blog'|trans }}</a></li>
-                        <li><a href="{{ path('app_about') }}">{{ 'nav.about'|trans }}</a></li>
-                        <li><a href="{{ path('app_contact') }}">{{ 'nav.contact'|trans }}</a></li>
-                        <li><a href="{{ path('app_faq_index') }}">{{ 'nav.faq'|trans }}</a></li>
+                        <li><a href="{{ path('app_home') }}">{{ 'nav.home'|trans({}, 'layout') }}</a></li>
+                        <li><a href="{{ path('app_property_index') }}">{{ 'nav.properties'|trans({}, 'layout') }}</a></li>
+                        <li><a href="{{ path('app_renting') }}">{{ 'nav.rental_properties'|trans({}, 'layout') }}</a></li>
+                        <li><a href="{{ path('app_auctions_index') }}">{{ 'nav.promotions'|trans({}, 'layout') }}</a></li>
+                        <li><a href="{{ path('app_services') }}">{{ 'nav.services'|trans({}, 'layout') }}</a></li>
+                        <li><a href="{{ path('app_blog_index') }}">{{ 'nav.blog'|trans({}, 'layout') }}</a></li>
+                        <li><a href="{{ path('app_about') }}">{{ 'nav.about'|trans({}, 'layout') }}</a></li>
+                        <li><a href="{{ path('app_contact') }}">{{ 'nav.contact'|trans({}, 'layout') }}</a></li>
+                        <li><a href="{{ path('app_faq_index') }}">{{ 'nav.faq'|trans({}, 'layout') }}</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <h5>{{ 'footer.contact_us'|trans }}</h5>
+                    <h5>{{ 'footer.contact_us'|trans({}, 'layout') }}</h5>
                     <ul class="list-unstyled contact-info">
-                        <li><i class="bi bi-geo-alt"></i> {{ footer_settings.address|default('София, България') }}</li>
+                        <li><i class="bi bi-geo-alt"></i> {{ footer_settings.address|default('footer.default_address'|trans({}, 'layout')) }}</li>
                         <li><i class="bi bi-telephone"></i> {{ footer_settings.phone|default('+359 2 123 4567') }}</li>
                         <li><i class="bi bi-envelope"></i> {{ footer_settings.email|default('office@industrial-properties.bg') }}</li>
                     </ul>
@@ -169,11 +169,11 @@
             <hr>
             <div class="row footer-bottom">
                 <div class="col-md-6">
-                    <p>&copy; {{ "now"|date("Y") }} Industrial Properties. {{ 'footer.rights'|trans }}</p>
+                    <p>&copy; {{ "now"|date("Y") }} Industrial Properties. {{ 'footer.rights'|trans({}, 'layout') }}</p>
                 </div>
                 <div class="col-md-6 text-end footer-links">
-                    <a href="{{ path('privacy_policy') }}">{{ 'footer.privacy_policy'|trans({}, 'messages')|default('Политика за поверителност') }}</a>
-                    <a href="javascript:void(0)" id="cookie-settings-menu-link">{{ 'footer.cookie_settings'|trans({}, 'messages')|default('Настройки на бисквитки') }}</a>
+                    <a href="{{ path('privacy_policy') }}">{{ 'footer.privacy_policy'|trans({}, 'layout')|default('Политика за поверителност') }}</a>
+                    <a href="javascript:void(0)" id="cookie-settings-menu-link">{{ 'footer.cookie_settings'|trans({}, 'layout')|default('Настройки на бисквитки') }}</a>
                 </div>
             </div>
         </div>
@@ -195,10 +195,10 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then((registration) => {
-                        console.log('Service Worker регистриран успешно:', registration);
+                        console.log('Service Worker registered successfully:', registration);
                     })
                     .catch((error) => {
-                        console.log('Service Worker регистрацията неуспешна:', error);
+                        console.log('Service Worker registration failed:', error);
                     });
             });
         }

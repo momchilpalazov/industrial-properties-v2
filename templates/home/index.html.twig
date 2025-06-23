@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'home.hero.title'|trans }}{% endblock %}
+{% block title %}{{ 'home.hero.title'|trans({}, 'home') }}{% endblock %}
 
-{% block description %}Открийте най-добрите индустриални имоти в България. Складове, производствени бази, логистични центрове за наем и продажба.{% endblock %}
+{% block description %}{{ 'home.meta.description'|trans({}, 'home') }}{% endblock %}
 
-{% block keywords %}индустриални имоти България, складове под наем, производствени бази продажба, логистични центрове, индустриални зони{% endblock %}
+{% block keywords %}{{ 'home.meta.keywords'|trans({}, 'home') }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -13,26 +13,23 @@
 {% endblock %}
 
 {% block body %}    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container text-center">
-            <h1 class="hero-title">{{ 'home.hero.title'|trans }}</h1>
-            <p class="hero-subtitle">{{ 'home.hero.subtitle'|trans }}</p>
+    <section class="hero-section">        <div class="container text-center">
+            <h1 class="hero-title">{{ 'home.hero.title'|trans({}, 'home') }}</h1>
+            <p class="hero-subtitle">{{ 'home.hero.subtitle'|trans({}, 'home') }}</p>
             <a href="{{ path('app_property_index') }}" class="btn btn-industrial btn-lg hero-cta">
-                {{ 'home.hero.cta'|trans }}
+                {{ 'home.hero.cta'|trans({}, 'home') }}
             </a>
         </div>
-        
-        <!-- Modern Scroll Indicator -->
+          <!-- Modern Scroll Indicator -->
         <div class="scroll-indicator">
-            <div class="scroll-text">Разгледайте нашите услуги</div>
+            <div class="scroll-text">{{ 'home.ui.scroll_text'|trans({}, 'home') }}</div>
             <div class="scroll-arrow"></div>
         </div>
     </section>    <!-- Property Types -->
     <section class="property-types">
-        <div class="container">
-            <div class="section-header">
-                <h2>{{ 'home.property_types.title'|trans }}</h2>
-                <p class="lead">{{ 'home.property_types.subtitle'|trans }}</p>
+        <div class="container">            <div class="section-header">
+                <h2>{{ 'home.property_types.title'|trans({}, 'home') }}</h2>
+                <p class="lead">{{ 'home.property_types.subtitle'|trans({}, 'home') }}</p>
             </div>
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
@@ -40,11 +37,10 @@
                         <div class="type-card hover-lift">
                             <div class="type-icon">
                                 <i class="bi bi-map"></i>
-                            </div>
-                            <h3 class="h5 text-industrial">{{ 'home.property_types.industrial_land'|trans }}</h3>
-                            <p class="text-muted-industrial mb-3">{{ 'home.property_types.industrial_land_desc'|trans }}</p>
+                            </div>                            <h3 class="h5 text-industrial">{{ 'home.property_types.industrial_land'|trans({}, 'home') }}</h3>
+                            <p class="text-muted-industrial mb-3">{{ 'home.property_types.industrial_land_desc'|trans({}, 'home') }}</p>
                             {% if property_stats['industrial_land'] is defined %}
-                                <div class="badge-industrial">{{ 'home.property_types.properties_count'|trans({'count': property_stats['industrial_land']}) }}</div>
+                                <div class="badge-industrial">{{ 'home.property_types.properties_count'|trans({'count': property_stats['industrial_land']}, 'home') }}</div>
                             {% endif %}
                         </div>
                     </a>
@@ -54,11 +50,10 @@
                         <div class="type-card hover-lift">
                             <div class="type-icon">
                                 <i class="bi bi-box-seam"></i>
-                            </div>
-                            <h3 class="h5 text-industrial">{{ 'home.property_types.logistics_center'|trans }}</h3>
-                            <p class="text-muted-industrial mb-3">{{ 'home.property_types.logistics_center_desc'|trans }}</p>
+                            </div>                            <h3 class="h5 text-industrial">{{ 'home.property_types.logistics_center'|trans({}, 'home') }}</h3>
+                            <p class="text-muted-industrial mb-3">{{ 'home.property_types.logistics_center_desc'|trans({}, 'home') }}</p>
                             {% if property_stats['logistics_center'] is defined %}
-                                <div class="badge-industrial">{{ 'home.property_types.properties_count'|trans({'count': property_stats['logistics_center']}) }}</div>
+                                <div class="badge-industrial">{{ 'home.property_types.properties_count'|trans({'count': property_stats['logistics_center']}, 'home') }}</div>
                             {% endif %}
                         </div>
                     </a>
@@ -68,11 +63,10 @@
                         <div class="type-card hover-lift">
                             <div class="type-icon">
                                 <i class="bi bi-building"></i>
-                            </div>
-                            <h3 class="h5 text-industrial">{{ 'home.property_types.production_facility'|trans }}</h3>
-                            <p class="text-muted-industrial mb-3">{{ 'home.property_types.production_facility_desc'|trans }}</p>
+                            </div>                            <h3 class="h5 text-industrial">{{ 'home.property_types.production_facility'|trans({}, 'home') }}</h3>
+                            <p class="text-muted-industrial mb-3">{{ 'home.property_types.production_facility_desc'|trans({}, 'home') }}</p>
                             {% if property_stats['production_facility'] is defined %}
-                                <div class="badge-industrial">{{ 'home.property_types.properties_count'|trans({'count': property_stats['production_facility']}) }}</div>
+                                <div class="badge-industrial">{{ 'home.property_types.properties_count'|trans({'count': property_stats['production_facility']}, 'home') }}</div>
                             {% endif %}
                         </div>
                     </a>
@@ -84,23 +78,21 @@
     {% if vip_properties|length > 0 %}
         <section class="vip-property-section">
             <div class="container">
-                <h2><i class="bi bi-star-fill"></i>{{ 'property.vip_properties'|trans }}</h2>
+                <h2><i class="bi bi-star-fill"></i>{{ 'property.vip_properties'|trans({}, 'home') }}</h2>
                 <div class="row g-4">
                     {% for property in vip_properties %}
                         <div class="col-lg-4 col-md-6">
                             <div class="vip-property-card">
-                                {% if property.mainImage %}
-                                    <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}"
+                                {% if property.mainImage %}                                    <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}"
                                          class="vip-property-image"
-                                         alt="{{ property.title }}">
-                                {% else %}
+                                         alt="{{ property.title(app.request.locale) }}">                                {% else %}
                                     <img src="{{ asset('images/no-image.jpg') }}"
                                          class="vip-property-image"
-                                         alt="No image available">
+                                         alt="{{ 'home.ui.no_image'|trans({}, 'home') }}">
                                 {% endif %}
                                 
                                 <div class="vip-property-details">
-                                    <h3 class="vip-property-title">{{ property.title }}</h3>
+                                    <h3 class="vip-property-title">{{ property.title(app.request.locale) }}</h3>
                                     
                                     <div class="vip-property-info">
                                         <p>
@@ -109,15 +101,16 @@
                                         </p>
                                         <p>
                                             <i class="bi bi-geo-alt"></i>
-                                            {{ property.location }}
-                                        </p>
-                                        <p>
+                                            {{ property.location(app.request.locale) }}
+                                        </p>                                        <p>
                                             <i class="bi bi-arrows-angle-expand"></i>
-                                            {{ property.area }} м²
-                                        </p>
-                                        <p>
-                                            <i class="bi bi-building"></i>
-                                            {{ property.type|trans }}
+                                            {{ property.area }} {{ 'home.ui.area_unit'|trans({}, 'home') }}
+                                        </p><p>
+                                            <i class="bi bi-building"></i>                                            {% if property.type %}
+                                                {{ property.type.getLocalizedName(app.request.locale) }}
+                                            {% else %}
+                                                {{ 'property.no_type'|trans({}, 'home') }}
+                                            {% endif %}
                                         </p>
                                     </div>
                                     
@@ -128,12 +121,12 @@
                                     
                                     <div class="vip-property-status status-{{ property.status }}">
                                         <i class="bi bi-circle-fill"></i>
-                                        {{ ('property.status.' ~ property.status)|trans }}
+                                        {{ ('property.status.' ~ property.status)|trans({}, 'home') }}
                                     </div>
                                     
                                     <a href="{{ path('app_property_show', {id: property.id}) }}" 
                                        class="btn btn-industrial w-100">
-                                        {{ 'property.details'|trans }}
+                                        {{ 'property.details'|trans({}, 'home') }}
                                     </a>
                                 </div>
                             </div>
@@ -144,37 +137,33 @@
         </section>
     {% endif %}    <!-- Featured Properties -->
     <section class="featured-properties">
-        <div class="container">
-            <div class="section-header">
-                <h2>{{ 'home.featured_properties.title'|trans }}</h2>
-                <p class="lead">{{ 'home.featured_properties.subtitle'|trans|default('Препоръчани индустриални имоти с отличени характеристики') }}</p>
+        <div class="container">            <div class="section-header">
+                <h2>{{ 'home.featured_properties.title'|trans({}, 'home') }}</h2>
+                <p class="lead">{{ 'home.featured_properties.subtitle'|trans({}, 'home') }}</p>
             </div>
-            <div class="row g-4">
-                {% for property in featured_properties %}
+            <div class="row g-4">                {% for property in featured_properties %}
                     <div class="col-lg-4 col-md-6">
                         <div class="card property-card h-100 hover-lift">
                             {% if property.mainImage %}
                                 <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}"
                                      class="card-img-top property-image"
-                                     alt="{{ property.title }}">
+                                     alt="{{ property.title(app.request.locale) }}">
                             {% endif %}
                             <div class="card-body">
-                                <h5 class="card-title text-industrial">{{ property.title }}</h5>
-                                <p class="card-text text-muted-industrial mb-2">
-                                    <i class="bi bi-geo-alt"></i> {{ property.location }}
+                                <h5 class="card-title text-industrial">{{ property.title(app.request.locale) }}</h5>                                <p class="card-text text-muted-industrial mb-2">
+                                    <i class="bi bi-geo-alt"></i> {{ property.location(app.request.locale) }}
                                 </p>
                                 <div class="property-features mb-3">
                                     <div class="property-feature">
                                         <i class="bi bi-rulers"></i>
-                                        {{ property.area }} м²
+                                        {{ property.area }} {{ 'home.ui.area_unit'|trans({}, 'home') }}
                                     </div>
                                     <div class="property-feature">
                                         <i class="bi bi-currency-euro"></i>
                                         {{ property.price|number_format(0, '.', ' ') }}
                                     </div>
-                                </div>
-                                <a href="{{ path('app_property_show', {id: property.id}) }}" 
-                                   class="btn btn-industrial">{{ 'property.details'|trans }}</a>
+                                </div>                                <a href="{{ path('app_property_show', {id: property.id}) }}" 
+                                   class="btn btn-industrial">{{ 'property.details'|trans({}, 'home') }}</a>
                             </div>
                         </div>
                     </div>
@@ -182,45 +171,40 @@
             </div>
         </div>
     </section><!-- CTA Section -->
-    <section class="cta-section pattern-dots">
-        <div class="container">
-            <h2 class="mb-4">{{ 'home.cta.title'|trans }}</h2>
-            <p class="mb-4">{{ 'home.cta.subtitle'|trans }}</p>
-            <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">{{ 'home.cta.button'|trans }}</a>
+    <section class="cta-section pattern-dots">        <div class="container">
+            <h2 class="mb-4">{{ 'home.cta.title'|trans({}, 'home') }}</h2>
+            <p class="mb-4">{{ 'home.cta.subtitle'|trans({}, 'home') }}</p>
+            <a href="{{ path('app_contact') }}" class="btn btn-light btn-lg">{{ 'home.cta.button'|trans({}, 'home') }}</a>
         </div>
     </section>    {% if latest_properties|length > 0 %}
         <section class="latest-properties">
-            <div class="container">
-                <div class="section-header">
-                    <h2>{{ 'property.latest_properties'|trans }}</h2>
-                    <p class="lead">{{ 'home.latest_properties.subtitle'|trans|default('Най-новите добавени индустриални имоти в нашата база') }}</p>
+            <div class="container">                <div class="section-header">
+                    <h2>{{ 'property.latest_properties'|trans({}, 'home') }}</h2>
+                    <p class="lead">{{ 'home.latest_properties.subtitle'|trans({}, 'home') }}</p>
                 </div>
-                <div class="row g-4">
-                    {% for property in latest_properties %}
+                <div class="row g-4">                    {% for property in latest_properties %}
                         <div class="col-lg-4 col-md-6">
                             <div class="card property-card h-100 hover-lift">
                                 {% if property.mainImage %}
                                     <img src="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ property.mainImage.filename) }}"
                                          class="card-img-top property-image"
-                                         alt="{{ property.title }}">
+                                         alt="{{ property.title(app.request.locale) }}">
                                 {% endif %}
                                 <div class="card-body">
-                                    <h5 class="card-title text-industrial">{{ property.title }}</h5>
+                                    <h5 class="card-title text-industrial">{{ property.title(app.request.locale) }}</h5>
                                     <p class="card-text text-muted-industrial mb-2">
-                                        <i class="bi bi-geo-alt"></i> {{ property.location }}
-                                    </p>
-                                    <div class="property-features mb-3">
+                                        <i class="bi bi-geo-alt"></i> {{ property.location(app.request.locale) }}
+                                    </p>                                    <div class="property-features mb-3">
                                         <div class="property-feature">
                                             <i class="bi bi-rulers"></i>
-                                            {{ property.area }} м²
+                                            {{ property.area }} {{ 'home.ui.area_unit'|trans({}, 'home') }}
                                         </div>
                                         <div class="property-feature">
                                             <i class="bi bi-currency-euro"></i>
                                             {{ property.price|number_format(0, '.', ' ') }}
                                         </div>
-                                    </div>
-                                    <a href="{{ path('app_property_show', {id: property.id}) }}" 
-                                       class="btn btn-industrial">{{ 'property.details'|trans }}</a>
+                                    </div>                                    <a href="{{ path('app_property_show', {id: property.id}) }}" 
+                                       class="btn btn-industrial">{{ 'property.details'|trans({}, 'home') }}</a>
                                 </div>
                             </div>
                         </div>

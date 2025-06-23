@@ -1,0 +1,52 @@
+# Home page translations - German
+home:
+  meta:
+    description: 'Entdecken Sie die besten Industrieimmobilien in Bulgarien. Lagerhallen, Produktionsanlagen, Logistikzentren zur Miete und zum Verkauf.'
+    keywords: 'Industrieimmobilien Bulgarien, Lagerhallen zur Miete, Produktionsanlagen zum Verkauf, Logistikzentren, Industriezonen'
+  
+  ui:
+    scroll_text: 'Entdecken Sie unsere Dienstleistungen'
+    no_image: 'Kein Bild verfügbar'
+    area_unit: 'm²'
+  
+  hero:
+    title: 'Industrieimmobilien in Bulgarien'
+    subtitle: 'Entdecken Sie die besten Lagerhäuser, Produktionsstätten und Logistikzentren zur Miete und zum Verkauf'
+    cta: 'IMMOBILIEN ANSEHEN'
+  
+  property_types:
+    title: 'Industrielle Immobilientypen'
+    subtitle: 'Vielfalt an Möglichkeiten für jedes Unternehmen'
+    industrial_land: 'Industriegrundstücke'
+    industrial_land_desc: 'Grundstücke in Industriegebieten, bereit für die Entwicklung'
+    logistics_center: 'Logistikzentren'
+    logistics_center_desc: 'Moderne Lagerhäuser und Vertriebszentren'
+    production_facility: 'Produktionsstätten'
+    production_facility_desc: 'Produktionshallen und Fabriken'
+    properties_count: '{count} Immobilien'
+  
+  featured_properties:
+    title: 'Ausgewählte Immobilien'
+    subtitle: 'Empfohlene Industrieimmobilien mit hervorragenden Eigenschaften'
+  
+  latest_properties:
+    subtitle: 'Die neuesten hinzugefügten Industrieimmobilien in unserer Datenbank'
+  
+  cta:
+    title: 'Suchen Sie eine spezielle Immobilie?'
+    subtitle: 'Unser Expertenteam hilft Ihnen dabei, genau das zu finden, was Sie suchen'
+    button: 'KONTAKTIEREN SIE UNS'
+
+# Property related translations for home page
+property:
+  vip_properties: 'VIP Immobilien'
+  details: 'DETAILS'
+  latest_properties: 'Neueste Immobilien'
+  no_type: 'Kein Typ'
+  status:
+    available: 'Verfügbar'
+    sold: 'Verkauft'
+    reserved: 'Reserviert'
+    rented: 'Vermietet'
+    pending: 'Ausstehend'
+    auction: 'Auktion'

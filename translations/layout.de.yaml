@@ -1,0 +1,32 @@
+# Layout translations - German
+nav:
+  home: 'Startseite'
+  properties: 'Immobilien'
+  rental_properties: 'Vermietung'
+  promotions: 'Auktionen'
+  services: 'Dienstleistungen'
+  blog: 'Blog'
+  about: 'Über uns'
+  contact: 'Kontakt'
+  faq: 'FAQ'
+
+language:
+  bg: 'Български'
+  en: 'English'
+  de: 'Deutsch'
+
+footer:
+  quick_links: 'Schnelle Links'
+  contact_us: 'Kontaktieren Sie uns'
+  rights: 'Alle Rechte vorbehalten.'
+  privacy_policy: 'Datenschutzrichtlinie'
+  cookie_settings: 'Cookie-Einstellungen'
+  company_description: 'Ihr vertrauensvoller Partner für Industrieimmobilien'
+  default_address: 'Sofia, Bulgarien'
+
+meta:
+  description: 'Moderne Plattform für Industrieimmobilien - finden Sie den idealen Lagerkomplex, Produktionsstätte oder Logistikzentrum'
+  keywords: 'Industrieimmobilien, Lager, Produktionsstätten, Logistikzentren, Vermietung, Verkauf'
+
+payment:
+  title: 'Zahlung' 

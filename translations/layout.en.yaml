@@ -1,0 +1,32 @@
+# Layout translations - English
+nav:
+  home: 'Home'
+  properties: 'Properties'
+  rental_properties: 'Rentals'
+  promotions: 'Auctions'
+  services: 'Services'
+  blog: 'Blog'
+  about: 'About'
+  contact: 'Contact'
+  faq: 'FAQ'
+
+language:
+  bg: 'Български'
+  en: 'English'
+  de: 'Deutsch'
+
+footer:
+  quick_links: 'Quick Links'
+  contact_us: 'Contact Us'
+  rights: 'All rights reserved.'
+  privacy_policy: 'Privacy Policy'
+  cookie_settings: 'Cookie Settings'
+  company_description: 'Your trusted partner in industrial real estate'
+  default_address: 'Sofia, Bulgaria'
+
+meta:
+  description: 'Modern platform for industrial properties - find the ideal warehouse complex, production facility or logistics center'
+  keywords: 'industrial properties, warehouses, production facilities, logistics centers, rental, sale'
+
+payment:
+  title: 'Payment' 
