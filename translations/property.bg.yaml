@@ -1,5 +1,68 @@
 # Property page translations - Bulgarian
 property:
+  # Basic properties
+  reference: 'Референтен номер'
+  location: 'Локация'
+  area: 'Площ'
+  type: 'Тип'
+  price: 'Цена'
+  description: 'Описание'
+  features: 'Характеристики'
+  contact: 'Контакт'
+  details: 'Детайли'
+  view_details: 'Вижте детайли'
+  no_type: 'Няма тип'
+  no_image: 'Няма изображение'
+  image: 'Изображение'
+  
+  # Gallery
+  gallery:
+    photos: 'снимки'
+    more: 'още'
+    click_to_enlarge: 'Кликнете за увеличаване'
+    # 360 images
+  360_images: '360° Изображения'
+  360_instructions: 'Използвайте мишката, за да завъртите изображението. Използвайте скрол за мащабиране.'
+  360_controls:
+    fullscreen: 'На цял екран'
+    auto_rotate: 'Автоматично въртене'
+  
+  # Status
+  status:
+    label: 'Статус'
+    available: 'Наличен'
+    sold: 'Продаден'
+    reserved: 'Резервиран'
+    rented: 'Отдаден под наем'
+    pending: 'В процес на договаряне'
+    auction: 'На търг'
+  
+  # Share
+  share:
+    title: 'Споделете този имот'
+    copy_link: 'Копирай линк'
+    copied: 'Линкът е копиран в клипборда'
+  
+  # Actions
+  print: 'Принтирай'
+  expose: 'Експозе'
+  download_pdf: 'Изтегли PDF'
+  location_map: 'Местоположение'
+    # Inquiry form
+  inquiry:
+    name: 'Име'
+    email: 'Имейл'
+    phone: 'Телефон'
+    message: 'Съобщение'
+    send: 'Изпрати запитване'
+  
+  # Meta tags for property show page
+  meta:
+    show:
+      description: 'Разгледайте детайли за този индустриален имот: площ, локация, цена и характеристики. Свържете се с нас за повече информация.'
+      keywords: 'индустриален имот, промишлен имот, складове, производствени площи, логистика, наем, продажба'
+  
+  # List page properties
   list_title: 'Имоти'
   list_subtitle: 'Намерете перфектния индустриален имот за вашия бизнес'
   filters: 'ФИЛТРИ'
@@ -13,7 +76,7 @@ property:
   actions_label: 'ДЕЙСТВИЯ'
   search_properties: 'ТЪРСИ ИМОТИ'
   clear_filters: 'ИЗЧИСТИ ФИЛТРИТЕ'
-  no_type: 'Няма тип'
+  
   form:
     type_label: 'ТИП ИМОТ'
     status_label: 'СТАТУС'
@@ -48,14 +111,7 @@ property:
     direction_choices:
       asc: 'Възходящо'
       desc: 'Низходящо'
-  status:
-    available: 'Наличен'
-    sold: 'Продаден'
-    reserved: 'Резервиран'
-    rented: 'Отдаден под наем'
-    pending: 'В процес на договаряне'
-    auction: 'На търг'
 
 properties:
   list:
-    no_results: 'Няма намерени имоти отговарящи на посочените критерии.' 
+    no_results: 'Няма намерени имоти отговарящи на посочените критерии.'

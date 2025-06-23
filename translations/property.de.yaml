@@ -1,5 +1,68 @@
 # Property page translations - German
 property:
+  # Basic properties
+  reference: 'Referenznummer'
+  location: 'Standort'
+  area: 'Fläche'
+  type: 'Typ'
+  price: 'Preis'
+  description: 'Beschreibung'
+  features: 'Ausstattung'
+  contact: 'Kontakt'
+  details: 'Details'
+  view_details: 'Details anzeigen'
+  no_type: 'Kein Typ'
+  no_image: 'Kein Bild'
+  image: 'Bild'
+  
+  # Gallery
+  gallery:
+    photos: 'Fotos'
+    more: 'mehr'
+    click_to_enlarge: 'Zum Vergrößern klicken'
+    # 360 images
+  360_images: '360° Bilder'
+  360_instructions: 'Verwenden Sie die Maus, um das Bild zu drehen. Verwenden Sie das Mausrad zum Zoomen.'
+  360_controls:
+    fullscreen: 'Vollbild'
+    auto_rotate: 'Automatisch drehen'
+  
+  # Status
+  status:
+    label: 'Status'
+    available: 'Verfügbar'
+    sold: 'Verkauft'
+    reserved: 'Reserviert'
+    rented: 'Vermietet'
+    pending: 'In Verhandlung'
+    auction: 'Auktion'
+  
+  # Share
+  share:
+    title: 'Diese Immobilie teilen'
+    copy_link: 'Link kopieren'
+    copied: 'Link in die Zwischenablage kopiert'
+  
+  # Actions
+  print: 'Drucken'
+  expose: 'Exposé'
+  download_pdf: 'PDF herunterladen'
+  location_map: 'Standort'
+    # Inquiry form
+  inquiry:
+    name: 'Name'
+    email: 'E-Mail'
+    phone: 'Telefon'
+    message: 'Nachricht'
+    send: 'Anfrage senden'
+  
+  # Meta tags for property show page
+  meta:
+    show:
+      description: 'Sehen Sie Details zu dieser Industrieimmobilie: Fläche, Standort, Preis und Ausstattung. Kontaktieren Sie uns für weitere Informationen.'
+      keywords: 'Industrieimmobilie, Gewerbeimmobilie, Lagerhallen, Produktionsflächen, Logistik, Vermietung, Verkauf'
+  
+  # List page properties
   list_title: 'Immobilien'
   list_subtitle: 'Finden Sie die perfekte Industrieimmobilie für Ihr Unternehmen'
   filters: 'FILTER'
@@ -13,7 +76,6 @@ property:
   actions_label: 'AKTIONEN'
   search_properties: 'IMMOBILIEN SUCHEN'
   clear_filters: 'FILTER LÖSCHEN'
-  no_type: 'Kein Typ'
   form:
     type_label: 'IMMOBILIENTYP'
     status_label: 'STATUS'
@@ -48,14 +110,7 @@ property:
     direction_choices:
       asc: 'Aufsteigend'
       desc: 'Absteigend'
-  status:
-    available: 'Verfügbar'
-    sold: 'Verkauft'
-    reserved: 'Reserviert'
-    rented: 'Vermietet'
-    pending: 'Ausstehend'
-    auction: 'Auktion'
 
 properties:
   list:
-    no_results: 'Keine Immobilien nach den angegebenen Kriterien gefunden.' 
+    no_results: 'Keine Immobilien nach den angegebenen Kriterien gefunden.'

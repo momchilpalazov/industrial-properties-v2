@@ -1,5 +1,68 @@
 # Property page translations - Russian
 property:
+  # Basic properties
+  reference: 'Референсный номер'
+  location: 'Местоположение'
+  area: 'Площадь'
+  type: 'Тип'
+  price: 'Цена'
+  description: 'Описание'
+  features: 'Характеристики'
+  contact: 'Контакт'
+  details: 'Детали'
+  view_details: 'Посмотреть детали'
+  no_type: 'Нет типа'
+  no_image: 'Нет изображения'
+  image: 'Изображение'
+  
+  # Gallery
+  gallery:
+    photos: 'фото'
+    more: 'еще'
+    click_to_enlarge: 'Нажмите для увеличения'
+    # 360 images
+  360_images: '360° Изображения'
+  360_instructions: 'Используйте мышь для поворота изображения. Используйте колесо мыши для масштабирования.'
+  360_controls:
+    fullscreen: 'Полноэкранный режим'
+    auto_rotate: 'Автоповорот'
+  
+  # Status
+  status:
+    label: 'Статус'
+    available: 'Доступно'
+    sold: 'Продано'
+    reserved: 'Зарезервировано'
+    rented: 'Сдано в аренду'
+    pending: 'В процессе переговоров'
+    auction: 'На аукционе'
+  
+  # Share
+  share:
+    title: 'Поделиться этой недвижимостью'
+    copy_link: 'Копировать ссылку'
+    copied: 'Ссылка скопирована в буфер обмена'
+  
+  # Actions
+  print: 'Печать'
+  expose: 'Экспозе'
+  download_pdf: 'Скачать PDF'
+  location_map: 'Местоположение'
+    # Inquiry form
+  inquiry:
+    name: 'Имя'
+    email: 'Электронная почта'
+    phone: 'Телефон'
+    message: 'Сообщение'
+    send: 'Отправить запрос'
+  
+  # Meta tags for property show page
+  meta:
+    show:
+      description: 'Просмотрите детали этой промышленной недвижимости: площадь, местоположение, цена и характеристики. Свяжитесь с нами для получения дополнительной информации.'
+      keywords: 'промышленная недвижимость, коммерческая недвижимость, склады, производственные площади, логистика, аренда, продажа'
+  
+  # List page properties
   list_title: 'Недвижимость'
   list_subtitle: 'Найдите идеальную промышленную недвижимость для вашего бизнеса'
   filters: 'ФИЛЬТРЫ'
@@ -13,7 +76,6 @@ property:
   actions_label: 'ДЕЙСТВИЯ'
   search_properties: 'ПОИСК НЕДВИЖИМОСТИ'
   clear_filters: 'ОЧИСТИТЬ ФИЛЬТРЫ'
-  no_type: 'Нет типа'
   form:
     type_label: 'ТИП НЕДВИЖИМОСТИ'
     status_label: 'СТАТУС'
@@ -48,14 +110,7 @@ property:
     direction_choices:
       asc: 'По возрастанию'
       desc: 'По убыванию'
-  status:
-    available: 'Доступно'
-    sold: 'Продано'
-    reserved: 'Зарезервировано'
-    rented: 'Сдано в аренду'
-    pending: 'Ожидает завершения'
-    auction: 'На аукционе'
 
 properties:
   list:
-    no_results: 'Не найдено недвижимости по указанным критериям.' 
+    no_results: 'Не найдено недвижимости по указанным критериям.'

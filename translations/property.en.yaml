@@ -1,5 +1,68 @@
 # Property page translations - English
 property:
+  # Basic properties
+  reference: 'Reference Number'
+  location: 'Location'
+  area: 'Area'
+  type: 'Type'
+  price: 'Price'
+  description: 'Description'
+  features: 'Features'
+  contact: 'Contact'
+  details: 'Details'
+  view_details: 'View details'
+  no_type: 'No type'
+  no_image: 'No image'
+  image: 'Image'
+  
+  # Gallery
+  gallery:
+    photos: 'photos'
+    more: 'more'
+    click_to_enlarge: 'Click to enlarge'
+    # 360 images
+  360_images: '360° Images'
+  360_instructions: 'Click and hold to rotate the image. Use scroll to zoom.'
+  360_controls:
+    fullscreen: 'Fullscreen'
+    auto_rotate: 'Auto rotate'
+  
+  # Status
+  status:
+    label: 'Status'
+    available: 'Available'
+    sold: 'Sold'
+    reserved: 'Reserved'
+    rented: 'Rented'
+    pending: 'Pending'
+    auction: 'On Auction'
+  
+  # Share
+  share:
+    title: 'Share this property'
+    copy_link: 'Copy link'
+    copied: 'Link copied to clipboard'
+  
+  # Actions
+  print: 'Print'
+  expose: 'Exposé'
+  download_pdf: 'Download PDF'
+  location_map: 'Location Map'
+    # Inquiry form
+  inquiry:
+    name: 'Name'
+    email: 'Email'
+    phone: 'Phone'
+    message: 'Message'
+    send: 'Send Inquiry'
+  
+  # Meta tags for property show page
+  meta:
+    show:
+      description: 'View details for this industrial property: area, location, price and features. Contact us for more information.'
+      keywords: 'industrial property, commercial real estate, warehouses, manufacturing spaces, logistics, rental, sale'
+  
+  # List page properties
   list_title: 'Properties'
   list_subtitle: 'Find the perfect industrial property for your business'
   filters: 'FILTERS'
@@ -13,7 +76,7 @@ property:
   actions_label: 'ACTIONS'
   search_properties: 'SEARCH PROPERTIES'
   clear_filters: 'CLEAR FILTERS'
-  no_type: 'No type'
+  
   form:
     type_label: 'PROPERTY TYPE'
     status_label: 'STATUS'
@@ -48,14 +111,7 @@ property:
     direction_choices:
       asc: 'Ascending'
       desc: 'Descending'
-  status:
-    available: 'Available'
-    sold: 'Sold'
-    reserved: 'Reserved'
-    rented: 'Rented'
-    pending: 'Pending'
-    auction: 'On Auction'
 
 properties:
   list:
-    no_results: 'No properties found matching the specified criteria.' 
+    no_results: 'No properties found matching the specified criteria.'
