@@ -3,6 +3,7 @@
 namespace App\Controller\Public;
 
 use App\Repository\BlogPostRepository;
+use App\Repository\BlogCategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,10 +14,9 @@ class BlogController extends AbstractController
 {
     public function __construct(
         private BlogPostRepository $blogPostRepository,
+        private BlogCategoryRepository $blogCategoryRepository,
         private PaginatorInterface $paginator
-    ) {}
-
-    #[Route('/blog', name: 'app_blog_index')]
+    ) {}    #[Route('/blog', name: 'app_blog_index')]
     public function index(Request $request): Response
     {
         $category = $request->query->get('category');
@@ -26,7 +26,7 @@ class BlogController extends AbstractController
         if ($query) {
             $posts = $this->blogPostRepository->search($query, $locale);
         } elseif ($category) {
-            $posts = $this->blogPostRepository->findByCategory($category, $locale);
+            $posts = $this->blogPostRepository->findByCategory((int)$category, $locale);
         } else {
             $posts = $this->blogPostRepository->findPublished($locale);
         }
@@ -43,11 +43,9 @@ class BlogController extends AbstractController
             $posts,
             $request->query->getInt('page', 1),
             9
-        );
-
-        return $this->render('blog/index.html.twig', [
+        );        return $this->render('blog/index.html.twig', [
             'posts' => $pagination,
-            'categories' => $this->blogPostRepository->getCategories(),
+            'categories' => $this->blogCategoryRepository->findVisible(),
             'currentCategory' => $category,
             'searchQuery' => $query
         ]);
@@ -62,12 +60,10 @@ class BlogController extends AbstractController
             throw $this->createNotFoundException('Статията не е намерена');
         }
 
-        $latestPosts = $this->blogPostRepository->findLatest(3);
-
-        return $this->render('blog/show.html.twig', [
+        $latestPosts = $this->blogPostRepository->findLatest(3);        return $this->render('blog/show.html.twig', [
             'post' => $post,
             'latestPosts' => $latestPosts,
-            'categories' => $this->blogPostRepository->getCategories()
+            'categories' => $this->blogCategoryRepository->findVisible()
         ]);
     }
 } 

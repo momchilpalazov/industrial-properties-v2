@@ -1,0 +1,173 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Нова блог категория{% endblock %}
+
+{% block body %}
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Нова блог категория</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="bi bi-plus-circle me-1"></i>
+                        Създаване на нова блог категория
+                    </div>
+                    <a href="{{ path('admin_blog_category_index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Назад към списъка
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="bi bi-translate me-1"></i>
+                                    Български
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form_label(form.name) }}
+                                        {{ form_widget(form.name) }}
+                                        {{ form_errors(form.name) }}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form_label(form.description) }}
+                                        {{ form_widget(form.description) }}
+                                        {{ form_errors(form.description) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="bi bi-translate me-1"></i>
+                                    English
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form_label(form.nameEn) }}
+                                        {{ form_widget(form.nameEn) }}
+                                        {{ form_errors(form.nameEn) }}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form_label(form.descriptionEn) }}
+                                        {{ form_widget(form.descriptionEn) }}
+                                        {{ form_errors(form.descriptionEn) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="bi bi-translate me-1"></i>
+                                    Deutsch
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form_label(form.nameDe) }}
+                                        {{ form_widget(form.nameDe) }}
+                                        {{ form_errors(form.nameDe) }}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form_label(form.descriptionDe) }}
+                                        {{ form_widget(form.descriptionDe) }}
+                                        {{ form_errors(form.descriptionDe) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="bi bi-translate me-1"></i>
+                                    Русский
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form_label(form.nameRu) }}
+                                        {{ form_widget(form.nameRu) }}
+                                        {{ form_errors(form.nameRu) }}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form_label(form.descriptionRu) }}
+                                        {{ form_widget(form.descriptionRu) }}
+                                        {{ form_errors(form.descriptionRu) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="bi bi-gear me-1"></i>
+                                    Настройки
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                {{ form_label(form.slug) }}
+                                                {{ form_widget(form.slug) }}
+                                                {{ form_errors(form.slug) }}
+                                                <div class="form-text">
+                                                    Оставете празно за автоматично генериране от името.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                {{ form_label(form.position) }}
+                                                {{ form_widget(form.position) }}
+                                                {{ form_errors(form.position) }}
+                                                <div class="form-text">
+                                                    По-малко число означава по-висока позиция в списъка.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-check mb-3 mt-4">
+                                                {{ form_widget(form.isVisible) }}
+                                                {{ form_label(form.isVisible) }}
+                                                {{ form_errors(form.isVisible) }}
+                                                <div class="form-text">
+                                                    Ако е отметнато, категорията ще бъде видима в публичната част на сайта.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ path('admin_blog_category_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Отказ
+                        </a>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Създай категория
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

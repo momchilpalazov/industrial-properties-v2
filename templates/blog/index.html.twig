@@ -39,8 +39,8 @@
         <section class="blog-hero">
             <div class="container">
                 <div class="section-header">
-                    <h1>{{ 'blog.title'|trans }}</h1>
-                    <p>{{ 'blog.subtitle'|trans }}</p>
+                    <h1>{{ 'blog.title'|trans({}, 'blog') }}</h1>
+                    <p>{{ 'blog.subtitle'|trans({}, 'blog') }}</p>
                 </div>
             </div>
         </section>
@@ -51,12 +51,12 @@
                 <nav class="nav nav-pills">
                     <a class="nav-link {% if not currentCategory %}active{% endif %}" 
                        href="{{ path('app_blog_index') }}">
-                        {{ 'blog.categories.all'|trans }}
+                        {{ 'blog.categories.all'|trans({}, 'blog') }}
                     </a>
-                    {% for key, label in categories %}
-                        <a class="nav-link {% if currentCategory == key %}active{% endif %}" 
-                           href="{{ path('app_blog_index', {'category': key}) }}">
-                            {{ label|trans }}
+                    {% for category in categories %}
+                        <a class="nav-link {% if currentCategory == category.id ~ '' %}active{% endif %}" 
+                           href="{{ path('app_blog_index', {'category': category.id}) }}">
+                            {{ category.name(app.request.locale) }}
                         </a>
                     {% endfor %}
                 </nav>
@@ -70,22 +70,22 @@
                     {% for post in posts %}
                         <div class="col-md-6 col-lg-4">
                             <article class="blog-card">
-                                {% if post.category is defined %}
+                                {% if post.category %}
                                     <span class="category-badge">
-                                        {{ categories[post.category]|trans }}
+                                        {{ post.category.name(app.request.locale) }}
                                     </span>
                                 {% endif %}
 
                                 {% if post.image_path is defined %}
                                     <img src="{{ '/uploads/blog/' ~ post.image_path }}" 
                                          class="card-img-top" 
-                                         alt="{{ post.title(app.request.locale) }}"
+                                         alt="{{ post.getTitle(app.request.locale) }}"
                                          loading="lazy">
                                 {% endif %}
 
                                 <div class="card-body">
-                                    <h2 class="card-title">{{ post.title(app.request.locale) }}</h2>
-                                    <p class="card-text">{{ post.excerpt(app.request.locale) }}</p>
+                                    <h2 class="card-title">{{ post.getTitle(app.request.locale) }}</h2>
+                                    <p class="card-text">{{ post.getExcerpt(app.request.locale) }}</p>
                                     <div class="card-meta">
                                         <span>
                                             <i class="bi bi-calendar-event"></i>
@@ -93,7 +93,7 @@
                                         </span>
                                         <a href="{{ path('app_blog_show', {'slug': post.slug}) }}" 
                                            class="btn btn-industrial btn-sm">
-                                            {{ 'blog.read_more'|trans }}
+                                            {{ 'blog.read_more'|trans({}, 'blog') }}
                                         </a>
                                     </div>
                                 </div>
@@ -105,8 +105,8 @@
                                 <div class="no-results-icon">
                                     <i class="bi bi-journal-text"></i>
                                 </div>
-                                <h3>{{ 'blog.search.no_results'|trans }}</h3>
-                                <p>{{ 'blog.search.no_results_text'|trans }}</p>
+                                <h3>{{ 'blog.search.no_results'|trans({}, 'blog') }}</h3>
+                                <p>{{ 'blog.search.no_results_text'|trans({}, 'blog') }}</p>
                             </div>
                         </div>
                     {% endfor %}

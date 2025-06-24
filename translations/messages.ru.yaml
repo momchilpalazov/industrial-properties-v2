@@ -112,10 +112,20 @@ property:
 blog:
     title: 'Блог'
     latest_posts: 'Последние публикации'
-    categories: 'Категории'
+    categories:
+        title: 'Категории'
     read_more: 'Читать далее'
     share: 'Поделиться'
+    back_to_blog: 'Вернуться к блогу'
     related_posts: 'Похожие публикации'
+    meta:
+        share: 'Поделиться этой статьей'
+        description: 'Последние новости и статьи из мира промышленной недвижимости'
+        keywords: 'промышленная недвижимость, блог, новости, статьи, рыночные тенденции'
+    social:
+        facebook: 'Поделиться в Facebook'
+        linkedin: 'Поделиться в LinkedIn'
+        twitter: 'Поделиться в Twitter'
     admin:
         title: 'Блог'
         new_post: 'Новая публикация'

@@ -62,14 +62,11 @@ class BlogController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Генерираме slug преди записване
-            $post->updateSlug();
-            
-            // Проверяваме дали slug е уникален
-            $existingPost = $this->blogPostRepository->findOneBy(['slug' => $post->getSlug()]);
-            if ($existingPost) {
-                // Ако съществува, добавяме уникален идентификатор
-                $post->setSlug($post->getSlug() . '-' . uniqid());
+            // Генерираме уникален slug
+            $title = $post->getLanguage() === 'bg' ? $post->getTitleBg() : $post->getTitleEn();
+            if (!empty($title)) {
+                $slug = $this->blogPostRepository->generateUniqueSlug($title);
+                $post->setSlug($slug);
             }
 
             $this->blogPostRepository->save($post);
@@ -92,14 +89,11 @@ class BlogController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Генерираме slug преди записване
-            $post->updateSlug();
-            
-            // Проверяваме дали slug е уникален (изключваме текущия пост)
-            $existingPost = $this->blogPostRepository->findOneBy(['slug' => $post->getSlug()]);
-            if ($existingPost && $existingPost->getId() !== $post->getId()) {
-                // Ако съществува, добавяме уникален идентификатор
-                $post->setSlug($post->getSlug() . '-' . uniqid());
+            // Генерираме уникален slug (изключваме текущия пост)
+            $title = $post->getLanguage() === 'bg' ? $post->getTitleBg() : $post->getTitleEn();
+            if (!empty($title)) {
+                $slug = $this->blogPostRepository->generateUniqueSlug($title, $post->getId());
+                $post->setSlug($slug);
             }
 
             $this->entityManager->flush();

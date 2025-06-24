@@ -203,7 +203,8 @@ search:
 blog:
     title: 'Blog'
     latest_posts: 'Neueste Beiträge'
-    categories: 'Kategorien'
+    categories:
+        title: 'Kategorien'
     tags: 'Schlagwörter'
     read_more: 'Weiterlesen'
     posted_on: 'Veröffentlicht am'

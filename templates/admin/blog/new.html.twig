@@ -97,17 +97,25 @@
                 </h4>
                 
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        {{ form_row(form.category) }}
+                    <div class="col-md-4">
+                        <div class="position-relative">
+                            {{ form_row(form.category) }}
+                            <a href="{{ path('admin_blog_category_new') }}" 
+                               class="btn btn-outline-primary btn-sm mt-2" 
+                               target="_blank"
+                               title="Създай нова категория в нов прозорец">
+                                <i class="bi bi-plus-circle"></i> Нова категория
+                            </a>
+                        </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         {{ form_row(form.language) }}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         {{ form_row(form.publishedAt) }}
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-check mt-4">
+                    <div class="col-md-12">
+                        <div class="form-check">
                             {{ form_widget(form.isPublished) }}
                             {{ form_label(form.isPublished) }}
                         </div>
@@ -132,6 +140,16 @@
                             <i class="bi bi-globe"></i> English
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#german">
+                            <i class="bi bi-globe"></i> Deutsch
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#russian">
+                            <i class="bi bi-globe"></i> Русский
+                        </a>
+                    </li>
                 </ul>
 
                 <div class="tab-content">
@@ -147,6 +165,20 @@
                         {{ form_row(form.titleEn) }}
                         {{ form_row(form.excerptEn) }}
                         {{ form_row(form.contentEn) }}
+                    </div>
+
+                    <!-- Deutsch -->
+                    <div class="tab-pane fade" id="german">
+                        {{ form_row(form.titleDe) }}
+                        {{ form_row(form.excerptDe) }}
+                        {{ form_row(form.contentDe) }}
+                    </div>
+
+                    <!-- Русский -->
+                    <div class="tab-pane fade" id="russian">
+                        {{ form_row(form.titleRu) }}
+                        {{ form_row(form.excerptRu) }}
+                        {{ form_row(form.contentRu) }}
                     </div>
                 </div>
             </div>
@@ -194,8 +226,7 @@
                                 { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
                                 { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
                             ]
-                        },
-                        licenseKey: '0',
+                        }
                     })
                     .catch(error => {
                         console.error(error);

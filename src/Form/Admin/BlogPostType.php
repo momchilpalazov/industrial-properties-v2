@@ -3,7 +3,9 @@
 namespace App\Form\Admin;
 
 use App\Entity\BlogPost;
-use App\Repository\BlogPostRepository;
+use App\Entity\BlogCategory;
+use App\Repository\BlogCategoryRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -17,9 +19,6 @@ use Symfony\Component\Validator\Constraints\File;
 
 class BlogPostType extends AbstractType
 {
-    public function __construct(private BlogPostRepository $blogPostRepository)
-    {}
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -31,12 +30,34 @@ class BlogPostType extends AbstractType
                 'label' => 'Заглавие (EN)',
                 'attr' => ['class' => 'form-control']
             ])
+            ->add('titleDe', TextType::class, [
+                'label' => 'Заглавие (DE)',
+                'required' => false,
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('titleRu', TextType::class, [
+                'label' => 'Заглавие (RU)',
+                'required' => false,
+                'attr' => ['class' => 'form-control']
+            ])
             ->add('excerptBg', TextareaType::class, [
                 'label' => 'Кратко описание (БГ)',
+                'required' => false,
                 'attr' => ['class' => 'form-control', 'rows' => 3]
             ])
             ->add('excerptEn', TextareaType::class, [
                 'label' => 'Кратко описание (EN)',
+                'required' => false,
+                'attr' => ['class' => 'form-control', 'rows' => 3]
+            ])
+            ->add('excerptDe', TextareaType::class, [
+                'label' => 'Кратко описание (DE)',
+                'required' => false,
+                'attr' => ['class' => 'form-control', 'rows' => 3]
+            ])
+            ->add('excerptRu', TextareaType::class, [
+                'label' => 'Кратко описание (RU)',
+                'required' => false,
                 'attr' => ['class' => 'form-control', 'rows' => 3]
             ])
             ->add('contentBg', TextareaType::class, [
@@ -47,10 +68,29 @@ class BlogPostType extends AbstractType
                 'label' => 'Съдържание (EN)',
                 'attr' => ['class' => 'form-control ckeditor']
             ])
-            ->add('category', ChoiceType::class, [
+            ->add('contentDe', TextareaType::class, [
+                'label' => 'Съдържание (DE)',
+                'required' => false,
+                'attr' => ['class' => 'form-control ckeditor']
+            ])
+            ->add('contentRu', TextareaType::class, [
+                'label' => 'Съдържание (RU)',
+                'required' => false,
+                'attr' => ['class' => 'form-control ckeditor']
+            ])
+            ->add('category', EntityType::class, [
+                'class' => BlogCategory::class,
                 'label' => 'Категория',
-                'choices' => array_flip($this->blogPostRepository->getCategories()),
-                'attr' => ['class' => 'form-select']
+                'placeholder' => '-- Изберете категория --',
+                'choice_label' => 'name',
+                'attr' => ['class' => 'form-select'],
+                'query_builder' => function (BlogCategoryRepository $repository) {
+                    return $repository->createQueryBuilder('bc')
+                        ->where('bc.isVisible = :visible')
+                        ->setParameter('visible', true)
+                        ->orderBy('bc.position', 'ASC')
+                        ->addOrderBy('bc.name', 'ASC');
+                }
             ])
             ->add('publishedAt', DateTimeType::class, [
                 'label' => 'Дата на публикуване',

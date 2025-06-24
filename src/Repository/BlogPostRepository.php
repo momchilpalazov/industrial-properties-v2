@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\BlogPost;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 class BlogPostRepository extends ServiceEntityRepository
 {
@@ -89,12 +90,13 @@ class BlogPostRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findByCategory(string $category, string $language = 'bg')
+    public function findByCategory($categoryId, string $language = 'bg')
     {
         $qb = $this->createQueryBuilder('b')
-            ->where('b.category = :category')
+            ->leftJoin('b.category', 'c')
+            ->where('c.id = :categoryId')
             ->andWhere('b.isPublished = :published')
-            ->setParameter('category', $category)
+            ->setParameter('categoryId', $categoryId)
             ->setParameter('published', true)
             ->orderBy('b.publishedAt', 'DESC');
 
@@ -144,12 +146,47 @@ class BlogPostRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    // Deprecated - use BlogCategoryRepository instead
     public function getCategories(): array
     {
-        return [
-            'industry_articles' => 'blog.categories.industry_articles',
-            'sector_news' => 'blog.categories.sector_news',
-            'investor_tips' => 'blog.categories.investor_tips'
-        ];
+        // Return empty array - categories are now managed by BlogCategoryRepository
+        return [];
     }
-} 
+
+    /**
+     * Генерира уникален slug за BlogPost
+     */
+    public function generateUniqueSlug(string $title, ?int $excludeId = null): string
+    {
+        $slugger = new AsciiSlugger();
+        $baseSlug = strtolower($slugger->slug($title));
+        
+        $counter = 0;
+        $slug = $baseSlug;
+        
+        while ($this->slugExists($slug, $excludeId)) {
+            $counter++;
+            $slug = $baseSlug . '-' . $counter;
+        }
+        
+        return $slug;
+    }
+    
+    /**
+     * Проверява дали slug съществува в базата
+     */
+    private function slugExists(string $slug, ?int $excludeId = null): bool
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->select('COUNT(bp.id)')
+            ->where('bp.slug = :slug')
+            ->setParameter('slug', $slug);
+            
+        if ($excludeId !== null) {
+            $qb->andWhere('bp.id != :excludeId')
+               ->setParameter('excludeId', $excludeId);
+        }
+        
+        return $qb->getQuery()->getSingleScalarResult() > 0;
+    }
+}

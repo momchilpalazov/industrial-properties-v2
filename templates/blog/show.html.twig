@@ -90,7 +90,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8" style="text-align: left !important; margin-left: 0 !important; margin-right: auto !important;">
-                        <h1 class="blog-title" style="text-align: left !important;">{{ post.title(app.request.locale) }}</h1>
+                        <h1 class="blog-title" style="text-align: left !important;">{{ post.getTitle(app.request.locale) }}</h1>
                         <div class="blog-meta" style="text-align: left !important;">
                             <div class="meta-item">
                                 <i class="bi bi-calendar-event"></i>
@@ -98,7 +98,7 @@
                             </div>
                             <div class="meta-item">
                                 <i class="bi bi-folder"></i>
-                                <span class="category-tag">{{ categories[post.category]|trans({}, 'blog') }}</span>
+                                <span class="category-tag">{{ post.category ? post.category.name(app.request.locale) : '' }}</span>
                             </div>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
                     <!-- Blog Content -->
                     <div class="col-lg-8">
                         <article class="content-wrapper">
-                            {{ post.content(app.request.locale)|raw }}
+                            {{ post.getContent(app.request.locale)|raw }}
                         </article>
 
                         <!-- Share Buttons -->
@@ -130,14 +130,14 @@
                                     <i class="bi bi-facebook"></i>
                                     {{ 'blog.social.facebook'|trans({}, 'blog') }}
                                 </a>
-                                <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ url('app_blog_show', {'slug': post.slug})|url_encode }}&title={{ post.title(app.request.locale)|url_encode }}" 
+                                <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ url('app_blog_show', {'slug': post.slug})|url_encode }}&title={{ post.getTitle(app.request.locale)|url_encode }}" 
                                    class="share-button share-linkedin" 
                                    target="_blank"
                                    rel="noopener noreferrer">
                                     <i class="bi bi-linkedin"></i>
                                     {{ 'blog.social.linkedin'|trans({}, 'blog') }}
                                 </a>
-                                <a href="https://twitter.com/intent/tweet?url={{ url('app_blog_show', {'slug': post.slug})|url_encode }}&text={{ post.title(app.request.locale)|url_encode }}" 
+                                <a href="https://twitter.com/intent/tweet?url={{ url('app_blog_show', {'slug': post.slug})|url_encode }}&text={{ post.getTitle(app.request.locale)|url_encode }}" 
                                    class="share-button share-twitter" 
                                    target="_blank"
                                    rel="noopener noreferrer">
@@ -164,7 +164,7 @@
                                                     <div class="latest-post-content">
                                                         <a href="{{ path('app_blog_show', {'slug': latestPost.slug}) }}" 
                                                            class="latest-post-title">
-                                                            {{ latestPost.title(app.request.locale) }}
+                                                            {{ latestPost.getTitle(app.request.locale) }}
                                                         </a>
                                                         <div class="latest-post-date">
                                                             <i class="bi bi-calendar-event"></i>
@@ -185,13 +185,13 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="categories-list">
-                                        {% for key, label in categories %}
-                                            <a href="{{ path('app_blog_index', {'category': key}) }}" 
+                                        <a href="{{ path('app_blog_index') }}" class="category-link">
+                                            <span>{{ 'blog.categories.all'|trans({}, 'blog') }}</span>
+                                        </a>
+                                        {% for category in categories %}
+                                            <a href="{{ path('app_blog_index', {'category': category.id}) }}" 
                                                class="category-link">
-                                                <span>{{ label|trans({}, 'blog') }}</span>
-                                                <span class="category-count">
-                                                    0
-                                                </span>
+                                                <span>{{ category.name(app.request.locale) }}</span>
                                             </a>
                                         {% endfor %}
                                     </div>

@@ -27,6 +27,12 @@ class BlogPost
     #[Assert\NotBlank(message: 'Моля въведете заглавие на английски')]
     private ?string $titleEn = null;
 
+    #[ORM\Column(name: 'title_de', length: 255, nullable: true)]
+    private ?string $titleDe = null;
+
+    #[ORM\Column(name: 'title_ru', length: 255, nullable: true)]
+    private ?string $titleRu = null;
+
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Моля въведете съдържание на български')]
     private ?string $contentBg = null;
@@ -35,9 +41,16 @@ class BlogPost
     #[Assert\NotBlank(message: 'Моля въведете съдържание на английски')]
     private ?string $contentEn = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Моля изберете категория')]
-    private ?string $category = null;
+    #[ORM\Column(name: 'content_de', type: Types::TEXT, nullable: true)]
+    private ?string $contentDe = null;
+
+    #[ORM\Column(name: 'content_ru', type: Types::TEXT, nullable: true)]
+    private ?string $contentRu = null;
+
+    #[ORM\ManyToOne(targetEntity: BlogCategory::class, inversedBy: 'blogPosts')]
+    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: true)]
+    #[Assert\NotNull(message: 'Моля изберете категория')]
+    private ?BlogCategory $category = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
@@ -57,6 +70,12 @@ class BlogPost
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $excerptEn = null;
 
+    #[ORM\Column(name: 'excerpt_de', length: 500, nullable: true)]
+    private ?string $excerptDe = null;
+
+    #[ORM\Column(name: 'excerpt_ru', length: 500, nullable: true)]
+    private ?string $excerptRu = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
@@ -75,7 +94,7 @@ class BlogPost
         $this->language = 'bg';
     }
 
-    #[ORM\PrePersist]
+    // Removed PrePersist - slug generation moved to Controller/Service level
     #[ORM\PreUpdate]
     public function updateSlug(): void
     {
@@ -143,12 +162,12 @@ class BlogPost
         return $this;
     }
 
-    public function getCategory(): ?string
+    public function getCategory(): ?BlogCategory
     {
         return $this->category;
     }
 
-    public function setCategory(string $category): self
+    public function setCategory(?BlogCategory $category): self
     {
         $this->category = $category;
         return $this;
@@ -227,17 +246,32 @@ class BlogPost
 
     public function getTitle(string $locale = 'bg'): ?string
     {
-        return $locale === 'bg' ? $this->titleBg : $this->titleEn;
+        return match ($locale) {
+            'en' => $this->titleEn,
+            'de' => $this->titleDe,
+            'ru' => $this->titleRu,
+            default => $this->titleBg,
+        };
     }
 
     public function getContent(string $locale = 'bg'): ?string
     {
-        return $locale === 'bg' ? $this->contentBg : $this->contentEn;
+        return match ($locale) {
+            'en' => $this->contentEn,
+            'de' => $this->contentDe,
+            'ru' => $this->contentRu,
+            default => $this->contentBg,
+        };
     }
 
     public function getExcerpt(string $locale = 'bg'): ?string
     {
-        return $locale === 'bg' ? $this->excerptBg : $this->excerptEn;
+        return match ($locale) {
+            'en' => $this->excerptEn,
+            'de' => $this->excerptDe,
+            'ru' => $this->excerptRu,
+            default => $this->excerptBg,
+        };
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface
@@ -260,5 +294,110 @@ class BlogPost
     {
         $this->language = $language;
         return $this;
+    }
+
+    public function getTitleDe(): ?string
+    {
+        return $this->titleDe;
+    }
+
+    public function setTitleDe(?string $titleDe): self
+    {
+        $this->titleDe = $titleDe;
+        return $this;
+    }
+
+    public function getTitleRu(): ?string
+    {
+        return $this->titleRu;
+    }
+
+    public function setTitleRu(?string $titleRu): self
+    {
+        $this->titleRu = $titleRu;
+        return $this;
+    }
+
+    public function getContentDe(): ?string
+    {
+        return $this->contentDe;
+    }
+
+    public function setContentDe(?string $contentDe): self
+    {
+        $this->contentDe = $contentDe;
+        return $this;
+    }
+
+    public function getContentRu(): ?string
+    {
+        return $this->contentRu;
+    }
+
+    public function setContentRu(?string $contentRu): self
+    {
+        $this->contentRu = $contentRu;
+        return $this;
+    }
+
+    public function getExcerptDe(): ?string
+    {
+        return $this->excerptDe;
+    }
+
+    public function setExcerptDe(?string $excerptDe): self
+    {
+        $this->excerptDe = $excerptDe;
+        return $this;
+    }
+
+    public function getExcerptRu(): ?string
+    {
+        return $this->excerptRu;
+    }
+
+    public function setExcerptRu(?string $excerptRu): self
+    {
+        $this->excerptRu = $excerptRu;
+        return $this;
+    }
+
+    /**
+     * Връща локализираното заглавие според езика
+     */
+    public function getLocalizedTitle(string $locale): ?string
+    {
+        return match ($locale) {
+            'en' => $this->titleEn ?? $this->titleBg,
+            'de' => $this->titleDe ?? $this->titleBg,
+            'ru' => $this->titleRu ?? $this->titleBg,
+            default => $this->titleBg,
+        };
+    }
+
+    /**
+     * Връща локализираното съдържание според езика
+     */
+    public function getLocalizedContent(string $locale): ?string
+    {
+        return match ($locale) {
+            'en' => $this->contentEn ?? $this->contentBg,
+            'de' => $this->contentDe ?? $this->contentBg,
+            'ru' => $this->contentRu ?? $this->contentBg,
+            default => $this->contentBg,
+        };
+    }
+
+    /**
+     * Връща локализираното кратко описание според езика
+     */
+    public function getLocalizedExcerpt(string $locale): ?string
+    {
+        return match ($locale) {
+            'en' => $this->excerptEn ?? $this->excerptBg,
+            'de' => $this->excerptDe ?? $this->excerptBg,
+            'ru' => $this->excerptRu ?? $this->excerptBg,
+            default => $this->excerptBg,
+        };
     }
 } 
