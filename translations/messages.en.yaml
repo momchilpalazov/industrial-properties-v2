@@ -9,6 +9,7 @@ nav.contact: Contact
 nav.faq: FAQ
 nav.admin.blog: Blog
 nav.admin.faq: FAQ
+nav.admin.faq_categories: FAQ Categories
 footer.quick_links: 'Quick Links'
 footer.contact_us: 'Contact Us'
 footer.rights: 'All rights reserved.'
@@ -290,7 +291,7 @@ blog:
   title: 'Blog'
   subtitle: 'Latest news and articles from the world of industrial properties'
   categories:
-    title: 'Categories'
+    title: 'Blog Categories'
     all: 'All Categories'
     industry_news: 'Industry News'
     market_trends: 'Market Trends'

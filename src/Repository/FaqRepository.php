@@ -36,9 +36,7 @@ class FaqRepository extends ServiceEntityRepository
             ->orderBy('f.position', 'ASC')
             ->getQuery()
             ->getResult();
-    }
-
-    public function findByCategory(string $category, string $locale = 'bg')
+    }    public function findByCategory($category, string $locale = 'bg')
     {
         return $this->createQueryBuilder('f')
             ->where('f.category = :category')
@@ -48,29 +46,16 @@ class FaqRepository extends ServiceEntityRepository
             ->orderBy('f.position', 'ASC')
             ->getQuery()
             ->getResult();
-    }
-
-    public function getCategories(): array
-    {
-        return [
-            'general' => 'faq.categories.general',
-            'property_info' => 'faq.categories.property_info',
-            'legal' => 'faq.categories.legal',
-            'rent_sale' => 'faq.categories.rent_sale'
-        ];
-    }
-
-    public function reorder(array $positions): void
+    }    public function reorder(array $positions): void
     {
         foreach ($positions as $id => $position) {
             $this->createQueryBuilder('f')
                 ->update()
-                ->set('f.position', ':position')
-                ->where('f.id = :id')
+                ->set('f.position', ':position')                ->where('f.id = :id')
                 ->setParameter('position', $position)
                 ->setParameter('id', $id)
                 ->getQuery()
                 ->execute();
         }
     }
-} 
+}

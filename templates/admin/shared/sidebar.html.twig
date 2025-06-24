@@ -63,12 +63,17 @@
                     <i class="bi bi-tags"></i>
                     {{ 'blog.categories.title'|trans }}
                 </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if app.request.get('_route') starts with 'admin_faq' %}active{% endif %}" 
+            </li>            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_faq' and not app.request.get('_route') starts with 'admin_faq_category' %}active{% endif %}" 
                    href="{{ path('admin_faq_index') }}">
                     <i class="bi bi-question-circle"></i>
                     {{ 'nav.admin.faq'|trans }}
+                </a>
+            </li>            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_faq_category' %}active{% endif %}" 
+                   href="{{ path('admin_faq_category_index') }}">
+                    <i class="bi bi-list-ul"></i>
+                    {{ 'nav.admin.faq_categories'|trans }}
                 </a>
             </li>
             <li class="nav-item">

@@ -50,11 +50,10 @@
                             
                             <div class="p-3">
                                 <h5 class="card-title mb-3">{{ faq.getQuestion(app.request.locale) }}</h5>
-                                
-                                <div class="d-flex align-items-center gap-3 mb-3">
+                                  <div class="d-flex align-items-center gap-3 mb-3">
                                     <div class="text-muted">
                                         <i class="bi bi-folder me-1"></i>
-                                        {{ categories[faq.category]|trans }}
+                                        {{ faq.category ? faq.category.getName(app.request.locale) : 'Без категория' }}
                                     </div>
                                 </div>
                                 

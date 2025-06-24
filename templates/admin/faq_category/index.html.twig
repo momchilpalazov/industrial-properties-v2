@@ -1,0 +1,193 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}FAQ Категории{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('admin_faq_styles') }}
+{% endblock %}
+
+{% block body %}
+    <!-- Toast нотификация -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">FAQ Категории</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ path('admin_faq_category_new') }}" class="btn btn-sm btn-primary">
+                <i class="bi bi-plus-lg"></i> Нова категория
+            </a>
+        </div>
+    </div>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Позиция</th>
+                    <th>Име (BG)</th>
+                    <th>Име (EN)</th>
+                    <th>Slug</th>
+                    <th>FAQ въпроси</th>
+                    <th>Видима</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody id="categories-list">
+                {% for category in categories %}
+                    <tr data-id="{{ category[0].id }}">
+                        <td>{{ category[0].position }}</td>
+                        <td>
+                            <strong>{{ category[0].nameBg }}</strong>
+                        </td>
+                        <td>{{ category[0].nameEn }}</td>
+                        <td>
+                            <code>{{ category[0].slug }}</code>
+                        </td>
+                        <td>
+                            {% if category.activeFaqCount > 0 %}
+                                <span class="badge bg-primary">{{ category.activeFaqCount }}</span>
+                            {% else %}
+                                <span class="text-muted">0</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if category[0].isVisible %}
+                                <span class="badge bg-success">Да</span>
+                            {% else %}
+                                <span class="badge bg-warning">Не</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <div class="action-buttons">
+                                <form method="post" action="{{ path('admin_faq_category_move_up', {'id': category[0].id}) }}" style="display: inline-block">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('move-up' ~ category[0].id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary action-button" title="Премести нагоре">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </button>
+                                </form>
+                                
+                                <form method="post" action="{{ path('admin_faq_category_move_down', {'id': category[0].id}) }}" style="display: inline-block">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('move-down' ~ category[0].id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary action-button" title="Премести надолу">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </button>
+                                </form>
+                                
+                                <form method="post" action="{{ path('admin_faq_category_toggle_visibility', {'id': category[0].id}) }}" style="display: inline-block">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('toggle-visibility' ~ category[0].id) }}">
+                                    <button type="submit" class="btn btn-sm {% if category[0].isVisible %}btn-warning{% else %}btn-success{% endif %} action-button" 
+                                            title="{% if category[0].isVisible %}Скрий{% else %}Покажи{% endif %}">
+                                        <i class="bi bi-{% if category[0].isVisible %}eye-slash{% else %}eye{% endif %}"></i>
+                                    </button>
+                                </form>
+                                
+                                <a href="{{ path('admin_faq_category_edit', {'id': category[0].id}) }}" 
+                                   class="btn btn-sm btn-primary action-button" title="Редактирай">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                
+                                <button type="button" class="btn btn-sm btn-danger delete-category action-button" 
+                                        data-id="{{ category[0].id }}" title="Изтрий">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            Няма добавени FAQ категории
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Пагинация -->
+    <div class="d-flex justify-content-center mt-4">
+        {{ knp_pagination_render(categories) }}
+    </div>
+
+    <!-- Модален прозорец за изтриване -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Потвърждение за изтриване</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Сигурни ли сте, че искате да изтриете тази FAQ категория?
+                    <div class="alert alert-warning mt-2">
+                        <strong>Внимание:</strong> Не можете да изтриете категория, която съдържа FAQ въпроси.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <form method="post" id="deleteForm">
+                        <input type="hidden" name="_token" data-token="{{ csrf_token('delete') }}" value="">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Отказ
+                        </button>
+                        <button type="submit" class="btn btn-danger">
+                            Изтрий
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('admin_faq') }}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализиране на модалния прозорец за изтриване
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            const deleteForm = document.getElementById('deleteForm');
+            const tokenInput = deleteForm.querySelector('input[name="_token"]');
+
+            // Обработка на бутоните за изтриване
+            document.querySelectorAll('.delete-category').forEach(button => {
+                button.addEventListener('click', function() {
+                    const categoryId = this.dataset.id;
+                    deleteForm.action = `/admin/faq-category/${categoryId}`;
+                    tokenInput.value = tokenInput.dataset.token + categoryId;
+                    deleteModal.show();
+                });
+            });
+
+            // Toast нотификация
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                const toastBody = toast.querySelector('.toast-body');
+                
+                toast.className = `toast align-items-center text-white bg-${type} border-0`;
+                toastBody.textContent = message;
+                
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+            }
+        });
+    </script>
+{% endblock %}

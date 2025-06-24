@@ -1,11 +1,11 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Редактиране на въпрос{% endblock %}
+{% block title %}Нова FAQ категория{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        .faq-form {
+        .faq-category-form {
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -71,10 +71,10 @@
 
 {% block body %}
 <div class="container-fluid py-4">
-    <div class="faq-form">
+    <div class="faq-category-form">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">Редактиране на въпрос</h1>
-            <a href="{{ path('admin_faq_index') }}" class="btn btn-outline-secondary">
+            <h1 class="h3 mb-0">Нова FAQ категория</h1>
+            <a href="{{ path('admin_faq_category_index') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Отказ
             </a>
         </div>
@@ -97,13 +97,26 @@
                 </h4>
                 
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        {{ form_row(form.category) }}
+                    <div class="col-md-4">
+                        {{ form_row(form.slug) }}
+                        <div class="form-text">
+                            Оставете празно за автоматично генериране от името.
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-check mt-4">
-                            {{ form_widget(form.isActive) }}
-                            {{ form_label(form.isActive) }}
+                    <div class="col-md-4">
+                        {{ form_row(form.position) }}
+                        <div class="form-text">
+                            По-малко число означава по-висока позиция в списъка.
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check mb-3 mt-4">
+                            {{ form_widget(form.isVisible) }}
+                            {{ form_label(form.isVisible) }}
+                            {{ form_errors(form.isVisible) }}
+                            <div class="form-text">
+                                Ако е отметнато, категорията ще бъде видима в публичната част на сайта.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -112,12 +125,13 @@
             <!-- Съдържание на различни езици -->
             <div class="form-section">
                 <h4 class="form-section-title">
-                    <i class="bi bi-translate"></i> Съдържание
+                    <i class="bi bi-translate"></i> Многоезично съдържание
                 </h4>
-                  <ul class="nav nav-tabs mb-4" role="tablist">
+                
+                <ul class="nav nav-tabs mb-4" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="tab" href="#bulgarian">
-                            <i class="bi bi-globe"></i> Български
+                            <i class="bi bi-flag"></i> Български
                         </a>
                     </li>
                     <li class="nav-item">
@@ -140,37 +154,33 @@
                 <div class="tab-content">
                     <!-- Български -->
                     <div class="tab-pane fade show active" id="bulgarian">
-                        {{ form_row(form.questionBg) }}
-                        {{ form_row(form.answerBg) }}
+                        {{ form_row(form.nameBg) }}
                     </div>
 
                     <!-- English -->
                     <div class="tab-pane fade" id="english">
-                        {{ form_row(form.questionEn) }}
-                        {{ form_row(form.answerEn) }}
+                        {{ form_row(form.nameEn) }}
                     </div>
 
                     <!-- Deutsch -->
                     <div class="tab-pane fade" id="german">
-                        {{ form_row(form.questionDe) }}
-                        {{ form_row(form.answerDe) }}
+                        {{ form_row(form.nameDe) }}
                     </div>
 
                     <!-- Русский -->
                     <div class="tab-pane fade" id="russian">
-                        {{ form_row(form.questionRu) }}
-                        {{ form_row(form.answerRu) }}
+                        {{ form_row(form.nameRu) }}
                     </div>
                 </div>
             </div>
 
             <!-- Бутони -->
             <div class="d-flex justify-content-end gap-2 mb-4">
-                <a href="{{ path('admin_faq_index') }}" class="btn btn-outline-secondary">
+                <a href="{{ path('admin_faq_category_index') }}" class="btn btn-outline-secondary">
                     <i class="bi bi-x"></i> Отказ
                 </a>
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-lg"></i> Запази промените
+                    <i class="bi bi-check-lg"></i> Създай
                 </button>
             </div>
 
@@ -181,40 +191,8 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация на CKEditor
-            document.querySelectorAll('.ckeditor').forEach(function(element) {
-                ClassicEditor
-                    .create(element, {
-                        toolbar: [
-                            'heading',
-                            '|',
-                            'bold',
-                            'italic',
-                            'link',
-                            'bulletedList',
-                            'numberedList',
-                            'blockQuote',
-                            '|',
-                            'undo',
-                            'redo'
-                        ],
-                        heading: {
-                            options: [
-                                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-                                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-                                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
-                            ]
-                        },
-                        licenseKey: '0',
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            });
-
             // Валидация на формата
             const form = document.querySelector('form');
             form.addEventListener('submit', function(event) {
@@ -226,4 +204,4 @@
             });
         });
     </script>
-{% endblock %} 
+{% endblock %}

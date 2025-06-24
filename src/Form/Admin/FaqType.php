@@ -3,10 +3,10 @@
 namespace App\Form\Admin;
 
 use App\Entity\Faq;
-use App\Repository\FaqRepository;
+use App\Entity\FaqCategory;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,9 +14,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FaqType extends AbstractType
 {
-    public function __construct(private FaqRepository $faqRepository)
-    {}
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -28,6 +25,14 @@ class FaqType extends AbstractType
                 'label' => 'Въпрос (EN)',
                 'attr' => ['class' => 'form-control']
             ])
+            ->add('questionDe', TextType::class, [
+                'label' => 'Въпрос (DE)',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('questionRu', TextType::class, [
+                'label' => 'Въпрос (RU)',
+                'attr' => ['class' => 'form-control']
+            ])
             ->add('answerBg', TextareaType::class, [
                 'label' => 'Отговор (БГ)',
                 'attr' => ['class' => 'form-control ckeditor']
@@ -36,9 +41,19 @@ class FaqType extends AbstractType
                 'label' => 'Отговор (EN)',
                 'attr' => ['class' => 'form-control ckeditor']
             ])
-            ->add('category', ChoiceType::class, [
+            ->add('answerDe', TextareaType::class, [
+                'label' => 'Отговор (DE)',
+                'attr' => ['class' => 'form-control ckeditor']
+            ])
+            ->add('answerRu', TextareaType::class, [
+                'label' => 'Отговор (RU)',
+                'attr' => ['class' => 'form-control ckeditor']
+            ])
+            ->add('category', EntityType::class, [
+                'class' => FaqCategory::class,
+                'choice_label' => 'nameBg',
                 'label' => 'Категория',
-                'choices' => array_flip($this->faqRepository->getCategories()),
+                'placeholder' => 'Изберете категория',
                 'attr' => ['class' => 'form-select']
             ])
             ->add('isActive', CheckboxType::class, [
@@ -55,4 +70,4 @@ class FaqType extends AbstractType
             'data_class' => Faq::class,
         ]);
     }
-} 
+}

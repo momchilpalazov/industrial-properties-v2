@@ -53,15 +53,14 @@
     </section>    <!-- Categories -->
     <section class="faq-categories" style="text-align: left !important;">
         <div class="container">
-            <nav class="nav nav-pills" style="justify-content: flex-start !important;">
-                <a class="nav-link {% if not currentCategory %}active{% endif %}" 
+            <nav class="nav nav-pills" style="justify-content: flex-start !important;">                <a class="nav-link {% if not currentCategory %}active{% endif %}" 
                    href="{{ path('app_faq_index') }}">
                     {{ 'faq.categories.all'|trans }}
                 </a>
-                {% for key, label in categories %}
-                    <a class="nav-link {% if currentCategory == key %}active{% endif %}" 
-                       href="{{ path('app_faq_index', {'category': key}) }}">
-                        {{ label|trans }}
+                {% for category in categories %}
+                    <a class="nav-link {% if currentCategory and currentCategory.id == category.id %}active{% endif %}" 
+                       href="{{ path('app_faq_index', {'category': category.slug}) }}">
+                        {{ category.getName(app.request.locale) }}
                     </a>
                 {% endfor %}
             </nav>
@@ -78,10 +77,9 @@
                                     data-bs-toggle="collapse" 
                                     data-bs-target="#faq{{ faq.id }}"
                                     aria-expanded="false"
-                                    aria-controls="faq{{ faq.id }}">
-                                {{ faq.question(app.request.locale) }}
+                                    aria-controls="faq{{ faq.id }}">                                {{ faq.question(app.request.locale) }}
                                 <span class="category-badge">
-                                    {{ categories[faq.category]|trans }}
+                                    {{ faq.category ? faq.category.getName(app.request.locale) : 'Без категория' }}
                                 </span>
                             </button>
                         </h2>

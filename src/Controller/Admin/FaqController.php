@@ -33,11 +33,8 @@ class FaqController extends AbstractController
             $queryBuilder,
             $request->query->getInt('page', 1),
             10
-        );
-
-        return $this->render('admin/faq/index.html.twig', [
+        );        return $this->render('admin/faq/index.html.twig', [
             'faqs' => $pagination,
-            'categories' => $this->faqRepository->getCategories()
         ]);
     }
 
