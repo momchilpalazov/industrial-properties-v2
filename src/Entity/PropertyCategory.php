@@ -15,20 +15,30 @@ class PropertyCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
+    private ?int $id = null;    #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Моля, въведете име на български')]
     private ?string $name = null;
 
     #[ORM\Column(name: 'name_en', length: 255, nullable: true)]
     private ?string $nameEn = null;
 
+    #[ORM\Column(name: 'name_de', length: 255, nullable: true)]
+    private ?string $nameDe = null;
+
+    #[ORM\Column(name: 'name_ru', length: 255, nullable: true)]
+    private ?string $nameRu = null;
+
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(name: 'description_en', type: 'text', nullable: true)]
     private ?string $descriptionEn = null;
+
+    #[ORM\Column(name: 'description_de', type: 'text', nullable: true)]
+    private ?string $descriptionDe = null;
+
+    #[ORM\Column(name: 'description_ru', type: 'text', nullable: true)]
+    private ?string $descriptionRu = null;
 
     #[ORM\Column(name: 'position', type: 'integer', options: ['default' => 0])]
     private int $position = 0;
@@ -65,9 +75,7 @@ class PropertyCategory
     {
         $this->name = $name;
         return $this;
-    }
-
-    public function getNameEn(): ?string
+    }    public function getNameEn(): ?string
     {
         return $this->nameEn;
     }
@@ -75,6 +83,28 @@ class PropertyCategory
     public function setNameEn(?string $nameEn): static
     {
         $this->nameEn = $nameEn;
+        return $this;
+    }
+
+    public function getNameDe(): ?string
+    {
+        return $this->nameDe;
+    }
+
+    public function setNameDe(?string $nameDe): static
+    {
+        $this->nameDe = $nameDe;
+        return $this;
+    }
+
+    public function getNameRu(): ?string
+    {
+        return $this->nameRu;
+    }
+
+    public function setNameRu(?string $nameRu): static
+    {
+        $this->nameRu = $nameRu;
         return $this;
     }
 
@@ -87,9 +117,7 @@ class PropertyCategory
     {
         $this->description = $description;
         return $this;
-    }
-
-    public function getDescriptionEn(): ?string
+    }    public function getDescriptionEn(): ?string
     {
         return $this->descriptionEn;
     }
@@ -97,6 +125,28 @@ class PropertyCategory
     public function setDescriptionEn(?string $descriptionEn): static
     {
         $this->descriptionEn = $descriptionEn;
+        return $this;
+    }
+
+    public function getDescriptionDe(): ?string
+    {
+        return $this->descriptionDe;
+    }
+
+    public function setDescriptionDe(?string $descriptionDe): static
+    {
+        $this->descriptionDe = $descriptionDe;
+        return $this;
+    }
+
+    public function getDescriptionRu(): ?string
+    {
+        return $this->descriptionRu;
+    }
+
+    public function setDescriptionRu(?string $descriptionRu): static
+    {
+        $this->descriptionRu = $descriptionRu;
         return $this;
     }
 
@@ -191,18 +241,17 @@ class PropertyCategory
         }
 
         return $this;
-    }
-
-    /**
+    }    /**
      * Връща локализирано име според езика
      */
     public function getLocalizedName(string $locale): string
     {
-        if ($locale === 'en' && $this->nameEn) {
-            return $this->nameEn;
-        }
-        
-        return $this->name;
+        return match($locale) {
+            'en' => $this->nameEn ?: $this->name,
+            'de' => $this->nameDe ?: $this->name,
+            'ru' => $this->nameRu ?: $this->name,
+            default => $this->name
+        };
     }
 
     /**
@@ -210,11 +259,12 @@ class PropertyCategory
      */
     public function getLocalizedDescription(string $locale): ?string
     {
-        if ($locale === 'en' && $this->descriptionEn) {
-            return $this->descriptionEn;
-        }
-        
-        return $this->description;
+        return match($locale) {
+            'en' => $this->descriptionEn ?: $this->description,
+            'de' => $this->descriptionDe ?: $this->description,
+            'ru' => $this->descriptionRu ?: $this->description,
+            default => $this->description
+        };
     }
 
     public function __toString(): string

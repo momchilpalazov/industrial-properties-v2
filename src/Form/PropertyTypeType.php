@@ -24,13 +24,28 @@ class PropertyTypeType extends AbstractType
                     'class' => 'form-control',
                     'placeholder' => 'Въведете име на български'
                 ]
-            ])
-            ->add('nameEn', TextType::class, [
+            ])            ->add('nameEn', TextType::class, [
                 'label' => 'Име (EN)',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Enter name in English'
+                ]
+            ])
+            ->add('nameDe', TextType::class, [
+                'label' => 'Име (DE)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Namen auf Deutsch eingeben'
+                ]
+            ])
+            ->add('nameRu', TextType::class, [
+                'label' => 'Име (RU)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Введите название на русском'
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -49,6 +64,24 @@ class PropertyTypeType extends AbstractType
                     'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'Enter description in English'
+                ]
+            ])
+            ->add('descriptionDe', TextareaType::class, [
+                'label' => 'Описание (DE)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'Beschreibung auf Deutsch eingeben'
+                ]
+            ])
+            ->add('descriptionRu', TextareaType::class, [
+                'label' => 'Описание (RU)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'Введите описание на русском'
                 ]
             ])
             ->add('isVisible', CheckboxType::class, [

@@ -28,8 +28,7 @@
                 </div>
             </div>
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-                    <div class="row g-4">
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}                    <div class="row g-4">
                         {# Bulgarian Fields #}
                         <div class="col-md-6">
                             <div class="card h-100">
@@ -83,7 +82,60 @@
                                 </div>
                             </div>
                         </div>
-                        
+
+                        {# German Fields #}
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-translate me-1"></i>
+                                        Informationen auf Deutsch
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form_label(form.nameDe, 'Name (DE)', {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.nameDe, {'attr': {'class': 'form-control', 'placeholder': 'Namen auf Deutsch eingeben'}}) }}
+                                        {{ form_errors(form.nameDe, {'attr': {'class': 'invalid-feedback'}}) }}
+                                        <div class="form-text">Geben Sie den Namen des Immobilientyps auf Deutsch ein</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form_label(form.descriptionDe, 'Beschreibung (DE)', {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.descriptionDe, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Beschreibung auf Deutsch eingeben'}}) }}
+                                        {{ form_errors(form.descriptionDe, {'attr': {'class': 'invalid-feedback'}}) }}
+                                        <div class="form-text">Geben Sie die Beschreibung des Immobilientyps auf Deutsch ein (optional)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Russian Fields #}
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-translate me-1"></i>
+                                        Информация на русском
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form_label(form.nameRu, 'Название (RU)', {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.nameRu, {'attr': {'class': 'form-control', 'placeholder': 'Введите название на русском'}}) }}
+                                        {{ form_errors(form.nameRu, {'attr': {'class': 'invalid-feedback'}}) }}
+                                        <div class="form-text">Введите название типа недвижимости на русском языке</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form_label(form.descriptionRu, 'Описание (RU)', {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.descriptionRu, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Введите описание на русском'}}) }}
+                                        {{ form_errors(form.descriptionRu, {'attr': {'class': 'invalid-feedback'}}) }}
+                                        <div class="form-text">Введите описание типа недвижимости на русском языке (необязательно)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
                         {# Hierarchy Settings #}
                         <div class="col-12 mt-4">
                             <div class="card">
@@ -95,10 +147,17 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-8">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
-                                                {{ form_label(form.parent, 'Родителска категория', {'label_attr': {'class': 'form-label'}}) }}
-                                                {{ form_widget(form.parent, {'attr': {'class': 'form-select'}}) }}
+                                                {{ form_label(form.category, 'Категория', {'label_attr': {'class': 'form-label'}}) }}
+                                                {{ form_widget(form.category, {'attr': {'class': 'form-select'}}) }}
+                                                {{ form_errors(form.category, {'attr': {'class': 'invalid-feedback'}}) }}
+                                                <div class="form-text">Изберете основната категория за този тип имот.</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                {{ form_label(form.parent, 'Родителска категория', {'label_attr': {'class': 'form-label'}}) }}                                                {{ form_widget(form.parent, {'attr': {'class': 'form-select'}}) }}
                                                 {{ form_errors(form.parent, {'attr': {'class': 'invalid-feedback'}}) }}
                                                 <div class="form-text">Изберете родителска категория, ако този тип е подкатегория. Оставете празно за основна категория.</div>
                                             </div>

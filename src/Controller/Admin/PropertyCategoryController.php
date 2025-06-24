@@ -47,6 +47,22 @@ class PropertyCategoryController extends AbstractController
                     'placeholder' => 'Enter name in English'
                 ]
             ])
+            ->add('nameDe', null, [
+                'label' => 'Име (DE)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Namen auf Deutsch eingeben'
+                ]
+            ])
+            ->add('nameRu', null, [
+                'label' => 'Име (RU)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Введите название на русском'
+                ]
+            ])
             ->add('description', null, [
                 'label' => 'Описание (BG)',
                 'required' => false,
@@ -63,6 +79,24 @@ class PropertyCategoryController extends AbstractController
                     'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'Enter description in English'
+                ]
+            ])
+            ->add('descriptionDe', null, [
+                'label' => 'Описание (DE)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'Beschreibung auf Deutsch eingeben'
+                ]
+            ])
+            ->add('descriptionRu', null, [
+                'label' => 'Описание (RU)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'Введите описание на русском'
                 ]
             ])
             ->add('isVisible', null, [
@@ -125,6 +159,22 @@ class PropertyCategoryController extends AbstractController
                     'placeholder' => 'Enter name in English'
                 ]
             ])
+            ->add('nameDe', null, [
+                'label' => 'Име (DE)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Namen auf Deutsch eingeben'
+                ]
+            ])
+            ->add('nameRu', null, [
+                'label' => 'Име (RU)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Введите название на русском'
+                ]
+            ])
             ->add('description', null, [
                 'label' => 'Описание (BG)',
                 'required' => false,
@@ -141,6 +191,24 @@ class PropertyCategoryController extends AbstractController
                     'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'Enter description in English'
+                ]
+            ])
+            ->add('descriptionDe', null, [
+                'label' => 'Описание (DE)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'Beschreibung auf Deutsch eingeben'
+                ]
+            ])
+            ->add('descriptionRu', null, [
+                'label' => 'Описание (RU)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'Введите описание на русском'
                 ]
             ])
             ->add('isVisible', null, [
@@ -274,4 +342,4 @@ class PropertyCategoryController extends AbstractController
         
         return $this->redirectToRoute('admin_property_type_index');
     }
-} 
+}

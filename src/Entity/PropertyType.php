@@ -36,6 +36,12 @@ class PropertyType
     #[ORM\Column(name: 'description_en', type: 'text', nullable: true)]
     private ?string $descriptionEn = null;
 
+    #[ORM\Column(name: 'description_de', type: 'text', nullable: true)]
+    private ?string $descriptionDe = null;
+
+    #[ORM\Column(name: 'description_ru', type: 'text', nullable: true)]
+    private ?string $descriptionRu = null;
+
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: Property::class)]
     private Collection $properties;
 
@@ -133,6 +139,28 @@ class PropertyType
     public function setDescriptionEn(?string $descriptionEn): static
     {
         $this->descriptionEn = $descriptionEn;
+        return $this;
+    }
+
+    public function getDescriptionDe(): ?string
+    {
+        return $this->descriptionDe;
+    }
+
+    public function setDescriptionDe(?string $descriptionDe): static
+    {
+        $this->descriptionDe = $descriptionDe;
+        return $this;
+    }
+
+    public function getDescriptionRu(): ?string
+    {
+        return $this->descriptionRu;
+    }
+
+    public function setDescriptionRu(?string $descriptionRu): static
+    {
+        $this->descriptionRu = $descriptionRu;
         return $this;
     }
 
@@ -337,4 +365,4 @@ class PropertyType
         $this->category = $category;
         return $this;
     }
-} 
+}

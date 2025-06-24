@@ -18,8 +18,7 @@
                     </a>
                 </div>
             </div>
-            <div class="card-body">
-                {{ form_start(form) }}
+            <div class="card-body">                {{ form_start(form) }}
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <div class="card">
@@ -60,6 +59,52 @@
                                         {{ form_label(form.descriptionEn) }}
                                         {{ form_widget(form.descriptionEn) }}
                                         {{ form_errors(form.descriptionEn) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="bi bi-translate me-1"></i>
+                                    Deutsch
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form_label(form.nameDe) }}
+                                        {{ form_widget(form.nameDe) }}
+                                        {{ form_errors(form.nameDe) }}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form_label(form.descriptionDe) }}
+                                        {{ form_widget(form.descriptionDe) }}
+                                        {{ form_errors(form.descriptionDe) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="bi bi-translate me-1"></i>
+                                    Русский
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form_label(form.nameRu) }}
+                                        {{ form_widget(form.nameRu) }}
+                                        {{ form_errors(form.nameRu) }}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        {{ form_label(form.descriptionRu) }}
+                                        {{ form_widget(form.descriptionRu) }}
+                                        {{ form_errors(form.descriptionRu) }}
                                     </div>
                                 </div>
                             </div>
