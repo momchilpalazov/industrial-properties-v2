@@ -102,6 +102,85 @@
                 preview.parentNode.appendChild(message);
             }
         }
+        
+        // Функция за добавяне на нов член на екипа
+        function addTeamMember(lang) {
+            const container = document.getElementById(`team-${lang}-container`);
+            const cards = container.querySelectorAll('.team-member-card');
+            const newKey = cards.length;
+            
+            const langLabels = {
+                'bg': { name: 'Име (BG)', position: 'Позиция (BG)', member: 'Член' },
+                'en': { name: 'Name (EN)', position: 'Position (EN)', member: 'Member' },
+                'de': { name: 'Name (DE)', position: 'Position (DE)', member: 'Mitglied' },
+                'ru': { name: 'Имя (RU)', position: 'Должность (RU)', member: 'Участник' }
+            };
+            
+            const labels = langLabels[lang];
+            
+            const newCard = document.createElement('div');
+            newCard.className = 'card mb-3 team-member-card';
+            newCard.setAttribute('data-lang', lang);
+            newCard.setAttribute('data-key', newKey);
+            
+            newCard.innerHTML = `
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="card-title mb-0">${labels.member} ${newKey + 1}</h6>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeTeamMember(this)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">${labels.name}</label>
+                        <input type="text" class="form-control" 
+                               name="team_${lang}[${newKey}][name]" 
+                               value="">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">${labels.position}</label>
+                        <input type="text" class="form-control" 
+                               name="team_${lang}[${newKey}][position]" 
+                               value="">
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(newCard);
+        }
+        
+        // Функция за премахване на член от екипа
+        function removeTeamMember(button) {
+            if (confirm('Сигурни ли сте, че искате да премахнете този член от екипа?')) {
+                const card = button.closest('.team-member-card');
+                card.remove();
+                
+                // Преномерираме останалите членове
+                const lang = card.getAttribute('data-lang');
+                const container = document.getElementById(`team-${lang}-container`);
+                const cards = container.querySelectorAll('.team-member-card');
+                
+                cards.forEach((card, index) => {
+                    card.setAttribute('data-key', index);
+                    const title = card.querySelector('.card-title');
+                    const langLabels = {
+                        'bg': 'Член',
+                        'en': 'Member', 
+                        'de': 'Mitglied',
+                        'ru': 'Участник'
+                    };
+                    title.textContent = `${langLabels[lang]} ${index + 1}`;
+                    
+                    // Обновяваме name атрибутите на полетата
+                    const inputs = card.querySelectorAll('input');
+                    inputs.forEach(input => {
+                        const name = input.getAttribute('name');
+                        const newName = name.replace(/\[\d+\]/, `[${index}]`);
+                        input.setAttribute('name', newName);
+                    });
+                });
+            }
+        }
     </script>
 {% endblock %}
 
@@ -220,6 +299,43 @@
                                           rows="2">{{ settings.meta_description_bg }}</textarea>
                             </div>
                         </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-people"></i> Екип (BG)
+                            </h5>
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-success btn-sm" onclick="addTeamMember('bg')">
+                                    <i class="bi bi-plus"></i> Добави член на екипа
+                                </button>
+                            </div>
+                            <div id="team-bg-container">
+                            {% for key, member in settings.team_bg %}
+                                <div class="card mb-3 team-member-card" data-lang="bg" data-key="{{ key }}">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="card-title mb-0">Член {{ key + 1 }}</h6>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="removeTeamMember(this)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Име (BG)</label>
+                                            <input type="text" class="form-control" 
+                                                   name="team_bg[{{ key }}][name]" 
+                                                   value="{{ member.name }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Позиция (BG)</label>
+                                            <input type="text" class="form-control" 
+                                                   name="team_bg[{{ key }}][position]" 
+                                                   value="{{ member.position }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            </div>
+                        </div>
                     </div>
 
                     <!-- English -->
@@ -290,6 +406,43 @@
                                           rows="2">{{ settings.meta_description_en }}</textarea>
                             </div>
                         </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-people"></i> Team (EN)
+                            </h5>
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-success btn-sm" onclick="addTeamMember('en')">
+                                    <i class="bi bi-plus"></i> Add Team Member
+                                </button>
+                            </div>
+                            <div id="team-en-container">
+                            {% for key, member in settings.team_en %}
+                                <div class="card mb-3 team-member-card" data-lang="en" data-key="{{ key }}">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="card-title mb-0">Member {{ key + 1 }}</h6>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="removeTeamMember(this)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Name (EN)</label>
+                                            <input type="text" class="form-control" 
+                                                   name="team_en[{{ key }}][name]" 
+                                                   value="{{ member.name }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Position (EN)</label>
+                                            <input type="text" class="form-control" 
+                                                   name="team_en[{{ key }}][position]" 
+                                                   value="{{ member.position }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Deutsch -->
@@ -343,6 +496,59 @@
                                     </div>
                                 </div>
                             {% endfor %}
+                        </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-people"></i> Team (DE)
+                            </h5>
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-success btn-sm" onclick="addTeamMember('de')">
+                                    <i class="bi bi-plus"></i> Teammitglied hinzufügen
+                                </button>
+                            </div>
+                            <div id="team-de-container">
+                            {% for key, member in settings.team_de %}
+                                <div class="card mb-3 team-member-card" data-lang="de" data-key="{{ key }}">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="card-title mb-0">Mitglied {{ key + 1 }}</h6>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="removeTeamMember(this)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Name (DE)</label>
+                                            <input type="text" class="form-control" 
+                                                   name="team_de[{{ key }}][name]" 
+                                                   value="{{ member.name }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Position (DE)</label>
+                                            <input type="text" class="form-control" 
+                                                   name="team_de[{{ key }}][position]" 
+                                                   value="{{ member.position }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-search"></i> Meta Daten
+                            </h5>
+                            <div class="mb-3">
+                                <label for="meta_title_de" class="form-label">Meta Titel (DE)</label>
+                                <input type="text" class="form-control" id="meta_title_de" name="meta_title_de" 
+                                       value="{{ settings.meta_title_de }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="meta_description_de" class="form-label">Meta Beschreibung (DE)</label>
+                                <textarea class="form-control" id="meta_description_de" name="meta_description_de" 
+                                          rows="2">{{ settings.meta_description_de }}</textarea>
+                            </div>
                         </div>
                     </div>
 
@@ -398,6 +604,59 @@
                                 </div>
                             {% endfor %}
                         </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-people"></i> Команда (RU)
+                            </h5>
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-success btn-sm" onclick="addTeamMember('ru')">
+                                    <i class="bi bi-plus"></i> Добавить участника команды
+                                </button>
+                            </div>
+                            <div id="team-ru-container">
+                            {% for key, member in settings.team_ru %}
+                                <div class="card mb-3 team-member-card" data-lang="ru" data-key="{{ key }}">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="card-title mb-0">Участник {{ key + 1 }}</h6>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="removeTeamMember(this)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Имя (RU)</label>
+                                            <input type="text" class="form-control" 
+                                                   name="team_ru[{{ key }}][name]" 
+                                                   value="{{ member.name }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Должность (RU)</label>
+                                            <input type="text" class="form-control" 
+                                                   name="team_ru[{{ key }}][position]" 
+                                                   value="{{ member.position }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="bi bi-search"></i> Мета данни
+                            </h5>
+                            <div class="mb-3">
+                                <label for="meta_title_ru" class="form-label">Мета заголовок (RU)</label>
+                                <input type="text" class="form-control" id="meta_title_ru" name="meta_title_ru" 
+                                       value="{{ settings.meta_title_ru }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="meta_description_ru" class="form-label">Мета описание (RU)</label>
+                                <textarea class="form-control" id="meta_description_ru" name="meta_description_ru" 
+                                          rows="2">{{ settings.meta_description_ru }}</textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -424,41 +683,41 @@
                 </div>
             </div>
 
-            <!-- Екип -->
+            <!-- Снимки на екипа -->
             <div class="form-section">
                 <h4 class="form-section-title">
-                    <i class="bi bi-people"></i> Екип
+                    <i class="bi bi-camera"></i> Снимки на екипа
                 </h4>
-                {% for key, member in settings.team %}
+                <p class="text-muted mb-3">Снимките се споделят между всички езици. Редактирайте имената и позициите в съответните езикови табове по-горе.</p>
+                
+                {% for key, common in settings.team_common %}
+                    {% set bgMember = settings.team_bg[key] ?? {} %}
                     <div class="card mb-3">
                         <div class="card-body">
-                            <div class="mb-3">
-                                <label class="form-label">Име</label>
-                                <input type="text" class="form-control" 
-                                       name="team[{{ key }}][name]" 
-                                       value="{{ member.name }}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Позиция</label>
-                                <input type="text" class="form-control" 
-                                       name="team[{{ key }}][position]" 
-                                       value="{{ member.position }}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Снимка</label>
-                                <div class="image-upload-container">
-                                    {% if member.image is defined and member.image %}
-                                        <div class="image-preview">
-                                            <img src="{{ asset(member.image) }}" alt="{{ member.name }}" class="img-thumbnail">
-                                            <button type="button" class="btn delete-image" onclick="deleteTeamMemberImage(this, {{ key }})" title="Изтрий снимката">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <input type="hidden" name="delete_team_image[{{ key }}]" value="0" id="delete_team_image_{{ key }}">
-                                        </div>
-                                    {% else %}
-                                        <img src="{{ asset('/uploads/about/team/default-avatar.jpg') }}" alt="{{ member.name }}" class="team-member-img mb-3">
-                                    {% endif %}
-                                    <input type="file" class="form-control mt-2" name="team_images[{{ key }}]" accept="image/*">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="card-title">
+                                        {{ bgMember.name ?? 'Член ' ~ (key + 1) }}
+                                        {% if bgMember.position %}
+                                            <small class="text-muted">- {{ bgMember.position }}</small>
+                                        {% endif %}
+                                    </h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="image-upload-container">
+                                        {% if common.image is defined and common.image %}
+                                            <div class="image-preview">
+                                                <img src="{{ asset(common.image) }}" alt="{{ bgMember.name ?? 'Team member' }}" class="img-thumbnail">
+                                                <button type="button" class="btn delete-image" onclick="deleteTeamMemberImage(this, {{ key }})" title="Изтрий снимката">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                <input type="hidden" name="delete_team_image[{{ key }}]" value="0" id="delete_team_image_{{ key }}">
+                                            </div>
+                                        {% else %}
+                                            <img src="{{ asset('/uploads/about/team/default-avatar.jpg') }}" alt="{{ bgMember.name ?? 'Team member' }}" class="team-member-img mb-3">
+                                        {% endif %}
+                                        <input type="file" class="form-control mt-2" name="team_images[{{ key }}]" accept="image/*">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -475,4 +734,4 @@
         </form>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

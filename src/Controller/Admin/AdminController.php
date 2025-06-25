@@ -193,11 +193,20 @@ class AdminController extends AbstractController
                 'values_en' => $settings->getValuesEn(),
                 'values_de' => $settings->getValuesDe(),
                 'values_ru' => $settings->getValuesRu(),
-                'team' => $settings->getTeam(),
+                'team' => $settings->getTeam(), // За обратна съвместимост
+                'team_bg' => $settings->getTeamBg(),
+                'team_en' => $settings->getTeamEn(),
+                'team_de' => $settings->getTeamDe(),
+                'team_ru' => $settings->getTeamRu(),
+                'team_common' => $settings->getTeamCommon(),
                 'meta_title_bg' => $settings->getMetaTitleBg(),
                 'meta_title_en' => $settings->getMetaTitleEn(),
+                'meta_title_de' => $settings->getMetaTitleDe(),
+                'meta_title_ru' => $settings->getMetaTitleRu(),
                 'meta_description_bg' => $settings->getMetaDescriptionBg(),
-                'meta_description_en' => $settings->getMetaDescriptionEn()
+                'meta_description_en' => $settings->getMetaDescriptionEn(),
+                'meta_description_de' => $settings->getMetaDescriptionDe(),
+                'meta_description_ru' => $settings->getMetaDescriptionRu()
             ]
         ]);
     }
@@ -278,28 +287,22 @@ class AdminController extends AbstractController
             ->setValuesDe($request->request->all()['values_de'] ?? [])
             ->setValuesRu($request->request->all()['values_ru'] ?? []);
 
-        // Екип
-        $team = $request->request->all()['team'] ?? [];
-        $currentTeam = $settings->getTeam() ?? [];
+        // Екип - многоезичен
+        $teamBg = $request->request->all()['team_bg'] ?? [];
+        $teamEn = $request->request->all()['team_en'] ?? [];
+        $teamDe = $request->request->all()['team_de'] ?? [];
+        $teamRu = $request->request->all()['team_ru'] ?? [];
+        $currentTeamCommon = $settings->getTeamCommon() ?? [];
         $deleteTeamImages = $request->request->all()['delete_team_image'] ?? [];
         
         // Обработваме изтриването на снимки
         foreach ($deleteTeamImages as $key => $shouldDelete) {
-            if ($shouldDelete === "1" && isset($currentTeam[$key]['image'])) {
-                $oldImagePath = $this->getParameter('kernel.project_dir') . $currentTeam[$key]['image'];
+            if ($shouldDelete === "1" && isset($currentTeamCommon[$key]['image'])) {
+                $oldImagePath = $this->getParameter('kernel.project_dir') . $currentTeamCommon[$key]['image'];
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
                 }
-                unset($currentTeam[$key]['image']);
-            }
-        }
-        
-        // Запазваме съществуващите снимки
-        foreach ($team as $key => $member) {
-            if (!isset($deleteTeamImages[$key]) || $deleteTeamImages[$key] !== "1") {
-                if (isset($currentTeam[$key]['image'])) {
-                    $team[$key]['image'] = $currentTeam[$key]['image'];
-                }
+                unset($currentTeamCommon[$key]['image']);
             }
         }
 
@@ -309,8 +312,8 @@ class AdminController extends AbstractController
             foreach ($teamImages as $key => $file) {
                 if ($file) {
                     // Изтриваме старата снимка
-                    if (isset($currentTeam[$key]['image'])) {
-                        $oldImagePath = $this->getParameter('kernel.project_dir') . $currentTeam[$key]['image'];
+                    if (isset($currentTeamCommon[$key]['image'])) {
+                        $oldImagePath = $this->getParameter('kernel.project_dir') . $currentTeamCommon[$key]['image'];
                         if (file_exists($oldImagePath)) {
                             unlink($oldImagePath);
                         }
@@ -330,18 +333,27 @@ class AdminController extends AbstractController
                     $this->setFilePermissions($uploadDir);
                     $this->setFilePermissions($uploadDir . '/' . $fileName);
                     
-                    $team[$key]['image'] = '/uploads/about/team/' . $fileName;
+                    $currentTeamCommon[$key]['image'] = '/uploads/about/team/' . $fileName;
                 }
             }
         }
 
-        $settings->setTeam($team);
+        // Записваме екипа за всички езици
+        $settings->setTeamBg($teamBg)
+            ->setTeamEn($teamEn)
+            ->setTeamDe($teamDe)
+            ->setTeamRu($teamRu)
+            ->setTeamCommon($currentTeamCommon);
 
         // Meta данни
         $settings->setMetaTitleBg($request->request->get('meta_title_bg'))
             ->setMetaTitleEn($request->request->get('meta_title_en'))
+            ->setMetaTitleDe($request->request->get('meta_title_de'))
+            ->setMetaTitleRu($request->request->get('meta_title_ru'))
             ->setMetaDescriptionBg($request->request->get('meta_description_bg'))
-            ->setMetaDescriptionEn($request->request->get('meta_description_en'));
+            ->setMetaDescriptionEn($request->request->get('meta_description_en'))
+            ->setMetaDescriptionDe($request->request->get('meta_description_de'))
+            ->setMetaDescriptionRu($request->request->get('meta_description_ru'));
 
         $this->aboutSettingsRepository->save($settings);
         

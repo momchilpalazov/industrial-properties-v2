@@ -68,9 +68,22 @@ class AboutSettings
     #[ORM\Column(type: 'json', nullable: true)]
     private array $valuesRu = [];
 
-    // Екип секция
-    #[ORM\Column(type: 'json')]
-    private array $team = [];
+    // Екип секция - многоезичен
+    #[ORM\Column(name: 'team_bg', type: 'json')]
+    private array $teamBg = [];
+
+    #[ORM\Column(name: 'team_en', type: 'json')]
+    private array $teamEn = [];
+
+    #[ORM\Column(name: 'team_de', type: 'json', nullable: true)]
+    private array $teamDe = [];
+
+    #[ORM\Column(name: 'team_ru', type: 'json', nullable: true)]
+    private array $teamRu = [];
+
+    // Общи данни за екипа (снимки и ключове)
+    #[ORM\Column(name: 'team_common', type: 'json')]
+    private array $teamCommon = [];
 
     // Meta данни
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -79,11 +92,23 @@ class AboutSettings
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $metaTitleEn = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(name: 'meta_title_de', type: 'string', length: 255, nullable: true)]
+    private ?string $metaTitleDe = null;
+
+    #[ORM\Column(name: 'meta_title_ru', type: 'string', length: 255, nullable: true)]
+    private ?string $metaTitleRu = null;
+
+    #[ORM\Column(name: 'meta_description_bg', type: 'text', nullable: true)]
     private ?string $metaDescriptionBg = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(name: 'meta_description_en', type: 'text', nullable: true)]
     private ?string $metaDescriptionEn = null;
+
+    #[ORM\Column(name: 'meta_description_de', type: 'text', nullable: true)]
+    private ?string $metaDescriptionDe = null;
+
+    #[ORM\Column(name: 'meta_description_ru', type: 'text', nullable: true)]
+    private ?string $metaDescriptionRu = null;
 
     public function __construct()
     {
@@ -91,7 +116,11 @@ class AboutSettings
         $this->valuesEn = [];
         $this->valuesDe = [];
         $this->valuesRu = [];
-        $this->team = [];
+        $this->teamBg = [];
+        $this->teamEn = [];
+        $this->teamDe = [];
+        $this->teamRu = [];
+        $this->teamCommon = [];
     }
 
     // Getters and setters
@@ -287,14 +316,106 @@ class AboutSettings
         return $this;
     }
 
-    public function getTeam(): array
+    public function getTeamBg(): array
     {
-        return $this->team;
+        return $this->teamBg;
     }
 
+    public function setTeamBg(array $teamBg): self
+    {
+        $this->teamBg = $teamBg;
+        return $this;
+    }
+
+    public function getTeamEn(): array
+    {
+        return $this->teamEn;
+    }
+
+    public function setTeamEn(array $teamEn): self
+    {
+        $this->teamEn = $teamEn;
+        return $this;
+    }
+
+    public function getTeamDe(): array
+    {
+        return $this->teamDe;
+    }
+
+    public function setTeamDe(?array $teamDe): self
+    {
+        $this->teamDe = $teamDe ?? [];
+        return $this;
+    }
+
+    public function getTeamRu(): array
+    {
+        return $this->teamRu;
+    }
+
+    public function setTeamRu(?array $teamRu): self
+    {
+        $this->teamRu = $teamRu ?? [];
+        return $this;
+    }
+
+    public function getTeamCommon(): array
+    {
+        return $this->teamCommon;
+    }
+
+    public function setTeamCommon(array $teamCommon): self
+    {
+        $this->teamCommon = $teamCommon;
+        return $this;
+    }
+
+    /**
+     * Backwards compatibility method - returns old team format
+     * @deprecated Use getTeamBg() instead
+     */
+    public function getTeam(): array
+    {
+        // За обратна съвместимост - връщаме българския екип във формата, който очакват шаблоните
+        $team = [];
+        $bgTeam = $this->getTeamBg();
+        $commonTeam = $this->getTeamCommon();
+        
+        foreach ($bgTeam as $key => $member) {
+            $team[$key] = [
+                'name' => $member['name'] ?? '',
+                'position' => $member['position'] ?? '',
+                'image' => $commonTeam[$key]['image'] ?? null
+            ];
+        }
+        
+        return $team;
+    }
+
+    /**
+     * Backwards compatibility method - sets team in old format
+     * @deprecated Use setTeamBg() and setTeamCommon() instead
+     */
     public function setTeam(array $team): self
     {
-        $this->team = $team;
+        // За обратна съвместимост - записваме в новия формат
+        $bgTeam = [];
+        $commonTeam = [];
+        
+        foreach ($team as $key => $member) {
+            $bgTeam[$key] = [
+                'name' => $member['name'] ?? '',
+                'position' => $member['position'] ?? ''
+            ];
+            if (isset($member['image'])) {
+                $commonTeam[$key] = ['image' => $member['image']];
+            }
+        }
+        
+        $this->setTeamBg($bgTeam);
+        $this->setTeamCommon($commonTeam);
+        
         return $this;
     }
 
@@ -320,6 +441,28 @@ class AboutSettings
         return $this;
     }
 
+    public function getMetaTitleDe(): ?string
+    {
+        return $this->metaTitleDe;
+    }
+
+    public function setMetaTitleDe(?string $metaTitleDe): self
+    {
+        $this->metaTitleDe = $metaTitleDe;
+        return $this;
+    }
+
+    public function getMetaTitleRu(): ?string
+    {
+        return $this->metaTitleRu;
+    }
+
+    public function setMetaTitleRu(?string $metaTitleRu): self
+    {
+        $this->metaTitleRu = $metaTitleRu;
+        return $this;
+    }
+
     public function getMetaDescriptionBg(): ?string
     {
         return $this->metaDescriptionBg;
@@ -341,4 +484,26 @@ class AboutSettings
         $this->metaDescriptionEn = $metaDescriptionEn;
         return $this;
     }
-} 
+
+    public function getMetaDescriptionDe(): ?string
+    {
+        return $this->metaDescriptionDe;
+    }
+
+    public function setMetaDescriptionDe(?string $metaDescriptionDe): self
+    {
+        $this->metaDescriptionDe = $metaDescriptionDe;
+        return $this;
+    }
+
+    public function getMetaDescriptionRu(): ?string
+    {
+        return $this->metaDescriptionRu;
+    }
+
+    public function setMetaDescriptionRu(?string $metaDescriptionRu): self
+    {
+        $this->metaDescriptionRu = $metaDescriptionRu;
+        return $this;
+    }
+}
