@@ -1,6 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ settings.metaTitleBg }}{% endblock %}
+{% block title %}
+    {% set locale = app.request.locale %}
+    {% if locale == 'en' %}{{ settings.meta_title_en }}
+    {% elseif locale == 'de' %}{{ settings.meta_title_de }}
+    {% elseif locale == 'ru' %}{{ settings.meta_title_ru }}
+    {% else %}{{ settings.meta_title_bg }}{% endif %}
+{% endblock %}
+
+{% block meta_description %}
+    {% set locale = app.request.locale %}
+    {% if locale == 'en' %}{{ settings.meta_description_en }}
+    {% elseif locale == 'de' %}{{ settings.meta_description_de }}
+    {% elseif locale == 'ru' %}{{ settings.meta_description_ru }}
+    {% else %}{{ settings.meta_description_bg }}{% endif %}
+{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -8,12 +22,24 @@
 {% endblock %}
 
 {% block body %}
+    {% set locale = app.request.locale %}
+    
     <!-- Hero Section -->
     <section class="about-hero">
         <div class="container">
             <div class="text-center">
-                <h1>{% if app.request.locale == 'en' %}{{ settings.titleEn }}{% else %}{{ settings.titleBg }}{% endif %}</h1>
-                <p class="lead">{% if app.request.locale == 'en' %}{{ settings.subtitleEn }}{% else %}{{ settings.subtitleBg }}{% endif %}</p>
+                <h1>
+                    {% if locale == 'en' %}{{ settings.title_en }}
+                    {% elseif locale == 'de' %}{{ settings.title_de }}
+                    {% elseif locale == 'ru' %}{{ settings.title_ru }}
+                    {% else %}{{ settings.title_bg }}{% endif %}
+                </h1>
+                <p class="lead">
+                    {% if locale == 'en' %}{{ settings.subtitle_en }}
+                    {% elseif locale == 'de' %}{{ settings.subtitle_de }}
+                    {% elseif locale == 'ru' %}{{ settings.subtitle_ru }}
+                    {% else %}{{ settings.subtitle_bg }}{% endif %}
+                </p>
             </div>
         </div>
     </section>
@@ -24,24 +50,23 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-4 mb-lg-0">
                     <div class="section-header">
-                        <h2>{% if app.request.locale == 'en' %}Our Story{% else %}Нашата история{% endif %}</h2>
+                        <h2>{{ 'our_story'|trans({}, 'about') }}</h2>
                     </div>
                     <div class="story-content">
-                        {% if app.request.locale == 'en' %}
-                            {{ settings.contentEn|raw }}
-                        {% else %}
-                            {{ settings.contentBg|raw }}
-                        {% endif %}
+                        {% if locale == 'en' %}{{ settings.content_en|raw }}
+                        {% elseif locale == 'de' %}{{ settings.content_de|raw }}
+                        {% elseif locale == 'ru' %}{{ settings.content_ru|raw }}
+                        {% else %}{{ settings.content_bg|raw }}{% endif %}
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    {% if settings.companyImage %}
-                        <img src="{{ asset(settings.companyImage) }}" 
-                             alt="{% if app.request.locale == 'en' %}{{ settings.titleEn }}{% else %}{{ settings.titleBg }}{% endif %}" 
+                    {% if settings.company_image %}
+                        <img src="{{ asset(settings.company_image) }}" 
+                             alt="{{ 'company_image_alt'|trans({}, 'about') }}" 
                              class="story-image img-fluid">
                     {% else %}
                         <img src="{{ asset('/uploads/about/company/default-company.jpg') }}" 
-                             alt="{% if app.request.locale == 'en' %}{{ settings.titleEn }}{% else %}{{ settings.titleBg }}{% endif %}" 
+                             alt="{{ 'company_image_alt'|trans({}, 'about') }}" 
                              class="story-image img-fluid">
                     {% endif %}
                 </div>
@@ -53,34 +78,21 @@
     <section class="content-section bg-light">
         <div class="container">
             <div class="section-header text-center">
-                <h2>{% if app.request.locale == 'en' %}Our Values{% else %}Нашите ценности{% endif %}</h2>
+                <h2>{{ 'our_values'|trans({}, 'about') }}</h2>
             </div>
             <div class="row g-4">
-                {% if app.request.locale == 'en' %}
-                    {% for value in settings.valuesEn %}
-                        <div class="col-lg-4 col-md-6">
-                            <div class="value-card">
-                                <div class="value-icon">
-                                    <i class="bi bi-star"></i>
-                                </div>
-                                <h4>{{ value.title }}</h4>
-                                <p>{{ value.description }}</p>
+                {% set values = locale == 'en' ? settings.values_en : (locale == 'de' ? settings.values_de : (locale == 'ru' ? settings.values_ru : settings.values_bg)) %}
+                {% for value in values %}
+                    <div class="col-lg-4 col-md-6">
+                        <div class="value-card">
+                            <div class="value-icon">
+                                <i class="bi bi-star"></i>
                             </div>
+                            <h4>{{ value.title }}</h4>
+                            <p>{{ value.description }}</p>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    {% for value in settings.valuesBg %}
-                        <div class="col-lg-4 col-md-6">
-                            <div class="value-card">
-                                <div class="value-icon">
-                                    <i class="bi bi-star"></i>
-                                </div>
-                                <h4>{{ value.title }}</h4>
-                                <p>{{ value.description }}</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% endif %}
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </section>
@@ -89,14 +101,16 @@
     <section class="content-section">
         <div class="container">
             <div class="section-header text-center">
-                <h2>{% if app.request.locale == 'en' %}Our Team{% else %}Нашият екип{% endif %}</h2>
+                <h2>{{ 'our_team'|trans({}, 'about') }}</h2>
             </div>
             <div class="row g-4">
-                {% for member in settings.team %}
+                {% set team = locale == 'en' ? settings.team_en : (locale == 'de' ? settings.team_de : (locale == 'ru' ? settings.team_ru : settings.team_bg)) %}
+                {% for key, member in team %}
                     <div class="col-lg-4 col-md-6">
                         <div class="team-card">
-                            {% if member.image is defined and member.image %}
-                                <img src="{{ asset(member.image) }}" alt="{{ member.name }}" class="team-member-img">
+                            {% set teamImage = settings.team_common[key].image ?? null %}
+                            {% if teamImage %}
+                                <img src="{{ asset(teamImage) }}" alt="{{ member.name }}" class="team-member-img">
                             {% else %}
                                 <img src="{{ asset('/uploads/about/team/default-avatar.jpg') }}" alt="{{ member.name }}" class="team-member-img">
                             {% endif %}
@@ -112,10 +126,10 @@
     <!-- Call to Action -->
     <section class="cta-section">
         <div class="container text-center">
-            <h2>{% if app.request.locale == 'en' %}Ready to Start?{% else %}Готови ли сте да започнем заедно?{% endif %}</h2>
-            <p class="lead">{% if app.request.locale == 'en' %}Contact us for professional consultation{% else %}Свържете се с нас за професионална консултация{% endif %}</p>
+            <h2>{{ 'ready_to_start'|trans({}, 'about') }}</h2>
+            <p class="lead">{{ 'contact_consultation'|trans({}, 'about') }}</p>
             <a href="{{ path('app_contact') }}" class="btn btn-industrial cta-button">
-                {% if app.request.locale == 'en' %}Contact Us{% else %}Свържете се с нас{% endif %}
+                {{ 'contact_us'|trans({}, 'about') }}
             </a>
         </div>
     </section>

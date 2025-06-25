@@ -264,24 +264,60 @@
                             <h5 class="form-section-title">
                                 <i class="bi bi-star"></i> Ценности
                             </h5>
-                            {% for key, value in settings.values_bg %}
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <div class="mb-3">
-                                            <label class="form-label">Заглавие</label>
-                                            <input type="text" class="form-control" 
-                                                   name="values_bg[{{ key }}][title]" 
-                                                   value="{{ value.title }}">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Описание</label>
-                                            <textarea class="form-control" 
-                                                      name="values_bg[{{ key }}][description]" 
-                                                      rows="2">{{ value.description }}</textarea>
-                                        </div>
+                            <!-- Quality -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Качество</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Заглавие</label>
+                                        <input type="text" class="form-control" 
+                                               name="values_bg[quality][title]" 
+                                               value="{{ settings.values_bg.quality.title ?? '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Описание</label>
+                                        <textarea class="form-control" 
+                                                  name="values_bg[quality][description]" 
+                                                  rows="2">{{ settings.values_bg.quality.description ?? '' }}</textarea>
                                     </div>
                                 </div>
-                            {% endfor %}
+                            </div>
+                            <!-- Development -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Развитие</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Заглавие</label>
+                                        <input type="text" class="form-control" 
+                                               name="values_bg[development][title]" 
+                                               value="{{ settings.values_bg.development.title ?? '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Описание</label>
+                                        <textarea class="form-control" 
+                                                  name="values_bg[development][description]" 
+                                                  rows="2">{{ settings.values_bg.development.description ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Reliability -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Надеждност</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Заглавие</label>
+                                        <input type="text" class="form-control" 
+                                               name="values_bg[reliability][title]" 
+                                               value="{{ settings.values_bg.reliability.title ?? '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Описание</label>
+                                        <textarea class="form-control" 
+                                                  name="values_bg[reliability][description]" 
+                                                  rows="2">{{ settings.values_bg.reliability.description ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-section">
@@ -371,24 +407,60 @@
                             <h5 class="form-section-title">
                                 <i class="bi bi-star"></i> Values
                             </h5>
-                            {% for key, value in settings.values_en %}
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <div class="mb-3">
-                                            <label class="form-label">Title</label>
-                                            <input type="text" class="form-control" 
-                                                   name="values_en[{{ key }}][title]" 
-                                                   value="{{ value.title }}">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Description</label>
-                                            <textarea class="form-control" 
-                                                      name="values_en[{{ key }}][description]" 
-                                                      rows="2">{{ value.description }}</textarea>
-                                        </div>
+                            <!-- Quality -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Quality</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Title</label>
+                                        <input type="text" class="form-control" 
+                                               name="values_en[quality][title]" 
+                                               value="{{ settings.values_en.quality.title ?? '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" 
+                                                  name="values_en[quality][description]" 
+                                                  rows="2">{{ settings.values_en.quality.description ?? '' }}</textarea>
                                     </div>
                                 </div>
-                            {% endfor %}
+                            </div>
+                            <!-- Development -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Development</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Title</label>
+                                        <input type="text" class="form-control" 
+                                               name="values_en[development][title]" 
+                                               value="{{ settings.values_en.development.title ?? '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" 
+                                                  name="values_en[development][description]" 
+                                                  rows="2">{{ settings.values_en.development.description ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Reliability -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Reliability</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Title</label>
+                                        <input type="text" class="form-control" 
+                                               name="values_en[reliability][title]" 
+                                               value="{{ settings.values_en.reliability.title ?? '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" 
+                                                  name="values_en[reliability][description]" 
+                                                  rows="2">{{ settings.values_en.reliability.description ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-section">
@@ -478,24 +550,60 @@
                             <h5 class="form-section-title">
                                 <i class="bi bi-star"></i> Werte
                             </h5>
-                            {% for key, value in settings.values_de %}
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <div class="mb-3">
-                                            <label class="form-label">Titel</label>
-                                            <input type="text" class="form-control" 
-                                                   name="values_de[{{ key }}][title]" 
-                                                   value="{{ value.title }}">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Beschreibung</label>
-                                            <textarea class="form-control" 
-                                                      name="values_de[{{ key }}][description]" 
-                                                      rows="2">{{ value.description }}</textarea>
-                                        </div>
+                            <!-- Quality -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Qualität</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Titel</label>
+                                        <input type="text" class="form-control" 
+                                               name="values_de[quality][title]" 
+                                               value="{{ settings.values_de.quality.title ?? '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Beschreibung</label>
+                                        <textarea class="form-control" 
+                                                  name="values_de[quality][description]" 
+                                                  rows="2">{{ settings.values_de.quality.description ?? '' }}</textarea>
                                     </div>
                                 </div>
-                            {% endfor %}
+                            </div>
+                            <!-- Development -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Entwicklung</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Titel</label>
+                                        <input type="text" class="form-control" 
+                                               name="values_de[development][title]" 
+                                               value="{{ settings.values_de.development.title ?? '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Beschreibung</label>
+                                        <textarea class="form-control" 
+                                                  name="values_de[development][description]" 
+                                                  rows="2">{{ settings.values_de.development.description ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Reliability -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Zuverlässigkeit</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Titel</label>
+                                        <input type="text" class="form-control" 
+                                               name="values_de[reliability][title]" 
+                                               value="{{ settings.values_de.reliability.title ?? '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Beschreibung</label>
+                                        <textarea class="form-control" 
+                                                  name="values_de[reliability][description]" 
+                                                  rows="2">{{ settings.values_de.reliability.description ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-section">
@@ -585,24 +693,60 @@
                             <h5 class="form-section-title">
                                 <i class="bi bi-star"></i> Ценности
                             </h5>
-                            {% for key, value in settings.values_ru %}
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <div class="mb-3">
-                                            <label class="form-label">Заглавие</label>
-                                            <input type="text" class="form-control" 
-                                                   name="values_ru[{{ key }}][title]" 
-                                                   value="{{ value.title }}">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Описание</label>
-                                            <textarea class="form-control" 
-                                                      name="values_ru[{{ key }}][description]" 
-                                                      rows="2">{{ value.description }}</textarea>
-                                        </div>
+                            <!-- Quality -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Качество</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Заглавие</label>
+                                        <input type="text" class="form-control" 
+                                               name="values_ru[quality][title]" 
+                                               value="{{ settings.values_ru.quality.title ?? '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Описание</label>
+                                        <textarea class="form-control" 
+                                                  name="values_ru[quality][description]" 
+                                                  rows="2">{{ settings.values_ru.quality.description ?? '' }}</textarea>
                                     </div>
                                 </div>
-                            {% endfor %}
+                            </div>
+                            <!-- Development -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Развитие</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Заглавие</label>
+                                        <input type="text" class="form-control" 
+                                               name="values_ru[development][title]" 
+                                               value="{{ settings.values_ru.development.title ?? '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Описание</label>
+                                        <textarea class="form-control" 
+                                                  name="values_ru[development][description]" 
+                                                  rows="2">{{ settings.values_ru.development.description ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Reliability -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Надежность</h6>
+                                    <div class="mb-3">
+                                        <label class="form-label">Заглавие</label>
+                                        <input type="text" class="form-control" 
+                                               name="values_ru[reliability][title]" 
+                                               value="{{ settings.values_ru.reliability.title ?? '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Описание</label>
+                                        <textarea class="form-control" 
+                                                  name="values_ru[reliability][description]" 
+                                                  rows="2">{{ settings.values_ru.reliability.description ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-section">
