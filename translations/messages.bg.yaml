@@ -16,7 +16,6 @@ nav:
   admin:
     blog: 'Блог'
     faq: 'Често задавани въпроси'
-    faq_categories: 'FAQ Категории'
 
 # Footer преводи
 footer:

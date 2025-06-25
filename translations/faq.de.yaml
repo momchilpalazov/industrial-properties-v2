@@ -1,0 +1,12 @@
+faq:
+    title: 'Häufig gestellte Fragen'
+    subtitle: 'Finden Sie Antworten auf die häufigsten Fragen zu unseren Dienstleistungen und Immobilien'
+    categories:
+        all: 'Alle Kategorien'
+    search:
+        no_results: 'Keine Ergebnisse gefunden'
+        no_results_text: 'Bitte versuchen Sie andere Suchbegriffe oder wählen Sie eine andere Kategorie'
+
+# Administrative Übersetzungen für FAQ
+admin:
+    faq_categories: 'FAQ Kategorien'

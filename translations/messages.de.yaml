@@ -15,7 +15,6 @@ nav:
     admin:
         blog: 'Blog'
         faq: 'FAQ'
-        faq_categories: 'FAQ Kategorien'
 
 footer:
     description: 'Ihr vertrauenswürdiger Partner für Industrieimmobilien'

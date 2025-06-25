@@ -1,6 +1,6 @@
 parameters:
     locale: 'bg'
-    app_locales: 'bg|en|de'
+    app_locales: 'bg|en|de|ru'
     app.default_locale: 'bg'
     upload_directory: '%kernel.project_dir%/public'
     image.width: 800

@@ -1,0 +1,12 @@
+faq:
+    title: 'Frequently Asked Questions'
+    subtitle: 'Find answers to the most common questions about our services and properties'
+    categories:
+        all: 'All categories'
+    search:
+        no_results: 'No results found'
+        no_results_text: 'Please try different keywords or select a different category'
+
+# Administrative translations for FAQ
+admin:
+    faq_categories: 'FAQ Categories'

@@ -12,7 +12,6 @@ nav:
     admin:
         blog: 'Блог'
         faq: 'ЧЗВ'
-        faq_categories: 'Категории ЧЗВ'
 
 footer:
     description: 'Ваш надежный партнер в сфере промышленной недвижимости'
