@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\PropertyRepository;
 use App\Repository\AboutSettingsRepository;
+use App\Repository\ContactSettingsRepository;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
@@ -19,17 +20,20 @@ class HomeController extends AbstractController
     private BlogService $blogService;
     private PropertyRepository $propertyRepository;
     private AboutSettingsRepository $aboutSettingsRepository;
+    private ContactSettingsRepository $contactSettingsRepository;
 
     public function __construct(
         PropertyService $propertyService,
         BlogService $blogService,
         PropertyRepository $propertyRepository,
-        AboutSettingsRepository $aboutSettingsRepository
+        AboutSettingsRepository $aboutSettingsRepository,
+        ContactSettingsRepository $contactSettingsRepository
     ) {
         $this->propertyService = $propertyService;
         $this->blogService = $blogService;
         $this->propertyRepository = $propertyRepository;
         $this->aboutSettingsRepository = $aboutSettingsRepository;
+        $this->contactSettingsRepository = $contactSettingsRepository;
     }
 
     #[Route('/', name: 'app_home', defaults: ['_locale' => 'bg'])]
@@ -96,8 +100,44 @@ class HomeController extends AbstractController
     }
 
     #[Route('/contact', name: 'app_contact', defaults: ['_locale' => 'bg'])]
-    public function contact(): Response
+    public function contact(Request $request): Response
     {
-        return $this->render('home/contact.html.twig');
+        $contactSettings = $this->contactSettingsRepository->getSettings();
+        $locale = $request->getLocale();
+        
+        // Подготвяме данните за текущия език
+        $contact = [
+            'title' => $this->getLocalizedField($contactSettings, 'title', $locale),
+            'subtitle' => $this->getLocalizedField($contactSettings, 'subtitle', $locale),
+            'company_name' => $contactSettings->getCompanyName(),
+            'address' => $contactSettings->getAddress(),
+            'phone' => $contactSettings->getPhone(),
+            'email' => $contactSettings->getEmail(),
+            'working_hours' => $contactSettings->getWorkingHours(),
+            'social_media' => $contactSettings->getSocialMedia(),
+            'map_coordinates' => $contactSettings->getMapCoordinates(),
+            'meta_title' => $this->getLocalizedField($contactSettings, 'metaTitle', $locale),
+            'meta_description' => $this->getLocalizedField($contactSettings, 'metaDescription', $locale)
+        ];
+        
+        return $this->render('home/contact.html.twig', [
+            'contact' => $contact
+        ]);
+    }
+    
+    private function getLocalizedField($entity, $field, $locale): ?string
+    {
+        $method = 'get' . ucfirst($field) . ucfirst($locale);
+        if (method_exists($entity, $method)) {
+            return $entity->$method();
+        }
+        
+        // Fallback to Bulgarian if the requested locale doesn't exist
+        $fallbackMethod = 'get' . ucfirst($field) . 'Bg';
+        if (method_exists($entity, $fallbackMethod)) {
+            return $entity->$fallbackMethod();
+        }
+        
+        return null;
     }
 } 

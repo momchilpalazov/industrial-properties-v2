@@ -1,6 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Контакти{% endblock %}
+{% block title %}{{ contact.meta_title ?? 'contact.page_title'|trans({}, 'contact') }} - Industrial Properties{% endblock %}
+
+{% block meta %}
+{% if contact.meta_title %}
+<meta property="og:title" content="{{ contact.meta_title }}">
+{% endif %}
+{% if contact.meta_description %}
+<meta name="description" content="{{ contact.meta_description }}">
+<meta property="og:description" content="{{ contact.meta_description }}">
+{% endif %}
+{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -13,8 +23,8 @@
     <section class="contact-hero">
         <div class="container">
             <div class="text-center">
-                <h1>Свържете се с нас</h1>
-                <p class="lead">Ние сме тук, за да отговорим на всички ваши въпроси</p>
+                <h1>{{ contact.title ?? 'contact.page_title'|trans({}, 'contact') }}</h1>
+                <p class="lead">{{ contact.subtitle ?? 'contact.page_subtitle'|trans({}, 'contact') }}</p>
             </div>
         </div>
     </section>
@@ -23,33 +33,41 @@
     <section class="content-section">
         <div class="container">
             <div class="row g-4">
+                {% if contact.address %}
                 <div class="col-lg-4 col-md-6">
                     <div class="contact-info-card">
                         <div class="contact-info-icon">
                             <i class="bi bi-geo-alt"></i>
                         </div>
-                        <h4>Адрес</h4>
-                        <p>ул. Примерна 123<br>София 1000, България</p>
+                        <h4>{{ 'contact.address'|trans({}, 'contact') }}</h4>
+                        <p>{{ contact.address }}</p>
                     </div>
                 </div>
+                {% endif %}
+                
+                {% if contact.phone %}
                 <div class="col-lg-4 col-md-6">
                     <div class="contact-info-card">
                         <div class="contact-info-icon">
                             <i class="bi bi-telephone"></i>
                         </div>
-                        <h4>Телефон</h4>
-                        <p>+359 2 123 4567<br>+359 888 123 456</p>
+                        <h4>{{ 'contact.phone'|trans({}, 'contact') }}</h4>
+                        <p><a href="tel:{{ contact.phone }}" class="text-decoration-none">{{ contact.phone }}</a></p>
                     </div>
                 </div>
+                {% endif %}
+                
+                {% if contact.email %}
                 <div class="col-lg-4 col-md-6">
                     <div class="contact-info-card">
                         <div class="contact-info-icon">
                             <i class="bi bi-envelope"></i>
                         </div>
-                        <h4>Имейл</h4>
-                        <p>office@industrial-properties.bg<br>info@industrial-properties.bg</p>
+                        <h4>{{ 'contact.email'|trans({}, 'contact') }}</h4>
+                        <p><a href="mailto:{{ contact.email }}" class="text-decoration-none">{{ contact.email }}</a></p>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </section>
@@ -109,15 +127,17 @@
     </section>#}
 
     <!-- Map -->
+    {% if contact.map_coordinates %}
     <section class="map-section">
         <div class="map-overlay d-none d-md-block">
-            <h5>Намерете ни</h5>
-            <p><strong>Адрес:</strong> ул. Примерна 123, София</p>
-            <p><strong>Телефон:</strong> +359 2 123 4567</p>
-            <p><strong>Работно време:</strong> Пон-Пет 9:00-18:00</p>
+            <h5>{{ 'contact.find_us'|trans({}, 'contact') }}</h5>
+            {% if contact.address %}<p><strong>{{ 'contact.address'|trans({}, 'contact') }}:</strong> {{ contact.address }}</p>{% endif %}
+            {% if contact.phone %}<p><strong>{{ 'contact.phone'|trans({}, 'contact') }}:</strong> {{ contact.phone }}</p>{% endif %}
+            {% if contact.working_hours %}<p><strong>{{ 'contact.working_hours'|trans({}, 'contact') }}:</strong> {{ contact.working_hours }}</p>{% endif %}
         </div>
         <div id="home-contact-map"></div>
     </section>
+    {% endif %}
 {% endblock %}
 
 {% block javascripts %}
@@ -128,7 +148,47 @@
     <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Преводи за всички езици
+            const allTranslations = {
+                'bg': {
+                    phone: "{{ 'contact.phone'|trans({}, 'contact', 'bg')|escape('js') }}",
+                    email: "{{ 'contact.email'|trans({}, 'contact', 'bg')|escape('js') }}",
+                    address: "{{ 'contact.address'|trans({}, 'contact', 'bg')|escape('js') }}",
+                    working_hours: "{{ 'contact.working_hours'|trans({}, 'contact', 'bg')|escape('js') }}",
+                    find_us: "{{ 'contact.find_us'|trans({}, 'contact', 'bg')|escape('js') }}",
+                    map_error: "{{ 'contact.map_error'|trans({}, 'contact', 'bg')|escape('js') }}"
+                },
+                'en': {
+                    phone: "{{ 'contact.phone'|trans({}, 'contact', 'en')|escape('js') }}",
+                    email: "{{ 'contact.email'|trans({}, 'contact', 'en')|escape('js') }}",
+                    address: "{{ 'contact.address'|trans({}, 'contact', 'en')|escape('js') }}",
+                    working_hours: "{{ 'contact.working_hours'|trans({}, 'contact', 'en')|escape('js') }}",
+                    find_us: "{{ 'contact.find_us'|trans({}, 'contact', 'en')|escape('js') }}",
+                    map_error: "{{ 'contact.map_error'|trans({}, 'contact', 'en')|escape('js') }}"
+                },
+                'de': {
+                    phone: "{{ 'contact.phone'|trans({}, 'contact', 'de')|escape('js') }}",
+                    email: "{{ 'contact.email'|trans({}, 'contact', 'de')|escape('js') }}",
+                    address: "{{ 'contact.address'|trans({}, 'contact', 'de')|escape('js') }}",
+                    working_hours: "{{ 'contact.working_hours'|trans({}, 'contact', 'de')|escape('js') }}",
+                    find_us: "{{ 'contact.find_us'|trans({}, 'contact', 'de')|escape('js') }}",
+                    map_error: "{{ 'contact.map_error'|trans({}, 'contact', 'de')|escape('js') }}"
+                },
+                'ru': {
+                    phone: "{{ 'contact.phone'|trans({}, 'contact', 'ru')|escape('js') }}",
+                    email: "{{ 'contact.email'|trans({}, 'contact', 'ru')|escape('js') }}",
+                    address: "{{ 'contact.address'|trans({}, 'contact', 'ru')|escape('js') }}",
+                    working_hours: "{{ 'contact.working_hours'|trans({}, 'contact', 'ru')|escape('js') }}",
+                    find_us: "{{ 'contact.find_us'|trans({}, 'contact', 'ru')|escape('js') }}",
+                    map_error: "{{ 'contact.map_error'|trans({}, 'contact', 'ru')|escape('js') }}"
+                }
+            };
+            
+            const currentLocale = '{{ app.request.locale }}';
+            const translations = allTranslations[currentLocale] || allTranslations['bg'];
+            
             // Инициализиране на Here Maps
+            {% if contact.map_coordinates %}
             (function initializeHomeContactMap() {
                 try {
                     // Създаваме Here Maps платформа с API ключа
@@ -141,10 +201,10 @@
                     // Създаваме слоеве
                     const defaultLayers = platform.createDefaultLayers();
                     
-                    // Координати на София
-                    const sofiaCoordinates = {
-                        lat: 42.697797,
-                        lng: 23.321661
+                    // Координати от базата
+                    const coordinates = {
+                        lat: {{ contact.map_coordinates.lat }},
+                        lng: {{ contact.map_coordinates.lng }}
                     };
                     
                     // Създаваме картата
@@ -152,8 +212,8 @@
                         document.getElementById('home-contact-map'),
                         defaultLayers.vector.normal.map,
                         {
-                            center: sofiaCoordinates,
-                            zoom: 10
+                            center: coordinates,
+                            zoom: 15
                         }
                     );
                     
@@ -162,23 +222,34 @@
                     const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
                     
                     // Добавяме маркер за офиса
-                    const marker = new H.map.Marker(sofiaCoordinates);
+                    const marker = new H.map.Marker(coordinates);
                     
-                    // Създаваме балон с информация за офиса - по-компактен
-                    marker.setData(`
+                    // Създаваме балон с информация за офиса - използваме преводите
+                    let balloonContent = `
                         <div style="padding: 8px; min-width: 180px; max-width: 220px;">
-                            <h5 style="font-size: 14px; margin-bottom: 5px;">Industrial Properties</h5>
-                            <p style="margin-bottom: 5px; font-size: 12px;">ул. Примерна 123<br>София 1000</p>
-                            <p style="margin-bottom: 3px; font-size: 12px;"><strong>{{ 'contact.phone'|trans }}:</strong> +359 2 123 4567</p>
-                            <p style="margin-bottom: 0; font-size: 12px;"><strong>{{ 'contact.email'|trans }}:</strong> office@industrial-properties.bg</p>
-                        </div>
-                    `);
+                            <h5 style="font-size: 14px; margin-bottom: 5px;">{{ contact.company_name|default('Industrial Properties')|escape('js') }}</h5>`;
+                    
+                    {% if contact.address %}
+                    balloonContent += `<p style="margin-bottom: 5px; font-size: 12px;">{{ contact.address|escape('js') }}</p>`;
+                    {% endif %}
+                    
+                    {% if contact.phone %}
+                    balloonContent += `<p style="margin-bottom: 3px; font-size: 12px;"><strong>${translations.phone}:</strong> {{ contact.phone|escape('js') }}</p>`;
+                    {% endif %}
+                    
+                    {% if contact.email %}
+                    balloonContent += `<p style="margin-bottom: 0; font-size: 12px;"><strong>${translations.email}:</strong> {{ contact.email|escape('js') }}</p>`;
+                    {% endif %}
+                    
+                    balloonContent += `</div>`;
+                    
+                    marker.setData(balloonContent);
                     
                     // Добавяме маркера към картата
                     map.addObject(marker);
                     
                     // Центрираме картата малко по-надолу, за да има място за балона
-                    map.setCenter({lat: sofiaCoordinates.lat - 0.001, lng: sofiaCoordinates.lng});
+                    map.setCenter({lat: coordinates.lat - 0.001, lng: coordinates.lng});
                     
                     // Добавяме слушател за клик върху маркера
                     marker.addEventListener('tap', function(evt) {
@@ -204,15 +275,22 @@
                         ui.addBubble(bubble);
                     }, 1000);
                     
+                    // Обновяваме текста в map overlay според езика
+                    const mapOverlay = document.querySelector('.map-overlay h5');
+                    if (mapOverlay) {
+                        mapOverlay.textContent = translations.find_us;
+                    }
+                    
                     // Ресайз на картата при промяна на размера на прозореца
                     window.addEventListener('resize', () => {
                         map.getViewPort().resize();
                     });
                 } catch (error) {
                     console.error('Грешка при инициализиране на Here Maps:', error);
-                    document.getElementById('home-contact-map').innerHTML = '<div class="alert alert-danger">Грешка при зареждане на картата</div>';
+                    document.getElementById('home-contact-map').innerHTML = `<div class="alert alert-danger">${translations.map_error}</div>`;
                 }
             })();
+            {% endif %}
         });
     </script>
 {% endblock %} 

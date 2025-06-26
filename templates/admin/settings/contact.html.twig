@@ -1,0 +1,394 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Управление на страница "Контакт"{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .form-section-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .nav-tabs .nav-link {
+            color: #6c757d;
+            border: none;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+            background: none;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border: none;
+            border-radius: 6px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+        
+        .card {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .card-title {
+            color: #495057;
+            font-weight: 600;
+        }
+        
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h3 mb-4">
+                <i class="bi bi-envelope-at me-2"></i>
+                Управление на страница "Контакт"
+            </h1>
+            
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            <form method="post" action="{{ path('admin_contact_save') }}">
+                <!-- Съдържание на различни езици -->
+                <div class="form-section">
+                    <h4 class="form-section-title">
+                        <i class="bi bi-translate"></i> Съдържание на страници
+                    </h4>
+                    
+                    <ul class="nav nav-tabs mb-4" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#bg">
+                                <i class="bi bi-globe"></i> Български
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#en">
+                                <i class="bi bi-globe"></i> English
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#de">
+                                <i class="bi bi-globe"></i> Deutsch
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#ru">
+                                <i class="bi bi-globe"></i> Русский
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <!-- Български -->
+                        <div class="tab-pane fade show active" id="bg">
+                            <div class="mb-3">
+                                <label for="title_bg" class="form-label">Заглавие на страница (BG)</label>
+                                <input type="text" class="form-control" id="title_bg" name="title_bg" 
+                                       value="{{ settings.titleBg }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="subtitle_bg" class="form-label">Подзаглавие (BG)</label>
+                                <textarea class="form-control" id="subtitle_bg" name="subtitle_bg" 
+                                          rows="3">{{ settings.subtitleBg }}</textarea>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h5 class="form-section-title">
+                                    <i class="bi bi-search"></i> Meta данни
+                                </h5>
+                                <div class="mb-3">
+                                    <label for="meta_title_bg" class="form-label">Meta заглавие (BG)</label>
+                                    <input type="text" class="form-control" id="meta_title_bg" name="meta_title_bg" 
+                                           value="{{ settings.metaTitleBg }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="meta_description_bg" class="form-label">Meta описание (BG)</label>
+                                    <textarea class="form-control" id="meta_description_bg" name="meta_description_bg" 
+                                              rows="2">{{ settings.metaDescriptionBg }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- English -->
+                        <div class="tab-pane fade" id="en">
+                            <div class="mb-3">
+                                <label for="title_en" class="form-label">Page Title (EN)</label>
+                                <input type="text" class="form-control" id="title_en" name="title_en" 
+                                       value="{{ settings.titleEn }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="subtitle_en" class="form-label">Subtitle (EN)</label>
+                                <textarea class="form-control" id="subtitle_en" name="subtitle_en" 
+                                          rows="3">{{ settings.subtitleEn }}</textarea>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h5 class="form-section-title">
+                                    <i class="bi bi-search"></i> Meta Data
+                                </h5>
+                                <div class="mb-3">
+                                    <label for="meta_title_en" class="form-label">Meta title (EN)</label>
+                                    <input type="text" class="form-control" id="meta_title_en" name="meta_title_en" 
+                                           value="{{ settings.metaTitleEn }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="meta_description_en" class="form-label">Meta description (EN)</label>
+                                    <textarea class="form-control" id="meta_description_en" name="meta_description_en" 
+                                              rows="2">{{ settings.metaDescriptionEn }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Deutsch -->
+                        <div class="tab-pane fade" id="de">
+                            <div class="mb-3">
+                                <label for="title_de" class="form-label">Seitentitel (DE)</label>
+                                <input type="text" class="form-control" id="title_de" name="title_de" 
+                                       value="{{ settings.titleDe }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="subtitle_de" class="form-label">Untertitel (DE)</label>
+                                <textarea class="form-control" id="subtitle_de" name="subtitle_de" 
+                                          rows="3">{{ settings.subtitleDe }}</textarea>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h5 class="form-section-title">
+                                    <i class="bi bi-search"></i> Meta Daten
+                                </h5>
+                                <div class="mb-3">
+                                    <label for="meta_title_de" class="form-label">Meta Titel (DE)</label>
+                                    <input type="text" class="form-control" id="meta_title_de" name="meta_title_de" 
+                                           value="{{ settings.metaTitleDe }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="meta_description_de" class="form-label">Meta Beschreibung (DE)</label>
+                                    <textarea class="form-control" id="meta_description_de" name="meta_description_de" 
+                                              rows="2">{{ settings.metaDescriptionDe }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Русский -->
+                        <div class="tab-pane fade" id="ru">
+                            <div class="mb-3">
+                                <label for="title_ru" class="form-label">Заголовок страницы (RU)</label>
+                                <input type="text" class="form-control" id="title_ru" name="title_ru" 
+                                       value="{{ settings.titleRu }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="subtitle_ru" class="form-label">Подзаголовок (RU)</label>
+                                <textarea class="form-control" id="subtitle_ru" name="subtitle_ru" 
+                                          rows="3">{{ settings.subtitleRu }}</textarea>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h5 class="form-section-title">
+                                    <i class="bi bi-search"></i> Мета данные
+                                </h5>
+                                <div class="mb-3">
+                                    <label for="meta_title_ru" class="form-label">Мета заголовок (RU)</label>
+                                    <input type="text" class="form-control" id="meta_title_ru" name="meta_title_ru" 
+                                           value="{{ settings.metaTitleRu }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="meta_description_ru" class="form-label">Мета описание (RU)</label>
+                                    <textarea class="form-control" id="meta_description_ru" name="meta_description_ru" 
+                                              rows="2">{{ settings.metaDescriptionRu }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Контактна информация -->
+                <div class="form-section">
+                    <h4 class="form-section-title">
+                        <i class="bi bi-building"></i> Информация за компанията
+                    </h4>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="company_name" class="form-label">Име на компанията</label>
+                                <input type="text" class="form-control" id="company_name" name="company_name" 
+                                       value="{{ settings.companyName }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Имейл адрес</label>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       value="{{ settings.email }}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Телефон</label>
+                                <input type="text" class="form-control" id="phone" name="phone" 
+                                       value="{{ settings.phone }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="working_hours" class="form-label">Работно време</label>
+                                <input type="text" class="form-control" id="working_hours" name="working_hours" 
+                                       value="{{ settings.workingHours }}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Адрес</label>
+                        <textarea class="form-control" id="address" name="address" 
+                                  rows="3">{{ settings.address }}</textarea>
+                    </div>
+                </div>
+
+                <!-- Карта -->
+                <div class="form-section">
+                    <h4 class="form-section-title">
+                        <i class="bi bi-geo-alt"></i> Местоположение на картата
+                    </h4>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="map_lat" class="form-label">Географска ширина (Latitude)</label>
+                                <input type="number" step="0.00000001" class="form-control" id="map_lat" name="map_lat" 
+                                       value="{{ settings.mapLat }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="map_lng" class="form-label">Географска дължина (Longitude)</label>
+                                <input type="number" step="0.00000001" class="form-control" id="map_lng" name="map_lng" 
+                                       value="{{ settings.mapLng }}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-muted">
+                        <i class="bi bi-info-circle"></i>
+                        Можете да получите координатите от Google Maps като кликнете на местоположението и копирате координатите.
+                    </p>
+                </div>
+
+                <!-- Социални мрежи -->
+                <div class="form-section">
+                    <h4 class="form-section-title">
+                        <i class="bi bi-share"></i> Социални мрежи
+                    </h4>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Facebook</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </span>
+                                    <input type="url" class="form-control" name="facebook" 
+                                           value="{{ settings.socialMedia.facebook ?? '' }}"
+                                           placeholder="https://facebook.com/yourpage">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">LinkedIn</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fab fa-linkedin-in"></i>
+                                    </span>
+                                    <input type="url" class="form-control" name="linkedin" 
+                                           value="{{ settings.socialMedia.linkedin ?? '' }}"
+                                           placeholder="https://linkedin.com/company/yourcompany">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Twitter</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fab fa-twitter"></i>
+                                    </span>
+                                    <input type="url" class="form-control" name="twitter" 
+                                           value="{{ settings.socialMedia.twitter ?? '' }}"
+                                           placeholder="https://twitter.com/yourhandle">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Instagram</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fab fa-instagram"></i>
+                                    </span>
+                                    <input type="url" class="form-control" name="instagram" 
+                                           value="{{ settings.socialMedia.instagram ?? '' }}"
+                                           placeholder="https://instagram.com/yourprofile">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-check2"></i>
+                        Запази промените
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ translations.contact.title }} - Industrial Properties{% endblock %}
+{% block title %}{{ 'contact.page_title'|trans({}, 'contact') }} - Industrial Properties{% endblock %}
 
 {% block stylesheets %}
 {{ parent() }}
@@ -43,8 +43,8 @@
 <div class="contact-page">    <!-- Hero Section -->
     <section class="contact-hero">
         <div class="container">
-            <h1 class="mb-2" style="text-align: left !important;">{{ translations.contact.title }}</h1>
-            <p style="text-align: left !important;">{{ translations.contact.subtitle|default('Свържете се с нас за повече информация относно нашите имоти и услуги.') }}</p>
+            <h1 class="mb-2" style="text-align: left !important;">{{ contact.title ?? 'contact.page_title'|trans({}, 'contact') }}</h1>
+            <p style="text-align: left !important;">{{ contact.subtitle ?? 'Свържете се с нас за повече информация относно нашите имоти и услуги.' }}</p>
         </div>
     </section>
 
@@ -54,24 +54,27 @@
             <div class="col-lg-4">
                 <div class="card shadow-sm contact-info-card animated-section">
                     <div class="card-body">
-                        <h4 class="card-title mb-4">{{ translations.contact.info }}</h4>
+                        <h4 class="card-title mb-4">{{ 'contact.info'|trans({}, 'contact') }}</h4>
                         
+                        {% if contact.address %}
                         <div class="contact-info-item">
                             <div class="contact-info-icon">
                                 <i class="fas fa-map-marker-alt"></i>
                             </div>
                             <div class="contact-info-content">
-                                <h5>{{ translations.contact.address }}</h5>
+                                <h5>{{ 'contact.address'|trans({}, 'contact') }}</h5>
                                 <p>{{ contact.address }}</p>
                             </div>
                         </div>
+                        {% endif %}
 
+                        {% if contact.phone %}
                         <div class="contact-info-item">
                             <div class="contact-info-icon">
                                 <i class="fas fa-phone"></i>
                             </div>
                             <div class="contact-info-content">
-                                <h5>{{ translations.contact.phone }}</h5>
+                                <h5>{{ 'contact.phone'|trans({}, 'contact') }}</h5>
                                 <p>
                                     <a href="tel:{{ contact.phone }}" class="text-decoration-none">
                                         {{ contact.phone }}
@@ -79,13 +82,15 @@
                                 </p>
                             </div>
                         </div>
+                        {% endif %}
 
+                        {% if contact.email %}
                         <div class="contact-info-item">
                             <div class="contact-info-icon">
                                 <i class="fas fa-envelope"></i>
                             </div>
                             <div class="contact-info-content">
-                                <h5>{{ translations.contact.email }}</h5>
+                                <h5>{{ 'contact.email'|trans({}, 'contact') }}</h5>
                                 <p>
                                     <a href="mailto:{{ contact.email }}" class="text-decoration-none">
                                         {{ contact.email }}
@@ -93,6 +98,7 @@
                                 </p>
                             </div>
                         </div>
+                        {% endif %}
 
                         {% if contact.working_hours %}
                         <div class="contact-info-item">
@@ -100,7 +106,7 @@
                                 <i class="fas fa-clock"></i>
                             </div>
                             <div class="contact-info-content">
-                                <h5>{{ translations.contact.working_hours }}</h5>
+                                <h5>{{ 'contact.working_hours'|trans({}, 'contact') }}</h5>
                                 <p>{{ contact.working_hours }}</p>
                             </div>
                         </div>
@@ -108,7 +114,7 @@
 
                         {% if contact.social_media %}
                         <div class="mt-4">
-                            <h5 class="mb-3">{{ translations.contact.follow_us }}</h5>
+                            <h5 class="mb-3">{{ 'contact.follow_us'|trans({}, 'contact') }}</h5>
                             <div class="social-media-links">
                                 {% if contact.social_media.facebook %}
                                 <a href="{{ contact.social_media.facebook }}" 
@@ -133,6 +139,14 @@
                                     <i class="fab fa-twitter"></i>
                                 </a>
                                 {% endif %}
+                                
+                                {% if contact.social_media.instagram %}
+                                <a href="{{ contact.social_media.instagram }}" 
+                                   target="_blank"
+                                   class="social-btn instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                {% endif %}
                             </div>
                         </div>
                         {% endif %}
@@ -144,14 +158,14 @@
             <div class="col-lg-8">
                 <div class="card shadow-sm contact-form-card animated-section">
                     <div class="card-body">
-                        <h4 class="card-title">{{ translations.contact.form_title }}</h4>
+                        <h4 class="card-title">{{ 'contact.form_title'|trans({}, 'contact') }}</h4>
                         
                         <form id="contactForm" 
                               data-action="{{ path('contact_submit') }}">
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-label">{{ translations.contact.form.name }}</label>
+                                        <label class="form-label">{{ 'contact.form.name'|trans({}, 'contact') }}</label>
                                         <input type="text" 
                                                class="form-control" 
                                                name="name" 
@@ -161,7 +175,7 @@
                                 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-label">{{ translations.contact.form.email }}</label>
+                                        <label class="form-label">{{ 'contact.form.email'|trans({}, 'contact') }}</label>
                                         <input type="email" 
                                                class="form-control" 
                                                name="email" 
@@ -171,7 +185,7 @@
                                 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-label">{{ translations.contact.form.phone }}</label>
+                                        <label class="form-label">{{ 'contact.form.phone'|trans({}, 'contact') }}</label>
                                         <input type="tel" 
                                                class="form-control" 
                                                name="phone">
@@ -180,7 +194,7 @@
                                 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-label">{{ translations.contact.form.subject }}</label>
+                                        <label class="form-label">{{ 'contact.form.subject'|trans({}, 'contact') }}</label>
                                         <input type="text" 
                                                class="form-control" 
                                                name="subject" 
@@ -190,7 +204,7 @@
                                 
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <label class="form-label">{{ translations.contact.form.message }}</label>
+                                        <label class="form-label">{{ 'contact.form.message'|trans({}, 'contact') }}</label>
                                         <textarea class="form-control" 
                                                   name="message" 
                                                   rows="5" 
@@ -200,7 +214,7 @@
                                 
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-primary btn-submit">
-                                        {{ translations.contact.form.submit }}
+                                        {{ 'contact.form.submit'|trans({}, 'contact') }}
                                     </button>
                                 </div>
                             </div>
@@ -214,7 +228,7 @@
                     <div class="card-body">
                         <h4 class="card-title mb-4">
                             <i class="fas fa-map-marked-alt me-2"></i>
-                            {{ translations.contact.location_map }}
+                            {{ 'contact.location_map'|trans({}, 'contact') }}
                         </h4>
                         <div class="map-container" id="contact-map"></div>
                         

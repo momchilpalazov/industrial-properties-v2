@@ -1,0 +1,23 @@
+contact:
+  page_title: "Contact"
+  page_subtitle: "We are here to answer all your questions"
+  info: "Contact Information"
+  address: "Address"
+  phone: "Phone"
+  email: "Email"
+  working_hours: "Working Hours"
+  follow_us: "Follow Us"
+  location_map: "Location Map"
+  find_us: "Find Us"
+  map_error: "Error loading map"
+  
+  form_title: "Get In Touch"
+  form:
+    name: "Name"
+    email: "Email Address"
+    phone: "Phone"
+    subject: "Subject"
+    message: "Message"
+    submit: "Send Message"
+    
+  success: "Your message has been sent successfully!"

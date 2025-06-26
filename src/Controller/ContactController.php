@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\ContactService;
+use App\Repository\ContactSettingsRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -12,20 +13,46 @@ use Twig\Environment;
 class ContactController extends AbstractController
 {
     private ContactService $contactService;
+    private ContactSettingsRepository $contactSettingsRepository;
 
     public function __construct(
         Environment $twig,
-        ContactService $contactService
+        ContactService $contactService,
+        ContactSettingsRepository $contactSettingsRepository
     ) {
         parent::__construct($twig);
         $this->contactService = $contactService;
+        $this->contactSettingsRepository = $contactSettingsRepository;
     }
 
     public function index(Request $request): Response
     {
+        $locale = $request->getLocale();
+        $settings = $this->contactSettingsRepository->getSettings();
+        
+        // Prepare contact data based on locale
+        $contactData = [
+            'title' => $this->getLocalizedField($settings, 'title', $locale),
+            'subtitle' => $this->getLocalizedField($settings, 'subtitle', $locale),
+            'company_name' => $settings->getCompanyName(),
+            'address' => $settings->getAddress(),
+            'phone' => $settings->getPhone(),
+            'email' => $settings->getEmail(),
+            'working_hours' => $settings->getWorkingHours(),
+            'social_media' => $settings->getSocialMedia(),
+            'map_coordinates' => $settings->getMapCoordinates(),
+        ];
+        
         return $this->render('contact/index.html.twig', [
-            'current_language' => $request->getLocale()
+            'current_language' => $locale,
+            'contact' => $contactData,
         ]);
+    }
+
+    private function getLocalizedField($settings, string $field, string $locale): ?string
+    {
+        $method = 'get' . ucfirst($field) . ucfirst($locale);
+        return method_exists($settings, $method) ? $settings->$method() : null;
     }
 
     public function send(Request $request): Response
