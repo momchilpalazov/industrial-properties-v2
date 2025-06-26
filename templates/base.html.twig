@@ -19,19 +19,75 @@
     <meta name="apple-mobile-web-app-title" content="Industrial Properties">
     
     <!-- SEO Meta tags -->
-    <meta name="description" content="{% block description %}{{ 'meta.description'|trans({}, 'layout') }}{% endblock %}">
-    <meta name="keywords" content="{% block keywords %}{{ 'meta.keywords'|trans({}, 'layout') }}{% endblock %}">
-    <meta name="robots" content="index, follow">
-    <meta name="author" content="Industrial Properties">
+    <meta name="description" content="{% block description %}{{ 'home.meta.description'|trans({}, 'home') }}{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}{{ 'home.meta.keywords'|trans({}, 'home') }}{% endblock %}">
+    <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+    <meta name="author" content="Industrial Properties Europe">
+    <meta name="language" content="{{ app.request.locale }}">
+    <meta name="geo.region" content="EU">
+    <meta name="geo.placename" content="Europe">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{% block canonical %}{{ app.request.uri }}{% endblock %}">
+    
+    <!-- Alternate language links -->
+    {% set current_route = app.request.attributes.get('_route') %}
+    {% set route_params = app.request.attributes.get('_route_params', {}) %}
+    {% if current_route %}
+        <link rel="alternate" hreflang="bg" href="{{ path(current_route, route_params|merge({_locale: 'bg'})) }}">
+        <link rel="alternate" hreflang="en" href="{{ path(current_route, route_params|merge({_locale: 'en'})) }}">
+        <link rel="alternate" hreflang="de" href="{{ path(current_route, route_params|merge({_locale: 'de'})) }}">
+        <link rel="alternate" hreflang="ru" href="{{ path(current_route, route_params|merge({_locale: 'ru'})) }}">
+        <link rel="alternate" hreflang="x-default" href="{{ path(current_route, route_params|merge({_locale: 'en'})) }}">
+    {% endif %}
     
     <!-- Open Graph -->
-    <meta property="og:title" content="{% block og_title %}{{ block('title') }} | Industrial Properties{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}{{ block('title') }} | Industrial Properties Europe{% endblock %}">
     <meta property="og:description" content="{{ block('description') }}">
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
     <meta property="og:url" content="{{ app.request.uri }}">
-    <meta property="og:site_name" content="Industrial Properties">
+    <meta property="og:site_name" content="Industrial Properties Europe">
+    <meta property="og:locale" content="{{ app.request.locale == 'bg' ? 'bg_BG' : (app.request.locale == 'de' ? 'de_DE' : (app.request.locale == 'ru' ? 'ru_RU' : 'en_US')) }}">
+    {% block og_image %}
+        <meta property="og:image" content="{{ asset('images/og-default.jpg') }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Industrial Properties Europe">
+    {% endblock %}
     
-    <title>{% block title %}{{ 'nav.home'|trans({}, 'layout') }}{% endblock %} | Industrial Properties</title>
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@IndPropertiesEU">
+    <meta name="twitter:title" content="{{ block('og_title') }}">
+    <meta name="twitter:description" content="{{ block('description') }}">
+    <meta name="twitter:image" content="{{ asset('images/og-default.jpg') }}">
+    
+    <!-- LinkedIn -->
+    <meta property="article:publisher" content="https://www.linkedin.com/company/industrial-properties-europe">
+    
+    <!-- Schema.org JSON-LD -->
+    {% block structured_data %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Industrial Properties Europe",
+        "url": "{{ app.request.schemeAndHttpHost }}",
+        "logo": "{{ asset('images/logo.svg') }}",
+        "sameAs": [
+            "https://www.linkedin.com/company/industrial-properties-europe",
+            "https://www.facebook.com/IndPropertiesEU"
+        ],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "Customer Service",
+            "availableLanguage": ["Bulgarian", "English", "German", "Russian"]
+        }
+    }
+    </script>
+    {% endblock %}
+    
+    <title>{% block title %}{{ 'nav.home'|trans({}, 'layout') }}{% endblock %} | Industrial Properties Europe</title>
     
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">

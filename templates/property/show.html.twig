@@ -1,6 +1,107 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ property.title(app.request.locale) }} - Industrial Properties{% endblock %}
+{% block title %}{{ property.title(app.request.locale) }} - Industrial Properties Europe{% endblock %}
+
+{% block description %}{{ property.description(app.request.locale)|striptags|length > 150 ? (property.description(app.request.locale)|striptags|slice(0, 150) ~ '...') : property.description(app.request.locale)|striptags }}{% endblock %}
+
+{% block keywords %}{{ property.title(app.request.locale) }}, {{ property.location(app.request.locale) }}, industrial property, warehouse, {% if property.price %}{{ property.price|number_format(0, ',', ' ') }} EUR{% endif %}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+
+{% block og_image %}
+    {% if property.images|length > 0 %}
+        <meta property="og:image" content="{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ property.images|first.filename) }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="{{ property.title(app.request.locale) }} - {{ property.location(app.request.locale) }}">
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block canonical %}{{ url('app_property_show', {'_locale': app.request.locale, 'id': property.id}) }}{% endblock %}
+
+{% block structured_data %}
+    {{ parent() }}
+    {# Property Schema #}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "RealEstate",
+        "name": "{{ property.title(app.request.locale)|escape('js') }}",
+        "description": "{{ property.description(app.request.locale)|striptags|escape('js') }}",
+        "url": "{{ url('app_property_show', {'_locale': app.request.locale, 'id': property.id}) }}",
+        "identifier": "{{ property.id }}",
+        {% if property.images|length > 0 %}
+        "image": [
+            {% for image in property.images %}
+                "{{ asset('uploads/images/properties/' ~ property.id ~ '/' ~ image.filename) }}"{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ],
+        {% endif %}
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "{{ property.location(app.request.locale)|escape('js') }}",
+            "addressCountry": "BG"
+        },
+        {% if property.price %}
+        "offers": {
+            "@type": "Offer",
+            "price": "{{ property.price }}",
+            "priceCurrency": "EUR",
+            "availability": "https://schema.org/InStock",
+            "seller": {
+                "@type": "Organization",
+                "name": "Industrial Properties Europe"
+            }
+        },
+        {% endif %}
+        {% if property.area %}
+        "floorSize": {
+            "@type": "QuantitativeValue",
+            "value": "{{ property.area }}",
+            "unitCode": "MTK"
+        },
+        {% endif %}
+        {% if property.latitude and property.longitude %}
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "{{ property.latitude }}",
+            "longitude": "{{ property.longitude }}"
+        },
+        {% endif %}
+        "category": "IndustrialProperty"
+    }
+    </script>
+    
+    {# Breadcrumb Schema #}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ url('app_home', {'_locale': app.request.locale}) }}"
+            },
+            {
+                "@type": "ListItem", 
+                "position": 2,
+                "name": "Properties",
+                "item": "{{ url('app_property_index', {'_locale': app.request.locale}) }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "{{ property.title(app.request.locale)|escape('js') }}",
+                "item": "{{ url('app_property_show', {'_locale': app.request.locale, 'id': property.id}) }}"
+            }
+        ]
+    }
+    </script>
+{% endblock %}
 
 {% block meta_description %}{{ 'property.meta.show.description'|trans({}, 'property') }}{% endblock %}
 

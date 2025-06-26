@@ -1,0 +1,84 @@
+# Industrial Properties Europe - Robots.txt
+# Generated on 2025-06-26
+
+User-agent: *
+Allow: /
+
+# Block admin areas
+Disallow: /admin/
+Disallow: /api/internal/
+Disallow: /uploads/temp/
+Disallow: /cache/
+Disallow: /var/
+
+# Block search and filter URLs to prevent duplicate content
+Disallow: /*?*
+Disallow: /*/search*
+Disallow: /*/filter*
+
+# Allow specific important URLs
+Allow: /sitemap.xml
+Allow: /robots.txt
+Allow: /favicon.ico
+Allow: /manifest.json
+
+# Allow images and assets
+Allow: /images/
+Allow: /build/
+Allow: /css/
+Allow: /js/
+Allow: /uploads/properties/
+
+# Special rules for different crawlers
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+User-agent: Yandexbot
+Allow: /
+Crawl-delay: 3
+
+User-agent: FacebookExternalHit
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+# AI/ML Crawlers
+User-agent: GPTBot
+Allow: /
+Crawl-delay: 5
+
+User-agent: OpenAI-SearchBot
+Allow: /
+Crawl-delay: 5
+
+User-agent: CCBot
+Allow: /
+Crawl-delay: 10
+
+User-agent: anthropic-ai
+Allow: /
+Crawl-delay: 5
+
+User-agent: Claude-Web
+Allow: /
+Crawl-delay: 5
+
+# Sitemap location
+Sitemap: https://indprop.eu/sitemap.xml
+Sitemap: https://indprop.eu/sitemap-images.xml
+Sitemap: https://indprop.eu/sitemap-bg.xml
+Sitemap: https://indprop.eu/sitemap-en.xml
+Sitemap: https://indprop.eu/sitemap-de.xml
+Sitemap: https://indprop.eu/sitemap-ru.xml
+
+# Host declaration (for Yandex and other search engines)
+Host: https://indprop.eu

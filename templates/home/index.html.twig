@@ -6,6 +6,50 @@
 
 {% block keywords %}{{ 'home.meta.keywords'|trans({}, 'home') }}{% endblock %}
 
+{% block og_type %}website{% endblock %}
+
+{% block structured_data %}
+{{ parent() }}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Industrial Properties Europe",
+    "url": "{{ app.request.schemeAndHttpHost }}",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ path('app_property_index') }}?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    "sameAs": [
+        "https://www.linkedin.com/company/industrial-properties-europe",
+        "https://www.facebook.com/IndPropertiesEU"
+    ]
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "Industrial Properties Europe",
+    "description": "{{ 'home.meta.description'|trans({}, 'home')|escape('js') }}",
+    "url": "{{ app.request.schemeAndHttpHost }}",
+    "areaServed": [
+        {
+            "@type": "Country",
+            "name": "Bulgaria"
+        },
+        {
+            "@type": "AdministrativeArea",
+            "name": "Europe"
+        }
+    ],
+    "serviceType": ["Industrial Property Sales", "Warehouse Rental", "Logistics Centers", "Manufacturing Facilities"],
+    "knowsLanguage": ["Bulgarian", "English", "German", "Russian"]
+}
+</script>
+{% endblock %}
+
 {% block stylesheets %}
     {{ parent() }}
     {{ encore_entry_link_tags('home') }}
@@ -218,4 +262,4 @@
 {% block javascripts %}
     {{ parent() }}
     {{ encore_entry_script_tags('home') }}
-{% endblock %} 
+{% endblock %}

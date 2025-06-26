@@ -245,4 +245,32 @@ class PropertyRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-} 
+
+    /**
+     * Find all published properties for sitemap
+     */
+    public function findAllPublished(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.isActive = :active')
+            ->setParameter('active', true)
+            ->orderBy('p.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find properties by type for sitemap
+     */
+    public function findByType(string $type): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.isActive = :active')
+            ->andWhere('p.type = :type')
+            ->setParameter('active', true)
+            ->setParameter('type', $type)
+            ->orderBy('p.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+}

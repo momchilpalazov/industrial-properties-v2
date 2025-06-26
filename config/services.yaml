@@ -80,4 +80,8 @@ services:
     App\HereMaps\Services\MapService:
         arguments:
             $config: '@App\HereMaps\Config\HereMapsConfig'
-            $twig: '@twig' 
+            $twig: '@twig'
+
+    App\Service\OgImageService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'

@@ -1,3 +1,11 @@
+# API routes (AI-enhanced endpoints)
+api:
+    resource:
+        path: ../src/Controller/Api/
+        namespace: App\Controller\Api
+    type: attribute
+    prefix: /api
+
 # Homepage redirect (must be first)
 homepage:
     path: /
@@ -37,6 +45,29 @@ here_maps:
     type: attribute
     exclude: '../src/Controller/Admin/|../src/Controller/SecurityController.php|../src/Controller/Public/'
 
+# Sitemap routes (must be before localized routes)
+sitemap_index:
+    path: /sitemap.xml
+    controller: App\Controller\SitemapController::index
+    methods: [GET]
+
+sitemap_main:
+    path: /sitemap-main.xml
+    controller: App\Controller\SitemapController::main
+    methods: [GET]
+
+sitemap_language:
+    path: /sitemap-{_locale}.xml
+    controller: App\Controller\SitemapController::language
+    requirements:
+        _locale: bg|en|de|ru
+    methods: [GET]
+
+sitemap_images:
+    path: /sitemap-images.xml
+    controller: App\Controller\SitemapController::images
+    methods: [GET]
+
 # Localized public routes
 controllers:
     resource:
@@ -48,4 +79,4 @@ controllers:
         _locale: '%app_locales%'
     defaults:
         _locale: bg
-    exclude: '../src/Controller/Admin/|../src/Controller/SecurityController.php' 
+    exclude: '../src/Controller/Admin/|../src/Controller/SecurityController.php'

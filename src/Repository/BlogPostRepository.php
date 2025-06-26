@@ -189,4 +189,17 @@ class BlogPostRepository extends ServiceEntityRepository
         
         return $qb->getQuery()->getSingleScalarResult() > 0;
     }
+
+    /**
+     * Find all published blog posts for sitemap
+     */
+    public function findAllPublished(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.isPublished = :published')
+            ->setParameter('published', true)
+            ->orderBy('b.publishedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
