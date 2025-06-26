@@ -1,0 +1,33 @@
+cookies:
+  title: "Cookies und Datenschutz"
+  main_text: "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern, Traffic zu analysieren und Werbung zu personalisieren. Durch Klicken auf \"Alle akzeptieren\" stimmen Sie der Verwendung aller Cookie-Typen zu. Sie können Ihre Präferenzen über \"Einstellungen anpassen\" verwalten."
+  privacy_link: "Erfahren Sie mehr über unsere Datenschutzrichtlinie"
+  
+  buttons:
+    accept_all: "Alle akzeptieren"
+    accept_necessary: "Nur notwendige"
+    customize: "Einstellungen anpassen"
+    back: "Zurück"
+    save_preferences: "Präferenzen speichern"
+  
+  settings:
+    title: "Cookie-Einstellungen"
+    text: "Hier können Sie auswählen, welche Cookie-Typen aktiviert werden sollen. Notwendige Cookies sind für das ordnungsgemäße Funktionieren der Website erforderlich."
+    widget_title: "Cookie-Einstellungen"
+  
+  types:
+    necessary:
+      title: "Notwendige Cookies"
+      text: "Diese Cookies sind für das ordnungsgemäße Funktionieren der Website erforderlich und können nicht deaktiviert werden. Sie werden normalerweise nur als Reaktion auf von Ihnen durchgeführte Aktionen gesetzt, wie z.B. das Festlegen von Datenschutzpräferenzen, das Anmelden oder das Ausfüllen von Formularen."
+    
+    functional:
+      title: "Funktionale Cookies"
+      text: "Diese Cookies ermöglichen es der Website, erweiterte Funktionalität und Personalisierung bereitzustellen. Sie können von uns oder von Dritten gesetzt werden, deren Dienste wir zu unseren Seiten hinzugefügt haben."
+    
+    analytics:
+      title: "Analyse-Cookies"
+      text: "Diese Cookies ermöglichen es uns, Besuche und Traffic-Quellen zu zählen, damit wir die Leistung unserer Website messen und verbessern können. Sie helfen uns zu verstehen, welche Seiten am beliebtesten sind und wie sich Besucher auf der Website bewegen."
+    
+    marketing:
+      title: "Marketing-Cookies"
+      text: "Diese Cookies werden verwendet, um Besucher unserer Website zu verfolgen. Die Absicht ist, Anzeigen zu zeigen, die für den einzelnen Benutzer relevant und ansprechend sind und dadurch wertvoller für Verleger und Werbetreibende."

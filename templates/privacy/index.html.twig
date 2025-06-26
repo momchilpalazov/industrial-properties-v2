@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Политика за поверителност - Industrial Properties{% endblock %}
+{% block title %}{{ 'privacy.page_title'|trans({}, 'privacy') }} - Industrial Properties{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -147,94 +147,70 @@
     <!-- Hero Section -->
     <section class="privacy-hero">
         <div class="container">
-            <h1>Политика за обработка на лични данни</h1>
-            <p>Прозрачност и защита на Вашите лични данни са наш приоритет</p>
+            <h1>{{ 'privacy.page_title'|trans({}, 'privacy') }}</h1>
+            <p>{{ 'privacy.page_subtitle'|trans({}, 'privacy') }}</p>
         </div>
     </section>
 
     <div class="container">
         <div class="row">
             <div class="col-12">
-                    <h2>Въведение</h2>
-                    <p>
-                        Настоящата политика за защита на личните данни описва как Industrial Properties събира, 
-                        обработва и съхранява Вашите лични данни в съответствие с Общия регламент за защита на данните 
-                        (GDPR) и приложимото законодателство за защита на личните данни.
-                    </p>
+                <div class="privacy-content">
+                    <h2>{{ 'privacy.sections.introduction.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.introduction.content'|trans({}, 'privacy') }}</p>
                     
-                    <h2>Какви данни събираме</h2>
-                    <p>
-                        Когато изпращате запитване за имот, ние събираме следните данни:
-                    </p>
+                    <h2>{{ 'privacy.sections.data_collection.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.data_collection.intro'|trans({}, 'privacy') }}</p>
                     <ul>
-                        <li>Име</li>
-                        <li>Имейл адрес</li>
-                        <li>Телефонен номер (по желание)</li>
-                        <li>Съдържание на съобщението</li>
-                        <li>Информация за имота, за който се интересувате</li>
+                        {% set data_collection_items = ['privacy.sections.data_collection.items.0', 'privacy.sections.data_collection.items.1', 'privacy.sections.data_collection.items.2', 'privacy.sections.data_collection.items.3', 'privacy.sections.data_collection.items.4'] %}
+                        {% for item_key in data_collection_items %}
+                        <li>{{ item_key|trans({}, 'privacy') }}</li>
+                        {% endfor %}
                     </ul>
                     
-                    <h2>Как използваме Вашите данни</h2>
-                    <p>
-                        Използваме Вашите лични данни за:
-                    </p>
+                    <h2>{{ 'privacy.sections.data_usage.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.data_usage.intro'|trans({}, 'privacy') }}</p>
                     <ul>
-                        <li>Отговор на Вашето запитване за имот</li>
-                        <li>Предоставяне на информация относно имота, който Ви интересува</li>
-                        <li>Осъществяване на контакт с Вас по телефон или имейл</li>
-                        <li>Подобряване на нашите услуги</li>
-                        <li>Спазване на законовите изисквания</li>
+                        {% set data_usage_items = ['privacy.sections.data_usage.items.0', 'privacy.sections.data_usage.items.1', 'privacy.sections.data_usage.items.2', 'privacy.sections.data_usage.items.3', 'privacy.sections.data_usage.items.4'] %}
+                        {% for item_key in data_usage_items %}
+                        <li>{{ item_key|trans({}, 'privacy') }}</li>
+                        {% endfor %}
                     </ul>
                     
-                    <h2>Срок на съхранение</h2>
-                    <p>
-                        Съхраняваме Вашите лични данни за срок не по-дълъг от необходимото за целите, 
-                        за които са били събрани, обикновено до 3 години след последната комуникация с Вас или 
-                        до оттегляне на съгласието Ви.
-                    </p>
+                    <h2>{{ 'privacy.sections.retention.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.retention.content'|trans({}, 'privacy') }}</p>
                     
-                    <h2>Вашите права</h2>
-                    <p>
-                        Съгласно GDPR и приложимото законодателство, имате следните права:
-                    </p>
+                    <h2>{{ 'privacy.sections.rights.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.rights.intro'|trans({}, 'privacy') }}</p>
                     <ul>
-                        <li>Право на достъп до Вашите лични данни</li>
-                        <li>Право на коригиране на неточни лични данни</li>
-                        <li>Право на изтриване ("право да бъдеш забравен")</li>
-                        <li>Право на ограничаване на обработването</li>
-                        <li>Право на преносимост на данните</li>
-                        <li>Право на възражение срещу обработването</li>
-                        <li>Право да оттеглите съгласието си по всяко време</li>
+                        {% set rights_items = ['privacy.sections.rights.items.0', 'privacy.sections.rights.items.1', 'privacy.sections.rights.items.2', 'privacy.sections.rights.items.3', 'privacy.sections.rights.items.4', 'privacy.sections.rights.items.5', 'privacy.sections.rights.items.6'] %}
+                        {% for item_key in rights_items %}
+                        <li>{{ item_key|trans({}, 'privacy') }}</li>
+                        {% endfor %}
                     </ul>
                     
-                    <h2>Сигурност на данните</h2>
-                    <p>
-                        Прилагаме подходящи технически и организационни мерки за защита на Вашите лични данни 
-                        срещу случайно или незаконно унищожаване, загуба, промяна, неоторизирано разкриване или достъп.
-                    </p>
+                    <h2>{{ 'privacy.sections.security.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.security.content'|trans({}, 'privacy') }}</p>
                     
-                    <h2>Контакт с нас</h2>
-                    <p>
-                        Ако имате въпроси или желаете да упражните своите права относно защитата на личните данни, 
-                        моля, свържете се с нас на:
-                    </p>
+                    <h2>{{ 'privacy.sections.contact.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.contact.intro'|trans({}, 'privacy') }}</p>
                     <div class="contact-highlight">
                         <ul>
-                            <li><strong>Имейл:</strong> privacy@industrial-properties.com</li>
-                            <li><strong>Телефон:</strong> +359 2 123 4567</li>
-                            <li><strong>Адрес:</strong> гр. София, ул. "Примерна" №1</li>
+                            <li><strong>{{ 'privacy.sections.contact.email'|trans({}, 'privacy') }}:</strong> privacy@industrial-properties.com</li>
+                            <li><strong>{{ 'privacy.sections.contact.phone'|trans({}, 'privacy') }}:</strong> +359 2 123 4567</li>
+                            <li><strong>{{ 'privacy.sections.contact.address'|trans({}, 'privacy') }}:</strong> {{ 'privacy.sections.contact.address_value'|trans({}, 'privacy') }}</li>
                         </ul>
                     </div>
                     
                     <div class="last-updated">
-                        <strong>Последна актуализация на политиката: {{ "now"|date("d.m.Y") }}</strong>
+                        <strong>{{ 'privacy.sections.last_updated'|trans({}, 'privacy') }}: {{ "now"|date("d.m.Y") }}</strong>
                     </div>
                 </div>
                 
                 <div class="mt-4 text-center">
                     <a href="{{ path('app_home') }}" class="btn-back">
                         <i class="fas fa-arrow-left"></i>
-                        Обратно към началната страница
+                        {{ 'privacy.back_to_home'|trans({}, 'privacy') }}
                     </a>
                 </div>
             </div>

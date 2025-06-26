@@ -1,0 +1,59 @@
+privacy:
+  page_title: "Datenschutzrichtlinie"
+  page_subtitle: "Transparenz und Schutz Ihrer persönlichen Daten sind unsere Priorität"
+  back_to_home: "Zurück zur Startseite"
+  
+  sections:
+    introduction:
+      title: "Einführung"
+      content: "Diese Datenschutzrichtlinie beschreibt, wie Industrial Properties Ihre persönlichen Daten in Übereinstimmung mit der Datenschutz-Grundverordnung (DSGVO) und geltendem Datenschutzrecht sammelt, verarbeitet und speichert."
+    
+    data_collection:
+      title: "Welche Daten wir sammeln"
+      intro: "Wenn Sie eine Immobilienanfrage stellen, sammeln wir folgende Daten:"
+      items:
+        0: "Name"
+        1: "E-Mail-Adresse"
+        2: "Telefonnummer (optional)"
+        3: "Nachrichteninhalt"
+        4: "Informationen über die Immobilie, für die Sie sich interessieren"
+    
+    data_usage:
+      title: "Wie wir Ihre Daten verwenden"
+      intro: "Wir verwenden Ihre personenbezogenen Daten für:"
+      items:
+        0: "Beantwortung Ihrer Immobilienanfrage"
+        1: "Bereitstellung von Informationen über die Immobilie, für die Sie sich interessieren"
+        2: "Kontaktaufnahme mit Ihnen per Telefon oder E-Mail"
+        3: "Verbesserung unserer Dienstleistungen"
+        4: "Einhaltung gesetzlicher Anforderungen"
+    
+    retention:
+      title: "Aufbewahrungsdauer"
+      content: "Wir speichern Ihre personenbezogenen Daten nicht länger als für die Zwecke, für die sie gesammelt wurden, erforderlich ist, normalerweise bis zu 3 Jahre nach der letzten Kommunikation mit Ihnen oder bis zum Widerruf Ihrer Einwilligung."
+    
+    rights:
+      title: "Ihre Rechte"
+      intro: "Unter der DSGVO und geltendem Recht haben Sie folgende Rechte:"
+      items:
+        0: "Recht auf Zugang zu Ihren personenbezogenen Daten"
+        1: "Recht auf Berichtigung unrichtiger personenbezogener Daten"
+        2: "Recht auf Löschung (\"Recht auf Vergessenwerden\")"
+        3: "Recht auf Einschränkung der Verarbeitung"
+        4: "Recht auf Datenübertragbarkeit"
+        5: "Recht auf Widerspruch gegen die Verarbeitung"
+        6: "Recht, Ihre Einwilligung jederzeit zu widerrufen"
+    
+    security:
+      title: "Datensicherheit"
+      content: "Wir setzen angemessene technische und organisatorische Maßnahmen ein, um Ihre persönlichen Daten vor zufälliger oder unrechtmäßiger Zerstörung, Verlust, Veränderung, unbefugter Offenlegung oder unbefugtem Zugriff zu schützen."
+    
+    contact:
+      title: "Kontakt"
+      intro: "Wenn Sie Fragen haben oder Ihre Rechte in Bezug auf den Datenschutz ausüben möchten, kontaktieren Sie uns bitte unter:"
+      email: "E-Mail"
+      phone: "Telefon"
+      address: "Adresse"
+      address_value: "Sofia, \"Beispielstraße\" Nr. 1"
+    
+    last_updated: "Letzte Aktualisierung der Richtlinie"

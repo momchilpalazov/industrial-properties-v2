@@ -1,0 +1,33 @@
+cookies:
+  title: "Cookies and Privacy"
+  main_text: "We use cookies to improve your experience, analyze traffic, and personalize advertisements. By clicking \"Accept All\", you agree to the use of all types of cookies. You can manage your preferences through \"Customize Settings\"."
+  privacy_link: "Learn more about our Privacy Policy"
+  
+  buttons:
+    accept_all: "Accept All"
+    accept_necessary: "Only Necessary"
+    customize: "Customize Settings"
+    back: "Back"
+    save_preferences: "Save Preferences"
+  
+  settings:
+    title: "Cookie Settings"
+    text: "Here you can choose which types of cookies to activate. Necessary cookies are required for the proper functioning of the site."
+    widget_title: "Cookie Settings"
+  
+  types:
+    necessary:
+      title: "Necessary Cookies"
+      text: "These cookies are necessary for the proper functioning of the website and cannot be disabled. They are usually set only in response to actions made by you, such as setting privacy preferences, logging in, or filling out forms."
+    
+    functional:
+      title: "Functional Cookies"
+      text: "These cookies allow the website to provide enhanced functionality and personalization. They may be set by us or by third parties whose services we have added to our pages."
+    
+    analytics:
+      title: "Analytics Cookies"
+      text: "These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site. They help us understand which pages are most popular and how visitors move around the site."
+    
+    marketing:
+      title: "Marketing Cookies"
+      text: "These cookies are used to track visitors to our website. The intention is to display ads that are relevant and engaging for the individual user and thereby more valuable for publishers and advertisers."

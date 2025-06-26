@@ -148,45 +148,6 @@
     <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Преводи за всички езици
-            const allTranslations = {
-                'bg': {
-                    phone: "{{ 'contact.phone'|trans({}, 'contact', 'bg')|escape('js') }}",
-                    email: "{{ 'contact.email'|trans({}, 'contact', 'bg')|escape('js') }}",
-                    address: "{{ 'contact.address'|trans({}, 'contact', 'bg')|escape('js') }}",
-                    working_hours: "{{ 'contact.working_hours'|trans({}, 'contact', 'bg')|escape('js') }}",
-                    find_us: "{{ 'contact.find_us'|trans({}, 'contact', 'bg')|escape('js') }}",
-                    map_error: "{{ 'contact.map_error'|trans({}, 'contact', 'bg')|escape('js') }}"
-                },
-                'en': {
-                    phone: "{{ 'contact.phone'|trans({}, 'contact', 'en')|escape('js') }}",
-                    email: "{{ 'contact.email'|trans({}, 'contact', 'en')|escape('js') }}",
-                    address: "{{ 'contact.address'|trans({}, 'contact', 'en')|escape('js') }}",
-                    working_hours: "{{ 'contact.working_hours'|trans({}, 'contact', 'en')|escape('js') }}",
-                    find_us: "{{ 'contact.find_us'|trans({}, 'contact', 'en')|escape('js') }}",
-                    map_error: "{{ 'contact.map_error'|trans({}, 'contact', 'en')|escape('js') }}"
-                },
-                'de': {
-                    phone: "{{ 'contact.phone'|trans({}, 'contact', 'de')|escape('js') }}",
-                    email: "{{ 'contact.email'|trans({}, 'contact', 'de')|escape('js') }}",
-                    address: "{{ 'contact.address'|trans({}, 'contact', 'de')|escape('js') }}",
-                    working_hours: "{{ 'contact.working_hours'|trans({}, 'contact', 'de')|escape('js') }}",
-                    find_us: "{{ 'contact.find_us'|trans({}, 'contact', 'de')|escape('js') }}",
-                    map_error: "{{ 'contact.map_error'|trans({}, 'contact', 'de')|escape('js') }}"
-                },
-                'ru': {
-                    phone: "{{ 'contact.phone'|trans({}, 'contact', 'ru')|escape('js') }}",
-                    email: "{{ 'contact.email'|trans({}, 'contact', 'ru')|escape('js') }}",
-                    address: "{{ 'contact.address'|trans({}, 'contact', 'ru')|escape('js') }}",
-                    working_hours: "{{ 'contact.working_hours'|trans({}, 'contact', 'ru')|escape('js') }}",
-                    find_us: "{{ 'contact.find_us'|trans({}, 'contact', 'ru')|escape('js') }}",
-                    map_error: "{{ 'contact.map_error'|trans({}, 'contact', 'ru')|escape('js') }}"
-                }
-            };
-            
-            const currentLocale = '{{ app.request.locale }}';
-            const translations = allTranslations[currentLocale] || allTranslations['bg'];
-            
             // Инициализиране на Here Maps
             {% if contact.map_coordinates %}
             (function initializeHomeContactMap() {
@@ -224,26 +185,15 @@
                     // Добавяме маркер за офиса
                     const marker = new H.map.Marker(coordinates);
                     
-                    // Създаваме балон с информация за офиса - използваме преводите
-                    let balloonContent = `
+                    // Създаваме балон с информация за офиса
+                    marker.setData(`
                         <div style="padding: 8px; min-width: 180px; max-width: 220px;">
-                            <h5 style="font-size: 14px; margin-bottom: 5px;">{{ contact.company_name|default('Industrial Properties')|escape('js') }}</h5>`;
-                    
-                    {% if contact.address %}
-                    balloonContent += `<p style="margin-bottom: 5px; font-size: 12px;">{{ contact.address|escape('js') }}</p>`;
-                    {% endif %}
-                    
-                    {% if contact.phone %}
-                    balloonContent += `<p style="margin-bottom: 3px; font-size: 12px;"><strong>${translations.phone}:</strong> {{ contact.phone|escape('js') }}</p>`;
-                    {% endif %}
-                    
-                    {% if contact.email %}
-                    balloonContent += `<p style="margin-bottom: 0; font-size: 12px;"><strong>${translations.email}:</strong> {{ contact.email|escape('js') }}</p>`;
-                    {% endif %}
-                    
-                    balloonContent += `</div>`;
-                    
-                    marker.setData(balloonContent);
+                            <h5 style="font-size: 14px; margin-bottom: 5px;">{{ contact.company_name|default('Industrial Properties')|escape('js') }}</h5>
+                            {% if contact.address %}<p style="margin-bottom: 5px; font-size: 12px;">{{ contact.address|escape('js') }}</p>{% endif %}
+                            {% if contact.phone %}<p style="margin-bottom: 3px; font-size: 12px;"><strong>{{ 'contact.phone'|trans({}, 'contact')|escape('js') }}:</strong> {{ contact.phone|escape('js') }}</p>{% endif %}
+                            {% if contact.email %}<p style="margin-bottom: 0; font-size: 12px;"><strong>{{ 'contact.email'|trans({}, 'contact')|escape('js') }}:</strong> {{ contact.email|escape('js') }}</p>{% endif %}
+                        </div>
+                    `);
                     
                     // Добавяме маркера към картата
                     map.addObject(marker);
@@ -275,19 +225,13 @@
                         ui.addBubble(bubble);
                     }, 1000);
                     
-                    // Обновяваме текста в map overlay според езика
-                    const mapOverlay = document.querySelector('.map-overlay h5');
-                    if (mapOverlay) {
-                        mapOverlay.textContent = translations.find_us;
-                    }
-                    
                     // Ресайз на картата при промяна на размера на прозореца
                     window.addEventListener('resize', () => {
                         map.getViewPort().resize();
                     });
                 } catch (error) {
                     console.error('Грешка при инициализиране на Here Maps:', error);
-                    document.getElementById('home-contact-map').innerHTML = `<div class="alert alert-danger">${translations.map_error}</div>`;
+                    document.getElementById('home-contact-map').innerHTML = '<div class="alert alert-danger">{{ 'contact.map_error'|trans({}, 'contact')|escape('js') }}</div>';
                 }
             })();
             {% endif %}

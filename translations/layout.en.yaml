@@ -14,6 +14,7 @@ language:
   bg: 'Български'
   en: 'English'
   de: 'Deutsch'
+  ru: 'Русский'
 
 footer:
   quick_links: 'Quick Links'

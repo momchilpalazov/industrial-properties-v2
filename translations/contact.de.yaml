@@ -1,15 +1,13 @@
 contact:
   page_title: "Kontakt"
-  page_subtitle: "Wir sind hier, um alle Ihre Fragen zu beantworten"
   info: "Kontaktinformationen"
+  page_subtitle: "Wir sind hier, um alle Ihre Fragen zu beantworten"
   address: "Adresse"
   phone: "Telefon"
   email: "E-Mail"
   working_hours: "Arbeitszeiten"
   follow_us: "Folgen Sie uns"
   location_map: "Standortkarte"
-  find_us: "Finden Sie uns"
-  map_error: "Fehler beim Laden der Karte"
   
   form_title: "Kontakt aufnehmen"
   form:
