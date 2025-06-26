@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-  <!-- Фон с единичен цвят -->
-  <rect width="64" height="64" rx="8" fill="#2D3748" />
-  
-  <!-- IP текст в центъра -->
-  <text x="32" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="32" fill="#4299E1">IP</text>
-</svg> 

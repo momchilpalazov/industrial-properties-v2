@@ -1,16 +1,16 @@
 # Home page translations - German
 home:
   meta:
-    description: 'Entdecken Sie die besten Industrieimmobilien in Bulgarien. Lagerhallen, Produktionsanlagen, Logistikzentren zur Miete und zum Verkauf.'
-    keywords: 'Industrieimmobilien Bulgarien, Lagerhallen zur Miete, Produktionsanlagen zum Verkauf, Logistikzentren, Industriezonen'
-  
+    description: 'Entdecken Sie die besten Industrieimmobilien. Lagerhallen, Produktionsanlagen, Logistikzentren zur Miete und zum Verkauf.'
+    keywords: 'Industrieimmobilien, Lagerhallen zur Miete, Produktionsanlagen zum Verkauf, Logistikzentren, Industriezonen'
+
   ui:
     scroll_text: 'Entdecken Sie unsere Dienstleistungen'
     no_image: 'Kein Bild verfügbar'
     area_unit: 'm²'
   
   hero:
-    title: 'Industrieimmobilien in Bulgarien'
+    title: 'Industrieimmobilien in Europa'
     subtitle: 'Entdecken Sie die besten Lagerhäuser, Produktionsstätten und Logistikzentren zur Miete und zum Verkauf'
     cta: 'IMMOBILIEN ANSEHEN'
   

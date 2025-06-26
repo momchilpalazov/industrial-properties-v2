@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Modern gradient background -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e40af" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    
+    <!-- Industrial building gradient -->
+    <linearGradient id="buildingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+    
+    <!-- EU star gradient -->
+    <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background with rounded corners -->
+  <rect width="64" height="64" rx="12" fill="url(#bgGradient)" />
+  
+  <!-- Industrial building silhouette -->
+  <g transform="translate(8, 18)">
+    <!-- Main factory building -->
+    <rect x="4" y="16" width="20" height="26" fill="url(#buildingGradient)" rx="1" />
+    
+    <!-- Chimney 1 -->
+    <rect x="8" y="8" width="3" height="8" fill="url(#buildingGradient)" />
+    
+    <!-- Chimney 2 - taller -->
+    <rect x="14" y="4" width="4" height="12" fill="url(#buildingGradient)" />
+    
+    <!-- Factory roof -->
+    <polygon points="4,16 7,10 21,10 24,16" fill="#cbd5e1" />
+    
+    <!-- Windows -->
+    <rect x="7" y="22" width="3" height="3" fill="#3b82f6" opacity="0.8" />
+    <rect x="12" y="22" width="3" height="3" fill="#3b82f6" opacity="0.8" />
+    <rect x="17" y="22" width="3" height="3" fill="#3b82f6" opacity="0.8" />
+    
+    <!-- Large entrance door -->
+    <rect x="10" y="30" width="8" height="12" fill="#1e40af" />
+    
+    <!-- Smoke from chimneys -->
+    <circle cx="9.5" cy="6" r="1" fill="#e2e8f0" opacity="0.6" />
+    <circle cx="11" cy="4" r="0.8" fill="#e2e8f0" opacity="0.4" />
+    <circle cx="16" cy="2" r="1.2" fill="#e2e8f0" opacity="0.6" />
+    <circle cx="18" cy="1" r="0.8" fill="#e2e8f0" opacity="0.4" />
+  </g>
+  
+  <!-- EU star (representing European focus) -->
+  <g transform="translate(48, 12)">
+    <path d="M 0,-6 L 1.8,-1.8 L 6,0 L 1.8,1.8 L 0,6 L -1.8,1.8 L -6,0 L -1.8,-1.8 Z" 
+          fill="url(#starGradient)" 
+          stroke="#ffffff" 
+          stroke-width="0.5" />
+  </g>
+  
+  <!-- Subtle "IP" monogram in corner -->
+  <text x="12" y="55" font-family="Arial, sans-serif" font-weight="bold" font-size="8" fill="#ffffff" opacity="0.9">IP</text>
+</svg>

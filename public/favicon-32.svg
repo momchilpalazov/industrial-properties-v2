@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e40af" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="buildingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="url(#bgGradient)" />
+  
+  <!-- Simplified industrial building for small size -->
+  <g transform="translate(4, 9)">
+    <!-- Main building -->
+    <rect x="2" y="8" width="10" height="13" fill="url(#buildingGradient)" rx="0.5" />
+    
+    <!-- Chimney -->
+    <rect x="4" y="4" width="2" height="4" fill="url(#buildingGradient)" />
+    <rect x="7" y="2" width="2" height="6" fill="url(#buildingGradient)" />
+    
+    <!-- Roof -->
+    <polygon points="2,8 3.5,5 10.5,5 12,8" fill="#cbd5e1" />
+    
+    <!-- Windows -->
+    <rect x="3.5" y="11" width="1.5" height="1.5" fill="#3b82f6" opacity="0.8" />
+    <rect x="6" y="11" width="1.5" height="1.5" fill="#3b82f6" opacity="0.8" />
+    <rect x="8.5" y="11" width="1.5" height="1.5" fill="#3b82f6" opacity="0.8" />
+    
+    <!-- Door -->
+    <rect x="5" y="15" width="4" height="6" fill="#1e40af" />
+    
+    <!-- Smoke -->
+    <circle cx="5" cy="3" r="0.5" fill="#e2e8f0" opacity="0.6" />
+    <circle cx="8" cy="1.5" r="0.6" fill="#e2e8f0" opacity="0.6" />
+  </g>
+  
+  <!-- EU star -->
+  <g transform="translate(24, 6)">
+    <path d="M 0,-3 L 0.9,-0.9 L 3,0 L 0.9,0.9 L 0,3 L -0.9,0.9 L -3,0 L -0.9,-0.9 Z" 
+          fill="#fbbf24" 
+          stroke="#ffffff" 
+          stroke-width="0.3" />
+  </g>
+</svg>

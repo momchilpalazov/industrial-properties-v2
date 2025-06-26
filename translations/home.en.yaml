@@ -1,8 +1,8 @@
 # Home page translations - English
 home:
   meta:
-    description: 'Discover the best industrial properties in Bulgaria. Warehouses, production facilities, logistics centers for rent and sale.'
-    keywords: 'industrial properties Bulgaria, warehouses for rent, production facilities for sale, logistics centers, industrial zones'
+    description: 'Discover the best industrial properties. Warehouses, production facilities, logistics centers for rent and sale.'
+    keywords: 'industrial properties, warehouses for rent, production facilities for sale, logistics centers, industrial zones'
   
   ui:
     scroll_text: 'Explore our services'
@@ -10,7 +10,7 @@ home:
     area_unit: 'm²'
   
   hero:
-    title: 'Industrial Properties in Bulgaria'
+    title: 'Industrial Properties in Europa'
     subtitle: 'Discover the best warehouses, production facilities and logistics centers for rent and sale'
     cta: 'VIEW PROPERTIES'
   
