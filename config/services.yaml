@@ -16,6 +16,7 @@ parameters:
     app.here_maps_default_lat: '%env(float:HERE_MAPS_DEFAULT_LAT)%'
     app.here_maps_default_lng: '%env(float:HERE_MAPS_DEFAULT_LNG)%'
     app.here_maps_default_zoom: '%env(int:HERE_MAPS_DEFAULT_ZOOM)%'
+    app.openai_api_key: '%env(OPENAI_API_KEY)%'
 
 services:
     _defaults:
@@ -85,3 +86,8 @@ services:
     App\Service\OgImageService:
         arguments:
             $projectDir: '%kernel.project_dir%'
+
+    App\Service\AiChatbotService:
+        arguments:
+            $openAiApiKey: '%app.openai_api_key%'
+            $aiDataService: '@App\Service\AiDataService'
