@@ -1,0 +1,446 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}AI Settings - Admin{% endblock %}
+
+{% block page_header %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="h3">AI Assistant Settings</h1>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-primary" id="test-provider-btn">
+                <i class="fas fa-flask"></i> Test Provider
+            </button>
+            <button type="button" class="btn btn-outline-info" id="refresh-stats-btn">
+                <i class="fas fa-sync"></i> Refresh Stats
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+<div class="row">
+    <!-- AI Provider Settings -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-robot"></i> AI Provider Configuration
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Current AI Provider</label>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-{{ current_provider == 'deepseek' ? 'success' : 'primary' }} fs-6 me-2">
+                                    {{ current_provider == 'deepseek' ? '🆓 DeepSeek' : '💰 OpenAI' }}
+                                </span>
+                                <span class="text-muted">
+                                    {{ available_providers[current_provider].name ?? 'Unknown' }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="provider-select" class="form-label">Switch Provider</label>
+                            <select class="form-select" id="provider-select">
+                                {% for provider_key, provider_info in available_providers %}
+                                    <option value="{{ provider_key }}" 
+                                            {{ provider_key == current_provider ? 'selected' : '' }}
+                                            data-free="{{ provider_info.free ? 'true' : 'false' }}">
+                                        {{ provider_info.free ? '🆓' : '💰' }} {{ provider_info.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">
+                                Free providers have usage limitations but cost nothing. 
+                                Paid providers offer better performance and higher limits.
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-primary" id="save-provider-btn">
+                                <i class="fas fa-save"></i> Save Provider Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">Provider Comparison</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Feature</th>
+                                                <th>DeepSeek</th>
+                                                <th>OpenAI</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Cost</td>
+                                                <td><span class="badge bg-success">Free</span></td>
+                                                <td><span class="badge bg-warning">Paid</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Speed</td>
+                                                <td>Good</td>
+                                                <td>Excellent</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Accuracy</td>
+                                                <td>Very Good</td>
+                                                <td>Excellent</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Languages</td>
+                                                <td>Multi-lingual</td>
+                                                <td>Multi-lingual</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Display -->
+                <div class="mt-4" id="provider-status">
+                    <div class="alert alert-{{ chatbot_configured ? 'success' : 'warning' }}" role="alert">
+                        <i class="fas fa-{{ chatbot_configured ? 'check-circle' : 'exclamation-triangle' }}"></i>
+                        {{ chatbot_configured ? 'AI Assistant is properly configured and ready' : 'AI Assistant needs configuration' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-bar"></i> Usage Statistics
+                </h5>
+            </div>
+            <div class="card-body" id="stats-container">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading statistics...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div class="card mt-3" id="test-results-card" style="display: none;">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-vial"></i> Test Results
+                </h5>
+            </div>
+            <div class="card-body" id="test-results-container">
+                <!-- Test results will be populated here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Provider Documentation -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-book"></i> AI Provider Documentation
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>DeepSeek (Free Provider)</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Free to use</li>
+                            <li><i class="fas fa-check text-success"></i> Good multilingual support</li>
+                            <li><i class="fas fa-check text-success"></i> Suitable for basic queries</li>
+                            <li><i class="fas fa-info text-info"></i> Rate limited</li>
+                            <li><i class="fas fa-info text-info"></i> May have slower response times</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>OpenAI GPT-3.5 (Paid Provider)</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Excellent accuracy</li>
+                            <li><i class="fas fa-check text-success"></i> Fast response times</li>
+                            <li><i class="fas fa-check text-success"></i> Advanced reasoning</li>
+                            <li><i class="fas fa-exclamation text-warning"></i> Requires API key</li>
+                            <li><i class="fas fa-exclamation text-warning"></i> Usage costs apply</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block admin_javascripts %}
+<script>
+class AiSettingsManager {
+    constructor() {
+        this.currentProvider = '{{ current_provider }}';
+        this.apiBaseUrl = '{{ path("admin_ai_api_get_provider")|replace({"/provider": ""}) }}';
+        this.init();
+    }
+
+    init() {
+        this.attachEventListeners();
+        this.loadStats();
+    }
+
+    attachEventListeners() {
+        // Save provider button
+        document.getElementById('save-provider-btn').addEventListener('click', () => {
+            this.saveProvider();
+        });
+
+        // Test provider button
+        document.getElementById('test-provider-btn').addEventListener('click', () => {
+            this.testProvider();
+        });
+
+        // Refresh stats button
+        document.getElementById('refresh-stats-btn').addEventListener('click', () => {
+            this.loadStats();
+        });
+
+        // Provider select change
+        document.getElementById('provider-select').addEventListener('change', (e) => {
+            this.updateProviderInfo(e.target.value);
+        });
+    }
+
+    async saveProvider() {
+        const providerSelect = document.getElementById('provider-select');
+        const saveBtn = document.getElementById('save-provider-btn');
+        const provider = providerSelect.value;
+
+        if (provider === this.currentProvider) {
+            this.showAlert('info', 'Provider is already set to ' + provider);
+            return;
+        }
+
+        // Update button state
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        saveBtn.disabled = true;
+
+        try {
+            const response = await fetch(this.apiBaseUrl + '/provider', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ provider: provider })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.currentProvider = data.data.provider;
+                this.showAlert('success', `AI provider switched to ${data.data.provider_info.name} successfully!`);
+                this.updateProviderDisplay();
+            } else {
+                this.showAlert('danger', 'Failed to switch provider: ' + (data.error.message || 'Unknown error'));
+            }
+        } catch (error) {
+            this.showAlert('danger', 'Network error while switching provider: ' + error.message);
+        } finally {
+            saveBtn.innerHTML = originalText;
+            saveBtn.disabled = false;
+        }
+    }
+
+    async testProvider() {
+        const testBtn = document.getElementById('test-provider-btn');
+        const testCard = document.getElementById('test-results-card');
+        const testContainer = document.getElementById('test-results-container');
+
+        // Update button state
+        const originalText = testBtn.innerHTML;
+        testBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing...';
+        testBtn.disabled = true;
+
+        // Show test card
+        testCard.style.display = 'block';
+        testContainer.innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Testing...</span>
+                </div>
+                <p class="mt-2 text-muted">Testing AI provider connection...</p>
+            </div>
+        `;
+
+        try {
+            const response = await fetch(this.apiBaseUrl + '/test-provider', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ provider: this.currentProvider })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                testContainer.innerHTML = `
+                    <div class="alert alert-success" role="alert">
+                        <i class="fas fa-check-circle"></i> Provider test successful!
+                    </div>
+                    <div class="mt-3">
+                        <h6>Test Details:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Provider:</strong> ${data.data.provider}</li>
+                            <li><strong>Status:</strong> <span class="badge bg-success">Working</span></li>
+                            <li><strong>Sample Response:</strong></li>
+                            <div class="border p-2 mt-1 bg-light small">
+                                ${data.data.test_response}
+                            </div>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                testContainer.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> Provider test failed!
+                    </div>
+                    <div class="mt-3">
+                        <h6>Error Details:</h6>
+                        <p class="text-danger">${data.error.message}</p>
+                        ${data.error.details ? `<p class="text-muted small">${data.error.details}</p>` : ''}
+                    </div>
+                `;
+            }
+        } catch (error) {
+            testContainer.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-circle"></i> Network error during test!
+                </div>
+                <p class="text-danger">${error.message}</p>
+            `;
+        } finally {
+            testBtn.innerHTML = originalText;
+            testBtn.disabled = false;
+        }
+    }
+
+    async loadStats() {
+        const statsContainer = document.getElementById('stats-container');
+        
+        try {
+            const response = await fetch(this.apiBaseUrl + '/stats');
+            const data = await response.json();
+
+            if (data.success) {
+                const stats = data.data;
+                statsContainer.innerHTML = `
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="border-end">
+                                <h4 class="text-primary">${stats.total_conversations}</h4>
+                                <small class="text-muted">Total Conversations</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-success">${stats.total_messages}</h4>
+                            <small class="text-muted">Total Messages</small>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="mt-3">
+                        <h6>Last 24 Hours</h6>
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">Conversations:</small>
+                                <div class="fw-bold">${stats.last_24h.conversations}</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Messages:</small>
+                                <div class="fw-bold">${stats.last_24h.messages}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="mt-3">
+                        <h6>Provider Uptime</h6>
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">DeepSeek:</small>
+                                <div class="fw-bold text-success">${stats.provider_uptime.deepseek}</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">OpenAI:</small>
+                                <div class="fw-bold text-success">${stats.provider_uptime.openai}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                statsContainer.innerHTML = `
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Failed to load statistics
+                    </div>
+                `;
+            }
+        } catch (error) {
+            statsContainer.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Error loading statistics: ${error.message}
+                </div>
+            `;
+        }
+    }
+
+    updateProviderInfo(provider) {
+        const option = document.querySelector(`#provider-select option[value="${provider}"]`);
+        const isFree = option.getAttribute('data-free') === 'true';
+        
+        // Update visual indication
+        const badge = document.querySelector('.badge');
+        if (badge) {
+            badge.className = `badge bg-${isFree ? 'success' : 'primary'} fs-6 me-2`;
+            badge.textContent = `${isFree ? '🆓' : '💰'} ${option.textContent.split(' ').slice(1).join(' ')}`;
+        }
+    }
+
+    updateProviderDisplay() {
+        // Refresh the page to show updated provider
+        setTimeout(() => {
+            window.location.reload();
+        }, 1500);
+    }
+
+    showAlert(type, message) {
+        const statusDiv = document.getElementById('provider-status');
+        statusDiv.innerHTML = `
+            <div class="alert alert-${type}" role="alert">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-circle' : 'info-circle'}"></i>
+                ${message}
+            </div>
+        `;
+    }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    new AiSettingsManager();
+});
+</script>
+{% endblock %}

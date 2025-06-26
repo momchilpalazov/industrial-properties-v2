@@ -249,7 +249,7 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Chatbot JavaScript -->
-    <script src="{{ asset('js/chatbot.js') }}"></script>
+    <script src="{{ asset('js/chatbot-new.js') }}"></script>
     <!-- Webpack assets -->
     {{ encore_entry_script_tags('app') }}
     {{ encore_entry_script_tags('layout') }}
@@ -268,6 +268,22 @@
                     });
             });
         }
+        
+        // Fallback chatbot initialization
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (!document.querySelector('.chatbot-widget')) {
+                    console.log('Creating fallback chatbot widget...');
+                    const widget = document.createElement('div');
+                    widget.innerHTML = `
+                        <div style="position: fixed; bottom: 20px; right: 20px; z-index: 10000; width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" onclick="alert('Chatbot is loading... Please refresh the page.')">
+                            💬
+                        </div>
+                    `;
+                    document.body.appendChild(widget);
+                }
+            }, 2000);
+        });
     </script>
 </body>
 </html>

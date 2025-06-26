@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Chatbot Test</title>
+    <link href="/css/chatbot.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Final Chatbot Test</h1>
+    <p>This is the final test to debug the chatbot issue.</p>
+    <button onclick="window.location.reload()">Reload Page</button>
+    
+    <script>
+        // Log everything step by step
+        console.log('1. Page started loading...');
+        
+        // Check if CSS is loaded
+        setTimeout(() => {
+            console.log('2. Checking CSS...');
+            const testEl = document.createElement('div');
+            testEl.className = 'chatbot-widget';
+            document.body.appendChild(testEl);
+            const computed = window.getComputedStyle(testEl);
+            console.log('CSS position:', computed.position);
+            console.log('CSS z-index:', computed.zIndex);
+            testEl.remove();
+        }, 100);
+    </script>
+    
+    <script src="/js/chatbot.js"></script>
+    
+    <script>
+        // Final check
+        setTimeout(() => {
+            console.log('3. Final check after 3 seconds...');
+            console.log('Widget count:', document.querySelectorAll('.chatbot-widget').length);
+            console.log('Chatbot instance:', !!window.industrialPropertiesChatbot);
+            console.log('Class available:', !!window.IndustrialPropertiesChatbot);
+            
+            if (document.querySelectorAll('.chatbot-widget').length === 0) {
+                console.log('4. No widget found - creating manually...');
+                try {
+                    new window.IndustrialPropertiesChatbot();
+                    console.log('5. Manual creation successful');
+                } catch (e) {
+                    console.error('5. Manual creation failed:', e);
+                }
+            } else {
+                console.log('4. Widget found successfully!');
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

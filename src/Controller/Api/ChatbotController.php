@@ -189,7 +189,7 @@ class ChatbotController extends AbstractController
     {
         $isConfigured = $this->chatbotService->isConfigured();
         
-        return new JsonResponse([
+        $response = new JsonResponse([
             'success' => true,
             'data' => [
                 'status' => $isConfigured ? 'healthy' : 'not_configured',
@@ -202,6 +202,13 @@ class ChatbotController extends AbstractController
                 ]
             ]
         ], $isConfigured ? Response::HTTP_OK : Response::HTTP_SERVICE_UNAVAILABLE);
+        
+        // Add CORS headers
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
+        
+        return $response;
     }
 
     /**
@@ -226,6 +233,60 @@ class ChatbotController extends AbstractController
                 'locale' => $locale,
                 'initial_suggestions' => $this->getContextualSuggestions('welcome', $locale),
                 'user_preferences' => $userPreferences
+            ]
+        ]);
+    }
+
+    /**
+     * Get available AI providers
+     */
+    #[Route('/providers', name: 'providers', methods: ['GET'])]
+    public function providers(): JsonResponse
+    {
+        return new JsonResponse([
+            'success' => true,
+            'data' => [
+                'current_provider' => $this->chatbotService->getCurrentProvider(),
+                'available_providers' => $this->chatbotService->getAvailableProviders()
+            ]
+        ]);
+    }
+
+    /**
+     * Set AI provider
+     */
+    #[Route('/provider', name: 'set_provider', methods: ['POST'])]
+    public function setProvider(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        
+        if (!$data || !isset($data['provider'])) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => [
+                    'message' => 'Provider is required',
+                    'code' => 'MISSING_PROVIDER'
+                ]
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $success = $this->chatbotService->setProvider($data['provider']);
+        
+        if (!$success) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => [
+                    'message' => 'Invalid or unavailable provider',
+                    'code' => 'INVALID_PROVIDER'
+                ]
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse([
+            'success' => true,
+            'data' => [
+                'provider' => $this->chatbotService->getCurrentProvider(),
+                'message' => 'Provider switched successfully'
             ]
         ]);
     }

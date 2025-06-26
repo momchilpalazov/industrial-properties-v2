@@ -3,29 +3,58 @@
 namespace App\Service;
 
 use App\Service\AiDataService;
-use OpenAI\Client;
-use OpenAI\Factory;
+use OpenAI\Client as OpenAIClient;
+use OpenAI\Factory as OpenAIFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AiChatbotService
 {
     private const MAX_CONTEXT_PROPERTIES = 5;
     private const MAX_TOKENS = 1000;
-    private const MODEL = 'gpt-3.5-turbo';
+    
+    // AI Provider constants
+    private const PROVIDER_OPENAI = 'openai';
+    private const PROVIDER_DEEPSEEK = 'deepseek';
+    
+    // Model configurations
+    private const MODELS = [
+        self::PROVIDER_OPENAI => [
+            'model' => 'gpt-3.5-turbo',
+            'endpoint' => 'https://api.openai.com/v1/chat/completions',
+            'free' => false,
+            'name' => 'OpenAI GPT-3.5 Turbo'
+        ],
+        self::PROVIDER_DEEPSEEK => [
+            'model' => 'deepseek-chat',
+            'endpoint' => 'https://api.deepseek.com/v1/chat/completions',
+            'free' => true,
+            'name' => 'DeepSeek Chat (Free)'
+        ]
+    ];
 
-    private ?Client $openAi = null;
+    private ?OpenAIClient $openAi = null;
+    private string $currentProvider;
 
     public function __construct(
         private AiDataService $aiDataService,
-        private string $openAiApiKey
+        private string $openAiApiKey,
+        private string $deepSeekApiKey,
+        private HttpClientInterface $httpClient,
+        private string $defaultProvider = self::PROVIDER_DEEPSEEK // Default to free option
     ) {
-        // Only initialize if API key is provided and not placeholder
-        if ($this->isConfigured()) {
+        $this->currentProvider = $this->defaultProvider;
+        $this->initializeProviders();
+    }
+
+    private function initializeProviders(): void
+    {
+        // Initialize OpenAI if key is available
+        if ($this->isProviderConfigured(self::PROVIDER_OPENAI)) {
             try {
-                $factory = new Factory();
+                $factory = new OpenAIFactory();
                 $this->openAi = $factory->withApiKey($this->openAiApiKey)->make();
             } catch (\Exception $e) {
-                // Log error but continue - service will work in fallback mode
                 error_log("OpenAI client initialization failed: " . $e->getMessage());
             }
         }
@@ -36,6 +65,15 @@ class AiChatbotService
      */
     public function processMessage(string $message, string $locale = 'en', array $context = []): array
     {
+        // Auto-select best available provider if current one is not configured
+        if (!$this->isProviderConfigured($this->currentProvider)) {
+            $this->currentProvider = $this->getBestAvailableProvider();
+        }
+
+        if (!$this->isProviderConfigured($this->currentProvider)) {
+            return $this->getFallbackResponseArray($message, $locale);
+        }
+
         try {
             // Get relevant properties based on the message
             $relevantProperties = $this->findRelevantProperties($message, $locale);
@@ -54,31 +92,19 @@ class AiChatbotService
                 array_splice($messages, -1, 0, $context['conversation_history']);
             }
 
-            // Call OpenAI API
-            $response = $this->openAi->chat()->create([
-                'model' => self::MODEL,
-                'messages' => $messages,
-                'max_tokens' => self::MAX_TOKENS,
-                'temperature' => 0.7,
-                'top_p' => 0.9,
-                'frequency_penalty' => 0.0,
-                'presence_penalty' => 0.6,
-            ]);
-
-            $aiResponse = $response->choices[0]->message->content;
+            // Call AI API based on provider
+            $response = $this->callAIProvider($messages);
 
             return [
                 'success' => true,
-                'response' => $aiResponse,
+                'response' => $response['content'],
                 'properties_context' => $relevantProperties,
                 'conversation_id' => $context['conversation_id'] ?? uniqid('chat_'),
                 'locale' => $locale,
-                'usage' => [
-                    'prompt_tokens' => $response->usage->promptTokens,
-                    'completion_tokens' => $response->usage->completionTokens,
-                    'total_tokens' => $response->usage->totalTokens,
-                ],
+                'usage' => $response['usage'] ?? null,
                 'suggestions' => $this->generateFollowUpSuggestions($message, $locale),
+                'provider' => $this->currentProvider,
+                'model' => self::MODELS[$this->currentProvider]['name']
             ];
 
         } catch (\Exception $e) {
@@ -89,9 +115,193 @@ class AiChatbotService
                     'code' => 'AI_SERVICE_ERROR',
                     'details' => $e->getMessage()
                 ],
-                'fallback_response' => $this->getFallbackResponse($message, $locale)
+                'fallback_response' => $this->getFallbackResponse($message, $locale),
+                'provider' => $this->currentProvider
             ];
         }
+    }
+
+    /**
+     * Call AI provider based on current selection
+     */
+    private function callAIProvider(array $messages): array
+    {
+        switch ($this->currentProvider) {
+            case self::PROVIDER_OPENAI:
+                return $this->callOpenAI($messages);
+            case self::PROVIDER_DEEPSEEK:
+                return $this->callDeepSeek($messages);
+            default:
+                throw new \Exception('Invalid AI provider: ' . $this->currentProvider);
+        }
+    }
+
+    /**
+     * Call OpenAI API
+     */
+    private function callOpenAI(array $messages): array
+    {
+        if (!$this->openAi) {
+            throw new \Exception('OpenAI client not initialized');
+        }
+
+        $response = $this->openAi->chat()->create([
+            'model' => self::MODELS[self::PROVIDER_OPENAI]['model'],
+            'messages' => $messages,
+            'max_tokens' => self::MAX_TOKENS,
+            'temperature' => 0.7,
+            'top_p' => 0.9,
+            'frequency_penalty' => 0.0,
+            'presence_penalty' => 0.6,
+        ]);
+
+        return [
+            'content' => $response->choices[0]->message->content,
+            'usage' => [
+                'prompt_tokens' => $response->usage->promptTokens,
+                'completion_tokens' => $response->usage->completionTokens,
+                'total_tokens' => $response->usage->totalTokens,
+            ]
+        ];
+    }
+
+    /**
+     * Call DeepSeek API
+     */
+    private function callDeepSeek(array $messages): array
+    {
+        $response = $this->httpClient->request('POST', self::MODELS[self::PROVIDER_DEEPSEEK]['endpoint'], [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->deepSeekApiKey,
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'model' => self::MODELS[self::PROVIDER_DEEPSEEK]['model'],
+                'messages' => $messages,
+                'max_tokens' => self::MAX_TOKENS,
+                'temperature' => 0.7,
+                'stream' => false
+            ]
+        ]);
+
+        $data = $response->toArray();
+
+        if (!isset($data['choices'][0]['message']['content'])) {
+            throw new \Exception('Invalid DeepSeek API response');
+        }
+
+        return [
+            'content' => $data['choices'][0]['message']['content'],
+            'usage' => $data['usage'] ?? null
+        ];
+    }
+
+    /**
+     * Set AI provider
+     */
+    public function setProvider(string $provider): bool
+    {
+        if (!array_key_exists($provider, self::MODELS)) {
+            return false;
+        }
+
+        if (!$this->isProviderConfigured($provider)) {
+            return false;
+        }
+
+        $this->currentProvider = $provider;
+        return true;
+    }
+
+    /**
+     * Get current provider
+     */
+    public function getCurrentProvider(): string
+    {
+        return $this->currentProvider;
+    }
+
+    /**
+     * Get available providers
+     */
+    public function getAvailableProviders(): array
+    {
+        $providers = [];
+        foreach (self::MODELS as $key => $config) {
+            $providers[$key] = [
+                'name' => $config['name'],
+                'free' => $config['free'],
+                'available' => $this->isProviderConfigured($key),
+                'current' => $key === $this->currentProvider
+            ];
+        }
+        return $providers;
+    }
+
+    /**
+     * Check if provider is configured
+     */
+    private function isProviderConfigured(string $provider): bool
+    {
+        switch ($provider) {
+            case self::PROVIDER_OPENAI:
+                return !empty($this->openAiApiKey) && 
+                       $this->openAiApiKey !== 'your_openai_api_key_here' &&
+                       $this->openAiApiKey !== 'sk-your-real-openai-api-key-here';
+            case self::PROVIDER_DEEPSEEK:
+                return !empty($this->deepSeekApiKey) && 
+                       $this->deepSeekApiKey !== 'your_deepseek_api_key_here';
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Get best available provider (prefers free options)
+     */
+    private function getBestAvailableProvider(): string
+    {
+        // Prefer free providers first
+        foreach (self::MODELS as $provider => $config) {
+            if ($config['free'] && $this->isProviderConfigured($provider)) {
+                return $provider;
+            }
+        }
+
+        // Fallback to any available provider
+        foreach (self::MODELS as $provider => $config) {
+            if ($this->isProviderConfigured($provider)) {
+                return $provider;
+            }
+        }
+
+        return self::PROVIDER_DEEPSEEK; // Default fallback
+    }
+
+    /**
+     * Check if any AI provider is configured
+     */
+    public function isConfigured(): bool
+    {
+        foreach (array_keys(self::MODELS) as $provider) {
+            if ($this->isProviderConfigured($provider)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function getFallbackResponseArray(string $message, string $locale): array
+    {
+        return [
+            'success' => false,
+            'error' => [
+                'message' => 'No AI providers configured',
+                'code' => 'NO_PROVIDERS_AVAILABLE'
+            ],
+            'fallback_response' => $this->getFallbackResponse($message, $locale),
+            'provider' => 'none'
+        ];
     }
 
     /**
@@ -321,15 +531,5 @@ URL: {$property['url']}
         
         // Limit length
         return substr($cleaned, 0, 500);
-    }
-
-    /**
-     * Check if API key is configured
-     */
-    public function isConfigured(): bool
-    {
-        return !empty($this->openAiApiKey) && 
-               $this->openAiApiKey !== 'your_openai_api_key_here' &&
-               $this->openAiApiKey !== 'sk-your-real-openai-api-key-here';
     }
 }

@@ -17,6 +17,7 @@ parameters:
     app.here_maps_default_lng: '%env(float:HERE_MAPS_DEFAULT_LNG)%'
     app.here_maps_default_zoom: '%env(int:HERE_MAPS_DEFAULT_ZOOM)%'
     app.openai_api_key: '%env(OPENAI_API_KEY)%'
+    app.deepseek_api_key: '%env(DEEPSEEK_API_KEY)%'
 
 services:
     _defaults:
@@ -90,4 +91,7 @@ services:
     App\Service\AiChatbotService:
         arguments:
             $openAiApiKey: '%app.openai_api_key%'
+            $deepSeekApiKey: '%app.deepseek_api_key%'
+            $httpClient: '@http_client'
             $aiDataService: '@App\Service\AiDataService'
+            $defaultProvider: 'deepseek'

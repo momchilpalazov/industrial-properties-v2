@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Debug Test</title>
+    <link href="/css/chatbot.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Chatbot Debug Test - UPDATED</h1>
+    <p>This page is for testing the chatbot widget with latest fixes.</p>
+    
+    <div id="debug-info" style="position: fixed; top: 10px; left: 10px; background: white; border: 1px solid #ccc; padding: 10px; z-index: 99999; max-width: 300px;">
+        <h5>Debug Info:</h5>
+        <div id="debug-content">Loading...</div>
+    </div>
+    
+    <!-- Test script to debug the chatbot -->
+    <script>
+        console.log('Debug page loaded with updated chatbot');
+        
+        // Enhanced logging
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        const debugDiv = document.getElementById('debug-content');
+        let debugMessages = [];
+        
+        function updateDebugDiv() {
+            debugDiv.innerHTML = debugMessages.slice(-10).join('<br>');
+        }
+        
+        console.log = function(...args) {
+            const message = args.join(' ');
+            debugMessages.push(`[LOG] ${message}`);
+            updateDebugDiv();
+            originalLog.apply(console, args);
+        };
+        
+        console.error = function(...args) {
+            const message = args.join(' ');
+            debugMessages.push(`[ERROR] ${message}`);
+            updateDebugDiv();
+            originalError.apply(console, args);
+        };
+        
+        // Log script loading
+        console.log('Starting updated chatbot script load...');
+    </script>
+    
+    <script src="/js/chatbot-new.js"></script>
+    
+    <script>
+        // Enhanced debug info after chatbot loads
+        setTimeout(() => {
+            console.log('=== 3 Second Debug Check ===');
+            console.log('Chatbot widget elements:', document.querySelectorAll('.chatbot-widget').length);
+            console.log('Chatbot global exists:', !!window.industrialPropertiesChatbot);
+            console.log('Class available:', !!window.IndustrialPropertiesChatbot);
+            
+            const widget = document.querySelector('.chatbot-widget');
+            if (widget) {
+                console.log('Widget found!');
+                const status = document.getElementById('chatbot-status');
+                const input = document.getElementById('chatbot-input');
+                console.log('Status text:', status ? status.textContent : 'Not found');
+                console.log('Input disabled:', input ? input.disabled : 'Not found');
+                console.log('Input placeholder:', input ? input.placeholder : 'Not found');
+            } else {
+                console.log('Widget NOT found');
+            }
+            
+            // Manual test button
+            const testBtn = document.createElement('button');
+            testBtn.textContent = 'Manual Test Send';
+            testBtn.style.position = 'fixed';
+            testBtn.style.bottom = '10px';
+            testBtn.style.left = '10px';
+            testBtn.style.zIndex = '99999';
+            testBtn.style.background = 'green';
+            testBtn.style.color = 'white';
+            testBtn.style.padding = '10px';
+            testBtn.onclick = () => {
+                const input = document.getElementById('chatbot-input');
+                if (input) {
+                    input.value = 'Test message from debug';
+                    if (window.industrialPropertiesChatbot) {
+                        window.industrialPropertiesChatbot.sendMessage();
+                    }
+                }
+            };
+            document.body.appendChild(testBtn);
+            
+        }, 3000);
+    </script>
+</body>
+</html>
