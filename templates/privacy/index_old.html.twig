@@ -1,0 +1,220 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'privacy.page_title'|trans({}, 'privacy') }} - Industrial Properties{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Privacy Policy Page Styles - Consistent with other templates */
+        .privacy-page {
+            padding-top: 120px; /* Added padding between navigation and main content */
+            padding-bottom: 5rem;
+            background: #f8fafc;
+        }
+        
+        .privacy-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .privacy-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(51, 65, 85, 0.6));
+            z-index: 1;
+        }
+        
+        .privacy-hero .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .privacy-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        
+        .privacy-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+            max-width: 600px;
+        }
+        
+        .privacy-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .privacy-content h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            margin-top: 2.5rem;
+            line-height: 1.3;
+        }
+        
+        .privacy-content h2:first-child {
+            margin-top: 0;
+        }
+        
+        .privacy-content p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #475569;
+            margin-bottom: 1.25rem;
+        }
+        
+        .privacy-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        
+        .privacy-content li {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn-back {
+            background: linear-gradient(45deg, #34495e, #34495e);
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-back:hover {
+            background: linear-gradient(45deg, #34495e, #34495e);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(25, 118, 210, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .contact-highlight {
+            background: #f1f5f9;
+            border-left: 4px solid #34495e;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .contact-highlight ul {
+            margin-bottom: 0;
+        }
+        
+        .last-updated {
+            background: #e2e8f0;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .last-updated strong {
+            color: #1e293b;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="privacy-page">
+    <!-- Hero Section -->
+    <section class="privacy-hero">
+        <div class="container">
+            <h1>{{ 'privacy.page_title'|trans({}, 'privacy') }}</h1>
+            <p>{{ 'privacy.page_subtitle'|trans({}, 'privacy') }}</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="privacy-content">
+                    <h2>{{ 'privacy.sections.introduction.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.introduction.content'|trans({}, 'privacy') }}</p>
+                    
+                    <h2>{{ 'privacy.sections.data_collection.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.data_collection.intro'|trans({}, 'privacy') }}</p>
+                    <ul>
+                        {% set data_collection_items = ['privacy.sections.data_collection.items.0', 'privacy.sections.data_collection.items.1', 'privacy.sections.data_collection.items.2', 'privacy.sections.data_collection.items.3', 'privacy.sections.data_collection.items.4'] %}
+                        {% for item_key in data_collection_items %}
+                        <li>{{ item_key|trans({}, 'privacy') }}</li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <h2>{{ 'privacy.sections.data_usage.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.data_usage.intro'|trans({}, 'privacy') }}</p>
+                    <ul>
+                        {% set data_usage_items = ['privacy.sections.data_usage.items.0', 'privacy.sections.data_usage.items.1', 'privacy.sections.data_usage.items.2', 'privacy.sections.data_usage.items.3', 'privacy.sections.data_usage.items.4'] %}
+                        {% for item_key in data_usage_items %}
+                        <li>{{ item_key|trans({}, 'privacy') }}</li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <h2>{{ 'privacy.sections.retention.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.retention.content'|trans({}, 'privacy') }}</p>
+                    
+                    <h2>{{ 'privacy.sections.rights.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.rights.intro'|trans({}, 'privacy') }}</p>
+                    <ul>
+                        {% set rights_items = ['privacy.sections.rights.items.0', 'privacy.sections.rights.items.1', 'privacy.sections.rights.items.2', 'privacy.sections.rights.items.3', 'privacy.sections.rights.items.4', 'privacy.sections.rights.items.5', 'privacy.sections.rights.items.6'] %}
+                        {% for item_key in rights_items %}
+                        <li>{{ item_key|trans({}, 'privacy') }}</li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <h2>{{ 'privacy.sections.security.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.security.content'|trans({}, 'privacy') }}</p>
+                    
+                    <h2>{{ 'privacy.sections.contact.title'|trans({}, 'privacy') }}</h2>
+                    <p>{{ 'privacy.sections.contact.intro'|trans({}, 'privacy') }}</p>
+                    <div class="contact-highlight">
+                        <ul>
+                            <li><strong>{{ 'privacy.sections.contact.email'|trans({}, 'privacy') }}:</strong> privacy@industrial-properties.com</li>
+                            <li><strong>{{ 'privacy.sections.contact.phone'|trans({}, 'privacy') }}:</strong> +359 2 123 4567</li>
+                            <li><strong>{{ 'privacy.sections.contact.address'|trans({}, 'privacy') }}:</strong> {{ 'privacy.sections.contact.address_value'|trans({}, 'privacy') }}</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="last-updated">
+                        <strong>{{ 'privacy.sections.last_updated'|trans({}, 'privacy') }}: {{ "now"|date("d.m.Y") }}</strong>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <a href="{{ path('app_home') }}" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                        {{ 'privacy.back_to_home'|trans({}, 'privacy') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

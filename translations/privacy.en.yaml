@@ -1,59 +1,206 @@
 privacy:
-  page_title: "Privacy Policy"
+  page_title: "Privacy Policy and Data Protection"
   page_subtitle: "Transparency and protection of your personal data are our priority"
-  back_to_home: "Back to homepage"
+  back_to_home: "Back to Home"
   
   sections:
     introduction:
       title: "Introduction"
-      content: "This privacy policy describes how Industrial Properties collects, processes and stores your personal data in accordance with the General Data Protection Regulation (GDPR) and applicable data protection legislation."
+      content: "This privacy policy sets out how Industrial Properties (\"We\", \"Our Company\", \"Data Controller\") collects, processes, stores and protects your personal data in full compliance with the General Data Protection Regulation (EU) 2016/679 (GDPR) and all applicable European legislation in the field of data protection."
+    
+    controller:
+      title: "Data Controller"
+      content: "The controller of your personal data is Industrial Properties EOOD with registered office and management address: Sofia, \"Example\" Street No. 1, UIC: [EIK], represented by [Name of Manager]."
+      contact_info: "For questions about data protection, you can contact us by email: [email] or phone: [phone]."
+    
+    legal_basis:
+      title: "Legal Basis for Processing"
+      intro: "We process your personal data on the following legal bases according to Art. 6 GDPR:"
+      items:
+        0: "Consent (Art. 6, para. 1, letter a) - for marketing communications and optional services"
+        1: "Contract (Art. 6, para. 1, letter b) - to fulfill contractual obligations and provide requested services"
+        2: "Legal obligation (Art. 6, para. 1, letter c) - to comply with European accounting, tax and other legal requirements"
+        3: "Legitimate interest (Art. 6, para. 1, letter f) - to protect our legitimate interests in preventing fraud and improving services"
     
     data_collection:
-      title: "What Data We Collect"
-      intro: "When you submit a property inquiry, we collect the following data:"
-      items:
-        0: "Name"
-        1: "Email address"
-        2: "Phone number (optional)"
-        3: "Message content"
-        4: "Information about the property you're interested in"
+      title: "Categories of Personal Data We Collect"
+      intro: "Depending on the service you request, we may collect the following categories of personal data:"
+      personal_data:
+        title: "Basic identification data:"
+        items:
+          0: "First and last name"
+          1: "Email address"
+          2: "Phone number"
+          3: "Postal address"
+      contact_data:
+        title: "Contact and communication data:"
+        items:
+          0: "Communication history"
+          1: "Contact preferences"
+          2: "Content of messages and inquiries"
+      technical_data:
+        title: "Technical data:"
+        items:
+          0: "IP address"
+          1: "Cookie data"
+          2: "Browser type and operating system"
+          3: "Pages visited and time spent"
+      special_note: "We do NOT collect special categories of personal data (sensitive data) such as health data, political views, religious or philosophical beliefs without your explicit consent."
     
     data_usage:
-      title: "How We Use Your Data"
-      intro: "We use your personal data for:"
-      items:
-        0: "Responding to your property inquiry"
-        1: "Providing information about the property you're interested in"
-        2: "Contacting you by phone or email"
-        3: "Improving our services"
-        4: "Complying with legal requirements"
+      title: "Purposes and Methods of Processing"
+      intro: "We use your personal data for the following purposes:"
+      primary_purposes:
+        title: "Primary purposes:"
+        items:
+          0: "Providing requested services for searching and consulting on industrial properties"
+          1: "Responding to your inquiries and providing customer support"
+          2: "Fulfilling contractual obligations and managing customer relationships"
+          3: "Processing requests and organizing property viewings"
+      secondary_purposes:
+        title: "Additional purposes (with consent):"
+        items:
+          0: "Sending newsletters and marketing messages"
+          1: "Personalizing offered services and content"
+          2: "Analysis and improvement of our service quality"
+      legal_purposes:
+        title: "Legal purposes:"
+        items:
+          0: "Compliance with accounting and tax obligations"
+          1: "Protection of our legitimate interests in legal disputes"
+          2: "Prevention of fraud and abuse"
+    
+    data_sharing:
+      title: "Data Sharing with Third Parties"
+      intro: "We may share your personal data in the following cases:"
+      service_providers:
+        title: "Data processors:"
+        items:
+          0: "IT providers for website and system support"
+          1: "Cloud service providers for data storage"
+          2: "Email and CRM system providers"
+      legal_sharing:
+        title: "Mandatory sharing:"
+        items:
+          0: "Government authorities upon legal requirement"
+          1: "Judicial authorities in court proceedings"
+          2: "Regulatory authorities during control checks"
+      guarantees: "All processors are required to comply with the same data protection standards through signed personal data processing agreements."
+    
+    international_transfers:
+      title: "International Transfers"
+      content: "If we transfer your data outside the European Economic Area (EEA), we ensure an adequate level of protection through European Commission Adequacy Decisions, Standard Contractual Clauses or other appropriate safeguards under GDPR."
     
     retention:
-      title: "Data Retention Period"
-      content: "We store your personal data for no longer than necessary for the purposes for which it was collected, usually up to 3 years after the last communication with you or until you withdraw your consent."
+      title: "Retention Period"
+      content: "We retain your personal data for different periods depending on the legal basis and purpose of processing, following the principle of data minimization."
+      intro: "We retain your personal data for the following periods:"
+      periods:
+        0: "Customer data: 3 years after last activity or termination of relationship"
+        1: "Accounting documents: 5 years according to European accounting requirements"
+        2: "Marketing consents: until withdrawal of consent or 2 years without activity"
+        3: "Technical data and logs: 12 months"
+      note: "After expiration of the respective period, data is irreversibly deleted or anonymized."
     
     rights:
-      title: "Your Rights"
-      intro: "Under GDPR and applicable legislation, you have the following rights:"
-      items:
-        0: "Right of access to your personal data"
-        1: "Right to rectification of inaccurate personal data"
-        2: "Right to erasure (\"right to be forgotten\")"
-        3: "Right to restriction of processing"
-        4: "Right to data portability"
-        5: "Right to object to processing"
-        6: "Right to withdraw your consent at any time"
+      title: "Your Rights as a Data Subject"
+      intro: "Under GDPR, you have the following rights that you can exercise free of charge:"
+      list:
+        access:
+          title: "Right of access (Art. 15 GDPR)"
+          description: "Right to obtain information whether we process your personal data and a copy thereof."
+        rectification:
+          title: "Right to rectification (Art. 16 GDPR)"
+          description: "Right to request correction of inaccurate or incomplete personal data."
+        erasure:
+          title: "Right to erasure - 'right to be forgotten' (Art. 17 GDPR)"
+          description: "Right to request deletion of your personal data under certain conditions."
+        restriction:
+          title: "Right to restriction of processing (Art. 18 GDPR)"
+          description: "Right to request temporary restriction of processing in certain cases."
+        portability:
+          title: "Right to data portability (Art. 20 GDPR)"
+          description: "Right to receive your data in a structured, commonly used and machine-readable format."
+        objection:
+          title: "Right to object (Art. 21 GDPR)"
+          description: "Right to object to processing, especially for direct marketing."
+        withdraw_consent:
+          title: "Right to withdraw consent (Art. 7 GDPR)"
+          description: "Right to withdraw your consent at any time, without affecting the lawfulness of previous processing."
+        complaint:
+          title: "Right to lodge a complaint (Art. 77 GDPR)"
+          description: "Right to lodge a complaint with the national data protection supervisory authority in your country. Every EU citizen can contact the supervisory authority in their own country, regardless of our company's location."
+      response_time: "We respond to requests for exercising rights within 1 month of receiving them."
     
     security:
-      title: "Data Security"
-      content: "We implement appropriate technical and organizational measures to protect your personal data against accidental or unlawful destruction, loss, alteration, unauthorized disclosure or access."
+      title: "Data Security and Protection"
+      content: "We implement comprehensive technical and organizational measures to ensure a high level of security and protection of your personal data in accordance with Art. 32 GDPR."
+      intro: "We implement state-of-the-art technical and organizational measures to protect your personal data:"
+      technical_measures:
+        title: "Technical measures:"
+        items:
+          0: "SSL encryption during data transmission"
+          1: "Data encryption at rest"
+          2: "Regular backups and recovery testing"
+          3: "Firewall and antivirus protection"
+          4: "Intrusion detection system"
+      organizational_measures:
+        title: "Organizational measures:"
+        items:
+          0: "Data security policies and procedures"
+          1: "Staff training on data protection"
+          2: "Restricted data access on a 'need-to-know' basis"
+          3: "Regular audits and risk assessments"
+          4: "Security breach response plan"
+    
+    cookies:
+      title: "Cookie Policy"
+      intro: "Our website uses cookies to improve your user experience:"
+      types:
+        necessary:
+          title: "Necessary cookies:"
+          description: "Ensure basic website functionality. Do not require consent."
+        functional:
+          title: "Functional cookies:"
+          description: "Remember your preferences and improve functionality."
+        analytics:
+          title: "Analytics cookies:"
+          description: "Help us understand how you use the site to improve it."
+        marketing:
+          title: "Marketing cookies:"
+          description: "Used to display relevant advertisements."
+      consent: "You can manage cookie settings through our consent banner or in your browser settings."
+      retention_cookies: "Different cookie types are stored for different periods - from session cookies to a maximum of 2 years."
+    
+    breach_notification:
+      title: "Breach Notification"
+      content: "In case of a security breach that may result in high risk to your rights and freedoms, we will notify you within 72 hours of its discovery, according to the requirements of Art. 34 GDPR."
+    
+    data_protection_officer:
+      title: "Data Protection Officer"
+      content: "If necessary, you can contact our Data Protection Officer (DPO) at: dpo@industrial-properties.com."
+    
+    updates:
+      title: "Policy Updates"
+      content: "We reserve the right to update this policy in case of changes in legislation or our practices. Significant changes will be communicated through our website or directly to you."
+    
+    governing_law:
+      title: "Governing Law"
+      content: "This policy is governed by the General Data Protection Regulation (GDPR) and applicable European legislation. In disputes related to data protection, the courts are competent according to the jurisdiction rules of the European Union."
     
     contact:
-      title: "Contact Us"
-      intro: "If you have any questions or wish to exercise your rights regarding data protection, please contact us at:"
+      title: "Contact for Data Protection Questions"
+      intro: "For all questions related to the processing of your personal data or exercising your rights, you can contact us:"
       email: "Email"
+      email_value: "privacy@industrial-properties.com"
       phone: "Phone"
-      address: "Address"
-      address_value: "Sofia, \"Example\" Street No. 1"
+      phone_value: "+359 2 XXX XXXX"
+      address: "Postal address"
+      address_value: "Industrial Properties EOOD, Sofia, \"Example\" Street No. 1, 1000 Sofia"
+      dpo_email: "Data Protection Officer"
+      dpo_email_value: "dpo@industrial-properties.com"
+      regulator: "Supervisory authorities: Every EU citizen can lodge a complaint with their national supervisory authority"
+      regulator_website: "https://edpb.europa.eu/about-edpb/board/members_en"
+      regulator_note: "For Bulgarian citizens: Commission for Personal Data Protection - https://www.cpdp.bg"
     
-    last_updated: "Policy last updated"
+    last_updated: "Last updated: January 2025"

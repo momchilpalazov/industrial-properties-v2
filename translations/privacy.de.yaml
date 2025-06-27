@@ -1,59 +1,206 @@
 privacy:
-  page_title: "Datenschutzrichtlinie"
+  page_title: "Datenschutzrichtlinie und Datenschutz"
   page_subtitle: "Transparenz und Schutz Ihrer persönlichen Daten sind unsere Priorität"
   back_to_home: "Zurück zur Startseite"
   
   sections:
     introduction:
       title: "Einführung"
-      content: "Diese Datenschutzrichtlinie beschreibt, wie Industrial Properties Ihre persönlichen Daten in Übereinstimmung mit der Datenschutz-Grundverordnung (DSGVO) und geltendem Datenschutzrecht sammelt, verarbeitet und speichert."
+      content: "Diese Datenschutzrichtlinie legt fest, wie Industrial Properties (\"Wir\", \"Unser Unternehmen\", \"Datenverantwortlicher\") Ihre personenbezogenen Daten sammelt, verarbeitet, speichert und schützt, in vollständiger Übereinstimmung mit der Datenschutz-Grundverordnung (EU) 2016/679 (DSGVO) und allen anwendbaren europäischen Rechtsvorschriften im Bereich des Datenschutzes."
+    
+    controller:
+      title: "Datenverantwortlicher"
+      content: "Verantwortlicher für Ihre personenbezogenen Daten ist Industrial Properties EOOD mit Sitz und Verwaltungsadresse: Sofia, \"Beispielstraße\" Nr. 1, UIC: [EIK], vertreten durch [Name des Geschäftsführers]."
+      contact_info: "Für Fragen zum Datenschutz können Sie uns per E-Mail kontaktieren: [email] oder telefonisch: [phone]."
+    
+    legal_basis:
+      title: "Rechtsgrundlage für die Verarbeitung"
+      intro: "Wir verarbeiten Ihre personenbezogenen Daten auf folgenden Rechtsgrundlagen gemäß Art. 6 DSGVO:"
+      items:
+        0: "Einwilligung (Art. 6 Abs. 1 lit. a) - für Marketing-Kommunikation und optionale Dienste"
+        1: "Vertrag (Art. 6 Abs. 1 lit. b) - zur Erfüllung vertraglicher Verpflichtungen und Bereitstellung angeforderter Dienste"
+        2: "Rechtliche Verpflichtung (Art. 6 Abs. 1 lit. c) - zur Einhaltung europäischer buchhalterischer, steuerlicher und anderer rechtlicher Anforderungen"
+        3: "Berechtigte Interessen (Art. 6 Abs. 1 lit. f) - zum Schutz unserer berechtigten Interessen bei der Betrugsverhinderung und Verbesserung der Dienste"
     
     data_collection:
-      title: "Welche Daten wir sammeln"
-      intro: "Wenn Sie eine Immobilienanfrage stellen, sammeln wir folgende Daten:"
-      items:
-        0: "Name"
-        1: "E-Mail-Adresse"
-        2: "Telefonnummer (optional)"
-        3: "Nachrichteninhalt"
-        4: "Informationen über die Immobilie, für die Sie sich interessieren"
+      title: "Kategorien personenbezogener Daten, die wir sammeln"
+      intro: "Je nach dem von Ihnen angeforderten Service können wir folgende Kategorien personenbezogener Daten sammeln:"
+      personal_data:
+        title: "Grundlegende Identifikationsdaten:"
+        items:
+          0: "Vor- und Nachname"
+          1: "E-Mail-Adresse"
+          2: "Telefonnummer"
+          3: "Postadresse"
+      contact_data:
+        title: "Kontakt- und Kommunikationsdaten:"
+        items:
+          0: "Kommunikationshistorie"
+          1: "Kontaktpräferenzen"
+          2: "Inhalt von Nachrichten und Anfragen"
+      technical_data:
+        title: "Technische Daten:"
+        items:
+          0: "IP-Adresse"
+          1: "Cookie-Daten"
+          2: "Browser-Typ und Betriebssystem"
+          3: "Besuchte Seiten und Verweildauer"
+      special_note: "Wir sammeln KEINE besonderen Kategorien personenbezogener Daten (sensible Daten) wie Gesundheitsdaten, politische Ansichten, religiöse oder philosophische Überzeugungen ohne Ihre ausdrückliche Einwilligung."
     
     data_usage:
-      title: "Wie wir Ihre Daten verwenden"
-      intro: "Wir verwenden Ihre personenbezogenen Daten für:"
-      items:
-        0: "Beantwortung Ihrer Immobilienanfrage"
-        1: "Bereitstellung von Informationen über die Immobilie, für die Sie sich interessieren"
-        2: "Kontaktaufnahme mit Ihnen per Telefon oder E-Mail"
-        3: "Verbesserung unserer Dienstleistungen"
-        4: "Einhaltung gesetzlicher Anforderungen"
+      title: "Zwecke und Arten der Verarbeitung"
+      intro: "Wir verwenden Ihre personenbezogenen Daten für folgende Zwecke:"
+      primary_purposes:
+        title: "Hauptzwecke:"
+        items:
+          0: "Bereitstellung der angeforderten Dienste zur Suche und Beratung bezüglich Industrieimmobilien"
+          1: "Beantwortung Ihrer Anfragen und Bereitstellung von Kundensupport"
+          2: "Erfüllung vertraglicher Verpflichtungen und Verwaltung von Kundenbeziehungen"
+          3: "Bearbeitung von Anfragen und Organisation von Immobilienbesichtigungen"
+      secondary_purposes:
+        title: "Zusätzliche Zwecke (mit Einwilligung):"
+        items:
+          0: "Versendung von Newslettern und Marketing-Nachrichten"
+          1: "Personalisierung der angebotenen Dienste und Inhalte"
+          2: "Analyse und Verbesserung der Qualität unserer Dienste"
+      legal_purposes:
+        title: "Rechtliche Zwecke:"
+        items:
+          0: "Einhaltung buchhalterischer und steuerlicher Verpflichtungen"
+          1: "Schutz unserer berechtigten Interessen bei Rechtsstreitigkeiten"
+          2: "Verhinderung von Betrug und Missbrauch"
+    
+    data_sharing:
+      title: "Datenweitergabe an Dritte"
+      intro: "Wir können Ihre personenbezogenen Daten in folgenden Fällen weitergeben:"
+      service_providers:
+        title: "Datenverarbeiter:"
+        items:
+          0: "IT-Anbieter für Website- und Systemsupport"
+          1: "Cloud-Service-Anbieter für Datenspeicherung"
+          2: "E-Mail- und CRM-System-Anbieter"
+      legal_sharing:
+        title: "Obligatorische Weitergabe:"
+        items:
+          0: "Staatliche Behörden bei gesetzlicher Anforderung"
+          1: "Gerichtsbehörden bei Gerichtsverfahren"
+          2: "Regulierungsbehörden bei Kontrollprüfungen"
+      guarantees: "Alle Verarbeiter sind verpflichtet, dieselben Datenschutzstandards durch unterzeichnete Verträge zur Verarbeitung personenbezogener Daten einzuhalten."
+    
+    international_transfers:
+      title: "Internationale Übertragungen"
+      content: "Falls wir Ihre Daten außerhalb des Europäischen Wirtschaftsraums (EWR) übertragen, gewährleisten wir ein angemessenes Schutzniveau durch Angemessenheitsbeschlüsse der Europäischen Kommission, Standardvertragsklauseln oder andere geeignete Garantien gemäß DSGVO."
     
     retention:
       title: "Aufbewahrungsdauer"
-      content: "Wir speichern Ihre personenbezogenen Daten nicht länger als für die Zwecke, für die sie gesammelt wurden, erforderlich ist, normalerweise bis zu 3 Jahre nach der letzten Kommunikation mit Ihnen oder bis zum Widerruf Ihrer Einwilligung."
+      content: "Wir speichern Ihre personenbezogenen Daten für unterschiedliche Zeiträume, abhängig von der Rechtsgrundlage und dem Zweck der Verarbeitung, unter Beachtung des Grundsatzes der Datenminimierung."
+      intro: "Wir speichern Ihre personenbezogenen Daten für folgende Zeiträume:"
+      periods:
+        0: "Kundendaten: 3 Jahre nach letzter Aktivität oder Beendigung der Beziehung"
+        1: "Buchhaltungsunterlagen: 5 Jahre gemäß europäischen Rechnungslegungsvorschriften"
+        2: "Marketing-Einwilligungen: bis zum Widerruf der Einwilligung oder 2 Jahre ohne Aktivität"
+        3: "Technische Daten und Logs: 12 Monate"
+      note: "Nach Ablauf des entsprechenden Zeitraums werden die Daten unwiderruflich gelöscht oder anonymisiert."
     
     rights:
-      title: "Ihre Rechte"
-      intro: "Unter der DSGVO und geltendem Recht haben Sie folgende Rechte:"
-      items:
-        0: "Recht auf Zugang zu Ihren personenbezogenen Daten"
-        1: "Recht auf Berichtigung unrichtiger personenbezogener Daten"
-        2: "Recht auf Löschung (\"Recht auf Vergessenwerden\")"
-        3: "Recht auf Einschränkung der Verarbeitung"
-        4: "Recht auf Datenübertragbarkeit"
-        5: "Recht auf Widerspruch gegen die Verarbeitung"
-        6: "Recht, Ihre Einwilligung jederzeit zu widerrufen"
+      title: "Ihre Rechte als betroffene Person"
+      intro: "Gemäß DSGVO haben Sie folgende Rechte, die Sie kostenlos ausüben können:"
+      list:
+        access:
+          title: "Recht auf Zugang (Art. 15 DSGVO)"
+          description: "Recht zu erfahren, ob wir Ihre personenbezogenen Daten verarbeiten und eine Kopie davon zu erhalten."
+        rectification:
+          title: "Recht auf Berichtigung (Art. 16 DSGVO)"
+          description: "Recht, die Berichtigung unrichtiger oder unvollständiger personenbezogener Daten zu verlangen."
+        erasure:
+          title: "Recht auf Löschung - 'Recht auf Vergessenwerden' (Art. 17 DSGVO)"
+          description: "Recht, die Löschung Ihrer personenbezogenen Daten unter bestimmten Bedingungen zu verlangen."
+        restriction:
+          title: "Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO)"
+          description: "Recht, eine vorübergehende Einschränkung der Verarbeitung in bestimmten Fällen zu verlangen."
+        portability:
+          title: "Recht auf Datenübertragbarkeit (Art. 20 DSGVO)"
+          description: "Recht, Ihre Daten in einem strukturierten, gängigen und maschinenlesbaren Format zu erhalten."
+        objection:
+          title: "Recht auf Widerspruch (Art. 21 DSGVO)"
+          description: "Recht, der Verarbeitung zu widersprechen, insbesondere für Direktmarketing."
+        withdraw_consent:
+          title: "Recht auf Widerruf der Einwilligung (Art. 7 DSGVO)"
+          description: "Recht, Ihre Einwilligung jederzeit zu widerrufen, ohne die Rechtmäßigkeit der vorherigen Verarbeitung zu beeinträchtigen."
+        complaint:
+          title: "Recht auf Beschwerde (Art. 77 DSGVO)"
+          description: "Recht, eine Beschwerde bei der nationalen Datenschutz-Aufsichtsbehörde in Ihrem Land einzureichen. Jeder EU-Bürger kann sich an die Aufsichtsbehörde in seinem eigenen Land wenden, unabhängig vom Standort unseres Unternehmens."
+      response_time: "Wir beantworten Anträge zur Ausübung von Rechten innerhalb von 1 Monat nach Erhalt."
     
     security:
-      title: "Datensicherheit"
-      content: "Wir setzen angemessene technische und organisatorische Maßnahmen ein, um Ihre persönlichen Daten vor zufälliger oder unrechtmäßiger Zerstörung, Verlust, Veränderung, unbefugter Offenlegung oder unbefugtem Zugriff zu schützen."
+      title: "Datensicherheit und -schutz"
+      content: "Wir implementieren umfassende technische und organisatorische Maßnahmen, um ein hohes Maß an Sicherheit und Schutz Ihrer personenbezogenen Daten gemäß Art. 32 DSGVO zu gewährleisten."
+      intro: "Wir setzen moderne technische und organisatorische Maßnahmen zum Schutz Ihrer personenbezogenen Daten ein:"
+      technical_measures:
+        title: "Technische Maßnahmen:"
+        items:
+          0: "SSL-Verschlüsselung bei der Datenübertragung"
+          1: "Datenverschlüsselung bei der Speicherung"
+          2: "Regelmäßige Backups und Wiederherstellungstests"
+          3: "Firewall- und Antivirenschutz"
+          4: "Intrusion Detection System"
+      organizational_measures:
+        title: "Organisatorische Maßnahmen:"
+        items:
+          0: "Richtlinien und Verfahren zur Datensicherheit"
+          1: "Schulung des Personals zum Datenschutz"
+          2: "Beschränkter Datenzugang nach dem Prinzip \"Need-to-know\""
+          3: "Regelmäßige Audits und Risikobewertungen"
+          4: "Plan für Reaktion auf Sicherheitsverletzungen"
+    
+    cookies:
+      title: "Cookie-Richtlinie"
+      intro: "Unsere Website verwendet Cookies, um Ihr Benutzererlebnis zu verbessern:"
+      types:
+        necessary:
+          title: "Notwendige Cookies:"
+          description: "Gewährleisten die grundlegende Funktionalität der Website. Erfordern keine Einwilligung."
+        functional:
+          title: "Funktionale Cookies:"
+          description: "Merken sich Ihre Präferenzen und verbessern die Funktionalität."
+        analytics:
+          title: "Analytische Cookies:"
+          description: "Helfen uns zu verstehen, wie Sie die Website nutzen, um sie zu verbessern."
+        marketing:
+          title: "Marketing-Cookies:"
+          description: "Werden verwendet, um relevante Werbung anzuzeigen."
+      consent: "Sie können Cookie-Einstellungen über unser Einwilligungsbanner oder in Ihren Browser-Einstellungen verwalten."
+      retention_cookies: "Verschiedene Cookie-Typen werden für unterschiedliche Zeiträume gespeichert - von Sitzungs-Cookies bis zu maximal 2 Jahren."
+    
+    breach_notification:
+      title: "Benachrichtigung bei Datenschutzverletzungen"
+      content: "Im Falle einer Sicherheitsverletzung, die zu einem hohen Risiko für Ihre Rechte und Freiheiten führen könnte, werden wir Sie innerhalb von 72 Stunden nach Feststellung gemäß den Anforderungen von Art. 34 DSGVO benachrichtigen."
+    
+    data_protection_officer:
+      title: "Datenschutzbeauftragter"
+      content: "Bei Bedarf können Sie sich an unseren Datenschutzbeauftragten (DPO) wenden: dpo@industrial-properties.com."
+    
+    updates:
+      title: "Aktualisierungen der Richtlinie"
+      content: "Wir behalten uns das Recht vor, diese Richtlinie bei Änderungen der Gesetzgebung oder unserer Praktiken zu aktualisieren. Wesentliche Änderungen werden über unsere Website oder direkt an Sie kommuniziert."
+    
+    governing_law:
+      title: "Anwendbares Recht"
+      content: "Diese Richtlinie unterliegt der Datenschutz-Grundverordnung (DSGVO) und dem anwendbaren europäischen Recht. Bei Streitigkeiten im Zusammenhang mit dem Datenschutz sind die Gerichte gemäß den Zuständigkeitsregeln der Europäischen Union zuständig."
     
     contact:
-      title: "Kontakt"
-      intro: "Wenn Sie Fragen haben oder Ihre Rechte in Bezug auf den Datenschutz ausüben möchten, kontaktieren Sie uns bitte unter:"
+      title: "Kontakt für Datenschutzfragen"
+      intro: "Für alle Fragen zur Verarbeitung Ihrer personenbezogenen Daten oder zur Ausübung Ihrer Rechte können Sie uns kontaktieren:"
       email: "E-Mail"
+      email_value: "privacy@industrial-properties.com"
       phone: "Telefon"
-      address: "Adresse"
-      address_value: "Sofia, \"Beispielstraße\" Nr. 1"
+      phone_value: "+359 2 XXX XXXX"
+      address: "Postadresse"
+      address_value: "Industrial Properties EOOD, Sofia, \"Beispielstraße\" Nr. 1, 1000 Sofia"
+      dpo_email: "Datenschutzbeauftragter"
+      dpo_email_value: "dpo@industrial-properties.com"
+      regulator: "Aufsichtsbehörden: Jeder EU-Bürger kann eine Beschwerde bei seiner nationalen Aufsichtsbehörde einreichen"
+      regulator_website: "https://edpb.europa.eu/about-edpb/board/members_en"
+      regulator_note: "Für bulgarische Bürger: Kommission für Personendatenschutz - https://www.cpdp.bg"
     
-    last_updated: "Letzte Aktualisierung der Richtlinie"
+    last_updated: "Zuletzt aktualisiert: Januar 2025"
