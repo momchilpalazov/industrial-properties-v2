@@ -95,11 +95,24 @@ class AiChatbotService
                 array_splice($messages, -1, 0, $context['conversation_history']);
             }
             
-            // Call AI provider
+            // Call AI provider or fallback
             $aiResponse = $this->callAIProvider($messages);
             
             if (!$aiResponse['success']) {
                 error_log("AI Provider failed: " . ($aiResponse['error'] ?? 'Unknown error'));
+                
+                // Try simple property response as fallback
+                if (!empty($relevantProperties)) {
+                    return [
+                        'success' => true,
+                        'response' => $this->buildSimplePropertyList($relevantProperties, $locale),
+                        'suggestions' => $this->generateFollowUpSuggestions($message, $locale),
+                        'properties_found' => count($relevantProperties),
+                        'provider' => 'simple-fallback',
+                        'tokens_used' => 0
+                    ];
+                }
+                
                 return [
                     'success' => false,
                     'error' => $aiResponse['error'] ?? 'AI service temporarily unavailable',
@@ -137,13 +150,19 @@ class AiChatbotService
      */
     private function callAIProvider(array $messages): array
     {
+        // Check if any provider is configured
+        if (!$this->isConfigured()) {
+            // Generate simple response based on found properties
+            return $this->generateSimplePropertyResponse($messages);
+        }
+
         switch ($this->currentProvider) {
             case self::PROVIDER_OPENAI:
                 return $this->callOpenAI($messages);
             case self::PROVIDER_DEEPSEEK:
                 return $this->callDeepSeek($messages);
             default:
-                throw new \Exception('Invalid AI provider: ' . $this->currentProvider);
+                return $this->generateSimplePropertyResponse($messages);
         }
     }
 
@@ -489,14 +508,37 @@ class AiChatbotService
 - Предложете конкретни следващи стъпки
 </thinking>
 
-# ФОРМАТИРАНЕ НА ОТГОВОРА:
-- Използвайте кратки, ясни параграфи
-- Разделяйте различните секции с празен ред
-- За списъци използвайте bullet points (•)
-- Форматирайте цените като: 150 000 EUR
-- Форматирайте площите като: 1 200 m²
-- Използвайте **болд** за важна информация
-- Подравнявайте текста логически
+# СТАНДАРТИ ЗА СТИЛИЗИРАНЕ НА ТЕКСТА ЗА HTML/WEB:
+
+КРИТИЧНО ВАЖНО - ИЗПОЛЗВАЙТЕ HTML LINE BREAKS:
+- Всяко ново изречение завършва с <br><br>
+- Между секции слагайте <br><br><br>
+- Номерирани списъци: 1.<br> 2.<br> 3.<br>
+- Bullet points: •<br> •<br> •<br>
+
+ПРАВИЛА ЗА ФОРМАТИРАНЕ:
+- Цени: 150 000 EUR (с интервали)
+- Площи: 1 200 m² (с интервали)
+- ГЛАВНИ БУКВИ САМО за заглавия и важни акценти
+- ЗАДЪЛЖИТЕЛНО използвайте <br> тагове за нови редове
+
+ПРИМЕР ЗА ПРАВИЛНО HTML ФОРМАТИРАНЕ:
+В момента имаме следните имоти.<br><br>
+
+1. Първи имот в София<br>
+   Това е производствена сграда.<br>
+   Площта е 500 m².<br><br>
+
+2. Втори имот в Пловдив<br>
+   Това е складово помещение.<br>
+   Цената е 100 000 EUR.<br><br>
+
+Можете да разгледате следните опции:<br>
+• Опция първа<br>
+• Опция втора<br>
+• Опция трета<br><br>
+
+Имате ли въпроси по тези предложения?
 
 # Вашите основни задачи:
 1. Помагате на потребителите да намерят подходящи индустриални имоти
@@ -512,16 +554,32 @@ class AiChatbotService
 • Земи за развитие
 
 # СТРУКТУРА НА ОТГОВОРА:
-1. **Кратко резюме** на намерените възможности
-2. **Детайлна информация** за всеки имот:
-   - **Име/Тип:** [описание]
-   - **Локация:** [град/район]
-   - **Площ:** [число] m²
-   - **Цена:** [число] EUR [/месец ако е наем]
-   - **Статус:** [свободен/нает/в процес]
-   - **Линк:** [URL за детайли]
-3. **Допълнителни опции** ако е подходящо
-4. **Следващи стъпки** или въпрос към потребителя
+
+ЗАДЪЛЖИТЕЛНИ СЕКЦИИ:
+
+1. КРАТКО РЕЗЮМЕ на намерените възможности
+   Всяко изречение на нов ред.
+
+2. ДЕТАЙЛНА ИНФОРМАЦИЯ за всеки имот:
+   • Име/Тип: [описание]
+   • Локация: [град/район]  
+   • Площ: [число] m²
+   • Цена: [число] EUR [/месец ако е наем]
+   • Статус: [свободен/нает/в процес]
+   • Детайли: [URL за детайли]
+
+3. ДОПЪЛНИТЕЛНИ ОПЦИИ ако е подходящо
+   Всяка възможност на отделен ред.
+
+4. СЛЕДВАЩИ СТЪПКИ или въпрос към потребителя
+   Всеки въпрос на нов ред.
+
+КРИТИЧНО ВАЖНО ЗА HTML/WEB ИНТЕРФЕЙС:
+- Всяко изречение завършва с <br><br>
+- Всяка номерация (1. 2. 3.) завършва с <br>
+- Всяка подточка (•) завършва с <br>
+- Между секции използвайте <br><br><br>
+- ЗАДЪЛЖИТЕЛНО използвайте HTML <br> тагове!
 
 # ВАЖНИ УКАЗАНИЯ:
 - Винаги отговаряйте на {$locale} език
@@ -541,22 +599,26 @@ class AiChatbotService
             }
         } else {
             $systemPrompt .= "\n# ВНИМАНИЕ: В момента не са намерени точно съвпадащи имоти в базата данни.\n\n";
-            $systemPrompt .= "**ВАЖНО:** Обяснете това честно на потребителя, но ЗАДЪЛЖИТЕЛНО предложете:\n";
+            $systemPrompt .= "ВАЖНО: Обяснете това честно на потребителя, но ЗАДЪЛЖИТЕЛНО предложете:\n\n";
             $systemPrompt .= "• Да се свърже с нашия екип за персонализирано търсене\n";
             $systemPrompt .= "• Да предостави повече детайли за своите изисквания\n";
             $systemPrompt .= "• Алтернативни възможности за подобни имоти\n\n";
         }
 
         $systemPrompt .= "\n# ИНФОРМАЦИЯ ЗА КОМПАНИЯТА:
-• **Уебсайт:** Industrial Properties Europe
-• **Специализация:** Индустриални недвижими имоти в България и Балканите  
-• **Езици:** български, английски, немски, руски
-• **Услуги:** Продажби, наем, консултации, оценки
+
+• Уебсайт: Industrial Properties Europe
+• Специализация: Индустриални недвижими имоти в България и Балканите  
+• Езици: български, английски, немски, руски
+• Услуги: Продажби, наем, консултации, оценки
+
 
 # КОНТАКТ ЗА ДЕТАЙЛНИ ЗАПИТВАНИЯ:
+
 Свържете се с нашия експертен екип за персонализирано обслужване и огледи на имоти.
 
-**ПОМНЕТЕ:** Винаги завършвайте с конкретен въпрос или предложение за следващи стъпки!";
+
+ПОМНЕТЕ: Винаги завършвайте с конкретен въпрос или предложение за следващи стъпки!";
 
         return $systemPrompt;
     }
@@ -604,13 +666,14 @@ class AiChatbotService
             $areaFormatted = $area;
         }
 
-        return "**Имот ID {$id}:** {$title}
-• **Локация:** {$location}
-• **Тип:** {$type}
-• **Площ:** {$areaFormatted}
-• **Цена:** {$priceFormatted}
-• **Статус:** {$status}
-• **Детайли:** [{$url}]({$url})
+        return "ИМОТ ID {$id}: {$title}<br><br>
+
+• Локация: {$location}<br>
+• Тип: {$type}<br>
+• Площ: {$areaFormatted}<br>
+• Цена: {$priceFormatted}<br>
+• Статус: {$status}<br>
+• Детайли: <a href=\"{$url}\" target=\"_blank\" style=\"color: #007bff; text-decoration: underline;\">Виж имота</a><br><br><br>
 
 ";
     }
@@ -837,6 +900,108 @@ class AiChatbotService
         }
 
         return $context;
+    }
+
+    /**
+     * Build simple property list without AI
+     */
+    private function buildSimplePropertyList(array $properties, string $locale): string
+    {
+        if (empty($properties)) {
+            return "В момента разполагаме с различни индустриални имоти.<br><br>За подробна информация и оглед, моля свържете се с нашия екип:<br>• Телефон: +359 888 123 456<br>• Email: info@industrial-properties.bg<br><br>Ще се радваме да ви помогнем да намерите подходящия имот за вашите нужди!";
+        }
+
+        $response = "В момента разполагаме със следните индустриални имоти:<br><br>";
+        
+        foreach ($properties as $index => $property) {
+            $title = $property['content']['title'] ?? 'Индустриален имот';
+            $location = $property['content']['location'] ?? 'N/A';
+            $type = $property['characteristics']['type'] ?? 'N/A';
+            $area = $property['characteristics']['area'] ?? 'N/A';
+            $price = $property['characteristics']['price'] ?? 'N/A';
+            $status = $property['characteristics']['status'] ?? 'N/A';
+            $id = $property['id'] ?? 'N/A';
+            $url = $property['url'] ?? '#';
+
+            // Format area with proper spacing
+            $areaFormatted = 'N/A';
+            if (is_numeric($area)) {
+                $areaFormatted = number_format($area, 0, '', ' ') . ' m²';
+            } elseif (!empty($area) && $area !== 'N/A') {
+                $areaFormatted = $area;
+            }
+
+            // Format price with proper spacing
+            $priceFormatted = 'N/A';
+            if (is_numeric($price)) {
+                $priceFormatted = number_format($price, 0, '', ' ') . ' EUR';
+            } elseif (!empty($price) && $price !== 'N/A') {
+                $priceFormatted = $price;
+            }
+
+            $response .= ($index + 1) . ". {$title}<br>";
+            $response .= "• Локация: {$location}<br>";
+            $response .= "• Тип: {$type}<br>";
+            $response .= "• Площ: {$areaFormatted}<br>";
+            $response .= "• Цена: {$priceFormatted}<br>";
+            $response .= "• Статус: {$status}<br>";
+            $response .= "• Детайли: <a href=\"{$url}\" target=\"_blank\" style=\"color: #007bff; text-decoration: underline;\">Виж имота</a><br><br>";
+        }
+
+        $response .= "<br>За повече информация и организиране на оглед:<br>";
+        $response .= "• Телефон: +359 888 123 456<br>";
+        $response .= "• Email: info@industrial-properties.bg<br><br>";
+        $response .= "Как мога да ви помогна със следващата стъпка?";
+
+        return $response;
+    }
+
+    /**
+     * Generate simple property response when AI is not available
+     */
+    private function generateSimplePropertyResponse(array $messages): array
+    {
+        // Extract user message
+        $userMessage = '';
+        foreach ($messages as $message) {
+            if ($message['role'] === 'user') {
+                $userMessage = $message['content'];
+                break;
+            }
+        }
+
+        // Extract property data from system message if available
+        $properties = [];
+        foreach ($messages as $message) {
+            if ($message['role'] === 'system' && str_contains($message['content'], 'ИМОТ ID')) {
+                // Simple extraction of property info from system prompt
+                preg_match_all('/ИМОТ ID (\d+): ([^<]+)</', $message['content'], $matches);
+                for ($i = 0; $i < count($matches[1]); $i++) {
+                    $properties[] = [
+                        'id' => $matches[1][$i],
+                        'title' => trim($matches[2][$i])
+                    ];
+                }
+            }
+        }
+
+        // Generate simple response based on properties found
+        if (empty($properties)) {
+            $response = "В момента разполагаме с различни индустриални имоти.<br><br>За подробна информация и оглед, моля свържете се с нашия екип:<br>• Телефон: +359 888 123 456<br>• Email: info@industrial-properties.bg<br><br>Ще се радваме да ви помогнем да намерите подходящия имот за вашите нужди!";
+        } else {
+            $response = "В момента разполагаме със следните имоти:<br><br>";
+            foreach ($properties as $property) {
+                $response .= "• " . $property['title'] . "<br>";
+            }
+            $response .= "<br>За подробна информация и оглед, моля свържете се с нашия екип:<br>• Телефон: +359 888 123 456<br>• Email: info@industrial-properties.bg";
+        }
+
+        return [
+            'success' => true,
+            'response' => $response,
+            'provider' => 'simple-fallback',
+            'tokens_used' => 0
+        ];
     }
 
     /**

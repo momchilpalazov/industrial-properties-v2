@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест на HTML Форматиране</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-container { background: #f5f5f5; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        .response { background: #fff; padding: 15px; margin: 10px 0; border-left: 4px solid #007bff; border-radius: 4px; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Тест на HTML Форматиране - AI Chatbot</h1>
+    
+    <div class="test-container">
+        <h3>Симулирани отговори с HTML <br> тагове</h3>
+        <button onclick="testFormatting()">Тест форматиране</button>
+        <button onclick="testChatbot()">Тест реален chatbot</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        function testFormatting() {
+            const sampleResponse = `В момента разполагаме със следните индустриални имоти:<br><br>
+
+1. Индустриална зона в Севлиево<br>
+• Тип: Индустриален парцел<br>
+• Площ: 5 000 m²<br>
+• Цена: 3 000 EUR<br>
+• Статус: Продаден<br>
+• Детайли: <a href="http://localhost:8000/bg/property/2" target="_blank" style="color: #007bff; text-decoration: underline;">Виж имота</a><br><br>
+
+2. Индустриална зона в Благоевград<br>
+• Тип: Индустриален парцел<br>
+• Площ: 5 000 m²<br>
+• Цена: 3 000 EUR<br>
+• Статус: В процес на преговори<br>
+• Детайли: <a href="http://localhost:8000/bg/property/3" target="_blank" style="color: #007bff; text-decoration: underline;">Виж имота</a><br><br><br>
+
+Имате ли конкретни изисквания към имота?<br>
+Можем да ви предложим персонализирано търсене според вашите нужди.`;
+
+            showResult('HTML форматиране тест:', sampleResponse);
+        }
+        
+        async function testChatbot() {
+            try {
+                const response = await fetch('/api/chatbot/message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: 'Какви индустриални имоти имате?',
+                        locale: 'bg'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showResult('Реален chatbot отговор:', data.data.response);
+                } else {
+                    showResult('Грешка:', JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                showResult('Мрежова грешка:', error.message);
+            }
+        }
+        
+        function showResult(title, content) {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'response';
+            resultDiv.innerHTML = `<h4>${title}</h4><div>${content}</div>`;
+            resultsDiv.appendChild(resultDiv);
+        }
+    </script>
+</body>
+</html> 

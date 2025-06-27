@@ -62,7 +62,7 @@
                 if (response.ok) {
                     showResult(`
                         <h4>✅ Успешен отговор (${response.status})</h4>
-                        <p><strong>Отговор:</strong> ${data.data.response}</p>
+                        <div><strong>Отговор:</strong><br><div style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 4px;">${data.data.response}</div></div>
                         <p><strong>Provider:</strong> ${data.meta.provider}</p>
                         <p><strong>Tokens:</strong> ${data.meta.tokens_used}</p>
                         <p><strong>Properties Found:</strong> ${data.data.properties_found}</p>
