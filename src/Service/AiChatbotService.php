@@ -76,7 +76,16 @@ class AiChatbotService
 
         try {
             // Get relevant properties based on the message
+            error_log("Processing message: $message");
+            
             $relevantProperties = $this->findRelevantProperties($message, $locale);
+            error_log("Found relevant properties: " . count($relevantProperties));
+            
+            // Even if no exact matches found, we should have some properties from the fallback
+            // If somehow we still have no properties, log this but continue with empty properties
+            if (empty($relevantProperties)) {
+                error_log("WARNING: No properties available even after fallback");
+            }
             
             // Build system prompt with property context
             $systemPrompt = $this->buildSystemPrompt($locale, $relevantProperties);
@@ -108,11 +117,20 @@ class AiChatbotService
             ];
 
         } catch (\Exception $e) {
+            error_log("Error in processMessage: " . $e->getMessage() . "\n" . $e->getTraceAsString());
+            
+            // Always provide a helpful response even when there's an error
+            $errorMessage = $e->getMessage();
+            $isApiError = strpos($errorMessage, 'API') !== false || 
+                          strpos($errorMessage, '401') !== false || 
+                          strpos($errorMessage, '403') !== false || 
+                          strpos($errorMessage, 'auth') !== false;
+            
             return [
                 'success' => false,
                 'error' => [
-                    'message' => 'AI service temporarily unavailable',
-                    'code' => 'AI_SERVICE_ERROR',
+                    'message' => $isApiError ? 'AI service temporarily unavailable' : 'Failed to process your query',
+                    'code' => $isApiError ? 'AI_SERVICE_ERROR' : 'QUERY_PROCESSING_ERROR',
                     'details' => $e->getMessage()
                 ],
                 'fallback_response' => $this->getFallbackResponse($message, $locale),
@@ -309,14 +327,59 @@ class AiChatbotService
      */
     private function findRelevantProperties(string $message, string $locale): array
     {
-        // Parse the message to extract search criteria
-        $criteria = $this->parseMessageToCriteria($message);
-        
-        // Search for relevant properties
-        $searchResults = $this->aiDataService->searchPropertiesForAi($criteria, $locale);
-        
-        // Limit to most relevant properties
-        return array_slice($searchResults['results'], 0, self::MAX_CONTEXT_PROPERTIES);
+        try {
+            // Parse the message to extract search criteria
+            $criteria = $this->parseMessageToCriteria($message);
+            
+            // Debug logging
+            error_log("Search criteria parsed: " . json_encode($criteria, JSON_UNESCAPED_UNICODE));
+            
+            // Search for relevant properties with the original criteria
+            // Don't modify the location array - this is now properly handled in AiDataService
+            $searchResults = $this->aiDataService->searchPropertiesForAi($criteria, $locale);
+            
+            // Debug logging
+            error_log("Search results count: " . (isset($searchResults['results']) ? count($searchResults['results']) : 0));
+            
+            // If no results, try broader search
+            if (empty($searchResults['results'])) {
+                // Try with location only
+                if (!empty($criteria['location'])) {
+                    $locationOnlyCriteria = ['location' => $criteria['location']];
+                    error_log("Trying location-only search with: " . json_encode($locationOnlyCriteria, JSON_UNESCAPED_UNICODE));
+                    $locationResults = $this->aiDataService->searchPropertiesForAi($locationOnlyCriteria, $locale);
+                    
+                    if (!empty($locationResults['results'])) {
+                        error_log("Location-only search found " . count($locationResults['results']) . " results");
+                        return array_slice($locationResults['results'], 0, self::MAX_CONTEXT_PROPERTIES);
+                    }
+                }
+                
+                // Try with type only
+                if (!empty($criteria['type'])) {
+                    $typeOnlyCriteria = ['type' => $criteria['type']];
+                    error_log("Trying type-only search with: " . json_encode($typeOnlyCriteria, JSON_UNESCAPED_UNICODE));
+                    $typeResults = $this->aiDataService->searchPropertiesForAi($typeOnlyCriteria, $locale);
+                    
+                    if (!empty($typeResults['results'])) {
+                        error_log("Type-only search found " . count($typeResults['results']) . " results");
+                        return array_slice($typeResults['results'], 0, self::MAX_CONTEXT_PROPERTIES);
+                    }
+                }
+                
+                // Get all properties as fallback
+                $allProperties = $this->aiDataService->getAllPropertiesForAi(1, self::MAX_CONTEXT_PROPERTIES, $locale);
+                error_log("No results found, returning all properties: " . count($allProperties['properties']));
+                return $allProperties['properties'];
+            }
+            
+            // Limit to most relevant properties
+            return array_slice($searchResults['results'], 0, self::MAX_CONTEXT_PROPERTIES);
+        } catch (\Exception $e) {
+            error_log("Error in findRelevantProperties: " . $e->getMessage() . "\n" . $e->getTraceAsString());
+            // Return empty array on error to avoid breaking the chat
+            return [];
+        }
     }
 
     /**
@@ -326,41 +389,48 @@ class AiChatbotService
     {
         $languageInstructions = $this->getLanguageInstructions($locale);
         
-        $systemPrompt = "You are an AI assistant for Industrial Properties Europe, a leading platform for industrial real estate in Bulgaria and the Balkans.
+        $systemPrompt = "Вие сте AI асистент за Industrial Properties Europe, водещата платформа за индустриални имоти в България и Балканите.
 
 {$languageInstructions}
 
-Your role:
-- Help users find industrial properties (warehouses, manufacturing facilities, office buildings, logistics centers)
-- Provide property recommendations based on user needs
-- Answer questions about locations, prices, and property features
-- Be helpful, professional, and knowledgeable about industrial real estate
+Вашата роля:
+- Помагате на потребителите да намерят индустриални имоти (складове, производствени помещения, офис сгради, логистични центрове)
+- Предоставяте препоръки за имоти според нуждите на потребителя
+- Отговаряте на въпроси за локации, цени и характеристики на имотите
+- Бъдете полезен, професионален и знаещ в областта на индустриалните недвижими имоти
 
-IMPORTANT GUIDELINES:
-- Always respond in {$locale} language
-- Be specific about property details when available
-- If you don't have exact information, guide users to contact the company
-- Suggest relevant properties from the current database
-- Keep responses concise but informative (max 150 words)
-- Include property IDs when recommending specific properties
+ВАЖНИ УКАЗАНИЯ:
+- Винаги отговаряйте на {$locale} език
+- Бъдете конкретен относно детайлите на имотите когато са налични
+- Ако нямате точна информация, насочете потребителите да се свържат с компанията
+- Препоръчвайте подходящи имоти от текущата база данни
+- Ако няма точно това което се търси, ясно обяснете това и ЗАДЪЛЖИТЕЛНО предложете алтернативи:
+  * Ако се търси определен тип имот в даден град, но го няма - предложете друг тип имот в същия град
+  * Ако се търси имот в определен град, но го няма - предложете подобен имот в друг град
+  * НИКОГА не казвайте че има технически проблем, ако просто няма точно съвпадение
+- Пазете отговорите кратки но информативни (максимум 150 думи)
+- Включвайте ID номерата на имотите когато препоръчвате конкретни такива
+- Винаги бъдете честни за наличността - ако няма точно това което се търси, кажете го ясно
 
 ";
 
         if (!empty($properties)) {
-            $systemPrompt .= "CURRENT AVAILABLE PROPERTIES:\n";
+            $systemPrompt .= "НАЛИЧНИ ИМОТИ В МОМЕНТА:\n";
             foreach ($properties as $property) {
                 $systemPrompt .= $this->formatPropertyForPrompt($property, $locale);
             }
             $systemPrompt .= "\n";
+        } else {
+            $systemPrompt .= "ВАЖНО: В момента не са намерени имоти в базата данни. Обяснете това на потребителя и предложете да се свърже с екипа за повече възможности.\n\n";
         }
 
-        $systemPrompt .= "COMPANY INFO:
-- Website: Industrial Properties Europe
-- Specialization: Industrial real estate in Bulgaria
-- Languages: Bulgarian, English, German, Russian
-- Contact for detailed inquiries and property visits
+        $systemPrompt .= "ИНФОРМАЦИЯ ЗА КОМПАНИЯТА:
+- Уебсайт: Industrial Properties Europe  
+- Специализация: Индустриални недвижими имоти в България
+- Езици: български, английски, немски, руски
+- Свържете се за детайлни запитвания и огледи на имоти
 
-Always end responses with a helpful question or suggestion for next steps.";
+Винаги завършвайте отговорите с полезен въпрос или предложение за следващи стъпки.";
 
         return $systemPrompt;
     }
@@ -388,11 +458,21 @@ Always end responses with a helpful question or suggestion for next steps.";
         $type = $property['characteristics']['type'] ?? 'N/A';
         $area = $property['characteristics']['area'] ?? 'N/A';
         $price = $property['characteristics']['price'] ?? 'N/A';
+        $status = $property['characteristics']['status'] ?? 'N/A';
         $id = $property['id'] ?? 'N/A';
+        $url = $property['url'] ?? '#';
 
-        return "Property ID {$id}: {$title} in {$location}
-Type: {$type}, Area: {$area} m², Price: {$price} EUR
-URL: {$property['url']}
+        // Format price nicely
+        $priceFormatted = is_numeric($price) ? number_format($price, 0, '', ' ') . ' EUR' : $price;
+        
+        // Format area nicely
+        $areaFormatted = is_numeric($area) ? number_format($area, 0, '', ' ') . ' m²' : $area;
+
+        return "Имот ID {$id}: {$title}
+Локация: {$location}
+Тип: {$type} | Площ: {$areaFormatted} | Цена: {$priceFormatted}
+Статус: {$status}
+Линк: {$url}
 
 ";
     }
@@ -403,29 +483,44 @@ URL: {$property['url']}
     private function parseMessageToCriteria(string $message): array
     {
         $criteria = [];
-        $messageLower = strtolower($message);
+        $messageLower = mb_strtolower($message, 'UTF-8');
 
-        // Location detection
-        $locations = ['sofia' => 'софия', 'plovdiv' => 'пловдив', 'varna' => 'варна', 'burgas' => 'бургас'];
-        foreach ($locations as $en => $bg) {
-            if (str_contains($messageLower, $en) || str_contains($messageLower, $bg)) {
-                $criteria['location'] = $en;
-                break;
+        // Location detection - support both English and Bulgarian
+        $locations = [
+            'софия' => ['София', 'Sofia', 'sofia'],
+            'пловдив' => ['Пловдив', 'Plovdiv', 'plovdiv'], 
+            'варна' => ['Варна', 'Varna', 'varna'],
+            'бургас' => ['Бургас', 'Burgas', 'burgas'],
+            'русе' => ['Русе', 'Ruse', 'ruse'],
+            'хасково' => ['Хасково', 'Haskovo', 'haskovo'],
+            'севлиево' => ['Севлиево', 'Sevlievo', 'sevlievo'],
+            'благоевград' => ['Благоевград', 'Blagoevgrad', 'blagoevgrad']
+        ];
+        
+        foreach ($locations as $bgKey => $variants) {
+            foreach ($variants as $variant) {
+                if (mb_strpos($messageLower, mb_strtolower($variant, 'UTF-8')) !== false) {
+                    $criteria['location'] = $variants; // Pass all variants for searching
+                    error_log("Location found in message: " . json_encode($variants, JSON_UNESCAPED_UNICODE));
+                    break 2;
+                }
             }
         }
 
-        // Property type detection
+        // Property type detection - improved Bulgarian support
         $types = [
-            'warehouse' => ['warehouse', 'склад', 'storage', 'lager'],
-            'office' => ['office', 'офис', 'büro'],
-            'industrial' => ['industrial', 'индустриален', 'manufacturing', 'производство', 'industrie'],
-            'logistics' => ['logistics', 'логистичен', 'distribution', 'дистрибуция', 'logistik']
+            'warehouse' => ['warehouse', 'склад', 'складово', 'storage', 'lager', 'складов', 'складове', 'складови', 'склада'],
+            'office' => ['office', 'офис', 'büro', 'офиси', 'офисов', 'офисен', 'офисна', 'офисни'],
+            'industrial' => ['industrial', 'индустриален', 'manufacturing', 'производство', 'industrie', 'промишлен', 'фабрика', 'индустриални'],
+            'logistics' => ['logistics', 'логистичен', 'distribution', 'дистрибуция', 'logistik', 'логистика', 'логистични', 'логистичен'],
+            'business' => ['business', 'бизнес', 'търговски', 'commercial', 'kommerziell']
         ];
 
         foreach ($types as $type => $keywords) {
             foreach ($keywords as $keyword) {
-                if (str_contains($messageLower, $keyword)) {
+                if (mb_strpos($messageLower, mb_strtolower($keyword, 'UTF-8')) !== false) {
                     $criteria['type'] = $type;
+                    error_log("Type found in message: $type (keyword: $keyword)");
                     break 2;
                 }
             }
@@ -446,6 +541,7 @@ URL: {$property['url']}
             $criteria['max_area'] = (int) $matches[2];
         }
 
+        error_log("Final criteria: " . json_encode($criteria, JSON_UNESCAPED_UNICODE));
         return $criteria;
     }
 
@@ -493,7 +589,7 @@ URL: {$property['url']}
     {
         return match($locale) {
             'bg' => 'Съжалявам, в момента имам технически проблеми. Моля, свържете се директно с нашия екип за помощ при търсенето на индустриални имоти.',
-            'de' => 'Entschuldigung, ich habe momentan technische Probleme. Bitte wenden Sie sich direkt an unser Team für Hilfe bei der Suche nach Industrieimmobilien.',
+            'de' => 'Entschuldigung, ich habe momentan technische Probleme. Bitte wenden Sie sich direkt an unser Team за Hilfe bei der Suche nach Industrieimmobilien.',
             'ru' => 'Извините, у меня сейчас технические проблемы. Пожалуйста, обратитесь напрямую к нашей команде за помощью в поиске промышленной недвижимости.',
             default => 'Sorry, I\'m experiencing technical difficulties. Please contact our team directly for assistance with finding industrial properties.'
         };

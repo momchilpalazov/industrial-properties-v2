@@ -173,12 +173,13 @@ class AiDataService
     {
         // Build search query
         $qb = $this->propertyRepository->createQueryBuilder('p')
+            ->leftJoin('p.type', 'pt')
             ->where('p.isActive = :active')
             ->setParameter('active', true);
 
         // Apply search criteria
         if (!empty($criteria['type'])) {
-            $qb->andWhere('p.type LIKE :type')
+            $qb->andWhere('pt.nameBg LIKE :type OR pt.nameEn LIKE :type OR pt.nameDe LIKE :type OR pt.nameRu LIKE :type')
                ->setParameter('type', '%' . $criteria['type'] . '%');
         }
 
@@ -203,11 +204,36 @@ class AiDataService
         }
 
         if (!empty($criteria['location'])) {
-            $qb->andWhere('p.locationBg LIKE :location OR p.locationEn LIKE :location OR p.locationDe LIKE :location OR p.locationRu LIKE :location')
-               ->setParameter('location', '%' . $criteria['location'] . '%');
+            if (is_array($criteria['location'])) {
+                // Multiple location variants (e.g., ['София', 'Sofia', 'sofia'])
+                $locationConditions = [];
+                $locationParams = [];
+                foreach ($criteria['location'] as $index => $location) {
+                    $locationConditions[] = "p.locationBg LIKE :location{$index} OR p.locationEn LIKE :location{$index} OR p.locationDe LIKE :location{$index} OR p.locationRu LIKE :location{$index}";
+                    $locationParams["location{$index}"] = '%' . $location . '%';
+                }
+                $qb->andWhere('(' . implode(' OR ', $locationConditions) . ')');
+                foreach ($locationParams as $param => $value) {
+                    $qb->setParameter($param, $value);
+                }
+                
+                // Debug logging
+                error_log("Searching with location array: " . json_encode($criteria['location'], JSON_UNESCAPED_UNICODE));
+                error_log("Generated location condition: " . implode(' OR ', $locationConditions));
+            } else {
+                // Single location string
+                $qb->andWhere('p.locationBg LIKE :location OR p.locationEn LIKE :location OR p.locationDe LIKE :location OR p.locationRu LIKE :location')
+                   ->setParameter('location', '%' . $criteria['location'] . '%');
+                
+                // Debug logging
+                error_log("Searching with location string: " . $criteria['location']);
+            }
         }
 
         $properties = $qb->getQuery()->getResult();
+        
+        // Debug logging
+        error_log("Search query returned " . count($properties) . " properties");
 
         $transformedProperties = [];
         foreach ($properties as $property) {
