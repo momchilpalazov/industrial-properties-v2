@@ -95,3 +95,8 @@ services:
             $httpClient: '@http_client'
             $aiDataService: '@App\Service\AiDataService'
             $defaultProvider: 'deepseek'
+
+    App\Service\DeepSeekTranslationService:
+        arguments:
+            $httpClient: '@http_client'
+            $deepSeekApiKey: '%app.deepseek_api_key%'

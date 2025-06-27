@@ -77,6 +77,19 @@
                 <i class="bi bi-translate"></i> Описание на различни езици
             </h4>
             
+            <!-- Бутон за автоматичен превод на всички полета -->
+            <div class="translation-tools mb-3">
+                <button type="button" id="translateAllFields" class="btn btn-success">
+                    <i class="bi bi-translate"></i> Интелигентен превод на всички полета
+                </button>
+                <div class="translation-status mt-2" id="translationStatus" style="display: none;">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <small class="text-muted mt-1 d-block">Превеждане в процес...</small>
+                </div>
+            </div>
+            
             <ul class="nav nav-tabs mb-4" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#bg">
@@ -107,16 +120,31 @@
                     {{ form_row(form.locationBg) }}
                 </div>
                 <div class="tab-pane fade" id="en">
+                    <div class="d-flex justify-content-end mb-2">
+                        <button type="button" class="btn btn-sm btn-outline-primary translate-from-bg" data-target-lang="en">
+                            <i class="bi bi-translate"></i> Преведи от български
+                        </button>
+                    </div>
                     {{ form_row(form.titleEn) }}
                     {{ form_row(form.descriptionEn) }}
                     {{ form_row(form.locationEn) }}
                 </div>
                 <div class="tab-pane fade" id="de">
+                    <div class="d-flex justify-content-end mb-2">
+                        <button type="button" class="btn btn-sm btn-outline-primary translate-from-bg" data-target-lang="de">
+                            <i class="bi bi-translate"></i> Преведи от български
+                        </button>
+                    </div>
                     {{ form_row(form.titleDe) }}
                     {{ form_row(form.descriptionDe) }}
                     {{ form_row(form.locationDe) }}
                 </div>
                 <div class="tab-pane fade" id="ru">
+                    <div class="d-flex justify-content-end mb-2">
+                        <button type="button" class="btn btn-sm btn-outline-primary translate-from-bg" data-target-lang="ru">
+                            <i class="bi bi-translate"></i> Преведи от български
+                        </button>
+                    </div>
                     {{ form_row(form.titleRu) }}
                     {{ form_row(form.descriptionRu) }}
                     {{ form_row(form.locationRu) }}
@@ -212,7 +240,249 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
+        // DeepSeek Translation Service
+        class DeepSeekTranslationService {
+            constructor() {
+                this.apiUrl = '/admin/translate';
+            }
+            
+            async translate(text, sourceLang, targetLang, context = 'real_estate') {
+                if (!text || text.trim() === '') {
+                    return '';
+                }
+                
+                try {
+                    const response = await fetch(this.apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            text: text,
+                            source: sourceLang,
+                            target: targetLang,
+                            context: context
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (!data.success) {
+                        throw new Error(data.error || 'Translation failed');
+                    }
+                    
+                    return data.translatedText;
+                } catch (error) {
+                    console.error('Translation error:', error);
+                    throw error;
+                }
+            }
+        }
+
+        // Initialize translation service
+        const translationService = new DeepSeekTranslationService();
+
         document.addEventListener('DOMContentLoaded', function() {
+            // Translation functions
+            function showTranslationProgress(current, total) {
+                const statusDiv = document.getElementById('translationStatus');
+                const progressBar = statusDiv.querySelector('.progress-bar');
+                const statusText = statusDiv.querySelector('small');
+                
+                statusDiv.style.display = 'block';
+                const percentage = (current / total) * 100;
+                progressBar.style.width = percentage + '%';
+                statusText.textContent = `Превеждане в процес... (${current}/${total})`;
+            }
+
+            function hideTranslationProgress() {
+                const statusDiv = document.getElementById('translationStatus');
+                statusDiv.style.display = 'none';
+            }
+
+            function showAlert(message, type = 'success') {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+                alertDiv.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                const container = document.querySelector('.property-form');
+                container.insertBefore(alertDiv, container.firstChild);
+                
+                // Auto dismiss after 5 seconds
+                setTimeout(() => {
+                    if (alertDiv && alertDiv.parentNode) {
+                        alertDiv.remove();
+                    }
+                }, 5000);
+            }
+
+            // Get all field values for all languages
+            function getAllFieldValues() {
+                return {
+                    bg: {
+                        title: document.querySelector('#property_titleBg').value,
+                        description: window.editor_descriptionBg ? window.editor_descriptionBg.getData() : '',
+                        location: document.querySelector('#property_locationBg').value
+                    },
+                    en: {
+                        title: document.querySelector('#property_titleEn').value,
+                        description: window.editor_descriptionEn ? window.editor_descriptionEn.getData() : '',
+                        location: document.querySelector('#property_locationEn').value
+                    },
+                    de: {
+                        title: document.querySelector('#property_titleDe').value,
+                        description: window.editor_descriptionDe ? window.editor_descriptionDe.getData() : '',
+                        location: document.querySelector('#property_locationDe').value
+                    },
+                    ru: {
+                        title: document.querySelector('#property_titleRu').value,
+                        description: window.editor_descriptionRu ? window.editor_descriptionRu.getData() : '',
+                        location: document.querySelector('#property_locationRu').value
+                    }
+                };
+            }
+
+            // Find which language has the most content (source language)
+            function findSourceLanguage(allFields) {
+                const languages = ['bg', 'en', 'de', 'ru'];
+                let maxScore = 0;
+                let sourceLanguage = 'bg'; // default to Bulgarian
+                
+                languages.forEach(lang => {
+                    const fields = allFields[lang];
+                    let score = 0;
+                    
+                    if (fields.title && fields.title.trim().length > 0) score += fields.title.trim().length;
+                    if (fields.description && fields.description.trim().length > 0) score += fields.description.trim().length;
+                    if (fields.location && fields.location.trim().length > 0) score += fields.location.trim().length;
+                    
+                    if (score > maxScore) {
+                        maxScore = score;
+                        sourceLanguage = lang;
+                    }
+                });
+                
+                return { language: sourceLanguage, score: maxScore };
+            }
+
+            // Intelligent translation - automatically detect source and translate to empty fields
+            async function translateAllFields() {
+                const allFields = getAllFieldValues();
+                const sourceInfo = findSourceLanguage(allFields);
+                
+                if (sourceInfo.score === 0) {
+                    showAlert('Моля, въведете съдържание на някой от езиците преди да превеждате.', 'warning');
+                    return;
+                }
+                
+                const sourceLang = sourceInfo.language;
+                const sourceFields = allFields[sourceLang];
+                const allLanguages = ['bg', 'en', 'de', 'ru'];
+                const targetLanguages = allLanguages.filter(lang => lang !== sourceLang);
+                
+                // Collect fields to translate (only non-empty source fields to empty target fields)
+                const fieldsToTranslate = [];
+                
+                ['title', 'description', 'location'].forEach(fieldType => {
+                    if (sourceFields[fieldType] && sourceFields[fieldType].trim().length > 0) {
+                        targetLanguages.forEach(targetLang => {
+                            const targetField = allFields[targetLang][fieldType];
+                            // Only translate to empty fields or ask user
+                            if (!targetField || targetField.trim().length === 0) {
+                                fieldsToTranslate.push({
+                                    field: fieldType,
+                                    text: sourceFields[fieldType],
+                                    sourceLang: sourceLang,
+                                    targetLang: targetLang
+                                });
+                            }
+                        });
+                    }
+                });
+                
+                if (fieldsToTranslate.length === 0) {
+                    showAlert('Всички полета са попълнени или няма съдържание за превод.', 'info');
+                    return;
+                }
+                
+                const sourceLangName = {
+                    'bg': 'български',
+                    'en': 'английски', 
+                    'de': 'немски',
+                    'ru': 'руски'
+                }[sourceLang];
+                
+                showTranslationProgress(0, fieldsToTranslate.length);
+                
+                try {
+                    for (let i = 0; i < fieldsToTranslate.length; i++) {
+                        const translation = fieldsToTranslate[i];
+                        
+                        try {
+                            const translatedText = await translationService.translate(
+                                translation.text,
+                                translation.sourceLang,
+                                translation.targetLang,
+                                'real_estate'
+                            );
+                            
+                            // Update the target field
+                            const fieldId = `#property_${translation.field}${translation.targetLang.charAt(0).toUpperCase() + translation.targetLang.slice(1)}`;
+                            
+                            if (translation.field === 'description') {
+                                const editorKey = `editor_description${translation.targetLang.charAt(0).toUpperCase() + translation.targetLang.slice(1)}`;
+                                if (window[editorKey]) {
+                                    window[editorKey].setData(translatedText);
+                                }
+                            } else {
+                                const targetField = document.querySelector(fieldId);
+                                if (targetField) {
+                                    targetField.value = translatedText;
+                                }
+                            }
+                            
+                            showTranslationProgress(i + 1, fieldsToTranslate.length);
+                            
+                            // Small delay to prevent API rate limiting
+                            await new Promise(resolve => setTimeout(resolve, 300));
+                            
+                        } catch (error) {
+                            console.error(`Error translating ${translation.field} from ${translation.sourceLang} to ${translation.targetLang}:`, error);
+                            showTranslationProgress(i + 1, fieldsToTranslate.length);
+                        }
+                    }
+                    
+                    hideTranslationProgress();
+                    showAlert(`Преводът от ${sourceLangName} е завършен успешно! Преведени са ${fieldsToTranslate.length} полета.`, 'success');
+                    
+                } catch (error) {
+                    hideTranslationProgress();
+                    showAlert(`Грешка при превода: ${error.message}`, 'danger');
+                }
+            }
+
+            // Event listeners for translation buttons
+            const translateAllBtn = document.getElementById('translateAllFields');
+            if (translateAllBtn) {
+                translateAllBtn.addEventListener('click', translateAllFields);
+            }
+            
+            const translateButtons = document.querySelectorAll('.translate-from-bg');
+            translateButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetLang = this.getAttribute('data-target-lang');
+                    translateToLanguage(targetLang);
+                });
+            });
+
             // CKEditor initialization
             const editors = ['descriptionBg', 'descriptionEn', 'descriptionDe', 'descriptionRu'];
             
@@ -406,6 +676,306 @@
                     }
                 });
             });
+
+            // Translation service and functions
+            const translationService = {
+                async translate(text, sourceLang, targetLang, domain = 'general') {
+                    const response = await fetch('/admin/translate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            text: text,
+                            source: sourceLang,
+                            target: targetLang,
+                            context: domain
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Translation failed: ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    return data.translatedText;
+                }
+            };
+
+            // Get field content for a specific language
+            function getFieldContent(field, lang) {
+                if (field === 'description') {
+                    const editorKey = `editor_description${lang.charAt(0).toUpperCase() + lang.slice(1)}`;
+                    return window[editorKey] ? window[editorKey].getData().trim() : '';
+                } else {
+                    const element = document.querySelector(`#property_${field}${lang.charAt(0).toUpperCase() + lang.slice(1)}`);
+                    return element ? element.value.trim() : '';
+                }
+            }
+
+            // Set field content for a specific language
+            function setFieldContent(field, lang, content) {
+                if (field === 'description') {
+                    const editorKey = `editor_description${lang.charAt(0).toUpperCase() + lang.slice(1)}`;
+                    if (window[editorKey]) {
+                        window[editorKey].setData(content);
+                    }
+                } else {
+                    const element = document.querySelector(`#property_${field}${lang.charAt(0).toUpperCase() + lang.slice(1)}`);
+                    if (element) {
+                        element.value = content;
+                    }
+                }
+            }
+
+            // Detect source language with most content
+            function detectSourceLanguage() {
+                const languages = ['bg', 'en', 'de', 'ru'];
+                const fields = ['title', 'description', 'location'];
+                const languageContent = {};
+                
+                languages.forEach(lang => {
+                    languageContent[lang] = 0;
+                    fields.forEach(field => {
+                        const content = getFieldContent(field, lang);
+                        languageContent[lang] += content.length;
+                    });
+                });
+                
+                // Find language with most content
+                let maxContent = 0;
+                let sourceLang = 'bg'; // default to Bulgarian
+                
+                Object.keys(languageContent).forEach(lang => {
+                    if (languageContent[lang] > maxContent) {
+                        maxContent = languageContent[lang];
+                        sourceLang = lang;
+                    }
+                });
+                
+                return { sourceLang, contentLengths: languageContent };
+            }
+
+            // Show alert message
+            function showAlert(message, type = 'info') {
+                const alertHtml = `
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                
+                const alertContainer = document.getElementById('alert-container');
+                if (alertContainer) {
+                    alertContainer.innerHTML = alertHtml;
+                    // Auto-hide after 5 seconds
+                    setTimeout(() => {
+                        const alert = alertContainer.querySelector('.alert');
+                        if (alert) {
+                            const bsAlert = new bootstrap.Alert(alert);
+                            bsAlert.close();
+                        }
+                    }, 5000);
+                }
+            }
+
+            // Show translation progress
+            function showTranslationProgress(current, total) {
+                const percentage = Math.round((current / total) * 100);
+                const progressContainer = document.getElementById('translation-progress');
+                const progressBar = document.getElementById('translation-progress-bar');
+                const progressText = document.getElementById('translation-progress-text');
+                
+                if (progressContainer && progressBar && progressText) {
+                    progressContainer.style.display = 'block';
+                    progressBar.style.width = percentage + '%';
+                    progressBar.setAttribute('aria-valuenow', percentage);
+                    progressText.textContent = `Превод: ${current} от ${total} (${percentage}%)`;
+                }
+            }
+
+            // Hide translation progress
+            function hideTranslationProgress() {
+                const progressContainer = document.getElementById('translation-progress');
+                if (progressContainer) {
+                    progressContainer.style.display = 'none';
+                }
+            }
+
+            // Translate all fields intelligently
+            async function translateAllFromBulgarian() {
+                const detection = detectSourceLanguage();
+                const sourceLang = detection.sourceLang;
+                const languageNames = {
+                    'bg': 'български',
+                    'en': 'английски', 
+                    'de': 'немски',
+                    'ru': 'руски'
+                };
+                
+                // Check if any content exists
+                if (detection.contentLengths[sourceLang] === 0) {
+                    showAlert('Моля, въведете съдържание на някой от езиците преди да превеждате.', 'warning');
+                    return;
+                }
+                
+                console.log('Detected source language:', sourceLang, 'with', detection.contentLengths[sourceLang], 'characters');
+                
+                const allLanguages = ['bg', 'en', 'de', 'ru'];
+                const targetLanguages = allLanguages.filter(lang => lang !== sourceLang);
+                const fields = ['title', 'description', 'location'];
+                
+                // Collect only fields that have content in source language and are empty in target languages
+                const translationsNeeded = [];
+                
+                fields.forEach(field => {
+                    const sourceContent = getFieldContent(field, sourceLang);
+                    if (sourceContent) {
+                        targetLanguages.forEach(targetLang => {
+                            const targetContent = getFieldContent(field, targetLang);
+                            if (!targetContent) { // Only translate to empty fields
+                                translationsNeeded.push({
+                                    field: field,
+                                    text: sourceContent,
+                                    sourceLang: sourceLang,
+                                    targetLang: targetLang
+                                });
+                            }
+                        });
+                    }
+                });
+                
+                if (translationsNeeded.length === 0) {
+                    showAlert('Всички полета вече са попълнени. Няма нужда от превод.', 'info');
+                    return;
+                }
+                
+                showAlert(`Открит е ${languageNames[sourceLang]} като основен език. Започвам превод...`, 'info');
+                showTranslationProgress(0, translationsNeeded.length);
+                
+                let completedTranslations = 0;
+                
+                try {
+                    for (const translation of translationsNeeded) {
+                        try {
+                            const translatedText = await translationService.translate(
+                                translation.text, 
+                                translation.sourceLang, 
+                                translation.targetLang, 
+                                'real_estate'
+                            );
+                            
+                            setFieldContent(translation.field, translation.targetLang, translatedText);
+                            
+                            completedTranslations++;
+                            showTranslationProgress(completedTranslations, translationsNeeded.length);
+                            
+                            // Small delay to prevent API rate limiting
+                            await new Promise(resolve => setTimeout(resolve, 300));
+                            
+                        } catch (error) {
+                            console.error(`Error translating ${translation.field} from ${translation.sourceLang} to ${translation.targetLang}:`, error);
+                            completedTranslations++;
+                            showTranslationProgress(completedTranslations, translationsNeeded.length);
+                        }
+                    }
+                    
+                    hideTranslationProgress();
+                    showAlert(`Преводът е завършен успешно! Преведени са ${translationsNeeded.length} полета от ${languageNames[sourceLang]}.`, 'success');
+                    
+                } catch (error) {
+                    hideTranslationProgress();
+                    showAlert(`Грешка при превода: ${error.message}`, 'danger');
+                }
+            }
+
+            // Translate to specific language
+            async function translateToLanguage(targetLang) {
+                const detection = detectSourceLanguage();
+                const sourceLang = detection.sourceLang;
+                const languageNames = {
+                    'bg': 'български',
+                    'en': 'английски', 
+                    'de': 'немски',
+                    'ru': 'руски'
+                };
+                
+                if (detection.contentLengths[sourceLang] === 0) {
+                    showAlert('Моля, въведете съдържание на някой от езиците преди да превеждате.', 'warning');
+                    return;
+                }
+                
+                if (sourceLang === targetLang) {
+                    showAlert(`Основният език вече е ${languageNames[targetLang]}.`, 'info');
+                    return;
+                }
+                
+                const fields = ['title', 'description', 'location'];
+                const translationsNeeded = [];
+                
+                fields.forEach(field => {
+                    const sourceContent = getFieldContent(field, sourceLang);
+                    if (sourceContent) {
+                        const targetContent = getFieldContent(field, targetLang);
+                        if (!targetContent) { // Only translate to empty fields
+                            translationsNeeded.push({
+                                field: field,
+                                text: sourceContent,
+                                sourceLang: sourceLang,
+                                targetLang: targetLang
+                            });
+                        }
+                    }
+                });
+                
+                if (translationsNeeded.length === 0) {
+                    showAlert(`Всички полета на ${languageNames[targetLang]} вече са попълнени.`, 'info');
+                    return;
+                }
+                
+                showAlert(`Започвам превод от ${languageNames[sourceLang]} към ${languageNames[targetLang]}...`, 'info');
+                showTranslationProgress(0, translationsNeeded.length);
+                
+                let completedTranslations = 0;
+                
+                try {
+                    for (const translation of translationsNeeded) {
+                        try {
+                            const translatedText = await translationService.translate(
+                                translation.text, 
+                                translation.sourceLang, 
+                                translation.targetLang, 
+                                'real_estate'
+                            );
+                            
+                            setFieldContent(translation.field, translation.targetLang, translatedText);
+                            
+                            completedTranslations++;
+                            showTranslationProgress(completedTranslations, translationsNeeded.length);
+                            
+                            // Small delay to prevent API rate limiting
+                            await new Promise(resolve => setTimeout(resolve, 300));
+                            
+                        } catch (error) {
+                            console.error(`Error translating ${translation.field}:`, error);
+                            completedTranslations++;
+                            showTranslationProgress(completedTranslations, translationsNeeded.length);
+                        }
+                    }
+                    
+                    hideTranslationProgress();
+                    showAlert(`Преводът към ${languageNames[targetLang]} е завършен успешно!`, 'success');
+                    
+                } catch (error) {
+                    hideTranslationProgress();
+                    showAlert(`Грешка при превода: ${error.message}`, 'danger');
+                }
+            }
         });
     </script>
 {% endblock %} 
