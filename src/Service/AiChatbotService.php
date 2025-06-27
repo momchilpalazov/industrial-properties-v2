@@ -65,76 +65,69 @@ class AiChatbotService
      */
     public function processMessage(string $message, string $locale = 'en', array $context = []): array
     {
-        // Auto-select best available provider if current one is not configured
-        if (!$this->isProviderConfigured($this->currentProvider)) {
-            $this->currentProvider = $this->getBestAvailableProvider();
-        }
-
-        if (!$this->isProviderConfigured($this->currentProvider)) {
-            return $this->getFallbackResponseArray($message, $locale);
-        }
-
         try {
-            // Get relevant properties based on the message
-            error_log("Processing message: $message");
+            error_log("Processing message: " . $message);
             
+            // Sanitize input
+            $message = $this->sanitizeInput($message);
+            
+            // Find relevant properties first
             $relevantProperties = $this->findRelevantProperties($message, $locale);
             error_log("Found relevant properties: " . count($relevantProperties));
-            
-            // Even if no exact matches found, we should have some properties from the fallback
-            // If somehow we still have no properties, log this but continue with empty properties
-            if (empty($relevantProperties)) {
-                error_log("WARNING: No properties available even after fallback");
-            }
             
             // Build system prompt with property context
             $systemPrompt = $this->buildSystemPrompt($locale, $relevantProperties);
             
             // Build conversation messages
             $messages = [
-                ['role' => 'system', 'content' => $systemPrompt],
-                ['role' => 'user', 'content' => $message]
+                [
+                    'role' => 'system',
+                    'content' => $systemPrompt
+                ],
+                [
+                    'role' => 'user', 
+                    'content' => $message
+                ]
             ];
-
-            // Add conversation history if provided
+            
+            // Add conversation context if provided
             if (!empty($context['conversation_history'])) {
                 array_splice($messages, -1, 0, $context['conversation_history']);
             }
-
-            // Call AI API based on provider
-            $response = $this->callAIProvider($messages);
-
+            
+            // Call AI provider
+            $aiResponse = $this->callAIProvider($messages);
+            
+            if (!$aiResponse['success']) {
+                error_log("AI Provider failed: " . ($aiResponse['error'] ?? 'Unknown error'));
+                return [
+                    'success' => false,
+                    'error' => $aiResponse['error'] ?? 'AI service temporarily unavailable',
+                    'fallback_response' => $this->getFallbackResponse($message, $locale),
+                    'provider' => $aiResponse['provider'] ?? 'none'
+                ];
+            }
+            
+            // Generate follow-up suggestions
+            $suggestions = $this->generateFollowUpSuggestions($message, $locale);
+            
             return [
                 'success' => true,
-                'response' => $response['content'],
-                'properties_context' => $relevantProperties,
-                'conversation_id' => $context['conversation_id'] ?? uniqid('chat_'),
-                'locale' => $locale,
-                'usage' => $response['usage'] ?? null,
-                'suggestions' => $this->generateFollowUpSuggestions($message, $locale),
-                'provider' => $this->currentProvider,
-                'model' => self::MODELS[$this->currentProvider]['name']
+                'response' => $aiResponse['response'],
+                'suggestions' => $suggestions,
+                'properties_found' => count($relevantProperties),
+                'provider' => $aiResponse['provider'],
+                'tokens_used' => $aiResponse['tokens_used'] ?? 0
             ];
-
+            
         } catch (\Exception $e) {
             error_log("Error in processMessage: " . $e->getMessage() . "\n" . $e->getTraceAsString());
             
-            // Always provide a helpful response even when there's an error
-            $errorMessage = $e->getMessage();
-            $isApiError = strpos($errorMessage, 'API') !== false || 
-                          strpos($errorMessage, '401') !== false || 
-                          strpos($errorMessage, '403') !== false || 
-                          strpos($errorMessage, 'auth') !== false;
-            
             return [
                 'success' => false,
-                'error' => [
-                    'message' => $isApiError ? 'AI service temporarily unavailable' : 'Failed to process your query',
-                    'code' => $isApiError ? 'AI_SERVICE_ERROR' : 'QUERY_PROCESSING_ERROR',
-                    'details' => $e->getMessage()
-                ],
+                'error' => 'An unexpected error occurred: ' . $e->getMessage(),
                 'fallback_response' => $this->getFallbackResponse($message, $locale),
-                'provider' => $this->currentProvider
+                'provider' => 'error'
             ];
         }
     }
@@ -188,30 +181,89 @@ class AiChatbotService
      */
     private function callDeepSeek(array $messages): array
     {
-        $response = $this->httpClient->request('POST', self::MODELS[self::PROVIDER_DEEPSEEK]['endpoint'], [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->deepSeekApiKey,
-                'Content-Type' => 'application/json',
-            ],
-            'json' => [
-                'model' => self::MODELS[self::PROVIDER_DEEPSEEK]['model'],
+        try {
+            // DeepSeek API endpoint
+            $url = 'https://api.deepseek.com/v1/chat/completions';
+            
+            // Configure for DeepSeek R1 best practices
+            $requestData = [
+                'model' => 'deepseek-chat', // Use the chat model for better reasoning
                 'messages' => $messages,
-                'max_tokens' => self::MAX_TOKENS,
-                'temperature' => 0.7,
+                'temperature' => 0.7, // Optimal for reasoning tasks
+                'max_tokens' => 1000,
+                'top_p' => 0.95, // Good balance for creativity and coherence
+                'top_k' => 40, // Help with token selection
+                'frequency_penalty' => 0.1, // Reduce repetition
+                'presence_penalty' => 0.1, // Encourage diverse vocabulary
                 'stream' => false
-            ]
-        ]);
+            ];
 
-        $data = $response->toArray();
+            $response = $this->httpClient->request('POST', $url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->deepSeekApiKey,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $requestData,
+                'timeout' => 30
+            ]);
 
-        if (!isset($data['choices'][0]['message']['content'])) {
-            throw new \Exception('Invalid DeepSeek API response');
+            $statusCode = $response->getStatusCode();
+            $content = $response->getContent();
+
+            if ($statusCode !== 200) {
+                error_log("DeepSeek API error: Status $statusCode, Content: $content");
+                throw new \Exception("DeepSeek API request failed with status: $statusCode");
+            }
+
+            $data = json_decode($content, true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                error_log("DeepSeek JSON decode error: " . json_last_error_msg());
+                throw new \Exception("Invalid JSON response from DeepSeek API");
+            }
+
+            if (!isset($data['choices'][0]['message']['content'])) {
+                error_log("DeepSeek unexpected response structure: " . $content);
+                throw new \Exception("Unexpected response structure from DeepSeek API");
+            }
+
+            $responseText = $data['choices'][0]['message']['content'];
+            
+            // Clean up any formatting artifacts that might come from DeepSeek
+            $responseText = $this->cleanDeepSeekResponse($responseText);
+
+            return [
+                'success' => true,
+                'response' => $responseText,
+                'provider' => 'deepseek',
+                'tokens_used' => $data['usage']['total_tokens'] ?? 0
+            ];
+
+        } catch (\Exception $e) {
+            error_log("DeepSeek API error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'provider' => 'deepseek'
+            ];
         }
+    }
 
-        return [
-            'content' => $data['choices'][0]['message']['content'],
-            'usage' => $data['usage'] ?? null
-        ];
+    /**
+     * Clean DeepSeek response from potential formatting artifacts
+     */
+    private function cleanDeepSeekResponse(string $response): string
+    {
+        // Remove any thinking tags that might leak through
+        $response = preg_replace('/<think>.*?<\/think>/s', '', $response);
+        $response = preg_replace('/<thinking>.*?<\/thinking>/s', '', $response);
+        
+        // Clean up any double spacing or line breaks
+        $response = preg_replace('/\n{3,}/', "\n\n", $response);
+        $response = preg_replace('/[ \t]+/', ' ', $response);
+        
+        // Trim and return
+        return trim($response);
     }
 
     /**
@@ -335,50 +387,84 @@ class AiChatbotService
             error_log("Search criteria parsed: " . json_encode($criteria, JSON_UNESCAPED_UNICODE));
             
             // Search for relevant properties with the original criteria
-            // Don't modify the location array - this is now properly handled in AiDataService
             $searchResults = $this->aiDataService->searchPropertiesForAi($criteria, $locale);
             
             // Debug logging
             error_log("Search results count: " . (isset($searchResults['results']) ? count($searchResults['results']) : 0));
             
-            // If no results, try broader search
-            if (empty($searchResults['results'])) {
-                // Try with location only
-                if (!empty($criteria['location'])) {
-                    $locationOnlyCriteria = ['location' => $criteria['location']];
-                    error_log("Trying location-only search with: " . json_encode($locationOnlyCriteria, JSON_UNESCAPED_UNICODE));
-                    $locationResults = $this->aiDataService->searchPropertiesForAi($locationOnlyCriteria, $locale);
-                    
-                    if (!empty($locationResults['results'])) {
-                        error_log("Location-only search found " . count($locationResults['results']) . " results");
-                        return array_slice($locationResults['results'], 0, self::MAX_CONTEXT_PROPERTIES);
-                    }
-                }
+            // If we have results, return them
+            if (!empty($searchResults['results'])) {
+                error_log("Found " . count($searchResults['results']) . " results with full criteria");
+                return array_slice($searchResults['results'], 0, self::MAX_CONTEXT_PROPERTIES);
+            }
+
+            // Progressive fallback strategy
+            $fallbackStrategies = [];
+
+            // Strategy 1: Try location + broader type matching
+            if (!empty($criteria['location']) && !empty($criteria['type'])) {
+                $broadTypeCriteria = ['location' => $criteria['location']];
+                $fallbackStrategies[] = ['criteria' => $broadTypeCriteria, 'name' => 'location-only'];
+            }
+
+            // Strategy 2: Try type only with flexible area/price
+            if (!empty($criteria['type'])) {
+                $typeOnlyCriteria = ['type' => $criteria['type']];
+                $fallbackStrategies[] = ['criteria' => $typeOnlyCriteria, 'name' => 'type-only'];
+            }
+
+            // Strategy 3: Try location only
+            if (!empty($criteria['location'])) {
+                $locationOnlyCriteria = ['location' => $criteria['location']];
+                $fallbackStrategies[] = ['criteria' => $locationOnlyCriteria, 'name' => 'location-only'];
+            }
+
+            // Strategy 4: Try area/price only if specified
+            if (!empty($criteria['min_area']) || !empty($criteria['max_area']) || 
+                !empty($criteria['min_price']) || !empty($criteria['max_price'])) {
+                $rangeCriteria = [];
+                if (!empty($criteria['min_area'])) $rangeCriteria['min_area'] = $criteria['min_area'];
+                if (!empty($criteria['max_area'])) $rangeCriteria['max_area'] = $criteria['max_area'];
+                if (!empty($criteria['min_price'])) $rangeCriteria['min_price'] = $criteria['min_price'];
+                if (!empty($criteria['max_price'])) $rangeCriteria['max_price'] = $criteria['max_price'];
+                $fallbackStrategies[] = ['criteria' => $rangeCriteria, 'name' => 'range-only'];
+            }
+
+            // Try each fallback strategy
+            foreach ($fallbackStrategies as $strategy) {
+                error_log("Trying fallback strategy: " . $strategy['name'] . " with criteria: " . json_encode($strategy['criteria'], JSON_UNESCAPED_UNICODE));
+                $fallbackResults = $this->aiDataService->searchPropertiesForAi($strategy['criteria'], $locale);
                 
-                // Try with type only
-                if (!empty($criteria['type'])) {
-                    $typeOnlyCriteria = ['type' => $criteria['type']];
-                    error_log("Trying type-only search with: " . json_encode($typeOnlyCriteria, JSON_UNESCAPED_UNICODE));
-                    $typeResults = $this->aiDataService->searchPropertiesForAi($typeOnlyCriteria, $locale);
-                    
-                    if (!empty($typeResults['results'])) {
-                        error_log("Type-only search found " . count($typeResults['results']) . " results");
-                        return array_slice($typeResults['results'], 0, self::MAX_CONTEXT_PROPERTIES);
-                    }
+                if (!empty($fallbackResults['results'])) {
+                    error_log("Fallback strategy '" . $strategy['name'] . "' found " . count($fallbackResults['results']) . " results");
+                    return array_slice($fallbackResults['results'], 0, self::MAX_CONTEXT_PROPERTIES);
                 }
-                
-                // Get all properties as fallback
-                $allProperties = $this->aiDataService->getAllPropertiesForAi(1, self::MAX_CONTEXT_PROPERTIES, $locale);
-                error_log("No results found, returning all properties: " . count($allProperties['properties']));
-                return $allProperties['properties'];
             }
             
-            // Limit to most relevant properties
-            return array_slice($searchResults['results'], 0, self::MAX_CONTEXT_PROPERTIES);
+            // Last resort: Get all properties
+            error_log("All fallback strategies failed, getting all properties");
+            $allProperties = $this->aiDataService->getAllPropertiesForAi(1, self::MAX_CONTEXT_PROPERTIES, $locale);
+            
+            if (!empty($allProperties['properties'])) {
+                error_log("Returning all properties: " . count($allProperties['properties']));
+                return $allProperties['properties'];
+            }
+
+            // Absolutely no properties found
+            error_log("No properties found in database at all");
+            return [];
+            
         } catch (\Exception $e) {
             error_log("Error in findRelevantProperties: " . $e->getMessage() . "\n" . $e->getTraceAsString());
-            // Return empty array on error to avoid breaking the chat
-            return [];
+            
+            // Emergency fallback: try to get any properties
+            try {
+                $emergency = $this->aiDataService->getAllPropertiesForAi(1, self::MAX_CONTEXT_PROPERTIES, $locale);
+                return $emergency['properties'] ?? [];
+            } catch (\Exception $emergencyException) {
+                error_log("Emergency fallback also failed: " . $emergencyException->getMessage());
+                return [];
+            }
         }
     }
 
@@ -389,48 +475,88 @@ class AiChatbotService
     {
         $languageInstructions = $this->getLanguageInstructions($locale);
         
-        $systemPrompt = "Вие сте AI асистент за Industrial Properties Europe, водещата платформа за индустриални имоти в България и Балканите.
+        $systemPrompt = "# Вашата роля
+Вие сте AI асистент за Industrial Properties Europe - водещата платформа за индустриални имоти в България и Балканите.
 
+# Инструкции за отговор
 {$languageInstructions}
 
-Вашата роля:
-- Помагате на потребителите да намерят индустриални имоти (складове, производствени помещения, офис сгради, логистични центрове)
-- Предоставяте препоръки за имоти според нуждите на потребителя
-- Отговаряте на въпроси за локации, цени и характеристики на имотите
-- Бъдете полезен, професионален и знаещ в областта на индустриалните недвижими имоти
+# Начин на мислене
+<thinking>
+- Анализирайте въпроса стъпка по стъпка
+- Проверете наличните данни за имоти
+- Формулирайте ясен и полезен отговор
+- Предложете конкретни следващи стъпки
+</thinking>
 
-ВАЖНИ УКАЗАНИЯ:
+# ФОРМАТИРАНЕ НА ОТГОВОРА:
+- Използвайте кратки, ясни параграфи
+- Разделяйте различните секции с празен ред
+- За списъци използвайте bullet points (•)
+- Форматирайте цените като: 150 000 EUR
+- Форматирайте площите като: 1 200 m²
+- Използвайте **болд** за важна информация
+- Подравнявайте текста логически
+
+# Вашите основни задачи:
+1. Помагате на потребителите да намерят подходящи индустриални имоти
+2. Предоставяте точна информация за наличните имоти 
+3. Обяснявате характеристиките и предимствата на различните типове имоти
+4. Насочвате към най-подходящите възможности според нуждите
+
+# Типове имоти, с които работим:
+• Складови помещения
+• Производствени сгради  
+• Логистични центрове
+• Офис сгради с индустриален профил
+• Земи за развитие
+
+# СТРУКТУРА НА ОТГОВОРА:
+1. **Кратко резюме** на намерените възможности
+2. **Детайлна информация** за всеки имот:
+   - **Име/Тип:** [описание]
+   - **Локация:** [град/район]
+   - **Площ:** [число] m²
+   - **Цена:** [число] EUR [/месец ако е наем]
+   - **Статус:** [свободен/нает/в процес]
+   - **Линк:** [URL за детайли]
+3. **Допълнителни опции** ако е подходящо
+4. **Следващи стъпки** или въпрос към потребителя
+
+# ВАЖНИ УКАЗАНИЯ:
 - Винаги отговаряйте на {$locale} език
-- Бъдете конкретен относно детайлите на имотите когато са налични
-- Ако нямате точна информация, насочете потребителите да се свържат с компанията
-- Препоръчвайте подходящи имоти от текущата база данни
-- Ако няма точно това което се търси, ясно обяснете това и ЗАДЪЛЖИТЕЛНО предложете алтернативи:
-  * Ако се търси определен тип имот в даден град, но го няма - предложете друг тип имот в същия град
-  * Ако се търси имот в определен град, но го няма - предложете подобен имот в друг град
-  * НИКОГА не казвайте че има технически проблем, ако просто няма точно съвпадение
-- Пазете отговорите кратки но информативни (максимум 150 думи)
-- Включвайте ID номерата на имотите когато препоръчвате конкретни такива
-- Винаги бъдете честни за наличността - ако няма точно това което се търси, кажете го ясно
+- Бъдете точен и конкретен относно детайлите на имотите
+- Включвайте ID номерата на имотите когато препоръчвате
+- Ако няма точно съвпадение, ЗАДЪЛЖИТЕЛНО предложете алтернативи
+- НИКОГА не казвайте че има технически проблем
+- Пазете отговорите информативни но добре структурирани
+- Винаги завършвайте с полезен въпрос или предложение
 
 ";
 
         if (!empty($properties)) {
-            $systemPrompt .= "НАЛИЧНИ ИМОТИ В МОМЕНТА:\n";
+            $systemPrompt .= "\n# НАЛИЧНИ ИМОТИ В МОМЕНТА:\n\n";
             foreach ($properties as $property) {
-                $systemPrompt .= $this->formatPropertyForPrompt($property, $locale);
+                $systemPrompt .= $this->formatPropertyForPrompt($property, $locale) . "\n";
             }
-            $systemPrompt .= "\n";
         } else {
-            $systemPrompt .= "ВАЖНО: В момента не са намерени имоти в базата данни. Обяснете това на потребителя и предложете да се свърже с екипа за повече възможности.\n\n";
+            $systemPrompt .= "\n# ВНИМАНИЕ: В момента не са намерени точно съвпадащи имоти в базата данни.\n\n";
+            $systemPrompt .= "**ВАЖНО:** Обяснете това честно на потребителя, но ЗАДЪЛЖИТЕЛНО предложете:\n";
+            $systemPrompt .= "• Да се свърже с нашия екип за персонализирано търсене\n";
+            $systemPrompt .= "• Да предостави повече детайли за своите изисквания\n";
+            $systemPrompt .= "• Алтернативни възможности за подобни имоти\n\n";
         }
 
-        $systemPrompt .= "ИНФОРМАЦИЯ ЗА КОМПАНИЯТА:
-- Уебсайт: Industrial Properties Europe  
-- Специализация: Индустриални недвижими имоти в България
-- Езици: български, английски, немски, руски
-- Свържете се за детайлни запитвания и огледи на имоти
+        $systemPrompt .= "\n# ИНФОРМАЦИЯ ЗА КОМПАНИЯТА:
+• **Уебсайт:** Industrial Properties Europe
+• **Специализация:** Индустриални недвижими имоти в България и Балканите  
+• **Езици:** български, английски, немски, руски
+• **Услуги:** Продажби, наем, консултации, оценки
 
-Винаги завършвайте отговорите с полезен въпрос или предложение за следващи стъпки.";
+# КОНТАКТ ЗА ДЕТАЙЛНИ ЗАПИТВАНИЯ:
+Свържете се с нашия експертен екип за персонализирано обслужване и огледи на имоти.
+
+**ПОМНЕТЕ:** Винаги завършвайте с конкретен въпрос или предложение за следващи стъпки!";
 
         return $systemPrompt;
     }
@@ -462,17 +588,29 @@ class AiChatbotService
         $id = $property['id'] ?? 'N/A';
         $url = $property['url'] ?? '#';
 
-        // Format price nicely
-        $priceFormatted = is_numeric($price) ? number_format($price, 0, '', ' ') . ' EUR' : $price;
+        // Format price with proper spacing
+        $priceFormatted = 'N/A';
+        if (is_numeric($price)) {
+            $priceFormatted = number_format($price, 0, '', ' ') . ' EUR';
+        } elseif (!empty($price) && $price !== 'N/A') {
+            $priceFormatted = $price;
+        }
         
-        // Format area nicely
-        $areaFormatted = is_numeric($area) ? number_format($area, 0, '', ' ') . ' m²' : $area;
+        // Format area with proper spacing
+        $areaFormatted = 'N/A';
+        if (is_numeric($area)) {
+            $areaFormatted = number_format($area, 0, '', ' ') . ' m²';
+        } elseif (!empty($area) && $area !== 'N/A') {
+            $areaFormatted = $area;
+        }
 
-        return "Имот ID {$id}: {$title}
-Локация: {$location}
-Тип: {$type} | Площ: {$areaFormatted} | Цена: {$priceFormatted}
-Статус: {$status}
-Линк: {$url}
+        return "**Имот ID {$id}:** {$title}
+• **Локация:** {$location}
+• **Тип:** {$type}
+• **Площ:** {$areaFormatted}
+• **Цена:** {$priceFormatted}
+• **Статус:** {$status}
+• **Детайли:** [{$url}]({$url})
 
 ";
     }
@@ -485,35 +623,66 @@ class AiChatbotService
         $criteria = [];
         $messageLower = mb_strtolower($message, 'UTF-8');
 
-        // Location detection - support both English and Bulgarian
+        // Enhanced location detection with more variations
         $locations = [
-            'софия' => ['София', 'Sofia', 'sofia'],
-            'пловдив' => ['Пловдив', 'Plovdiv', 'plovdiv'], 
-            'варна' => ['Варна', 'Varna', 'varna'],
-            'бургас' => ['Бургас', 'Burgas', 'burgas'],
-            'русе' => ['Русе', 'Ruse', 'ruse'],
-            'хасково' => ['Хасково', 'Haskovo', 'haskovo'],
-            'севлиево' => ['Севлиево', 'Sevlievo', 'sevlievo'],
-            'благоевград' => ['Благоевград', 'Blagoevgrad', 'blagoevgrad']
+            'софия' => ['софия', 'sofia', 'софийски', 'столица', 'столицата'],
+            'пловдив' => ['пловдив', 'plovdiv', 'пловдивски'], 
+            'варна' => ['варна', 'varna', 'варненски'],
+            'бургас' => ['бургас', 'burgas', 'бургаски'],
+            'русе' => ['русе', 'ruse', 'русенски'],
+            'стара загора' => ['стара загора', 'stara zagora', 'старозагорски'],
+            'плевен' => ['плевен', 'pleven', 'плевенски'],
+            'хасково' => ['хасково', 'haskovo', 'хасковски'],
+            'севлиево' => ['севлиево', 'sevlievo'],
+            'благоевград' => ['благоевград', 'blagoevgrad'],
+            'перник' => ['перник', 'pernik'],
+            'шумен' => ['шумен', 'shumen'],
+            'ямбол' => ['ямбол', 'yambol'],
+            'видин' => ['видин', 'vidin'],
+            'монтана' => ['монтана', 'montana'],
+            'враца' => ['враца', 'vratsa']
         ];
         
         foreach ($locations as $bgKey => $variants) {
             foreach ($variants as $variant) {
                 if (mb_strpos($messageLower, mb_strtolower($variant, 'UTF-8')) !== false) {
-                    $criteria['location'] = $variants; // Pass all variants for searching
-                    error_log("Location found in message: " . json_encode($variants, JSON_UNESCAPED_UNICODE));
+                    $criteria['location'] = $bgKey; // Return single string, not array
+                    error_log("Location found in message: " . $bgKey);
                     break 2;
                 }
             }
         }
 
-        // Property type detection - improved Bulgarian support
+        // Enhanced property type detection with more Bulgarian terms
         $types = [
-            'warehouse' => ['warehouse', 'склад', 'складово', 'storage', 'lager', 'складов', 'складове', 'складови', 'склада'],
-            'office' => ['office', 'офис', 'büro', 'офиси', 'офисов', 'офисен', 'офисна', 'офисни'],
-            'industrial' => ['industrial', 'индустриален', 'manufacturing', 'производство', 'industrie', 'промишлен', 'фабрика', 'индустриални'],
-            'logistics' => ['logistics', 'логистичен', 'distribution', 'дистрибуция', 'logistik', 'логистика', 'логистични', 'логистичен'],
-            'business' => ['business', 'бизнес', 'търговски', 'commercial', 'kommerziell']
+            'warehouse' => [
+                'склад', 'складово', 'складов', 'складова', 'складови', 'складове', 'складища',
+                'warehouse', 'storage', 'lager', 'magazzino'
+            ],
+            'office' => [
+                'офис', 'офиси', 'офисов', 'офисен', 'офисна', 'офисни', 'офисно',
+                'office', 'büro', 'ufficio', 'bureau'
+            ],
+            'industrial' => [
+                'индустриален', 'индустриална', 'индустриални', 'индустриално',
+                'производство', 'производствен', 'производствена', 'производствени', 
+                'фабрика', 'завод', 'цех', 
+                'industrial', 'manufacturing', 'factory', 'plant', 'industrie'
+            ],
+            'logistics' => [
+                'логистичен', 'логистична', 'логистични', 'логистично',
+                'логистика', 'дистрибуция', 'разпределение',
+                'logistics', 'distribution', 'logistik'
+            ],
+            'business' => [
+                'бизнес', 'търговски', 'търговска', 'търговско', 'търговски',
+                'business', 'commercial', 'kommerziell'
+            ],
+            'land' => [
+                'земя', 'земи', 'парцел', 'парцели', 'терен', 'терени',
+                'земеделска', 'промишлена земя', 'УПИ', 'ПИ',
+                'land', 'plot', 'terrain', 'ground'
+            ]
         ];
 
         foreach ($types as $type => $keywords) {
@@ -526,22 +695,61 @@ class AiChatbotService
             }
         }
 
-        // Price detection
-        if (preg_match('/(\d+)k?[\s]*[-до][\s]*(\d+)k?/', $message, $matches)) {
-            $criteria['min_price'] = (int) $matches[1] * (str_contains($matches[1], 'k') ? 1000 : 1);
-            $criteria['max_price'] = (int) $matches[2] * (str_contains($matches[2], 'k') ? 1000 : 1);
-        } elseif (preg_match('/под[\s]*(\d+)k?|under[\s]*(\d+)k?|max[\s]*(\d+)k?/', $messageLower, $matches)) {
-            $price = (int) ($matches[1] ?? $matches[2] ?? $matches[3]);
-            $criteria['max_price'] = $price * (str_contains($matches[0], 'k') ? 1000 : 1);
+        // Price range detection
+        $pricePatterns = [
+            '/(\d+)\s*-\s*(\d+)\s*(хиляди|лв|лева|евро|euro|eur)/ui',
+            '/до\s*(\d+)\s*(хиляди|лв|лева|евро|euro|eur)/ui',
+            '/над\s*(\d+)\s*(хиляди|лв|лева|евро|euro|eur)/ui',
+            '/между\s*(\d+)\s*и\s*(\d+)\s*(хиляди|лв|лева|евро|euro|eur)/ui'
+        ];
+        
+        foreach ($pricePatterns as $pattern) {
+            if (preg_match($pattern, $message, $matches)) {
+                if (isset($matches[2])) {
+                    $criteria['min_price'] = intval($matches[1]) * (stripos($matches[3], 'хиляди') !== false ? 1000 : 1);
+                    $criteria['max_price'] = intval($matches[2]) * (stripos($matches[3], 'хиляди') !== false ? 1000 : 1);
+                } else {
+                    $price = intval($matches[1]) * (stripos($matches[2], 'хиляди') !== false ? 1000 : 1);
+                    if (stripos($pattern, 'до') !== false) {
+                        $criteria['max_price'] = $price;
+                    } elseif (stripos($pattern, 'над') !== false) {
+                        $criteria['min_price'] = $price;
+                    }
+                }
+                break;
+            }
         }
 
         // Area detection
-        if (preg_match('/(\d+)[\s]*[-до][\s]*(\d+)[\s]*(m²|кв|sqm)/', $messageLower, $matches)) {
-            $criteria['min_area'] = (int) $matches[1];
-            $criteria['max_area'] = (int) $matches[2];
+        $areaPatterns = [
+            '/(\d+)\s*-\s*(\d+)\s*(кв\.?\s*м|м2|квадрат)/ui',
+            '/до\s*(\d+)\s*(кв\.?\s*м|м2|квадрат)/ui',
+            '/над\s*(\d+)\s*(кв\.?\s*м|м2|квадрат)/ui',
+            '/(\d+)\s*(кв\.?\s*м|м2|квадрат)/ui'
+        ];
+        
+        foreach ($areaPatterns as $pattern) {
+            if (preg_match($pattern, $message, $matches)) {
+                if (isset($matches[2]) && !preg_match('/до|над/', $pattern)) {
+                    $criteria['min_area'] = intval($matches[1]);
+                    $criteria['max_area'] = intval($matches[2]);
+                } else {
+                    $area = intval($matches[1]);
+                    if (stripos($pattern, 'до') !== false) {
+                        $criteria['max_area'] = $area;
+                    } elseif (stripos($pattern, 'над') !== false) {
+                        $criteria['min_area'] = $area;
+                    } else {
+                        // For single area mentions, assume flexible range
+                        $criteria['min_area'] = $area * 0.8;
+                        $criteria['max_area'] = $area * 1.2;
+                    }
+                }
+                break;
+            }
         }
 
-        error_log("Final criteria: " . json_encode($criteria, JSON_UNESCAPED_UNICODE));
+        error_log("Final parsed criteria: " . json_encode($criteria, JSON_UNESCAPED_UNICODE));
         return $criteria;
     }
 
@@ -550,35 +758,50 @@ class AiChatbotService
      */
     private function generateFollowUpSuggestions(string $message, string $locale): array
     {
-        $suggestions = match($locale) {
-            'bg' => [
-                'Покажи ми повече детайли за този имот',
-                'Има ли подобни имоти в други градове?',
-                'Как мога да организирам оглед?',
-                'Какви са възможностите за финансиране?'
-            ],
-            'de' => [
-                'Zeigen Sie mir mehr Details zu dieser Immobilie',
-                'Gibt es ähnliche Objekte in anderen Städten?',
-                'Wie kann ich eine Besichtigung organisieren?',
-                'Welche Finanzierungsmöglichkeiten gibt es?'
-            ],
-            'ru' => [
-                'Покажите больше деталей об этой недвижимости',
-                'Есть ли похожие объекты в других городах?',
-                'Как организовать просмотр?',
-                'Какие возможности финансирования?'
-            ],
-            default => [
-                'Show me more details about this property',
-                'Are there similar properties in other cities?',
-                'How can I schedule a viewing?',
-                'What financing options are available?'
-            ]
-        };
-
-        // Return 2-3 random suggestions
-        shuffle($suggestions);
+        // Improved follow-up suggestions based on message context and DeepSeek best practices
+        $suggestions = [];
+        $messageLower = mb_strtolower($message, 'UTF-8');
+        
+        // Location-based suggestions
+        if (mb_strpos($messageLower, 'софия') !== false || mb_strpos($messageLower, 'sofia') !== false) {
+            $suggestions[] = "Какви са предимствата на индустриалните имоти около София?";
+            $suggestions[] = "Имате ли складове в индустриалните зони на София?";
+        } elseif (mb_strpos($messageLower, 'пловдив') !== false) {
+            $suggestions[] = "Какви са възможностите за инвестиции в Пловдив?";
+            $suggestions[] = "Имате ли производствени сгради в района на Пловдив?";
+        }
+        
+        // Type-based suggestions
+        if (mb_strpos($messageLower, 'склад') !== false || mb_strpos($messageLower, 'warehouse') !== false) {
+            $suggestions[] = "Какви са размерите на наличните складове?";
+            $suggestions[] = "Можете ли да покажете складове с добра логистична свързаност?";
+            $suggestions[] = "Какви са цените за наем на складови площи?";
+        } elseif (mb_strpos($messageLower, 'офис') !== false || mb_strpos($messageLower, 'office') !== false) {
+            $suggestions[] = "Търся офис с добра транспортна достъпност";
+            $suggestions[] = "Какви офиси имате в бизнес центрове?";
+        } elseif (mb_strpos($messageLower, 'производство') !== false || mb_strpos($messageLower, 'industrial') !== false) {
+            $suggestions[] = "Нужна ми е производствена сграда с електрозахранване";
+            $suggestions[] = "Имате ли промишлени имоти с готова инфраструктура?";
+        }
+        
+        // Investment-related suggestions
+        if (mb_strpos($messageLower, 'инвестиция') !== false || mb_strpos($messageLower, 'investment') !== false) {
+            $suggestions[] = "Какви са най-добрите възможности за инвестиции?";
+            $suggestions[] = "Можете ли да препоръчате имоти с висок потенциал?";
+        }
+        
+        // General suggestions if none above match
+        if (empty($suggestions)) {
+            $suggestions = [
+                "Какви типове индустриални имоти предлагате?",
+                "Имате ли имоти в определен ценови диапазон?",
+                "Можете ли да помогнете с избор на локация?",
+                "Какви са услугите, които предлагате?",
+                "Как мога да организирам оглед на имот?"
+            ];
+        }
+        
+        // Ensure we don't have too many suggestions
         return array_slice($suggestions, 0, 3);
     }
 

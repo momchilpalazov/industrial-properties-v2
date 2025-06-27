@@ -171,18 +171,58 @@ class AiDataService
      */
     public function searchPropertiesForAi(array $criteria, string $locale = 'en'): array
     {
-        // Build search query
         $qb = $this->propertyRepository->createQueryBuilder('p')
             ->leftJoin('p.type', 'pt')
             ->where('p.isActive = :active')
-            ->setParameter('active', true);
+            ->setParameter('active', true)
+            ->orderBy('p.isFeatured', 'DESC')
+            ->addOrderBy('p.isVip', 'DESC')
+            ->addOrderBy('p.createdAt', 'DESC');
 
-        // Apply search criteria
+        // Type-based search with better matching
         if (!empty($criteria['type'])) {
-            $qb->andWhere('pt.nameBg LIKE :type OR pt.nameEn LIKE :type OR pt.nameDe LIKE :type OR pt.nameRu LIKE :type')
-               ->setParameter('type', '%' . $criteria['type'] . '%');
+            $typeConditions = [];
+            $typeParams = [];
+            
+            switch ($criteria['type']) {
+                case 'warehouse':
+                    $typeKeywords = ['склад', 'warehouse', 'storage', 'складов'];
+                    break;
+                case 'office':
+                    $typeKeywords = ['офис', 'office', 'офисов', 'bureau'];
+                    break;
+                case 'industrial':
+                    $typeKeywords = ['индустриален', 'производство', 'фабрика', 'завод', 'industrial', 'manufacturing'];
+                    break;
+                case 'logistics':
+                    $typeKeywords = ['логистичен', 'логистика', 'дистрибуция', 'logistics', 'distribution'];
+                    break;
+                case 'business':
+                    $typeKeywords = ['бизнес', 'търговски', 'business', 'commercial'];
+                    break;
+                case 'land':
+                    $typeKeywords = ['земя', 'парцел', 'терен', 'land', 'plot'];
+                    break;
+                default:
+                    $typeKeywords = [$criteria['type']];
+            }
+            
+            foreach ($typeKeywords as $index => $keyword) {
+                $typeConditions[] = "pt.name LIKE :type_keyword_{$index} OR p.titleBg LIKE :type_keyword_{$index} OR p.titleEn LIKE :type_keyword_{$index} OR p.descriptionBg LIKE :type_keyword_{$index}";
+                $typeParams["type_keyword_{$index}"] = '%' . $keyword . '%';
+            }
+            
+            if (!empty($typeConditions)) {
+                $qb->andWhere('(' . implode(' OR ', $typeConditions) . ')');
+                foreach ($typeParams as $param => $value) {
+                    $qb->setParameter($param, $value);
+                }
+            }
+            
+            error_log("Type search with keywords: " . implode(', ', $typeKeywords));
         }
 
+        // Price filtering
         if (!empty($criteria['min_price'])) {
             $qb->andWhere('p.price >= :min_price')
                ->setParameter('min_price', $criteria['min_price']);
@@ -193,6 +233,7 @@ class AiDataService
                ->setParameter('max_price', $criteria['max_price']);
         }
 
+        // Area filtering
         if (!empty($criteria['min_area'])) {
             $qb->andWhere('p.area >= :min_area')
                ->setParameter('min_area', $criteria['min_area']);
@@ -203,38 +244,21 @@ class AiDataService
                ->setParameter('max_area', $criteria['max_area']);
         }
 
+        // Enhanced location search
         if (!empty($criteria['location'])) {
-            if (is_array($criteria['location'])) {
-                // Multiple location variants (e.g., ['София', 'Sofia', 'sofia'])
-                $locationConditions = [];
-                $locationParams = [];
-                foreach ($criteria['location'] as $index => $location) {
-                    $locationConditions[] = "p.locationBg LIKE :location{$index} OR p.locationEn LIKE :location{$index} OR p.locationDe LIKE :location{$index} OR p.locationRu LIKE :location{$index}";
-                    $locationParams["location{$index}"] = '%' . $location . '%';
-                }
-                $qb->andWhere('(' . implode(' OR ', $locationConditions) . ')');
-                foreach ($locationParams as $param => $value) {
-                    $qb->setParameter($param, $value);
-                }
-                
-                // Debug logging
-                error_log("Searching with location array: " . json_encode($criteria['location'], JSON_UNESCAPED_UNICODE));
-                error_log("Generated location condition: " . implode(' OR ', $locationConditions));
-            } else {
-                // Single location string
-                $qb->andWhere('p.locationBg LIKE :location OR p.locationEn LIKE :location OR p.locationDe LIKE :location OR p.locationRu LIKE :location')
-                   ->setParameter('location', '%' . $criteria['location'] . '%');
-                
-                // Debug logging
-                error_log("Searching with location string: " . $criteria['location']);
-            }
+            $location = $criteria['location'];
+            $qb->andWhere('p.locationBg LIKE :location OR p.locationEn LIKE :location OR p.locationDe LIKE :location OR p.locationRu LIKE :location OR p.address LIKE :location')
+               ->setParameter('location', '%' . $location . '%');
+            
+            error_log("Searching with location string: " . $location);
         }
 
+        // Execute query
         $properties = $qb->getQuery()->getResult();
         
-        // Debug logging
         error_log("Search query returned " . count($properties) . " properties");
 
+        // Transform properties for AI
         $transformedProperties = [];
         foreach ($properties as $property) {
             $transformedProperties[] = $this->transformPropertyForAi($property, $locale);
@@ -248,6 +272,7 @@ class AiDataService
                 'generated_at' => date('c'),
                 'search_type' => 'ai_enhanced',
                 'locale' => $locale,
+                'database_query_executed' => true
             ]
         ];
     }

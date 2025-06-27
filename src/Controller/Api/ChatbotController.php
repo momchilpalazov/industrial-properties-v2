@@ -76,17 +76,17 @@ class ChatbotController extends AbstractController
                 'success' => $response['success'],
                 'data' => $response['success'] ? [
                     'response' => $response['response'],
-                    'conversation_id' => $response['conversation_id'],
-                    'suggestions' => $response['suggestions'],
-                    'properties_context' => $response['properties_context'],
-                    'locale' => $response['locale']
+                    'conversation_id' => $conversationId ?? uniqid('chat_'),
+                    'suggestions' => $response['suggestions'] ?? [],
+                    'properties_found' => $response['properties_found'] ?? 0,
+                    'locale' => $locale
                 ] : null,
                 'error' => !$response['success'] ? $response['error'] : null,
                 'fallback_response' => $response['fallback_response'] ?? null,
                 'meta' => [
                     'timestamp' => date('c'),
-                    'model_used' => 'gpt-3.5-turbo',
-                    'tokens_used' => $response['usage'] ?? null,
+                    'provider' => $response['provider'] ?? 'unknown',
+                    'tokens_used' => $response['tokens_used'] ?? 0,
                     'ai_enhanced' => true
                 ]
             ], $response['success'] ? Response::HTTP_OK : Response::HTTP_INTERNAL_SERVER_ERROR);
