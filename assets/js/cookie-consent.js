@@ -88,10 +88,19 @@ class CookieConsent {
             });
         }
 
-        // Бутон в страничното меню за отваряне на банера отново
-        const openSettingsBtn = document.getElementById('cookie-settings-btn');
-        if (openSettingsBtn) {
-            openSettingsBtn.addEventListener('click', (e) => {
+        // Бутон в страничното меню за отваряне на банера отново - ЗАКОМЕНТИРАН
+        // const openSettingsBtn = document.getElementById('cookie-settings-btn');
+        // if (openSettingsBtn) {
+        //     openSettingsBtn.addEventListener('click', (e) => {
+        //         e.preventDefault();
+        //         this.showBanner();
+        //     });
+        // }
+
+        // Линк в footer-а за отваряне на настройките на бисквитки
+        const footerSettingsLink = document.getElementById('cookie-settings-menu-link');
+        if (footerSettingsLink) {
+            footerSettingsLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.showBanner();
             });
