@@ -1,0 +1,258 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Верификация на профил - PropertyCrowd Europe{% endblock %}
+
+{% block page_header %}
+<div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-4xl font-bold mb-2">Верификация на профил</h1>
+                <p class="text-xl text-blue-100">Завършете процеса на верификация за пълен достъп</p>
+            </div>
+            <div class="text-right">
+                <div class="text-2xl font-bold">{{ contributor.europeanId }}</div>
+                <div class="text-blue-100">Вашето европейско ID</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2">
+            <!-- Verification Progress -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Прогрес на верификацията</h2>
+                
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-gray-700">Общ прогрес</span>
+                        <span class="text-sm font-medium text-gray-700">{{ verification_status.completion_percentage }}%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full" style="width: {{ verification_status.completion_percentage }}%"></div>
+                    </div>
+                </div>
+
+                <!-- Verification Steps -->
+                <div class="space-y-4">
+                    {% for step in verification_steps %}
+                    <div class="flex items-center p-4 border rounded-lg {{ step.completed ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200' }}">
+                        <div class="flex-shrink-0 mr-4">
+                            {% if step.completed %}
+                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            {% else %}
+                                <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                                    <span class="text-gray-600 font-bold">{{ step.step }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="font-semibold {{ step.completed ? 'text-green-800' : 'text-gray-800' }}">
+                                {{ step.title }}
+                                {% if step.required %}
+                                    <span class="text-red-500 text-sm">*</span>
+                                {% endif %}
+                            </h3>
+                            <p class="text-sm {{ step.completed ? 'text-green-600' : 'text-gray-600' }}">
+                                {% if step.completed %}
+                                    Завършено успешно
+                                {% else %}
+                                    Очаква завършване
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Document Upload -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Качване на документи</h2>
+                
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% for key, document in required_documents %}
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-semibold text-gray-800">
+                                {{ document.type }}
+                                {% if document.required %}
+                                    <span class="text-red-500">*</span>
+                                {% endif %}
+                            </h3>
+                            {% if document.uploaded %}
+                                <span class="px-2 py-1 bg-green-100 text-green-800 text-sm rounded-full">Качено</span>
+                            {% else %}
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full">Необходимо</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">{{ document.description }}</p>
+                        
+                        {% if not document.uploaded %}
+                        <div class="flex items-center space-x-4">
+                            <input type="file" name="verification_document" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                            <input type="hidden" name="document_type" value="{{ key }}">
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
+                                Качи
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </form>
+            </div>
+
+            <!-- Verification Tips -->
+            <div class="bg-blue-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-blue-800 mb-4">💡 Съвети за по-бърза верификация</h3>
+                <ul class="text-blue-700 space-y-2">
+                    <li class="flex items-start">
+                        <span class="text-blue-500 mr-2">•</span>
+                        Качете ясни, високоразделителни снимки на документите
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-500 mr-2">•</span>
+                        Уверете се, че всички данни са ясно видими
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-500 mr-2">•</span>
+                        Поддържаните формати: JPG, PNG, PDF (до 5MB)
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-500 mr-2">•</span>
+                        Процесът на преглед отнема 2-3 работни дни
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Status Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Статус на верификацията</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <span class="text-sm text-gray-600">Общ статус:</span>
+                        <div class="mt-1">
+                            {% if verification_status.overall_status == 'verified' %}
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">Верифициран</span>
+                            {% elseif verification_status.overall_status == 'pending' %}
+                                <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full">В процес</span>
+                            {% else %}
+                                <span class="px-3 py-1 bg-gray-100 text-gray-800 text-sm rounded-full">Започнете верификацията</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <span class="text-sm text-gray-600">Следваща стъпка:</span>
+                        <p class="mt-1 text-sm font-medium text-gray-800">{{ verification_status.next_step }}</p>
+                    </div>
+                    
+                    <div>
+                        <span class="text-sm text-gray-600">Очаквано време:</span>
+                        <p class="mt-1 text-sm text-gray-800">{{ verification_status.estimated_completion }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contributor Info -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Информация за профила</h3>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Европейско ID:</span>
+                        <span class="font-medium">{{ contributor.europeanId }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Ниво:</span>
+                        <span class="font-medium">{{ contributor.tierDisplayName }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Дата на регистрация:</span>
+                        <span class="font-medium">{{ contributor.createdAt|date('d.m.Y') }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Предавания:</span>
+                        <span class="font-medium">{{ contributor.totalSubmissions }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help & Support -->
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Нужна е помощ?</h3>
+                <p class="text-sm text-gray-600 mb-4">
+                    Ако имате въпроси относно процеса на верификация, свържете се с нашия екип.
+                </p>
+                <div class="space-y-2">
+                    <a href="mailto:verification@propertycrowd.eu" class="block text-sm text-blue-600 hover:text-blue-800">
+                        📧 verification@propertycrowd.eu
+                    </a>
+                    <a href="#" class="block text-sm text-blue-600 hover:text-blue-800">
+                        💬 Чат поддръжка
+                    </a>
+                    <a href="#" class="block text-sm text-blue-600 hover:text-blue-800">
+                        📚 Помощен център
+                    </a>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Навигация</h3>
+                <div class="space-y-2">
+                    <a href="{{ path('property_crowd_dashboard') }}" class="block text-blue-600 hover:text-blue-800 text-sm">
+                        ← Назад към таблото
+                    </a>
+                    <a href="{{ path('property_crowd_profile_view') }}" class="block text-blue-600 hover:text-blue-800 text-sm">
+                        👤 Преглед на профил
+                    </a>
+                    <a href="{{ path('property_crowd_profile_edit') }}" class="block text-blue-600 hover:text-blue-800 text-sm">
+                        ✏️ Редактиране на профил
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+// Auto-refresh status every 30 seconds
+setInterval(function() {
+    // Could implement AJAX status refresh here
+}, 30000);
+
+// File upload preview
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                if (file.size > maxSize) {
+                    alert('Файлът е твърде голям. Максимален размер: 5MB');
+                    this.value = '';
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

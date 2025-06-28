@@ -1,0 +1,482 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Редактиране на профил - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .profile-edit-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .edit-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .edit-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .edit-form {
+            padding: 2rem;
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            outline: none;
+        }
+        
+        .language-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .language-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .language-item input[type="checkbox"] {
+            margin: 0;
+        }
+        
+        .btn-save {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cancel:hover {
+            background: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .image-upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            background: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .image-upload-area:hover {
+            border-color: #5a67d8;
+            background: #f0f4ff;
+        }
+        
+        .current-tier {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .verification-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .status-verified { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        
+        .help-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+        
+        .progress-info {
+            background: linear-gradient(45deg, #667eea15, #764ba215);
+            border: 1px solid #667eea25;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="profile-edit-container">
+    <div class="container">
+        <div class="edit-card">
+            <!-- Header -->
+            <div class="edit-header">
+                <h1><i class="bi bi-person-gear me-2"></i>Редактиране на профил</h1>
+                <p class="mb-0">Актуализирайте своята информация и настройки</p>
+                
+                <div class="mt-3">
+                    <span class="current-tier">{{ contributor.contributorTier }} Contributor</span>
+                    <span class="verification-status status-{{ contributor.verificationStatus|lower }} ms-2">
+                        {% if contributor.verificationStatus == 'VERIFIED' %}
+                            <i class="bi bi-patch-check me-1"></i>Верифициран
+                        {% elseif contributor.verificationStatus == 'PENDING' %}
+                            <i class="bi bi-clock me-1"></i>В процес на верификация
+                        {% else %}
+                            <i class="bi bi-x-circle me-1"></i>Неверифициран
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Form -->
+            <div class="edit-form">
+                {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+                
+                <!-- Personal Information -->
+                <div class="form-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-person me-2"></i>Лична информация
+                    </h5>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form_label(form.fullName) }}
+                            {{ form_widget(form.fullName) }}
+                            {{ form_errors(form.fullName) }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.email) }}
+                            {{ form_widget(form.email) }}
+                            {{ form_errors(form.email) }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form_label(form.phone) }}
+                            {{ form_widget(form.phone) }}
+                            {{ form_errors(form.phone) }}
+                            <div class="help-text">Включете международния код (напр. +359...)</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.dateOfBirth) }}
+                            {{ form_widget(form.dateOfBirth) }}
+                            {{ form_errors(form.dateOfBirth) }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Location Information -->
+                <div class="form-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-geo-alt me-2"></i>Местоположение
+                    </h5>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form_label(form.country) }}
+                            {{ form_widget(form.country) }}
+                            {{ form_errors(form.country) }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.city) }}
+                            {{ form_widget(form.city) }}
+                            {{ form_errors(form.city) }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.address) }}
+                        {{ form_widget(form.address) }}
+                        {{ form_errors(form.address) }}
+                        <div class="help-text">Адресът се използва за верификация и доставка на награди</div>
+                    </div>
+                </div>
+                
+                <!-- Professional Information -->
+                <div class="form-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-briefcase me-2"></i>Професионална информация
+                    </h5>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form_label(form.company) }}
+                            {{ form_widget(form.company) }}
+                            {{ form_errors(form.company) }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.position) }}
+                            {{ form_widget(form.position) }}
+                            {{ form_errors(form.position) }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form_label(form.professionalBackground) }}
+                            {{ form_widget(form.professionalBackground) }}
+                            {{ form_errors(form.professionalBackground) }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_label(form.experience) }}
+                            {{ form_widget(form.experience) }}
+                            {{ form_errors(form.experience) }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Languages -->
+                <div class="form-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-translate me-2"></i>Езикови умения
+                    </h5>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.languagesSpoken) }}
+                        <div class="language-checkboxes">
+                            {% for language in form.languagesSpoken %}
+                                <div class="language-item">
+                                    {{ form_widget(language) }}
+                                    {{ form_label(language) }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {{ form_errors(form.languagesSpoken) }}
+                        <div class="help-text">Изберете всички езици, които говорите</div>
+                    </div>
+                </div>
+                
+                <!-- Geographic Coverage -->
+                <div class="form-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-globe-europe-africa me-2"></i>Географски обхват
+                    </h5>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.geographicCoverage) }}
+                        {{ form_widget(form.geographicCoverage) }}
+                        {{ form_errors(form.geographicCoverage) }}
+                        <div class="help-text">Изберете държавите, в които можете да търсите имоти</div>
+                    </div>
+                </div>
+                
+                <!-- Motivation & Additional Info -->
+                <div class="form-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-heart me-2"></i>Допълнителна информация
+                    </h5>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.motivation) }}
+                        {{ form_widget(form.motivation) }}
+                        {{ form_errors(form.motivation) }}
+                        <div class="help-text">Разкажете защо искате да участвате в PropertyCrowd Europe</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.specializations) }}
+                        {{ form_widget(form.specializations) }}
+                        {{ form_errors(form.specializations) }}
+                        <div class="help-text">Опишете вашите специализации и експертиза</div>
+                    </div>
+                </div>
+                
+                <!-- Profile Progress -->
+                <div class="progress-info">
+                    <h6><i class="bi bi-graph-up me-2"></i>Прогрес на профила</h6>
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <strong class="d-block">{{ contributor.totalPoints }}</strong>
+                            <small>Общо точки</small>
+                        </div>
+                        <div class="col-md-3">
+                            <strong class="d-block">{{ contributor.totalSubmissions }}</strong>
+                            <small>Предложения</small>
+                        </div>
+                        <div class="col-md-3">
+                            <strong class="d-block">{{ contributor.approvedSubmissions }}</strong>
+                            <small>Одобрени</small>
+                        </div>
+                        <div class="col-md-3">
+                            <strong class="d-block">{{ contributor.contributorTier }}</strong>
+                            <small>Текущо ниво</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="text-center mt-4">
+                    <a href="{{ path('property_crowd_profile_view') }}" class="btn-cancel me-3">
+                        <i class="bi bi-x-lg me-1"></i>Отказ
+                    </a>
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-check-lg me-1"></i>Запази промените
+                    </button>
+                </div>
+                
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Form validation
+            const form = document.querySelector('form');
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            // Add real-time validation
+            requiredFields.forEach(field => {
+                field.addEventListener('blur', function() {
+                    if (!this.value.trim()) {
+                        this.style.borderColor = '#dc3545';
+                    } else {
+                        this.style.borderColor = '#28a745';
+                    }
+                });
+            });
+            
+            // Phone number formatting
+            const phoneField = document.querySelector('#contributor_profile_edit_phone');
+            if (phoneField) {
+                phoneField.addEventListener('input', function() {
+                    // Basic phone formatting logic
+                    let value = this.value.replace(/\D/g, '');
+                    if (value.length > 0 && !value.startsWith('+')) {
+                        if (value.startsWith('359')) {
+                            value = '+' + value;
+                        } else if (value.startsWith('0')) {
+                            value = '+359' + value.substring(1);
+                        }
+                    }
+                    this.value = value;
+                });
+            }
+            
+            // Country-based validation
+            const countryField = document.querySelector('#contributor_profile_edit_country');
+            const cityField = document.querySelector('#contributor_profile_edit_city');
+            
+            if (countryField && cityField) {
+                countryField.addEventListener('change', function() {
+                    // You can add city validation based on country here
+                    cityField.focus();
+                });
+            }
+            
+            // Language selection helper
+            const languageCheckboxes = document.querySelectorAll('.language-item input[type="checkbox"]');
+            languageCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const item = this.closest('.language-item');
+                    if (this.checked) {
+                        item.style.backgroundColor = '#e7f3ff';
+                        item.style.borderColor = '#667eea';
+                    } else {
+                        item.style.backgroundColor = '#f8f9fa';
+                        item.style.borderColor = '#e9ecef';
+                    }
+                });
+            });
+            
+            // Form submission confirmation
+            form.addEventListener('submit', function(e) {
+                const button = form.querySelector('.btn-save');
+                button.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Запазване...';
+                button.disabled = true;
+            });
+        });
+    </script>
+{% endblock %}

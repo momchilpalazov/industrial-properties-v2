@@ -1,0 +1,305 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Награди и печалби - PropertyCrowd Europe{% endblock %}
+
+{% block page_header %}
+<div class="bg-gradient-to-r from-green-600 to-green-800 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-4xl font-bold mb-2">Награди и печалби</h1>
+                <p class="text-xl text-green-100">Следете вашите постижения и доходи</p>
+            </div>
+            <div class="text-right">
+                <div class="text-3xl font-bold">€{{ total_earnings }}</div>
+                <div class="text-green-100">Общо печалби</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Current Status -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Текущ статус</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Current Tier -->
+                    <div class="text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center
+                                    {% if contributor.tier == 'bronze' %}bg-orange-100 text-orange-600
+                                    {% elseif contributor.tier == 'silver' %}bg-gray-100 text-gray-600
+                                    {% elseif contributor.tier == 'gold' %}bg-yellow-100 text-yellow-600
+                                    {% elseif contributor.tier == 'platinum' %}bg-purple-100 text-purple-600
+                                    {% else %}bg-blue-100 text-blue-600{% endif %}">
+                            <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-gray-800">{{ contributor.tierDisplayName }}</h3>
+                        <p class="text-sm text-gray-600">Текущо ниво</p>
+                    </div>
+
+                    <!-- Contribution Score -->
+                    <div class="text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                            <span class="text-xl font-bold">{{ contributor.contributionScore }}</span>
+                        </div>
+                        <h3 class="font-semibold text-gray-800">Точки за принос</h3>
+                        <p class="text-sm text-gray-600">Натрупани точки</p>
+                    </div>
+
+                    <!-- Pending Rewards -->
+                    <div class="text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center">
+                            <span class="text-xl font-bold">{{ pending_rewards|length }}</span>
+                        </div>
+                        <h3 class="font-semibold text-gray-800">Чакащи награди</h3>
+                        <p class="text-sm text-gray-600">За одобрение</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Tier Progress -->
+            {% if next_tier_requirements %}
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Прогрес към {{ next_tier_requirements.target_tier|capitalize }}</h2>
+                
+                <div class="space-y-6">
+                    <!-- Submissions Progress -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-medium text-gray-700">Предавания</span>
+                            <span class="text-sm font-medium text-gray-700">
+                                {{ next_tier_requirements.current_submissions }} / {{ next_tier_requirements.min_submissions }}
+                            </span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" 
+                                 style="width: {{ (next_tier_requirements.current_submissions / next_tier_requirements.min_submissions * 100)|round }}%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Score Progress -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-medium text-gray-700">Точки за принос</span>
+                            <span class="text-sm font-medium text-gray-700">
+                                {{ next_tier_requirements.current_score }} / {{ next_tier_requirements.min_score }}
+                            </span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-600 h-2 rounded-full" 
+                                 style="width: {{ (next_tier_requirements.current_score / next_tier_requirements.min_score * 100)|round }}%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                    <h3 class="font-semibold text-blue-800 mb-2">Предимства на {{ next_tier_requirements.target_tier|capitalize }} ниво:</h3>
+                    <ul class="text-blue-700 text-sm space-y-1">
+                        {% if next_tier_requirements.target_tier == 'silver' %}
+                            <li>• Достъп до пазарни анализи</li>
+                            <li>• Приоритетен преглед на предавания</li>
+                            <li>• 15% бонус на наградите</li>
+                        {% elseif next_tier_requirements.target_tier == 'gold' %}
+                            <li>• Ексклузивни инвестиционни възможности</li>
+                            <li>• Директен контакт с брокери</li>
+                            <li>• 25% бонус на наградите</li>
+                        {% elseif next_tier_requirements.target_tier == 'platinum' %}
+                            <li>• VIP мрежа от контакти</li>
+                            <li>• Първи достъп до нови проекти</li>
+                            <li>• 40% бонус на наградите</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Rewards History -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">История на наградите</h2>
+                
+                {% if rewards_history is not empty %}
+                    <div class="space-y-4">
+                        {% for reward in rewards_history %}
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded-full flex items-center justify-center mr-4
+                                            {% if reward.type == 'submission_reward' %}bg-blue-100 text-blue-600
+                                            {% elseif reward.type == 'tier_upgrade' %}bg-purple-100 text-purple-600
+                                            {% elseif reward.type == 'special_bonus' %}bg-green-100 text-green-600
+                                            {% else %}bg-gray-100 text-gray-600{% endif %}">
+                                    {% if reward.type == 'submission_reward' %}
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    {% elseif reward.type == 'tier_upgrade' %}
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                                        </svg>
+                                    {% else %}
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                                        </svg>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">{{ reward.description }}</h3>
+                                    <p class="text-sm text-gray-600">{{ reward.createdAt|date('d.m.Y H:i') }}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold 
+                                            {% if reward.status == 'paid' %}text-green-600
+                                            {% elseif reward.status == 'approved' %}text-blue-600
+                                            {% else %}text-yellow-600{% endif %}">
+                                    €{{ reward.amount }}
+                                </div>
+                                <div class="text-sm
+                                            {% if reward.status == 'paid' %}text-green-600
+                                            {% elseif reward.status == 'approved' %}text-blue-600
+                                            {% else %}text-yellow-600{% endif %}">
+                                    {% if reward.status == 'paid' %}
+                                        Платено
+                                    {% elseif reward.status == 'approved' %}
+                                        Одобрено
+                                    {% else %}
+                                        Чака одобрение
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-12">
+                        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                        </svg>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Все още няма награди</h3>
+                        <p class="text-gray-600 mb-4">Започнете да изпращате имоти, за да печелите награди!</p>
+                        <a href="{{ path('property_crowd_submit') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
+                            Изпрати първия имот
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Quick Stats -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Бързи статистики</h3>
+                
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Общо печалби:</span>
+                        <span class="font-bold text-green-600">€{{ total_earnings }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Чакащи награди:</span>
+                        <span class="font-bold text-yellow-600">{{ pending_rewards|length }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Всички награди:</span>
+                        <span class="font-bold text-blue-600">{{ rewards_history|length }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Текущо ниво:</span>
+                        <span class="font-bold text-purple-600">{{ contributor.tierDisplayName }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Info -->
+            <div class="bg-blue-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-blue-800 mb-4">💳 Информация за плащания</h3>
+                <div class="text-blue-700 text-sm space-y-2">
+                    <p>• Плащанията се извършват всеки месец</p>
+                    <p>• Минимална сума за изтегляне: €50</p>
+                    <p>• Поддържани методи: SEPA, PayPal, банков превод</p>
+                    <p>• Срок на обработка: 3-5 работни дни</p>
+                </div>
+                <button class="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
+                    Настройки за плащане
+                </button>
+            </div>
+
+            <!-- Achievement System -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">🏆 Постижения</h3>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                        <div class="flex items-center">
+                            <span class="text-green-600 mr-2">🥉</span>
+                            <span class="text-sm font-medium">Първо предаване</span>
+                        </div>
+                        <span class="text-xs text-green-600 font-medium">Завършено</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <span class="text-gray-400 mr-2">🥈</span>
+                            <span class="text-sm font-medium">10 предавания</span>
+                        </div>
+                        <span class="text-xs text-gray-500">{{ contributor.totalSubmissions }}/10</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <span class="text-gray-400 mr-2">🥇</span>
+                            <span class="text-sm font-medium">Първо одобрение</span>
+                        </div>
+                        <span class="text-xs text-gray-500">Скоро</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Навигация</h3>
+                <div class="space-y-2">
+                    <a href="{{ path('property_crowd_dashboard') }}" class="block text-blue-600 hover:text-blue-800 text-sm">
+                        ← Назад към таблото
+                    </a>
+                    <a href="{{ path('property_crowd_my_submissions') }}" class="block text-blue-600 hover:text-blue-800 text-sm">
+                        📋 Моите предавания
+                    </a>
+                    <a href="{{ path('property_crowd_submit') }}" class="block text-blue-600 hover:text-blue-800 text-sm">
+                        ➕ Ново предаване
+                    </a>
+                    <a href="{{ path('property_crowd_leaderboard') }}" class="block text-blue-600 hover:text-blue-800 text-sm">
+                        🏆 Класиране
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+// Animate progress bars
+document.addEventListener('DOMContentLoaded', function() {
+    const progressBars = document.querySelectorAll('.bg-blue-600, .bg-green-600');
+    progressBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => {
+            bar.style.transition = 'width 1s ease-in-out';
+            bar.style.width = width;
+        }, 500);
+    });
+});
+</script>
+{% endblock %}

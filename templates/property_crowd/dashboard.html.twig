@@ -1,0 +1,480 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Моят таблон - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .dashboard-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .profile-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            margin: 0 auto 1rem;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #6c757d;
+        }
+        
+        .stats-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #667eea15, #764ba215);
+            border: 1px solid #667eea25;
+        }
+        
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+        }
+        
+        .stats-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .activity-item {
+            padding: 1rem;
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .tier-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+        }
+        
+        .tier-bronze { background: linear-gradient(45deg, #cd7f32, #b8860b); color: white; }
+        .tier-silver { background: linear-gradient(45deg, #c0c0c0, #808080); color: white; }
+        .tier-gold { background: linear-gradient(45deg, #ffd700, #ffb347); color: #333; }
+        .tier-platinum { background: linear-gradient(45deg, #e5e4e2, #b8b8b8); color: #333; }
+        
+        .action-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .progress-bar-custom {
+            height: 12px;
+            border-radius: 6px;
+            background: #e9ecef;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+        
+        .recent-submission {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .recent-submission:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-approved { background: #d1edff; color: #0c5460; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        
+        .dashboard-nav {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-link-custom {
+            color: #667eea;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 0 0.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link-custom:hover {
+            background: #667eea15;
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .european-flag {
+            width: 24px;
+            height: 16px;
+            background: #003399;
+            position: relative;
+            border-radius: 2px;
+            margin-right: 0.5rem;
+        }
+        
+        .european-flag::before {
+            content: '★★★★★★★★★★★★';
+            position: absolute;
+            color: #ffcc00;
+            font-size: 8px;
+            left: 2px;
+            top: 4px;
+            letter-spacing: -1px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <div class="container">
+        <!-- Profile Header Card -->
+        <div class="dashboard-card">
+            <div class="profile-header">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div></div>
+                    <div class="text-center">
+                        <div class="profile-avatar">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <h2 class="mb-1">{{ contributor.fullName }}</h2>
+                        <p class="mb-2">
+                            <span class="european-flag"></span>
+                            {{ contributor.city }}, {{ contributor.country }}
+                        </p>
+                        <span class="tier-badge tier-{{ contributor.contributorTier|lower }}">
+                            {{ contributor.contributorTier }} Contributor
+                        </span>
+                    </div>
+                    <div>
+                        <a href="{{ path('property_crowd_profile_edit') }}" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-pencil"></i> Редактирай
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Points Progress -->
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Прогрес към следващо ниво</span>
+                        <span>{{ contributor.totalPoints }} / {{ nextLevelPoints }} точки</span>
+                    </div>
+                    <div class="progress-bar-custom">
+                        <div class="progress-bar-fill" style="width: {{ (contributor.totalPoints / nextLevelPoints * 100)|round }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dashboard-nav text-center">
+            <a href="{{ path('property_crowd_submit_property') }}" class="action-btn">
+                <i class="bi bi-building-add"></i> Предложи имот
+            </a>
+            <a href="{{ path('property_crowd_my_submissions') }}" class="action-btn">
+                <i class="bi bi-list-ul"></i> Моите предложения
+            </a>
+            <a href="{{ path('property_crowd_leaderboard') }}" class="action-btn">
+                <i class="bi bi-trophy"></i> Класация
+            </a>
+            <a href="{{ path('property_crowd_profile') }}" class="action-btn">
+                <i class="bi bi-person"></i> Профил
+            </a>
+        </div>
+
+        <div class="row">
+            <!-- Statistics Column -->
+            <div class="col-lg-8">
+                <!-- Statistics Cards -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <span class="stats-number">{{ statistics.totalSubmissions }}</span>
+                            <span class="stats-label">Предложения</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <span class="stats-number">{{ statistics.approvedSubmissions }}</span>
+                            <span class="stats-label">Одобрени</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <span class="stats-number">{{ contributor.totalPoints }}</span>
+                            <span class="stats-label">Точки</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <span class="stats-number">{{ statistics.leaderboardPosition }}</span>
+                            <span class="stats-label">Позиция</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Submissions -->
+                <div class="dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="bi bi-clock-history text-primary"></i>
+                            Последни предложения
+                        </h5>
+                        
+                        {% if recentSubmissions is empty %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-building text-muted" style="font-size: 3rem;"></i>
+                                <h6 class="text-muted mt-2">Все още няма предложения</h6>
+                                <p class="text-muted">Започнете да допринасяте за европейската база данни с индустриални имоти</p>
+                                <a href="{{ path('property_crowd_submit_property') }}" class="action-btn">
+                                    <i class="bi bi-plus-circle"></i> Първо предложение
+                                </a>
+                            </div>
+                        {% else %}
+                            {% for submission in recentSubmissions %}
+                                <div class="recent-submission">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">{{ submission.propertyName }}</h6>
+                                            <p class="text-muted mb-1">
+                                                <i class="bi bi-geo-alt"></i>
+                                                {{ submission.address }}, {{ submission.city }}
+                                            </p>
+                                            <small class="text-muted">
+                                                {{ submission.submittedAt|date('d.m.Y H:i') }}
+                                            </small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="status-badge status-{{ submission.status }}">
+                                                {% if submission.status == 'pending' %}Изчакване
+                                                {% elseif submission.status == 'approved' %}Одобрено
+                                                {% elseif submission.status == 'rejected' %}Отхвърлено
+                                                {% endif %}
+                                            </span>
+                                            <div class="mt-1">
+                                                <small class="text-success">+{{ submission.pointsAwarded }} точки</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            
+                            <div class="text-center mt-3">
+                                <a href="{{ path('property_crowd_my_submissions') }}" class="btn btn-outline-primary">
+                                    Виж всички предложения
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Achievements Card -->
+                <div class="dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="bi bi-award text-warning"></i>
+                            Постижения
+                        </h5>
+                        
+                        {% if achievements is empty %}
+                            <div class="text-center py-3">
+                                <i class="bi bi-star text-muted" style="font-size: 2rem;"></i>
+                                <p class="text-muted mt-2">Все още няма постижения</p>
+                                <small class="text-muted">Първото ви предложение ще отключи първо постижение!</small>
+                            </div>
+                        {% else %}
+                            {% for achievement in achievements %}
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="me-3">
+                                        <i class="bi bi-award text-warning" style="font-size: 1.5rem;"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">{{ achievement.title }}</h6>
+                                        <small class="text-muted">{{ achievement.description }}</small>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- European Network Info -->
+                <div class="dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <span class="european-flag"></span>
+                            Европейска мрежа
+                        </h5>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Активни contributors:</span>
+                                <strong>{{ networkStats.totalContributors }}</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Общо имоти:</span>
+                                <strong>{{ networkStats.totalProperties }}</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Държави в мрежата:</span>
+                                <strong>{{ networkStats.countriesCovered }}</strong>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <h6>Топ държави по активност:</h6>
+                        {% for country in networkStats.topCountries|slice(0, 5) %}
+                            <div class="d-flex justify-content-between mb-1">
+                                <small>{{ country.name }}</small>
+                                <small class="text-primary">{{ country.submissions }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Quick Tips -->
+                <div class="dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="bi bi-lightbulb text-success"></i>
+                            Съвети за повече точки
+                        </h5>
+                        
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Добавете детайлни описания
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Качете високи качествени снимки
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Предоставете точна локация
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Включете контактна информация
+                            </li>
+                        </ul>
+                        
+                        <a href="{{ path('property_crowd_submit_property') }}" class="action-btn w-100 text-center">
+                            Започни предложение
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth animations
+            const cards = document.querySelectorAll('.dashboard-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // Progress bar animation
+            const progressBars = document.querySelectorAll('.progress-bar-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,365 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Истории на успеха - PropertyCrowd Europe{% endblock %}
+
+{% block page_header %}
+<div class="bg-gradient-to-r from-green-600 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+        <div class="text-center">
+            <h1 class="text-5xl font-bold mb-4">Истории на успеха</h1>
+            <p class="text-xl text-green-100 mb-8">Вдъхновяващи разкази от нашата European contributor community</p>
+            
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                <div class="text-center">
+                    <div class="text-3xl font-bold">{{ stats.total_contributors }}</div>
+                    <div class="text-green-100">Активни contributors</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold">€{{ stats.total_earnings }}</div>
+                    <div class="text-green-100">Разпределени награди</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold">{{ stats.total_submissions }}</div>
+                    <div class="text-green-100">Одобрени имоти</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold">{{ stats.countries_covered }}</div>
+                    <div class="text-green-100">Покрити държави</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-12">
+    <!-- Featured Success Stories -->
+    <div class="mb-16">
+        <h2 class="text-3xl font-bold text-gray-800 text-center mb-12">Featured Stories</h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {% for story in stories %}
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                <!-- Story Header -->
+                <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">{{ story.title }}</h3>
+                            <p class="text-blue-100">{{ story.contributor }}</p>
+                            <p class="text-sm text-blue-200">European ID: {{ story.european_id }}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold">€{{ story.earnings }}</div>
+                            <div class="text-blue-100 text-sm">Общи печалби</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Story Content -->
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">{{ story.description }}</p>
+                    
+                    <div class="flex items-center justify-between">
+                        <button class="text-blue-600 hover:text-blue-800 font-medium" onclick="openStoryModal('{{ story.id }}')">
+                            Прочети повече →
+                        </button>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                            </svg>
+                            Публикувано преди 2 дни
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <div class="bg-gray-50 rounded-2xl p-8 mb-16">
+        <h2 class="text-3xl font-bold text-gray-800 text-center mb-12">Какво казват нашите contributors</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for testimonial in testimonials %}
+            <div class="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+                        {{ testimonial.name|first }}
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="font-semibold text-gray-800">{{ testimonial.name }}</h4>
+                        <p class="text-sm text-gray-600">{{ testimonial.country }} • {{ testimonial.european_id }}</p>
+                    </div>
+                </div>
+                
+                <blockquote class="text-gray-700 italic mb-4">
+                    "{{ testimonial.text }}"
+                </blockquote>
+                
+                <div class="flex items-center justify-between">
+                    <div class="flex text-yellow-400">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" x-show="i < rating" style="display: inline;">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-sm font-semibold text-green-600">{{ testimonial.earnings }} печалби</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- How to Get Started -->
+    <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 mb-16">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Готови да започнете вашата история на успеха?</h2>
+            <p class="text-lg text-gray-600">Присъединете се към хиляди contributors в цяла Европа</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white text-2xl font-bold">1</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Регистрирайте се безплатно</h3>
+                <p class="text-gray-600">Създайте вашия European ID за по-малко от 5 минути</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white text-2xl font-bold">2</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Изпратете първия имот</h3>
+                <p class="text-gray-600">Използвайте нашия AI-powered wizard за перфектна заявка</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white text-2xl font-bold">3</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Печелете награди</h3>
+                <p class="text-gray-600">Получавайте плащания за всеки одобрен имот</p>
+            </div>
+        </div>
+        
+        <div class="text-center mt-8">
+            <a href="{{ path('property_crowd_join') }}" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition duration-300">
+                Започнете сега безплатно
+                <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Community Highlights -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Top Performers -->
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">🏆 Топ performers този месец</h3>
+            
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-white font-bold mr-3">1</div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Ana Petrovic</h4>
+                            <p class="text-sm text-gray-600">Belgrade, Serbia • EIC-RS-2024-000123</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-green-600">€4,200</div>
+                        <div class="text-xs text-gray-500">15 предавания</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white font-bold mr-3">2</div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Cristian Popescu</h4>
+                            <p class="text-sm text-gray-600">Bucharest, Romania • EIC-RO-2024-000089</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-green-600">€3,800</div>
+                        <div class="text-xs text-gray-500">12 предавания</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-orange-400 rounded-full flex items-center justify-center text-white font-bold mr-3">3</div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Maria Kowalski</h4>
+                            <p class="text-sm text-gray-600">Warsaw, Poland • EIC-PL-2024-000156</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-green-600">€3,200</div>
+                        <div class="text-xs text-gray-500">11 предавания</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest Achievements -->
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">🎉 Последни постижения</h3>
+            
+            <div class="space-y-4">
+                <div class="flex items-center p-4 border-l-4 border-blue-500 bg-blue-50 rounded-r-lg">
+                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-blue-800">Stefan Novák достигна Silver ниво!</h4>
+                        <p class="text-sm text-blue-600">Prague, Czech Republic • преди 3 часа</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center p-4 border-l-4 border-green-500 bg-green-50 rounded-r-lg">
+                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-green-800">Új submission одобрено за €500!</h4>
+                        <p class="text-sm text-green-600">Budapest, Hungary • преди 1 ден</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center p-4 border-l-4 border-purple-500 bg-purple-50 rounded-r-lg">
+                    <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center mr-3">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-purple-800">Миле постави нов рекорд - 20 предавания!</h4>
+                        <p class="text-sm text-purple-600">Skopje, North Macedonia • преди 2 дни</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Story Modal -->
+<div id="storyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full max-h-screen overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-2xl font-bold text-gray-800">Story Details</h3>
+                    <button onclick="closeStoryModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="storyContent">
+                    <!-- Story content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+function openStoryModal(storyId) {
+    const modal = document.getElementById('storyModal');
+    const content = document.getElementById('storyContent');
+    
+    // Mock detailed story content
+    const stories = {
+        1: {
+            title: 'Sofia Logistics Hub Discovery',
+            contributor: 'Maria Petrova',
+            content: `
+                <div class="space-y-4">
+                    <p class="text-gray-700">Марија започна своето пътуване в PropertyCrowd Europe преди 8 месеца като младши брокер в София. Нейното първо предаване беше малък склад в покрайнините на града, който донесе €150 награда.</p>
+                    
+                    <p class="text-gray-700">Ключът към успеха й беше системния подход - всеки ден посещаваше 3-4 индустриални зони и внимателно документираше всички налични имоти с нашето AI-powered приложение.</p>
+                    
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-800 mb-2">Ключови метрики:</h4>
+                        <ul class="text-blue-700 space-y-1">
+                            <li>• 127 предавания за 8 месеца</li>
+                            <li>• 89% процент на одобрение</li>
+                            <li>• Средна награда: €197 на предаване</li>
+                            <li>• Най-голяма единична награда: €850</li>
+                        </ul>
+                    </div>
+                    
+                    <blockquote class="border-l-4 border-blue-500 pl-4 italic text-gray-700">
+                        "PropertyCrowd Europe ми даде възможността да използвам локалните си познания и да ги превърна в стабилен допълнителен доход. Най-важното е да бъдеш последователен и да използваш AI инструментите на платформата."
+                    </blockquote>
+                </div>
+            `
+        },
+        2: {
+            title: 'Warsaw Industrial Zone Mapping',
+            contributor: 'Andrzej Kowalski',
+            content: `
+                <div class="space-y-4">
+                    <p class="text-gray-700">Andrzej е опитен architectural специалист, който откри PropertyCrowd Europe чрез препоръка от колега. Неговата експертиза в индустриалната архитектура му помогна да идентифицира ценни имоти.</p>
+                    
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-green-800 mb-2">Success Timeline:</h4>
+                        <ul class="text-green-700 space-y-1">
+                            <li>• Месец 1: 5 предавания, €420 печалби</li>
+                            <li>• Месец 3: Достигна Silver tier</li>
+                            <li>• Месец 6: 45 предавания, €2,100 печалби</li>
+                            <li>• Месец 12: Gold tier, €3,200+ печалби</li>
+                        </ul>
+                    </div>
+                </div>
+            `
+        }
+    };
+    
+    if (stories[storyId]) {
+        content.innerHTML = `
+            <h4 class="text-xl font-bold mb-2">${stories[storyId].title}</h4>
+            <p class="text-gray-600 mb-4">by ${stories[storyId].contributor}</p>
+            ${stories[storyId].content}
+        `;
+    }
+    
+    modal.classList.remove('hidden');
+}
+
+function closeStoryModal() {
+    document.getElementById('storyModal').classList.add('hidden');
+}
+
+// Close modal on outside click
+document.getElementById('storyModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeStoryModal();
+    }
+});
+</script>
+{% endblock %}

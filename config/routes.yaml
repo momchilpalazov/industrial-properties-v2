@@ -14,6 +14,18 @@ homepage:
         path: /bg
         permanent: true
 
+# Property Crowd-Sourced System routes (before admin to avoid conflicts)
+property_crowd:
+    resource:
+        path: ../src/Controller/Public/PropertyCrowdController.php
+        namespace: App\Controller\Public
+    type: attribute
+    prefix: /{_locale}/property-crowd
+    requirements:
+        _locale: '%app_locales%'
+    defaults:
+        _locale: bg
+
 # Admin routes
 admin:
     resource:

@@ -1,0 +1,358 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Пазарни анализи - PropertyCrowd Europe{% endblock %}
+
+{% block page_header %}
+<div class="bg-gradient-to-r from-purple-600 to-purple-800 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-4xl font-bold mb-2">Пазарни анализи</h1>
+                <p class="text-xl text-purple-100">Ексклузивни данни за индустриални имоти в Европа</p>
+            </div>
+            <div class="text-right">
+                <div class="text-2xl font-bold">{{ contributor.tierDisplayName }}</div>
+                <div class="text-purple-100">Ниво на достъп</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Filters -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Филтри</h2>
+        
+        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Държава</label>
+                <select name="country" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <option value="BG" {{ filters.country == 'BG' ? 'selected' : '' }}>България</option>
+                    <option value="RO" {{ filters.country == 'RO' ? 'selected' : '' }}>Румъния</option>
+                    <option value="RS" {{ filters.country == 'RS' ? 'selected' : '' }}>Сърбия</option>
+                    <option value="HR" {{ filters.country == 'HR' ? 'selected' : '' }}>Хърватия</option>
+                    <option value="PL" {{ filters.country == 'PL' ? 'selected' : '' }}>Полша</option>
+                    <option value="CZ" {{ filters.country == 'CZ' ? 'selected' : '' }}>Чехия</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Тип имот</label>
+                <select name="type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <option value="all" {{ filters.property_type == 'all' ? 'selected' : '' }}>Всички типове</option>
+                    <option value="warehouse" {{ filters.property_type == 'warehouse' ? 'selected' : '' }}>Складове</option>
+                    <option value="manufacturing" {{ filters.property_type == 'manufacturing' ? 'selected' : '' }}>Производство</option>
+                    <option value="logistics" {{ filters.property_type == 'logistics' ? 'selected' : '' }}>Логистика</option>
+                    <option value="office" {{ filters.property_type == 'office' ? 'selected' : '' }}>Офиси</option>
+                </select>
+            </div>
+            
+            <div class="flex items-end">
+                <button type="submit" class="w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition duration-200">
+                    Приложи филтри
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Market Overview -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Общ преглед на пазара</h2>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-600">{{ market_data.country_overview.average_price_per_sqm }}</div>
+                        <div class="text-sm text-gray-600">Средна цена/м²</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-600">{{ market_data.country_overview.market_growth }}</div>
+                        <div class="text-sm text-gray-600">Ръст на пазара</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-600">{{ market_data.country_overview.demand_level }}</div>
+                        <div class="text-sm text-gray-600">Ниво на търсене</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-orange-600">{{ market_data.country_overview.supply_level }}</div>
+                        <div class="text-sm text-gray-600">Ниво на предлагане</div>
+                    </div>
+                </div>
+
+                <!-- Price Trends Chart -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Тенденции в цените</h3>
+                    <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+                        <canvas id="priceChart" class="w-full h-full"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Opportunities -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Инвестиционни възможности</h2>
+                
+                <div class="space-y-4">
+                    {% for opportunity in market_data.investment_opportunities %}
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-semibold text-gray-800">{{ opportunity.type }}</h3>
+                                <p class="text-sm text-gray-600">{{ opportunity.location }}</p>
+                            </div>
+                            <span class="px-2 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                                {{ opportunity.potential_return }}
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">Риск:</span>
+                            <span class="px-2 py-1 
+                                        {% if opportunity.risk_level == 'Low' %}bg-green-100 text-green-800
+                                        {% elseif opportunity.risk_level == 'Medium' %}bg-yellow-100 text-yellow-800
+                                        {% else %}bg-red-100 text-red-800{% endif %} 
+                                        text-xs rounded-full">
+                                {{ opportunity.risk_level }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Trending Areas -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Перспективни области</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {% for area in market_data.trending_areas %}
+                    <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4">
+                        <h3 class="font-semibold text-purple-800 mb-2">{{ area }}</h3>
+                        <div class="flex items-center text-sm text-purple-600">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"></path>
+                            </svg>
+                            Растящ интерес
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- AI Insights -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🤖 AI Прогнози</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Краткосрочна прогноза (3 месеца)</h3>
+                        <p class="text-sm text-gray-600 mb-3">Очаква се леко повишение на цените в складовия сектор поради увеличеното търсене от e-commerce компании.</p>
+                        <div class="flex items-center text-green-600">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm font-medium">+3-5% ръст</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Дългосрочна прогноза (12 месеца)</h3>
+                        <p class="text-sm text-gray-600 mb-3">Стабилен ръст благодарение на инфраструктурни инвестиции и разширяване на логистичните мрежи.</p>
+                        <div class="flex items-center text-blue-600">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm font-medium">+8-12% ръст</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Access Level -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Ниво на достъп</h3>
+                
+                <div class="text-center mb-4">
+                    <div class="w-16 h-16 mx-auto mb-3 rounded-full 
+                                {% if contributor.tier == 'bronze' %}bg-orange-100 text-orange-600
+                                {% elseif contributor.tier == 'silver' %}bg-gray-100 text-gray-600
+                                {% elseif contributor.tier == 'gold' %}bg-yellow-100 text-yellow-600
+                                {% elseif contributor.tier == 'platinum' %}bg-purple-100 text-purple-600
+                                {% else %}bg-blue-100 text-blue-600{% endif %} 
+                                flex items-center justify-center">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="font-semibold text-gray-800">{{ contributor.tierDisplayName }}</h4>
+                </div>
+
+                <div class="space-y-2 text-sm">
+                    {% if contributor.tier in ['silver', 'gold', 'platinum', 'diamond'] %}
+                        <div class="flex items-center text-green-600">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Пазарни тенденции
+                        </div>
+                        <div class="flex items-center text-green-600">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Ценови анализи
+                        </div>
+                    {% endif %}
+                    
+                    {% if contributor.tier in ['gold', 'platinum', 'diamond'] %}
+                        <div class="flex items-center text-green-600">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            AI прогнози
+                        </div>
+                        <div class="flex items-center text-green-600">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Инвестиционни възможности
+                        </div>
+                    {% endif %}
+                    
+                    {% if contributor.tier in ['platinum', 'diamond'] %}
+                        <div class="flex items-center text-green-600">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Ексклузивни доклади
+                        </div>
+                        <div class="flex items-center text-green-600">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Персонални консултации
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Полезни връзки</h3>
+                
+                <div class="space-y-3">
+                    <a href="#" class="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-200">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-blue-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a2 2 0 00-2 2v6a2 2 0 002 2h8a2 2 0 002-2V6a2 2 0 00-2-2v1a2 2 0 012-2 2 2 0 012 2v6a4 4 0 01-4 4H6a4 4 0 01-4-4V5z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm font-medium">Месечен доклад</span>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-200">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm font-medium">Календар на събития</span>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-200">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-purple-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                            </svg>
+                            <span class="text-sm font-medium">Сравнение на пазари</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Data Sources -->
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Източници на данни</h3>
+                <div class="text-sm text-gray-600 space-y-2">
+                    <p>• Европейска банка за възстановяване</p>
+                    <p>• Национални статистически институти</p>
+                    <p>• PropertyCrowd Europe submissions</p>
+                    <p>• Партньорски брокерски къщи</p>
+                    <p>• AI анализ на пазарни тенденции</p>
+                </div>
+                <p class="text-xs text-gray-500 mt-4">
+                    Последно обновление: {{ "now"|date('d.m.Y H:i') }}
+                </p>
+            </div>
+
+            <!-- Navigation -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Навигация</h3>
+                <div class="space-y-2">
+                    <a href="{{ path('property_crowd_dashboard') }}" class="block text-blue-600 hover:text-blue-800 text-sm">
+                        ← Назад към таблото
+                    </a>
+                    <a href="{{ path('property_crowd_submit') }}" class="block text-blue-600 hover:text-blue-800 text-sm">
+                        ➕ Ново предаване
+                    </a>
+                    <a href="{{ path('property_crowd_rewards') }}" class="block text-blue-600 hover:text-blue-800 text-sm">
+                        💰 Награди
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Price Trends Chart
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('priceChart').getContext('2d');
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [{% for trend in market_data.price_trends %}'{{ trend.month }}'{% if not loop.last %},{% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Средна цена (€/м²)',
+                data: [{% for trend in market_data.price_trends %}{{ trend.price }}{% if not loop.last %},{% endif %}{% endfor %}],
+                borderColor: 'rgb(147, 51, 234)',
+                backgroundColor: 'rgba(147, 51, 234, 0.1)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        callback: function(value) {
+                            return '€' + value;
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

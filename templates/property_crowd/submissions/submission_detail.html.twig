@@ -1,0 +1,806 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ submission.title }} - Детайли на предложение - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .submission-detail-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .detail-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .submission-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 2rem;
+        }
+        
+        .header-info h1 {
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .header-meta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .submission-id {
+            font-family: monospace;
+            background: rgba(255,255,255,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .status-badge {
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+        
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-under_review { background: #cce5ff; color: #004085; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .status-published { background: #d1ecf1; color: #0c5460; }
+        
+        .detail-content {
+            padding: 2rem;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .section-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+        
+        .section-title {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .gallery-image {
+            aspect-ratio: 4/3;
+            background: #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .gallery-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .property-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .detail-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+        
+        .price-highlight {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .timeline-section {
+            position: relative;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.75rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e9ecef;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 1rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #667eea;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #e9ecef;
+        }
+        
+        .timeline-item.active::before {
+            background: #28a745;
+            box-shadow: 0 0 0 3px #28a745;
+        }
+        
+        .timeline-date {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-description {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .ai-analysis {
+            background: linear-gradient(45deg, #e8f5e8, #f0fff0);
+            border: 1px solid #28a745;
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+        
+        .ai-score {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .score-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .score-excellent { background: linear-gradient(45deg, #28a745, #20c997); }
+        .score-good { background: linear-gradient(45deg, #ffc107, #fd7e14); }
+        .score-average { background: linear-gradient(45deg, #17a2b8, #6f42c1); }
+        .score-poor { background: linear-gradient(45deg, #dc3545, #e83e8c); }
+        
+        .insights-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .insights-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .insights-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .insight-icon {
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+        
+        .insight-positive { color: #28a745; }
+        .insight-warning { color: #ffc107; }
+        .insight-negative { color: #dc3545; }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn-action {
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-edit {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            background: #218838;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+        
+        .btn-back {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-back:hover {
+            background: #5a6268;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+        
+        .btn-publish {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-publish:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .rewards-info {
+            background: linear-gradient(45deg, #ffd700, #ffb347);
+            color: #333;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .points-earned {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .documents-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .document-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border: 1px solid #e9ecef;
+        }
+        
+        .document-icon {
+            font-size: 1.5rem;
+            color: #667eea;
+        }
+        
+        .document-info {
+            flex: 1;
+        }
+        
+        .document-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .document-size {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        
+        .btn-download {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        
+        .btn-download:hover {
+            background: #5a67d8;
+            color: white;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .property-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="submission-detail-container">
+    <div class="container">
+        <div class="detail-card">
+            <!-- Header -->
+            <div class="submission-header">
+                <div class="header-content">
+                    <div class="header-info">
+                        <h1>{{ submission.title }}</h1>
+                        <p class="mb-0">
+                            <i class="bi bi-geo-alt me-2"></i>
+                            {{ submission.city }}, {{ submission.country }}
+                        </p>
+                        
+                        <div class="header-meta">
+                            <span class="meta-item">
+                                <i class="bi bi-calendar me-1"></i>
+                                {{ submission.submittedAt|date('d.m.Y H:i') }}
+                            </span>
+                            <span class="meta-item">
+                                <i class="bi bi-building me-1"></i>
+                                {{ submission.propertyType|title }}
+                            </span>
+                            {% if submission.totalArea %}
+                                <span class="meta-item">
+                                    <i class="bi bi-rulers me-1"></i>
+                                    {{ submission.totalArea|number_format }} m²
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="submission-id">
+                            <strong>ID:</strong> {{ submission.submissionId }}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <span class="status-badge status-{{ submission.status|lower }}">
+                            {% if submission.status == 'PENDING' %}В очакване
+                            {% elseif submission.status == 'UNDER_REVIEW' %}Под ревизия
+                            {% elseif submission.status == 'APPROVED' %}Одобрено
+                            {% elseif submission.status == 'REJECTED' %}Отхвърлено
+                            {% elseif submission.status == 'PUBLISHED' %}Публикувано
+                            {% else %}{{ submission.status }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="detail-content">
+                <div class="content-grid">
+                    <!-- Main Content -->
+                    <div class="main-content">
+                        <!-- Images -->
+                        {% if submission.images is not empty %}
+                            <div class="section-card">
+                                <h5 class="section-title">
+                                    <i class="bi bi-images"></i>Снимки
+                                </h5>
+                                <div class="image-gallery">
+                                    {% for image in submission.images %}
+                                        <div class="gallery-image" onclick="openImageModal('{{ asset('uploads/submissions/' ~ image.filename) }}')">
+                                            <img src="{{ asset('uploads/submissions/' ~ image.filename) }}" 
+                                                 alt="{{ image.originalName }}">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Description -->
+                        <div class="section-card">
+                            <h5 class="section-title">
+                                <i class="bi bi-card-text"></i>Описание
+                            </h5>
+                            <div class="description-content">
+                                {{ submission.description|nl2br }}
+                            </div>
+                        </div>
+                        
+                        <!-- Property Details -->
+                        <div class="section-card">
+                            <h5 class="section-title">
+                                <i class="bi bi-info-circle"></i>Детайли на имота
+                            </h5>
+                            <div class="property-details">
+                                {% if submission.estimatedPrice %}
+                                    <div class="detail-item">
+                                        <div class="detail-label">Ориентировъчна цена</div>
+                                        <div class="detail-value price-highlight">
+                                            {{ submission.estimatedPrice|number_format(0, '', ' ') }} €
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if submission.totalArea %}
+                                    <div class="detail-item">
+                                        <div class="detail-label">Обща площ</div>
+                                        <div class="detail-value">{{ submission.totalArea|number_format }} m²</div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if submission.landArea %}
+                                    <div class="detail-item">
+                                        <div class="detail-label">Площ на парцела</div>
+                                        <div class="detail-value">{{ submission.landArea|number_format }} m²</div>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="detail-item">
+                                    <div class="detail-label">Тип имот</div>
+                                    <div class="detail-value">{{ submission.propertyType|title }}</div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <div class="detail-label">Предназначение</div>
+                                    <div class="detail-value">{{ submission.intendedUse|title }}</div>
+                                </div>
+                                
+                                {% if submission.yearBuilt %}
+                                    <div class="detail-item">
+                                        <div class="detail-label">Година на строеж</div>
+                                        <div class="detail-value">{{ submission.yearBuilt }}</div>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="detail-item">
+                                    <div class="detail-label">Състояние</div>
+                                    <div class="detail-value">{{ submission.propertyCondition|title }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Location Details -->
+                        {% if submission.address %}
+                            <div class="section-card">
+                                <h5 class="section-title">
+                                    <i class="bi bi-pin-map"></i>Местоположение
+                                </h5>
+                                <div class="location-info">
+                                    <p><strong>Адрес:</strong> {{ submission.address }}</p>
+                                    <p><strong>Град:</strong> {{ submission.city }}</p>
+                                    <p><strong>Държава:</strong> {{ submission.country }}</p>
+                                    {% if submission.postalCode %}
+                                        <p><strong>Пощенски код:</strong> {{ submission.postalCode }}</p>
+                                    {% endif %}
+                                    
+                                    {% if submission.latitude and submission.longitude %}
+                                        <div class="coordinates">
+                                            <small class="text-muted">
+                                                Координати: {{ submission.latitude }}, {{ submission.longitude }}
+                                            </small>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Documents -->
+                        {% if submission.documents is not empty %}
+                            <div class="section-card">
+                                <h5 class="section-title">
+                                    <i class="bi bi-file-earmark-text"></i>Документи
+                                </h5>
+                                <ul class="documents-list">
+                                    {% for document in submission.documents %}
+                                        <li class="document-item">
+                                            <div class="document-icon">
+                                                {% if document.documentType == 'title_deed' %}
+                                                    <i class="bi bi-file-earmark-legal"></i>
+                                                {% elseif document.documentType == 'technical_plan' %}
+                                                    <i class="bi bi-file-earmark-ruled"></i>
+                                                {% elseif document.documentType == 'photos' %}
+                                                    <i class="bi bi-file-earmark-image"></i>
+                                                {% else %}
+                                                    <i class="bi bi-file-earmark"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div class="document-info">
+                                                <div class="document-name">{{ document.originalName }}</div>
+                                                <div class="document-size">{{ (document.fileSize / 1024)|number_format(0) }} KB</div>
+                                            </div>
+                                            <a href="{{ asset('uploads/submissions/documents/' ~ document.filename) }}" 
+                                               class="btn-download" target="_blank">
+                                                <i class="bi bi-download me-1"></i>Изтегли
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Sidebar -->
+                    <div class="sidebar-content">
+                        <!-- AI Analysis -->
+                        {% if ai_analysis %}
+                            <div class="section-card ai-analysis">
+                                <h5 class="section-title">
+                                    <i class="bi bi-robot"></i>AI Анализ
+                                </h5>
+                                
+                                <div class="ai-score">
+                                    <div class="score-circle score-{{ ai_analysis.quality_score >= 80 ? 'excellent' : (ai_analysis.quality_score >= 60 ? 'good' : (ai_analysis.quality_score >= 40 ? 'average' : 'poor')) }}">
+                                        {{ ai_analysis.quality_score }}%
+                                    </div>
+                                    <div>
+                                        <div><strong>Качество на данните</strong></div>
+                                        <small class="text-muted">Базирано на пълнота и точност</small>
+                                    </div>
+                                </div>
+                                
+                                {% if ai_analysis.insights %}
+                                    <ul class="insights-list">
+                                        {% for insight in ai_analysis.insights %}
+                                            <li>
+                                                <span class="insight-icon insight-{{ insight.type }}">
+                                                    {% if insight.type == 'positive' %}
+                                                        <i class="bi bi-check-circle"></i>
+                                                    {% elseif insight.type == 'warning' %}
+                                                        <i class="bi bi-exclamation-triangle"></i>
+                                                    {% else %}
+                                                        <i class="bi bi-x-circle"></i>
+                                                    {% endif %}
+                                                </span>
+                                                <span>{{ insight.message }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Timeline -->
+                        <div class="section-card timeline-section">
+                            <h5 class="section-title">
+                                <i class="bi bi-clock-history"></i>Статус на процеса
+                            </h5>
+                            
+                            <div class="timeline">
+                                {% for item in timeline %}
+                                    <div class="timeline-item {{ item.is_current ? 'active' : '' }}">
+                                        <div class="timeline-date">{{ item.date|date('d.m.Y H:i') }}</div>
+                                        <div class="timeline-title">{{ item.title }}</div>
+                                        <div class="timeline-description">{{ item.description }}</div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Rewards -->
+                        {% if submission.pointsEarned > 0 %}
+                            <div class="rewards-info">
+                                <h6><i class="bi bi-award me-2"></i>Спечелени награди</h6>
+                                <div class="points-earned">+{{ submission.pointsEarned }}</div>
+                                <div>Точки</div>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Contributor Info -->
+                        <div class="section-card">
+                            <h5 class="section-title">
+                                <i class="bi bi-person"></i>Информация за подателя
+                            </h5>
+                            <div class="contributor-info">
+                                <p><strong>Име:</strong> {{ submission.submittedBy.fullName }}</p>
+                                <p><strong>Тип участник:</strong> {{ submission.submittedBy.contributorTier }}</p>
+                                <p><strong>Опит:</strong> {{ submission.submittedBy.totalSubmissions }} предложения</p>
+                                <p><strong>Рейтинг:</strong> {{ submission.submittedBy.totalPoints }} точки</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <a href="{{ path('property_crowd_my_submissions') }}" class="btn-action btn-back">
+                        <i class="bi bi-arrow-left me-1"></i>Назад към списъка
+                    </a>
+                    
+                    {% if submission.status in ['PENDING', 'REJECTED'] %}
+                        <a href="{{ path('property_crowd_submission_edit', {'id': submission.id}) }}" 
+                           class="btn-action btn-edit">
+                            <i class="bi bi-pencil me-1"></i>Редактиране
+                        </a>
+                    {% endif %}
+                    
+                    {% if submission.status == 'APPROVED' and is_granted('ROLE_ADMIN') %}
+                        <button type="button" class="btn-action btn-publish" onclick="publishSubmission()">
+                            <i class="bi bi-globe me-1"></i>Публикувай
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <img id="modalImage" src="" alt="" class="w-100">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function openImageModal(imageSrc) {
+            document.getElementById('modalImage').src = imageSrc;
+            new bootstrap.Modal(document.getElementById('imageModal')).show();
+        }
+        
+        function publishSubmission() {
+            if (confirm('Сигурни ли сте, че искате да публикувате това предложение?')) {
+                // AJAX call to publish submission
+                fetch('{{ path("property_crowd_submission_publish", {"id": submission.id}) }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Възникна грешка при публикуването: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Възникна грешка при публикуването');
+                });
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-refresh for pending submissions
+            {% if submission.status in ['PENDING', 'UNDER_REVIEW'] %}
+                setInterval(() => {
+                    // Check for status updates
+                    fetch('{{ path("property_crowd_submission_status_check", {"id": submission.id}) }}')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status !== '{{ submission.status }}') {
+                                location.reload();
+                            }
+                        })
+                        .catch(error => console.error('Status check error:', error));
+                }, 30000); // Check every 30 seconds
+            {% endif %}
+            
+            // Gallery navigation
+            const galleryImages = document.querySelectorAll('.gallery-image');
+            galleryImages.forEach((image, index) => {
+                image.addEventListener('click', function() {
+                    // You can add gallery navigation here
+                });
+            });
+        });
+    </script>
+{% endblock %}

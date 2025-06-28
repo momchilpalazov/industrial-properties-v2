@@ -1,0 +1,446 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Join PropertyCrowd Europe - Become a Contributor{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .registration-header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #059669 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .form-section {
+            padding: 60px 0;
+            background: #F9FAFB;
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 16px;
+            padding: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+        
+        .step.active {
+            background: #059669;
+            color: white;
+        }
+        
+        .step.completed {
+            background: #10B981;
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #E5E7EB;
+            padding: 12px 15px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+        
+        .btn-next {
+            background: #059669;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .btn-prev {
+            background: #6B7280;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .country-select {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .expertise-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .expertise-tag {
+            background: #E0F2FE;
+            color: #0369A1;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .expertise-tag.selected {
+            background: #059669;
+            color: white;
+        }
+        
+        .benefits-preview {
+            background: #F0F9FF;
+            border: 1px solid #0369A1;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Header -->
+    <section class="registration-header">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">🌟 Join PropertyCrowd Europe</h1>
+            <p class="lead">Become a certified European Industrial Property Expert</p>
+            <p class="fs-6">Get your unique European Contributor ID (EIC) today!</p>
+        </div>
+    </section>
+
+    <!-- Registration Form -->
+    <section class="form-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="form-container">
+                        <!-- Step Indicator -->
+                        <div class="step-indicator">
+                            <div class="step active" data-step="1">1</div>
+                            <div class="step" data-step="2">2</div>
+                            <div class="step" data-step="3">3</div>
+                            <div class="step" data-step="4">✓</div>
+                        </div>
+
+                        <form id="contributor-registration-form" method="POST">
+                            {{ csrf_token('contributor_registration') }}
+                            
+                            <!-- Step 1: Personal Information -->
+                            <div class="form-step active" data-step="1">
+                                <h3 class="text-center mb-4 text-primary">👤 Personal Information</h3>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="full_name" class="form-label">Full Name *</label>
+                                            <input type="text" class="form-control" id="full_name" name="full_name" required>
+                                            <small class="text-muted">As it appears on official documents</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email" class="form-label">Email Address *</label>
+                                            <input type="email" class="form-control" id="email" name="email" required>
+                                            <small class="text-muted">Professional email preferred</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="phone" class="form-label">Phone Number *</label>
+                                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="+359 XXX XXX XXX" required>
+                                            <small class="text-muted">Include country code</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="linkedin" class="form-label">LinkedIn Profile</label>
+                                            <input type="url" class="form-control" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+                                            <small class="text-muted">Recommended for verification</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-end">
+                                    <button type="button" class="btn btn-next" onclick="nextStep()">Next →</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Professional Background -->
+                            <div class="form-step" data-step="2" style="display: none;">
+                                <h3 class="text-center mb-4 text-primary">🏢 Professional Background</h3>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="company" class="form-label">Company/Organization</label>
+                                            <input type="text" class="form-control" id="company" name="company">
+                                            <small class="text-muted">Current employer or business</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="position" class="form-label">Position/Title</label>
+                                            <input type="text" class="form-control" id="position" name="position">
+                                            <small class="text-muted">Your current role</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="experience" class="form-label">Years of Experience</label>
+                                    <select class="form-control" id="experience" name="experience">
+                                        <option value="">Select experience level</option>
+                                        <option value="0-2">0-2 years</option>
+                                        <option value="3-5">3-5 years</option>
+                                        <option value="6-10">6-10 years</option>
+                                        <option value="11-15">11-15 years</option>
+                                        <option value="16+">16+ years</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Expertise Areas</label>
+                                    <p class="text-muted small">Select your areas of expertise (multiple allowed)</p>
+                                    <div class="expertise-tags">
+                                        <div class="expertise-tag" data-expertise="logistics">🚚 Logistics & Warehousing</div>
+                                        <div class="expertise-tag" data-expertise="manufacturing">🏭 Manufacturing</div>
+                                        <div class="expertise-tag" data-expertise="industrial_land">🏗️ Industrial Land</div>
+                                        <div class="expertise-tag" data-expertise="distribution">📦 Distribution Centers</div>
+                                        <div class="expertise-tag" data-expertise="tech_parks">💻 Technology Parks</div>
+                                        <div class="expertise-tag" data-expertise="cold_storage">❄️ Cold Storage</div>
+                                        <div class="expertise-tag" data-expertise="automotive">🚗 Automotive</div>
+                                        <div class="expertise-tag" data-expertise="food_processing">🍎 Food Processing</div>
+                                    </div>
+                                    <input type="hidden" id="selected_expertise" name="expertise" value="">
+                                </div>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-prev" onclick="prevStep()">← Previous</button>
+                                    <button type="button" class="btn btn-next" onclick="nextStep()">Next →</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Geographic Coverage -->
+                            <div class="form-step" data-step="3" style="display: none;">
+                                <h3 class="text-center mb-4 text-primary">🌍 Geographic Coverage</h3>
+                                
+                                <div class="form-group">
+                                    <label for="primary_country" class="form-label">Primary Country *</label>
+                                    <select class="form-control" id="primary_country" name="primary_country" required>
+                                        <option value="">Select your primary market</option>
+                                        {% for code, name in countries %}
+                                            <option value="{{ code }}">{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="text-muted">Where you'll primarily contribute</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="languages" class="form-label">Languages *</label>
+                                    <select class="form-control" id="languages" name="languages[]" multiple required>
+                                        <option value="en">English</option>
+                                        <option value="bg">Bulgarian</option>
+                                        <option value="de">German</option>
+                                        <option value="fr">French</option>
+                                        <option value="es">Spanish</option>
+                                        <option value="it">Italian</option>
+                                        <option value="pl">Polish</option>
+                                        <option value="ro">Romanian</option>
+                                        <option value="ru">Russian</option>
+                                    </select>
+                                    <small class="text-muted">Hold Ctrl/Cmd to select multiple</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="motivation" class="form-label">Why do you want to join PropertyCrowd Europe?</label>
+                                    <textarea class="form-control" id="motivation" name="motivation" rows="4" placeholder="Tell us about your motivation to contribute to Europe's industrial property ecosystem..."></textarea>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-prev" onclick="prevStep()">← Previous</button>
+                                    <button type="button" class="btn btn-next" onclick="nextStep()">Review →</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Review & Submit -->
+                            <div class="form-step" data-step="4" style="display: none;">
+                                <h3 class="text-center mb-4 text-primary">✅ Review & Submit</h3>
+                                
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Application Summary</h5>
+                                        <div id="review-content">
+                                            <!-- Will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="benefits-preview">
+                                    <h5 class="text-primary">🎉 What happens next?</h5>
+                                    <ul class="list-unstyled">
+                                        <li>✅ <strong>Instant</strong>: Get your European Contributor ID (EIC)</li>
+                                        <li>✅ <strong>Within 24h</strong>: Account verification and welcome bonus</li>
+                                        <li>✅ <strong>Immediate access</strong>: Start contributing properties</li>
+                                        <li>✅ <strong>Bronze tier</strong>: Begin earning points and rewards</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" id="terms_accepted" name="terms_accepted" required>
+                                    <label class="form-check-label" for="terms_accepted">
+                                        I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a> *
+                                    </label>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-prev" onclick="prevStep()">← Previous</button>
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        🚀 Join PropertyCrowd Europe
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        
+        function nextStep() {
+            if (validateCurrentStep()) {
+                if (currentStep < totalSteps) {
+                    // Hide current step
+                    document.querySelector(`.form-step[data-step="${currentStep}"]`).style.display = 'none';
+                    document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+                    document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('completed');
+                    
+                    // Show next step
+                    currentStep++;
+                    document.querySelector(`.form-step[data-step="${currentStep}"]`).style.display = 'block';
+                    document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+                    
+                    // Update review page if we're on step 4
+                    if (currentStep === 4) {
+                        updateReview();
+                    }
+                    
+                    // Scroll to top
+                    window.scrollTo(0, 0);
+                }
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 1) {
+                // Hide current step
+                document.querySelector(`.form-step[data-step="${currentStep}"]`).style.display = 'none';
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+                
+                // Show previous step
+                currentStep--;
+                document.querySelector(`.form-step[data-step="${currentStep}"]`).style.display = 'block';
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('completed');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+        }
+        
+        function validateCurrentStep() {
+            const currentStepEl = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+            const requiredFields = currentStepEl.querySelectorAll('input[required], select[required], textarea[required]');
+            
+            let isValid = true;
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+            
+            return isValid;
+        }
+        
+        function updateReview() {
+            const reviewContent = document.getElementById('review-content');
+            const formData = new FormData(document.getElementById('contributor-registration-form'));
+            
+            let html = '<div class="row">';
+            html += '<div class="col-md-6">';
+            html += `<p><strong>Name:</strong> ${formData.get('full_name')}</p>`;
+            html += `<p><strong>Email:</strong> ${formData.get('email')}</p>`;
+            html += `<p><strong>Phone:</strong> ${formData.get('phone')}</p>`;
+            html += `<p><strong>Company:</strong> ${formData.get('company') || 'Not specified'}</p>`;
+            html += '</div>';
+            html += '<div class="col-md-6">';
+            html += `<p><strong>Position:</strong> ${formData.get('position') || 'Not specified'}</p>`;
+            html += `<p><strong>Experience:</strong> ${formData.get('experience') || 'Not specified'}</p>`;
+            html += `<p><strong>Primary Country:</strong> ${document.getElementById('primary_country').selectedOptions[0]?.text || 'Not selected'}</p>`;
+            html += `<p><strong>Languages:</strong> ${Array.from(document.getElementById('languages').selectedOptions).map(o => o.text).join(', ')}</p>`;
+            html += '</div>';
+            html += '</div>';
+            
+            reviewContent.innerHTML = html;
+        }
+        
+        // Expertise tags functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const expertiseTags = document.querySelectorAll('.expertise-tag');
+            const selectedExpertiseInput = document.getElementById('selected_expertise');
+            let selectedExpertise = [];
+            
+            expertiseTags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    const expertise = this.getAttribute('data-expertise');
+                    
+                    if (this.classList.contains('selected')) {
+                        this.classList.remove('selected');
+                        selectedExpertise = selectedExpertise.filter(e => e !== expertise);
+                    } else {
+                        this.classList.add('selected');
+                        selectedExpertise.push(expertise);
+                    }
+                    
+                    selectedExpertiseInput.value = selectedExpertise.join(',');
+                });
+            });
+        });
+    </script>
+{% endblock %}

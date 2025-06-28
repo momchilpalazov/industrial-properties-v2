@@ -1,0 +1,423 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}European Analytics - PropertyCrowd Europe{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">
+                <i class="bi bi-graph-up me-2"></i>
+                European Market Analytics
+            </h1>
+            <div class="btn-group">
+                <a href="{{ path('admin_contributors_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Dashboard
+                </a>
+                <a href="{{ path('admin_contributors_export') }}" class="btn btn-success">
+                    <i class="bi bi-download me-1"></i> Експорт данни
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Overview Cards #}
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-primary border-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                            Покрити държави
+                        </div>
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{ country_coverage|length }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-globe-europe-africa fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-success border-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                            Общо Contributors
+                        </div>
+                        {% set total_contributors = 0 %}
+                        {% for tier in tier_distribution %}
+                            {% set total_contributors = total_contributors + tier.count %}
+                        {% endfor %}
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{ total_contributors }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-people-fill fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-info border-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs fw-bold text-info text-uppercase mb-1">
+                            Този месец
+                        </div>
+                        {% set this_month = monthly_growth|last %}
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{ this_month.count ?? 0 }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-calendar-plus fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-warning border-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                            Средно на месец
+                        </div>
+                        {% set avg_monthly = monthly_growth|length > 0 ? (total_contributors / monthly_growth|length)|round(1) : 0 %}
+                        <div class="h5 mb-0 fw-bold text-gray-800">{{ avg_monthly }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-graph-up fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {# Monthly Growth Chart #}
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                <h6 class="m-0 fw-bold text-primary">Месечен растеж</h6>
+                <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="bi bi-three-dots-vertical text-muted"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                        <div class="dropdown-header">Експорт данни:</div>
+                        <a class="dropdown-item" href="#" onclick="exportChartData('monthly')">CSV формат</a>
+                        <a class="dropdown-item" href="#" onclick="exportChartData('monthly', 'excel')">Excel формат</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="monthlyGrowthChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Tier Distribution Pie Chart #}
+    <div class="col-xl-4 col-lg-5">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 fw-bold text-primary">Разпределение по Tier</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie pt-4 pb-2">
+                    <canvas id="tierDistributionChart"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    {% for tier in tier_distribution %}
+                        <span class="me-2">
+                            <i class="bi bi-circle-fill text-{{ tier.tier == 'PLATINUM' or tier.tier == 'GOLD' ? 'warning' : (tier.tier == 'SILVER' ? 'secondary' : 'primary') }}"></i>
+                            {{ tier.tier|title }} ({{ tier.count }})
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {# Country Coverage #}
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 fw-bold text-primary">
+                    <i class="bi bi-map me-2"></i>Географско покритие
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if country_coverage|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Държава</th>
+                                    <th>Contributors</th>
+                                    <th>Покритие</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for country in country_coverage|slice(0, 15) %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ country.country }}</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary">{{ country.contributor_count }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                {% set max_coverage = country_coverage|first.contributor_count %}
+                                                {% set coverage_percent = (country.contributor_count / max_coverage * 100)|round %}
+                                                <div class="progress-bar" role="progressbar" 
+                                                     style="width: {{ coverage_percent }}%" 
+                                                     aria-valuenow="{{ coverage_percent }}" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100">
+                                                    {{ coverage_percent }}%
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if country.contributor_count >= 10 %}
+                                                <span class="badge bg-success">Отлично</span>
+                                            {% elseif country.contributor_count >= 5 %}
+                                                <span class="badge bg-warning">Добро</span>
+                                            {% elseif country.contributor_count >= 2 %}
+                                                <span class="badge bg-info">Средно</span>
+                                            {% else %}
+                                                <span class="badge bg-light text-dark">Слабо</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if country_coverage|length > 15 %}
+                        <div class="text-center mt-3">
+                            <small class="text-muted">и още {{ country_coverage|length - 15 }} държави...</small>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-map text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3 text-muted">Няма данни за покритие</h5>
+                        <p class="text-muted">Все още няма contributors с географско покритие.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Growth Trends #}
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 fw-bold text-primary">
+                    <i class="bi bi-graph-up me-2"></i>Тенденции в растежа
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6 border-end">
+                        {% set last_month = monthly_growth|slice(-2, 1)|first %}
+                        {% set this_month = monthly_growth|last %}
+                        {% set growth_rate = last_month and last_month.count > 0 ? ((this_month.count - last_month.count) / last_month.count * 100)|round(1) : 0 %}
+                        <div class="h4 mb-0 text-{{ growth_rate >= 0 ? 'success' : 'danger' }}">
+                            {{ growth_rate >= 0 ? '+' : '' }}{{ growth_rate }}%
+                        </div>
+                        <div class="small text-muted">Месечен растеж</div>
+                    </div>
+                    <div class="col-6">
+                        {% set avg_growth = monthly_growth|length > 1 ? ((monthly_growth|last.count - monthly_growth|first.count) / monthly_growth|length)|round(1) : 0 %}
+                        <div class="h4 mb-0 text-info">{{ avg_growth >= 0 ? '+' : '' }}{{ avg_growth }}</div>
+                        <div class="small text-muted">Средно на месец</div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <h6 class="fw-bold">Анализ на тенденциите:</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="bi bi-circle-fill text-{{ growth_rate > 0 ? 'success' : (growth_rate == 0 ? 'warning' : 'danger') }} me-2"></i>
+                        {% if growth_rate > 0 %}
+                            Положителен растеж спрямо предходния месец
+                        {% elseif growth_rate == 0 %}
+                            Стабилизиране на регистрациите
+                        {% else %}
+                            Намаление спрямо предходния месец
+                        {% endif %}
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-circle-fill text-info me-2"></i>
+                        Общо {{ country_coverage|length }} европейски държави са покрити
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-circle-fill text-warning me-2"></i>
+                        {% set platinum_count = 0 %}
+                        {% for tier in tier_distribution %}
+                            {% if tier.tier == 'PLATINUM' %}
+                                {% set platinum_count = tier.count %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ platinum_count }} Platinum contributors водят класацията
+                    </li>
+                </ul>
+
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-lightbulb me-2"></i>
+                    <strong>Препоръки:</strong>
+                    {% if growth_rate < 0 %}
+                        Необходими са стимули за привличане на нови contributors.
+                    {% else %}
+                        Добър растеж! Поддържайте качеството на услугите.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Performance Metrics #}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 fw-bold text-primary">
+                    <i class="bi bi-speedometer2 me-2"></i>Ключови метрики за производителност
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 text-center mb-4">
+                        <div class="border rounded p-3">
+                            <i class="bi bi-people-fill text-primary" style="font-size: 2rem;"></i>
+                            <h4 class="mt-2 mb-1">{{ total_contributors }}</h4>
+                            <small class="text-muted">Активни contributors</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center mb-4">
+                        <div class="border rounded p-3">
+                            <i class="bi bi-house-add text-success" style="font-size: 2rem;"></i>
+                            <h4 class="mt-2 mb-1">-</h4>
+                            <small class="text-muted">Общо предложения</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center mb-4">
+                        <div class="border rounded p-3">
+                            <i class="bi bi-check-circle text-warning" style="font-size: 2rem;"></i>
+                            <h4 class="mt-2 mb-1">-</h4>
+                            <small class="text-muted">Успеваемост (%)</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center mb-4">
+                        <div class="border rounded p-3">
+                            <i class="bi bi-award text-info" style="font-size: 2rem;"></i>
+                            <h4 class="mt-2 mb-1">-</h4>
+                            <small class="text-muted">Раздадени награди</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Monthly Growth Chart
+            const monthlyCtx = document.getElementById('monthlyGrowthChart').getContext('2d');
+            const monthlyData = {{ monthly_growth|json_encode|raw }};
+            
+            new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: monthlyData.map(item => item.month),
+                    datasets: [{
+                        label: 'Нови Contributors',
+                        data: monthlyData.map(item => item.count),
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        borderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Tier Distribution Chart
+            const tierCtx = document.getElementById('tierDistributionChart').getContext('2d');
+            const tierData = {{ tier_distribution|json_encode|raw }};
+            
+            new Chart(tierCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: tierData.map(item => item.tier),
+                    datasets: [{
+                        data: tierData.map(item => item.count),
+                        backgroundColor: [
+                            '#ffc107', // Gold/Platinum
+                            '#6c757d', // Silver
+                            '#0d6efd', // Bronze
+                            '#198754'  // Additional colors if needed
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        });
+
+        function exportChartData(type, format = 'csv') {
+            // Placeholder for export functionality
+            alert(`Експорт на ${type} данни в ${format} формат`);
+        }
+    </script>
+{% endblock %}

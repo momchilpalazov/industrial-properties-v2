@@ -1,0 +1,432 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Rewards Management - PropertyCrowd Europe{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">
+                <i class="bi bi-award me-2"></i>
+                Rewards Management
+            </h1>
+            <div class="btn-group">
+                <a href="{{ path('admin_contributors_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Dashboard
+                </a>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#awardModal">
+                    <i class="bi bi-plus me-1"></i> Нова награда
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    {# Pending Rewards #}
+    <div class="col-lg-6">
+        <div class="card shadow">
+            <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                <h6 class="m-0 fw-bold text-warning">
+                    <i class="bi bi-clock me-2"></i>Чакащи награди
+                </h6>
+                <span class="badge bg-warning">{{ pending_rewards|length }}</span>
+            </div>
+            <div class="card-body">
+                {% if pending_rewards|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Contributor</th>
+                                    <th>Тип</th>
+                                    <th>Точки</th>
+                                    <th>Дата</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reward in pending_rewards %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-2">
+                                                    {% set tier = reward.contributor.tier %}
+                                                    {% if tier == 'PLATINUM' %}
+                                                        <i class="bi bi-star-fill text-warning"></i>
+                                                    {% elseif tier == 'GOLD' %}
+                                                        <i class="bi bi-star text-warning"></i>
+                                                    {% elseif tier == 'SILVER' %}
+                                                        <i class="bi bi-circle text-secondary"></i>
+                                                    {% else %}
+                                                        <i class="bi bi-circle text-muted"></i>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <a href="{{ path('admin_contributors_view', {id: reward.contributor.id}) }}" class="text-decoration-none">
+                                                        {{ reward.contributor.fullName }}
+                                                    </a>
+                                                    <div class="small text-muted">{{ reward.contributor.europeanId }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">
+                                                {{ reward.type|replace({'_': ' '})|title }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <strong class="text-success">+{{ reward.amount }}</strong>
+                                        </td>
+                                        <td>
+                                            <div class="small">
+                                                {{ reward.createdAt|date('d.m.Y') }}
+                                                <div class="text-muted">{{ reward.createdAt|date('H:i') }}</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <form method="POST" action="{{ path('admin_contributors_reward_approve', {id: reward.id}) }}" class="d-inline">
+                                                    <button type="submit" class="btn btn-outline-success" title="Одобри">
+                                                        <i class="bi bi-check"></i>
+                                                    </button>
+                                                </form>
+                                                <button type="button" class="btn btn-outline-danger" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#rejectRewardModal"
+                                                        data-reward-id="{{ reward.id }}"
+                                                        title="Отхвърли">
+                                                    <i class="bi bi-x"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-info" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#viewRewardModal"
+                                                        data-reward='{{ reward|json_encode|e('html_attr') }}'
+                                                        title="Детайли">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                        <h6 class="mt-2 text-muted">Няма чакащи награди</h6>
+                        <p class="text-muted">Всички награди са обработени.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Recent Approved Rewards #}
+    <div class="col-lg-6">
+        <div class="card shadow">
+            <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                <h6 class="m-0 fw-bold text-success">
+                    <i class="bi bi-check-circle me-2"></i>Последни одобрени
+                </h6>
+                <span class="badge bg-success">{{ recent_rewards|length }}</span>
+            </div>
+            <div class="card-body">
+                {% if recent_rewards|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Contributor</th>
+                                    <th>Тип</th>
+                                    <th>Точки</th>
+                                    <th>Дата</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reward in recent_rewards|slice(0, 10) %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-2">
+                                                    {% set tier = reward.contributor.tier %}
+                                                    {% if tier == 'PLATINUM' %}
+                                                        <i class="bi bi-star-fill text-warning"></i>
+                                                    {% elseif tier == 'GOLD' %}
+                                                        <i class="bi bi-star text-warning"></i>
+                                                    {% elseif tier == 'SILVER' %}
+                                                        <i class="bi bi-circle text-secondary"></i>
+                                                    {% else %}
+                                                        <i class="bi bi-circle text-muted"></i>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <a href="{{ path('admin_contributors_view', {id: reward.contributor.id}) }}" class="text-decoration-none">
+                                                        {{ reward.contributor.fullName }}
+                                                    </a>
+                                                    <div class="small text-muted">{{ reward.contributor.europeanId }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">
+                                                {{ reward.type|replace({'_': ' '})|title }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <strong class="text-success">+{{ reward.amount }}</strong>
+                                        </td>
+                                        <td>
+                                            <div class="small">
+                                                {{ reward.awardedAt|date('d.m.Y') }}
+                                                <div class="text-muted">{{ reward.awardedAt|date('H:i') }}</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-award text-muted" style="font-size: 2rem;"></i>
+                        <h6 class="mt-2 text-muted">Няма награди</h6>
+                        <p class="text-muted">Все още не са раздадени награди.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Reward Statistics #}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 fw-bold text-primary">
+                    <i class="bi bi-graph-up me-2"></i>Статистика за наградите
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center border-end">
+                            <div class="h4 text-primary mb-0">{{ pending_rewards|length }}</div>
+                            <div class="small text-muted">Чакащи</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center border-end">
+                            <div class="h4 text-success mb-0">{{ recent_rewards|length }}</div>
+                            <div class="small text-muted">Одобрени този месец</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center border-end">
+                            {% set total_points = 0 %}
+                            {% for reward in recent_rewards %}
+                                {% set total_points = total_points + reward.amount %}
+                            {% endfor %}
+                            <div class="h4 text-warning mb-0">{{ total_points|number_format(0, '.', ',') }}</div>
+                            <div class="small text-muted">Точки този месец</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="text-center">
+                            {% set avg_reward = recent_rewards|length > 0 ? (total_points / recent_rewards|length)|round(1) : 0 %}
+                            <div class="h4 text-info mb-0">{{ avg_reward }}</div>
+                            <div class="small text-muted">Средно на награда</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Award New Reward Modal #}
+<div class="modal fade" id="awardModal" tabindex="-1" aria-labelledby="awardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ path('admin_contributors_reward_award') }}" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="awardModalLabel">Нова награда</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="contributor_id" class="form-label">Contributor <span class="text-danger">*</span></label>
+                        <select class="form-select" id="contributor_id" name="contributor_id" required>
+                            <option value="">Изберете contributor</option>
+                            {# This should be populated with all contributors #}
+                            {# For now, we'll add a placeholder - in real implementation, pass contributors from controller #}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Тип награда <span class="text-danger">*</span></label>
+                        <select class="form-select" id="type" name="type" required>
+                            <option value="">Изберете тип</option>
+                            <option value="quality_submission">Качествено предложение (+50 точки)</option>
+                            <option value="bulk_submission">Масово предложение (+100 точки)</option>
+                            <option value="referral_bonus">Бонус за привличане (+75 точки)</option>
+                            <option value="special_contribution">Специален принос (+200 точки)</option>
+                            <option value="milestone_bonus">Milestone бонус (+150 точки)</option>
+                            <option value="custom">Персонализирана награда</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Брой точки <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="amount" name="amount" min="1" required>
+                        <div class="form-text">Точките ще бъдат добавени към общия резултат на contributor-а</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Описание <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required 
+                                  placeholder="Опишете причината за наградата..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-award me-1"></i> Награди
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# View Reward Details Modal #}
+<div class="modal fade" id="viewRewardModal" tabindex="-1" aria-labelledby="viewRewardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewRewardModalLabel">Детайли за награда</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="viewRewardBody">
+                <!-- Content will be populated via JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Затвори</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Reject Reward Modal #}
+<div class="modal fade" id="rejectRewardModal" tabindex="-1" aria-labelledby="rejectRewardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" id="rejectRewardForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectRewardModalLabel">Отхвърли награда</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Сигурни ли сте, че искате да отхвърлите тази награда?
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="reject_reason" class="form-label">Причина за отхвърляне</label>
+                        <textarea class="form-control" id="reject_reason" name="reason" rows="3" 
+                                  placeholder="Опишете причината за отхвърлянето..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-x me-1"></i> Отхвърли награда
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle reward type selection
+            const typeSelect = document.getElementById('type');
+            const amountInput = document.getElementById('amount');
+            
+            if (typeSelect && amountInput) {
+                typeSelect.addEventListener('change', function() {
+                    const rewards = {
+                        'quality_submission': 50,
+                        'bulk_submission': 100,
+                        'referral_bonus': 75,
+                        'special_contribution': 200,
+                        'milestone_bonus': 150
+                    };
+                    
+                    if (rewards[this.value]) {
+                        amountInput.value = rewards[this.value];
+                    } else if (this.value === 'custom') {
+                        amountInput.value = '';
+                    }
+                });
+            }
+            
+            // Handle view reward modal
+            const viewRewardModal = document.getElementById('viewRewardModal');
+            if (viewRewardModal) {
+                viewRewardModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const rewardData = JSON.parse(button.getAttribute('data-reward'));
+                    const modalBody = document.getElementById('viewRewardBody');
+                    
+                    modalBody.innerHTML = `
+                        <div class="row">
+                            <div class="col-sm-4"><strong>Contributor:</strong></div>
+                            <div class="col-sm-8">${rewardData.contributor.fullName} (${rewardData.contributor.europeanId})</div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-4"><strong>Тип награда:</strong></div>
+                            <div class="col-sm-8">
+                                <span class="badge bg-info">${rewardData.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-4"><strong>Точки:</strong></div>
+                            <div class="col-sm-8"><strong class="text-success">+${rewardData.amount}</strong></div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-4"><strong>Описание:</strong></div>
+                            <div class="col-sm-8">${rewardData.description}</div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-4"><strong>Създаден:</strong></div>
+                            <div class="col-sm-8">${new Date(rewardData.createdAt.date).toLocaleDateString('bg-BG')} ${new Date(rewardData.createdAt.date).toLocaleTimeString('bg-BG')}</div>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Handle reject reward modal
+            const rejectRewardModal = document.getElementById('rejectRewardModal');
+            if (rejectRewardModal) {
+                rejectRewardModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const rewardId = button.getAttribute('data-reward-id');
+                    const form = document.getElementById('rejectRewardForm');
+                    form.action = `/admin/contributors/rewards/${rewardId}/reject`;
+                });
+            }
+        });
+    </script>
+{% endblock %}

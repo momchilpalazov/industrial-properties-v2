@@ -1,0 +1,361 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}European Leaderboard - PropertyCrowd Europe{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">
+                <i class="bi bi-trophy me-2"></i>
+                European Leaderboard
+            </h1>
+            <div class="btn-group">
+                <a href="{{ path('admin_contributors_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Dashboard
+                </a>
+                <a href="{{ path('admin_contributors_export') }}" class="btn btn-success">
+                    <i class="bi bi-download me-1"></i> Експорт
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    {# Top 3 Contributors - Podium Style #}
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 fw-bold text-primary">
+                    <i class="bi bi-award me-2"></i>Топ 3 Contributors
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if top_contributors|length >= 3 %}
+                    <div class="row text-center">
+                        {# Second Place #}
+                        <div class="col-md-4 order-md-1 mb-4">
+                            <div class="position-relative">
+                                <div class="bg-light border rounded p-4 h-100 d-flex flex-column justify-content-center">
+                                    <div class="mb-3">
+                                        <i class="bi bi-award-fill text-secondary" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h5 class="fw-bold">{{ top_contributors[1].fullName }}</h5>
+                                    <div class="small text-muted mb-2">{{ top_contributors[1].europeanId }}</div>
+                                    <span class="badge bg-{{ top_contributors[1].tier == 'PLATINUM' ? 'warning' : (top_contributors[1].tier == 'GOLD' ? 'warning' : (top_contributors[1].tier == 'SILVER' ? 'secondary' : 'light')) }} mb-2">
+                                        {{ top_contributors[1].tier }}
+                                    </span>
+                                    <div class="h4 text-secondary mb-0">{{ top_contributors[1].contributionScore }}</div>
+                                    <div class="small text-muted">точки</div>
+                                    <div class="position-absolute top-0 start-50 translate-middle">
+                                        <span class="badge bg-secondary rounded-pill px-3 py-2">
+                                            <i class="bi bi-2-circle me-1"></i>2
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# First Place #}
+                        <div class="col-md-4 order-md-2 mb-4">
+                            <div class="position-relative">
+                                <div class="bg-warning bg-opacity-10 border border-warning rounded p-4 h-100 d-flex flex-column justify-content-center">
+                                    <div class="mb-3">
+                                        <i class="bi bi-trophy-fill text-warning" style="font-size: 3.5rem;"></i>
+                                    </div>
+                                    <h4 class="fw-bold">{{ top_contributors[0].fullName }}</h4>
+                                    <div class="small text-muted mb-2">{{ top_contributors[0].europeanId }}</div>
+                                    <span class="badge bg-{{ top_contributors[0].tier == 'PLATINUM' ? 'warning' : (top_contributors[0].tier == 'GOLD' ? 'warning' : (top_contributors[0].tier == 'SILVER' ? 'secondary' : 'light')) }} mb-2">
+                                        {{ top_contributors[0].tier }}
+                                    </span>
+                                    <div class="h3 text-warning mb-0">{{ top_contributors[0].contributionScore }}</div>
+                                    <div class="small text-muted">точки</div>
+                                    <div class="position-absolute top-0 start-50 translate-middle">
+                                        <span class="badge bg-warning rounded-pill px-3 py-2">
+                                            <i class="bi bi-1-circle me-1"></i>1
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Third Place #}
+                        <div class="col-md-4 order-md-3 mb-4">
+                            <div class="position-relative">
+                                <div class="bg-light border rounded p-4 h-100 d-flex flex-column justify-content-center">
+                                    <div class="mb-3">
+                                        <i class="bi bi-award text-dark" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h5 class="fw-bold">{{ top_contributors[2].fullName }}</h5>
+                                    <div class="small text-muted mb-2">{{ top_contributors[2].europeanId }}</div>
+                                    <span class="badge bg-{{ top_contributors[2].tier == 'PLATINUM' ? 'warning' : (top_contributors[2].tier == 'GOLD' ? 'warning' : (top_contributors[2].tier == 'SILVER' ? 'secondary' : 'light')) }} mb-2">
+                                        {{ top_contributors[2].tier }}
+                                    </span>
+                                    <div class="h4 text-dark mb-0">{{ top_contributors[2].contributionScore }}</div>
+                                    <div class="small text-muted">точки</div>
+                                    <div class="position-absolute top-0 start-50 translate-middle">
+                                        <span class="badge bg-dark rounded-pill px-3 py-2">
+                                            <i class="bi bi-3-circle me-1"></i>3
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-trophy text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3 text-muted">Недостатъчно contributors</h5>
+                        <p class="text-muted">Нужни са поне 3 contributors за показване на подиума.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {# Full Leaderboard #}
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 fw-bold text-primary">Пълна класация</h6>
+            </div>
+            <div class="card-body">
+                {% if top_contributors|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Позиция</th>
+                                    <th>Contributor</th>
+                                    <th>Tier</th>
+                                    <th>Точки</th>
+                                    <th>Предложения</th>
+                                    <th>Държави</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for position, contributor in top_contributors %}
+                                    <tr class="{{ position < 3 ? 'table-warning' : '' }}">
+                                        <td>
+                                            {% if position == 0 %}
+                                                <span class="badge bg-warning fs-6">
+                                                    <i class="bi bi-trophy-fill me-1"></i>{{ position + 1 }}
+                                                </span>
+                                            {% elseif position == 1 %}
+                                                <span class="badge bg-secondary fs-6">
+                                                    <i class="bi bi-award-fill me-1"></i>{{ position + 1 }}
+                                                </span>
+                                            {% elseif position == 2 %}
+                                                <span class="badge bg-dark fs-6">
+                                                    <i class="bi bi-award me-1"></i>{{ position + 1 }}
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-light text-dark">{{ position + 1 }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-3">
+                                                    {% if contributor.tier == 'PLATINUM' %}
+                                                        <i class="bi bi-star-fill text-warning"></i>
+                                                    {% elseif contributor.tier == 'GOLD' %}
+                                                        <i class="bi bi-star text-warning"></i>
+                                                    {% elseif contributor.tier == 'SILVER' %}
+                                                        <i class="bi bi-circle text-secondary"></i>
+                                                    {% else %}
+                                                        <i class="bi bi-circle text-muted"></i>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold">{{ contributor.fullName }}</div>
+                                                    <div class="small text-muted">{{ contributor.europeanId }}</div>
+                                                    {% if contributor.company %}
+                                                        <div class="small text-muted">{{ contributor.company }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{{ contributor.tier == 'PLATINUM' ? 'warning' : (contributor.tier == 'GOLD' ? 'warning' : (contributor.tier == 'SILVER' ? 'secondary' : 'light')) }}">
+                                                {{ contributor.tier }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <strong class="text-success">{{ contributor.contributionScore }}</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">{{ contributor.totalSubmissions ?? 0 }}</span>
+                                        </td>
+                                        <td>
+                                            {% if contributor.geographicCoverage|length > 0 %}
+                                                <div class="small">
+                                                    {% for country in contributor.geographicCoverage|slice(0, 2) %}
+                                                        <span class="badge bg-light text-dark me-1">{{ country }}</span>
+                                                    {% endfor %}
+                                                    {% if contributor.geographicCoverage|length > 2 %}
+                                                        <span class="text-muted">+{{ contributor.geographicCoverage|length - 2 }}</span>
+                                                    {% endif %}
+                                                </div>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('admin_contributors_view', {id: contributor.id}) }}" 
+                                               class="btn btn-sm btn-outline-primary" title="Преглед">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3 text-muted">Няма contributors</h5>
+                        <p class="text-muted">Все още няма регистрирани contributors.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Country Statistics #}
+    <div class="col-lg-4">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 fw-bold text-primary">
+                    <i class="bi bi-globe-europe-africa me-2"></i>Покритие по държави
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if country_stats|length > 0 %}
+                    <div class="row">
+                        {% for country, count in country_stats|slice(0, 10) %}
+                            <div class="col-12 mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="fw-bold">{{ country }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-primary">{{ count }}</span>
+                                    </div>
+                                </div>
+                                <div class="progress mt-1" style="height: 8px;">
+                                    {% set max_count = country_stats|first %}
+                                    <div class="progress-bar" role="progressbar" 
+                                         style="width: {{ (count / max_count * 100)|round }}%" 
+                                         aria-valuenow="{{ count }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="{{ max_count }}">
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if country_stats|length > 10 %}
+                        <hr>
+                        <div class="text-center">
+                            <small class="text-muted">и още {{ country_stats|length - 10 }} държави</small>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-map text-muted" style="font-size: 2rem;"></i>
+                        <h6 class="mt-2 text-muted">Няма данни</h6>
+                        <p class="text-muted">Все още няма географско покритие.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Tier Distribution #}
+        <div class="card shadow mt-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 fw-bold text-primary">
+                    <i class="bi bi-pie-chart me-2"></i>Разпределение по Tier
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if top_contributors|length > 0 %}
+                    {% set tier_counts = {} %}
+                    {% for contributor in top_contributors %}
+                        {% set tier = contributor.tier %}
+                        {% set tier_counts = tier_counts|merge({(tier): (tier_counts[tier] ?? 0) + 1}) %}
+                    {% endfor %}
+
+                    {% for tier, count in tier_counts %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                {% if tier == 'PLATINUM' %}
+                                    <i class="bi bi-star-fill text-warning me-2"></i>
+                                    <span class="fw-bold text-warning">Platinum</span>
+                                {% elseif tier == 'GOLD' %}
+                                    <i class="bi bi-star text-warning me-2"></i>
+                                    <span class="fw-bold text-warning">Gold</span>
+                                {% elseif tier == 'SILVER' %}
+                                    <i class="bi bi-circle text-secondary me-2"></i>
+                                    <span class="fw-bold text-secondary">Silver</span>
+                                {% else %}
+                                    <i class="bi bi-circle text-muted me-2"></i>
+                                    <span class="fw-bold text-muted">Bronze</span>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <span class="badge bg-{{ tier == 'PLATINUM' or tier == 'GOLD' ? 'warning' : (tier == 'SILVER' ? 'secondary' : 'light') }}">
+                                    {{ count }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="progress mb-3" style="height: 8px;">
+                            <div class="progress-bar bg-{{ tier == 'PLATINUM' or tier == 'GOLD' ? 'warning' : (tier == 'SILVER' ? 'secondary' : 'light') }}" 
+                                 role="progressbar" 
+                                 style="width: {{ (count / top_contributors|length * 100)|round }}%" 
+                                 aria-valuenow="{{ count }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="{{ top_contributors|length }}">
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-pie-chart text-muted" style="font-size: 2rem;"></i>
+                        <h6 class="mt-2 text-muted">Няма данни</h6>
+                        <p class="text-muted">Все още няма contributors по tier-ове.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Auto-refresh every 5 minutes to keep leaderboard current
+        setTimeout(function() {
+            location.reload();
+        }, 300000);
+
+        // Add some animation to the progress bars
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.transition = 'width 1s ease-in-out';
+                    bar.style.width = width;
+                }, 100);
+            });
+        });
+    </script>
+{% endblock %}

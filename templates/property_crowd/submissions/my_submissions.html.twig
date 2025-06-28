@@ -1,0 +1,584 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Моите предложения - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .submissions-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .submissions-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .submissions-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .submissions-content {
+            padding: 2rem;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .filters-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e9ecef;
+        }
+        
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+        
+        .form-control, .form-select {
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+        }
+        
+        .btn-filter {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-filter:hover {
+            background: #5a67d8;
+        }
+        
+        .submissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .submission-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .submission-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .submission-image {
+            width: 100%;
+            height: 200px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submission-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .submission-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-under_review { background: #cce5ff; color: #004085; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .status-published { background: #d1ecf1; color: #0c5460; }
+        
+        .submission-info {
+            padding: 1.5rem;
+        }
+        
+        .submission-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .submission-location {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .submission-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        
+        .submission-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .submission-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: space-between;
+        }
+        
+        .btn-view {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-view:hover {
+            background: #5a67d8;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-edit {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-edit:hover {
+            background: #218838;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .points-earned {
+            background: linear-gradient(45deg, #ffd700, #ffb347);
+            color: #333;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .btn-new-submission {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-new-submission:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .ai-insights {
+            background: linear-gradient(45deg, #e8f5e8, #f0fff0);
+            border: 1px solid #28a745;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .ai-insights h6 {
+            color: #28a745;
+            margin-bottom: 0.5rem;
+        }
+        
+        .insight-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .insight-list li {
+            padding: 0.25rem 0;
+            font-size: 0.9rem;
+            color: #155724;
+        }
+        
+        .insight-list li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="submissions-container">
+    <div class="container">
+        <div class="submissions-card">
+            <!-- Header -->
+            <div class="submissions-header">
+                <div>
+                    <h1><i class="bi bi-list-ul me-2"></i>Моите предложения</h1>
+                    <p class="mb-0">Управлявайте и следете вашите предложения за имоти</p>
+                </div>
+                <a href="{{ path('property_crowd_submit_property') }}" class="btn-new-submission">
+                    <i class="bi bi-plus-lg me-1"></i>Ново предложение
+                </a>
+            </div>
+            
+            <!-- Content -->
+            <div class="submissions-content">
+                <!-- Statistics -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <span class="stat-number">{{ stats.total_submissions }}</span>
+                        <span class="stat-label">Общо предложения</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">{{ stats.approved_submissions }}</span>
+                        <span class="stat-label">Одобрени</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">{{ stats.pending_submissions }}</span>
+                        <span class="stat-label">В процес</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">{{ stats.total_points }}</span>
+                        <span class="stat-label">Спечелени точки</span>
+                    </div>
+                </div>
+                
+                <!-- Filters -->
+                <div class="filters-section">
+                    <form method="GET" class="filter-form">
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label class="filter-label">Статус</label>
+                                <select name="status" class="form-select">
+                                    <option value="">Всички статуси</option>
+                                    <option value="pending" {{ filters.status == 'pending' ? 'selected' : '' }}>В очакване</option>
+                                    <option value="under_review" {{ filters.status == 'under_review' ? 'selected' : '' }}>Под ревизия</option>
+                                    <option value="approved" {{ filters.status == 'approved' ? 'selected' : '' }}>Одобрено</option>
+                                    <option value="rejected" {{ filters.status == 'rejected' ? 'selected' : '' }}>Отхвърлено</option>
+                                    <option value="published" {{ filters.status == 'published' ? 'selected' : '' }}>Публикувано</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label class="filter-label">Държава</label>
+                                <select name="country" class="form-select">
+                                    <option value="">Всички държави</option>
+                                    {% for country in countries %}
+                                        <option value="{{ country.code }}" {{ filters.country == country.code ? 'selected' : '' }}>
+                                            {{ country.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label class="filter-label">Тип имот</label>
+                                <select name="property_type" class="form-select">
+                                    <option value="">Всички типове</option>
+                                    <option value="industrial" {{ filters.property_type == 'industrial' ? 'selected' : '' }}>Индустриален</option>
+                                    <option value="commercial" {{ filters.property_type == 'commercial' ? 'selected' : '' }}>Търговски</option>
+                                    <option value="warehouse" {{ filters.property_type == 'warehouse' ? 'selected' : '' }}>Складов</option>
+                                    <option value="office" {{ filters.property_type == 'office' ? 'selected' : '' }}>Офис</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <button type="submit" class="btn-filter">
+                                    <i class="bi bi-funnel me-1"></i>Филтрирай
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                {% if submissions is not empty %}
+                    <!-- Submissions Grid -->
+                    <div class="submissions-grid">
+                        {% for submission in submissions %}
+                            <div class="submission-card">
+                                <div class="submission-image">
+                                    {% if submission.images is not empty %}
+                                        <img src="{{ asset('uploads/submissions/' ~ submission.images.first.filename) }}" 
+                                             alt="{{ submission.title }}">
+                                    {% else %}
+                                        <i class="bi bi-image" style="font-size: 3rem;"></i>
+                                    {% endif %}
+                                    
+                                    <span class="submission-status status-{{ submission.status|lower }}">
+                                        {% if submission.status == 'PENDING' %}В очакване
+                                        {% elseif submission.status == 'UNDER_REVIEW' %}Под ревизия
+                                        {% elseif submission.status == 'APPROVED' %}Одобрено
+                                        {% elseif submission.status == 'REJECTED' %}Отхвърлено
+                                        {% elseif submission.status == 'PUBLISHED' %}Публикувано
+                                        {% else %}{{ submission.status }}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                
+                                <div class="submission-info">
+                                    <h5 class="submission-title">{{ submission.title }}</h5>
+                                    
+                                    <div class="submission-location">
+                                        <i class="bi bi-geo-alt"></i>
+                                        {{ submission.city }}, {{ submission.country }}
+                                    </div>
+                                    
+                                    <div class="submission-meta">
+                                        <span>
+                                            <i class="bi bi-calendar"></i>
+                                            {{ submission.submittedAt|date('d.m.Y') }}
+                                        </span>
+                                        
+                                        {% if submission.pointsEarned > 0 %}
+                                            <span class="points-earned">
+                                                +{{ submission.pointsEarned }} точки
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    {% if submission.estimatedPrice %}
+                                        <div class="submission-price">
+                                            {{ submission.estimatedPrice|number_format(0, '', ' ') }} €
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="submission-actions">
+                                        <a href="{{ path('property_crowd_submission_detail', {'id': submission.id}) }}" 
+                                           class="btn-view">
+                                            <i class="bi bi-eye me-1"></i>Преглед
+                                        </a>
+                                        
+                                        {% if submission.status in ['PENDING', 'REJECTED'] %}
+                                            <a href="{{ path('property_crowd_submission_edit', {'id': submission.id}) }}" 
+                                               class="btn-edit">
+                                                <i class="bi bi-pencil me-1"></i>Редактиране
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    {% if submission.aiInsights %}
+                                        <div class="ai-insights">
+                                            <h6><i class="bi bi-robot me-1"></i>AI Препоръки</h6>
+                                            <ul class="insight-list">
+                                                {% for insight in submission.aiInsights|slice(0, 3) %}
+                                                    <li>{{ insight }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if pagination %}
+                        <div class="pagination-wrapper">
+                            {{ knp_pagination_render(pagination) }}
+                        </div>
+                    {% endif %}
+                    
+                {% else %}
+                    <!-- Empty State -->
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <h4>Все още няmate предложения</h4>
+                        <p>Започнете да допринасяте към европейската мрежа от индустриални имоти!</p>
+                        <a href="{{ path('property_crowd_submit_property') }}" class="btn-new-submission">
+                            <i class="bi bi-plus-lg me-1"></i>Предложете първия си имот
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="text-center mt-3">
+            <a href="{{ path('property_crowd_dashboard') }}" class="btn btn-outline-light me-2">
+                <i class="bi bi-house"></i> Таблон
+            </a>
+            <a href="{{ path('property_crowd_profile_view') }}" class="btn btn-outline-light me-2">
+                <i class="bi bi-person"></i> Профил
+            </a>
+            <a href="{{ path('property_crowd_leaderboard') }}" class="btn btn-outline-light">
+                <i class="bi bi-trophy"></i> Класация
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-refresh for pending submissions
+            const pendingCards = document.querySelectorAll('.status-pending, .status-under_review');
+            if (pendingCards.length > 0) {
+                // Check for updates every 30 seconds
+                setInterval(() => {
+                    // You can implement AJAX calls here to check for status updates
+                    console.log('Checking for submission updates...');
+                }, 30000);
+            }
+            
+            // Submission card hover effects
+            const submissionCards = document.querySelectorAll('.submission-card');
+            submissionCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Filter form enhancement
+            const filterForm = document.querySelector('.filter-form');
+            const filterSelects = filterForm.querySelectorAll('select');
+            
+            filterSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    // Auto-submit form when filters change
+                    if (this.value !== '') {
+                        filterForm.submit();
+                    }
+                });
+            });
+            
+            // Tooltip for status badges
+            const statusBadges = document.querySelectorAll('.submission-status');
+            statusBadges.forEach(badge => {
+                badge.title = getStatusTooltip(badge.textContent.trim());
+            });
+            
+            function getStatusTooltip(status) {
+                const tooltips = {
+                    'В очакване': 'Предложението очаква първоначална проверка',
+                    'Под ревизия': 'Предложението се проверява от нашия екип',
+                    'Одобрено': 'Предложението е одобрено и ще бъде публикувано',
+                    'Отхвърлено': 'Предложението е отхвърлено - можете да го редактирате',
+                    'Публикувано': 'Предложението е публикувано на платформата'
+                };
+                return tooltips[status] || status;
+            }
+        });
+    </script>
+{% endblock %}

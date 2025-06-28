@@ -45,6 +45,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isActive = true;
 
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: ContributorProfile::class, cascade: ['persist', 'remove'])]
+    private ?ContributorProfile $contributorProfile = null;
+
     private ?string $plainPassword = null;
 
     #[ORM\PrePersist]
@@ -178,6 +181,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getContributorProfile(): ?ContributorProfile
+    {
+        return $this->contributorProfile;
+    }
+
+    public function setContributorProfile(?ContributorProfile $contributorProfile): self
+    {
+        // Unset the owning side of the relation if necessary
+        if ($contributorProfile === null && $this->contributorProfile !== null) {
+            $this->contributorProfile->setUser(null);
+        }
+
+        // Set the owning side of the relation if necessary
+        if ($contributorProfile !== null && $contributorProfile->getUser() !== $this) {
+            $contributorProfile->setUser($this);
+        }
+
+        $this->contributorProfile = $contributorProfile;
+        return $this;
+    }
+
+    public function isContributor(): bool
+    {
+        return $this->contributorProfile !== null;
+    }
+
     /**
      * @see UserInterface
      */
@@ -185,4 +214,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->plainPassword = null;
     }
-} 
+}

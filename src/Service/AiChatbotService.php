@@ -495,7 +495,7 @@ class AiChatbotService
         $languageInstructions = $this->getLanguageInstructions($locale);
         
         $systemPrompt = "# Вашата роля
-Вие сте AI асистент за Industrial Properties Europe - водещата платформа за индустриални имоти в България и Балканите.
+Вие сте AI асистент за Industrial Properties Europe - водещата платформа за индустриални имоти в Европа и Балканите.
 
 # Инструкции за отговор
 {$languageInstructions}
@@ -608,7 +608,7 @@ class AiChatbotService
         $systemPrompt .= "\n# ИНФОРМАЦИЯ ЗА КОМПАНИЯТА:
 
 • Уебсайт: Industrial Properties Europe
-• Специализация: Индустриални недвижими имоти в България и Балканите  
+• Специализация: Индустриални недвижими имоти в Европа и Балканите  
 • Езици: български, английски, немски, руски
 • Услуги: Продажби, наем, консултации, оценки
 

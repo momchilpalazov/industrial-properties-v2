@@ -1,0 +1,720 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Предложи нов имот - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .submission-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .submission-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .submission-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            padding: 0 2rem;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: -50%;
+            width: 100%;
+            height: 2px;
+            background: #e9ecef;
+            z-index: 1;
+        }
+        
+        .step.active:not(:last-child)::after {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+        
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e9ecef;
+            color: #6c757d;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 0.5rem;
+        }
+        
+        .step.active .step-circle {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .step.completed .step-circle {
+            background: #28a745;
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .step.active .step-label {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #667eea;
+        }
+        
+        .form-section h5 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-area:hover {
+            background: #667eea15;
+            border-color: #764ba2;
+        }
+        
+        .file-upload-area.dragover {
+            background: #667eea25;
+            border-color: #667eea;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-outline-secondary {
+            border-color: #6c757d;
+            color: #6c757d;
+            border-radius: 25px;
+            padding: 0.75rem 2rem;
+            font-weight: 500;
+        }
+        
+        .required-indicator {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .help-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+        
+        .european-flag {
+            width: 24px;
+            height: 16px;
+            background: #003399;
+            position: relative;
+            border-radius: 2px;
+            margin-right: 0.5rem;
+            display: inline-block;
+        }
+        
+        .european-flag::before {
+            content: '★★★★★★★★★★★★';
+            position: absolute;
+            color: #ffcc00;
+            font-size: 8px;
+            left: 2px;
+            top: 4px;
+            letter-spacing: -1px;
+        }
+        
+        .progress-info {
+            background: linear-gradient(45deg, #667eea15, #764ba215);
+            border: 1px solid #667eea25;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+        }
+        
+        .location-finder {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .file-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .file-preview-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .file-preview-item .remove-file {
+            color: #dc3545;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="submission-container">
+    <div class="container">
+        <div class="submission-card">
+            <!-- Header -->
+            <div class="submission-header">
+                <h1 class="mb-3">
+                    <span class="european-flag"></span>
+                    Предложи нов индустриален имот
+                </h1>
+                <p class="mb-0">Допринеси за европейската база данни с индустриални имоти</p>
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step active" data-step="1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Основна информация</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Локация</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Технически данни</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Контакти</div>
+                </div>
+                <div class="step" data-step="5">
+                    <div class="step-circle">5</div>
+                    <div class="step-label">Файлове</div>
+                </div>
+            </div>
+
+            <!-- Progress Info -->
+            <div class="progress-info mx-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Награди за това предложение:</strong>
+                        <span class="text-success">+50 основни точки</span>
+                        <span class="text-info">+10 точки за всяка снимка</span>
+                        <span class="text-warning">+20 точки за документи</span>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted">Стъпка <span id="current-step">1</span> от 5</small>
+                    </div>
+                </div>
+            </div>
+
+            {{ form_start(form, {'attr': {'class': 'submission-form', 'id': 'submission-form', 'novalidate': 'novalidate'}}) }}
+
+            <!-- Step 1: Basic Information -->
+            <div class="form-step active" data-step="1">
+                <div class="px-4">
+                    <div class="form-section">
+                        <h5><i class="bi bi-building me-2"></i>Основна информация за имота</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                {{ form_row(form.propertyName) }}
+                                <div class="help-text">Въведете ясно и описателно име на имота</div>
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.propertyType) }}
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            {{ form_row(form.description) }}
+                            <div class="help-text">
+                                Детайлно описание помага на заинтересованите лица да разберат спецификите на имота
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Location -->
+            <div class="form-step" data-step="2">
+                <div class="px-4">
+                    <div class="form-section">
+                        <h5><i class="bi bi-geo-alt me-2"></i>Местоположение</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.country) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.city) }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                {{ form_row(form.address) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.postalCode) }}
+                            </div>
+                        </div>
+                        
+                        <div class="location-finder">
+                            <h6><i class="bi bi-map me-2"></i>GPS координати (опционално)</h6>
+                            <p class="mb-3">Точните GPS координати помагат за по-прецизно позициониране на имота</p>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_row(form.latitude) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_row(form.longitude) }}
+                                </div>
+                            </div>
+                            
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="find-location">
+                                <i class="bi bi-crosshair"></i> Намери автоматично
+                            </button>
+                            <button type="button" class="btn btn-outline-info btn-sm" id="show-map">
+                                <i class="bi bi-map"></i> Покажи на карта
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Technical Data -->
+            <div class="form-step" data-step="3">
+                <div class="px-4">
+                    <div class="form-section">
+                        <h5><i class="bi bi-gear me-2"></i>Технически характеристики</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ form_row(form.totalArea) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.usableArea) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.yearBuilt) }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.constructionType) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.powerSupply) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h5><i class="bi bi-wrench me-2"></i>Инфраструктура</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ form_row(form.waterSupply) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.sewageSystem) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.gasSupply) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h5><i class="bi bi-currency-euro me-2"></i>Финансова информация</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.price) }}
+                                <div class="help-text">Цената в евро помага за сравнимост в цяла Европа</div>
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.priceType) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Contact Information -->
+            <div class="form-step" data-step="4">
+                <div class="px-4">
+                    <div class="form-section">
+                        <h5><i class="bi bi-person-badge me-2"></i>Контактна информация</h5>
+                        <p class="text-muted mb-3">
+                            Тази информация ще бъде видима за заинтересованите лица
+                        </p>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.contactName) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.contactCompany) }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.contactEmail) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.contactPhone) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h5><i class="bi bi-info-circle me-2"></i>Допълнителна информация</h5>
+                        {{ form_row(form.additionalInfo) }}
+                        <div class="help-text">
+                            Споменете специални условия, ограничения, предимства или всяка друга важна информация
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Files -->
+            <div class="form-step" data-step="5">
+                <div class="px-4">
+                    <div class="form-section">
+                        <h5><i class="bi bi-images me-2"></i>Снимки на имота</h5>
+                        <p class="text-muted mb-3">
+                            Качете снимки на имота, които показват неговите характеристики и състояние
+                        </p>
+                        
+                        <div class="file-upload-area" id="image-upload">
+                            <i class="bi bi-cloud-upload" style="font-size: 3rem; color: #667eea;"></i>
+                            <h6 class="mt-2">Плъзнете снимки тук или кликнете за избор</h6>
+                            <p class="text-muted">Поддържани формати: JPEG, PNG, GIF (до 5MB на снимка)</p>
+                            {{ form_widget(form.images, {'attr': {'style': 'display: none;'}}) }}
+                        </div>
+                        <div class="file-preview" id="image-preview"></div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h5><i class="bi bi-file-earmark-text me-2"></i>Документи</h5>
+                        <p class="text-muted mb-3">
+                            Качете релевантни документи като планове, сертификати, договори и др.
+                        </p>
+                        
+                        <div class="file-upload-area" id="document-upload">
+                            <i class="bi bi-file-earmark-arrow-up" style="font-size: 3rem; color: #667eea;"></i>
+                            <h6 class="mt-2">Плъзнете документи тук или кликнете за избор</h6>
+                            <p class="text-muted">Поддържани формати: PDF, Word, Excel (до 10MB на файл)</p>
+                            {{ form_widget(form.documents, {'attr': {'style': 'display: none;'}}) }}
+                        </div>
+                        <div class="file-preview" id="document-preview"></div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h5><i class="bi bi-check-circle me-2"></i>Потвърждение</h5>
+                        
+                        <div class="form-check mb-3">
+                            {{ form_widget(form.dataAccuracy) }}
+                            {{ form_label(form.dataAccuracy) }}
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            {{ form_widget(form.shareAgreement) }}
+                            {{ form_label(form.shareAgreement) }}
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h6><i class="bi bi-info-circle me-2"></i>Информация за обработката</h6>
+                            <p class="mb-0">
+                                Вашето предложение ще бъде прегледано от нашия екип в рамките на 2-3 работни дни.
+                                След одобрение, имотът ще бъде публикуван в европейската база данни и ще получите
+                                съответните точки във вашия профил.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="px-4 pb-4">
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" id="prev-btn" style="display: none;">
+                        <i class="bi bi-arrow-left"></i> Назад
+                    </button>
+                    <div></div>
+                    <button type="button" class="btn btn-primary" id="next-btn">
+                        Напред <i class="bi bi-arrow-right"></i>
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submit-btn" style="display: none;">
+                        <i class="bi bi-send"></i> Изпрати предложение
+                    </button>
+                </div>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentStep = 1;
+            const totalSteps = 5;
+            
+            // Step navigation
+            function updateStepDisplay() {
+                // Update step indicator
+                document.querySelectorAll('.step').forEach((step, index) => {
+                    const stepNum = index + 1;
+                    step.classList.remove('active', 'completed');
+                    
+                    if (stepNum < currentStep) {
+                        step.classList.add('completed');
+                    } else if (stepNum === currentStep) {
+                        step.classList.add('active');
+                    }
+                });
+                
+                // Update form steps
+                document.querySelectorAll('.form-step').forEach((step, index) => {
+                    step.classList.remove('active');
+                    if (index + 1 === currentStep) {
+                        step.classList.add('active');
+                    }
+                });
+                
+                // Update navigation buttons
+                document.getElementById('prev-btn').style.display = currentStep > 1 ? 'block' : 'none';
+                document.getElementById('next-btn').style.display = currentStep < totalSteps ? 'block' : 'none';
+                document.getElementById('submit-btn').style.display = currentStep === totalSteps ? 'block' : 'none';
+                
+                // Update current step indicator
+                document.getElementById('current-step').textContent = currentStep;
+            }
+            
+            // Next button
+            document.getElementById('next-btn').addEventListener('click', function() {
+                if (validateCurrentStep()) {
+                    currentStep++;
+                    updateStepDisplay();
+                    scrollToTop();
+                }
+            });
+            
+            // Previous button
+            document.getElementById('prev-btn').addEventListener('click', function() {
+                currentStep--;
+                updateStepDisplay();
+                scrollToTop();
+            });
+            
+            // Step validation
+            function validateCurrentStep() {
+                const currentStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+                const requiredFields = currentStepElement.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+                
+                return isValid;
+            }
+            
+            function scrollToTop() {
+                document.querySelector('.submission-card').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+            
+            // File upload functionality
+            function setupFileUpload(uploadAreaId, inputId, previewId, fileType) {
+                const uploadArea = document.getElementById(uploadAreaId);
+                const fileInput = document.querySelector(`input[id*="${inputId}"]`);
+                const preview = document.getElementById(previewId);
+                
+                if (!uploadArea || !fileInput) return;
+                
+                uploadArea.addEventListener('click', () => fileInput.click());
+                
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+                
+                uploadArea.addEventListener('dragleave', () => {
+                    uploadArea.classList.remove('dragover');
+                });
+                
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    fileInput.files = e.dataTransfer.files;
+                    updateFilePreview(fileInput.files, preview, fileType);
+                });
+                
+                fileInput.addEventListener('change', () => {
+                    updateFilePreview(fileInput.files, preview, fileType);
+                });
+            }
+            
+            function updateFilePreview(files, preview, fileType) {
+                preview.innerHTML = '';
+                
+                Array.from(files).forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-preview-item';
+                    
+                    const icon = fileType === 'image' ? 'bi-image' : 'bi-file-earmark-text';
+                    
+                    fileItem.innerHTML = `
+                        <i class="bi ${icon}"></i>
+                        <span>${file.name}</span>
+                        <small class="text-muted">(${(file.size / 1024 / 1024).toFixed(2)} MB)</small>
+                        <span class="remove-file" data-index="${index}">×</span>
+                    `;
+                    
+                    preview.appendChild(fileItem);
+                });
+                
+                // Add remove file functionality
+                preview.querySelectorAll('.remove-file').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = parseInt(e.target.dataset.index);
+                        removeFile(files, index, preview, fileType);
+                    });
+                });
+            }
+            
+            function removeFile(files, index, preview, fileType) {
+                const dt = new DataTransfer();
+                Array.from(files).forEach((file, i) => {
+                    if (i !== index) dt.items.add(file);
+                });
+                
+                const fileInput = fileType === 'image' ? 
+                    document.querySelector('input[id*="images"]') : 
+                    document.querySelector('input[id*="documents"]');
+                    
+                fileInput.files = dt.files;
+                updateFilePreview(dt.files, preview, fileType);
+            }
+            
+            // Setup file uploads
+            setupFileUpload('image-upload', 'images', 'image-preview', 'image');
+            setupFileUpload('document-upload', 'documents', 'document-preview', 'document');
+            
+            // Location finder
+            document.getElementById('find-location')?.addEventListener('click', function() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        document.querySelector('input[id*="latitude"]').value = position.coords.latitude.toFixed(6);
+                        document.querySelector('input[id*="longitude"]').value = position.coords.longitude.toFixed(6);
+                    });
+                } else {
+                    alert('Geolocation не се поддържа от този браузър.');
+                }
+            });
+            
+            // Form validation on submit
+            document.getElementById('submission-form').addEventListener('submit', function(e) {
+                if (!validateCurrentStep()) {
+                    e.preventDefault();
+                    alert('Моля попълнете всички задължителни полета преди да изпратите формата.');
+                }
+            });
+            
+            // Initialize
+            updateStepDisplay();
+        });
+    </script>
+{% endblock %}
