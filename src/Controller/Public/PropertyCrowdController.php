@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/property-crowd', name: 'property_crowd_')]
 class PropertyCrowdController extends AbstractController
@@ -24,7 +25,8 @@ class PropertyCrowdController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private SubmissionAiService $submissionAiService,
-        private ContributorService $contributorService
+        private ContributorService $contributorService,
+        private UserPasswordHasherInterface $passwordHasher
     ) {}
 
     /**
@@ -73,6 +75,19 @@ class PropertyCrowdController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                // If no user is associated, create a new user
+                if (!$contributorProfile->getUser()) {
+                    $newUser = new User();
+                    $newUser->setEmail($contributorProfile->getEmail());
+                    $newUser->setName($contributorProfile->getFullName());
+                    // Set a temporary password - user will need to verify email and set real password
+                    $newUser->setPassword($this->passwordHasher->hashPassword($newUser, bin2hex(random_bytes(16))));
+                    $newUser->setRoles(['ROLE_CONTRIBUTOR']);
+                    
+                    $this->entityManager->persist($newUser);
+                    $contributorProfile->setUser($newUser);
+                }
+
                 // Generate European ID
                 $europeanId = $this->submissionAiService->generateEuropeanId($contributorProfile);
                 $contributorProfile->setEuropeanId($europeanId);

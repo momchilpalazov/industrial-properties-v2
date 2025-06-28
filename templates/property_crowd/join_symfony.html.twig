@@ -1,0 +1,268 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Join PropertyCrowd Europe - Become a Contributor{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .registration-header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #059669 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .form-section {
+            padding: 60px 0;
+            background: #F9FAFB;
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 16px;
+            padding: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 2px solid #E5E7EB;
+            padding: 12px 16px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+            outline: none;
+        }
+        
+        .btn-success {
+            background: #059669;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 32px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .btn-success:hover {
+            background: #047857;
+        }
+        
+        .text-danger {
+            color: #DC2626 !important;
+        }
+        
+        .checkbox-group .form-check {
+            margin-bottom: 0.75rem;
+        }
+        
+        .checkbox-group .form-check-input {
+            margin-top: 0.25rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="registration-header">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-4">
+            🇪🇺 Join PropertyCrowd Europe
+        </h1>
+        <p class="lead">
+            Become a verified contributor to Europe's premier industrial property platform
+        </p>
+        <div class="mt-4">
+            <span class="badge bg-light text-dark me-2">🏭 Industrial Properties</span>
+            <span class="badge bg-light text-dark me-2">💰 Earn Rewards</span>
+            <span class="badge bg-light text-dark">🏆 Build Reputation</span>
+        </div>
+    </div>
+</div>
+
+<div class="form-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="form-container">
+                    <h2 class="text-center mb-4">Contributor Registration</h2>
+                    <p class="text-center text-muted mb-5">
+                        Fill out the form below to join our network of verified property contributors
+                    </p>
+                    
+                    {{ form_start(form, {'attr': {'class': 'contributor-registration-form'}}) }}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.fullName) }}
+                                {{ form_widget(form.fullName, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.fullName) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.email) }}
+                                {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.email) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.phone) }}
+                                {{ form_widget(form.phone, {'attr': {'class': 'form-control', 'placeholder': '+359 XXX XXX XXX'}}) }}
+                                {{ form_errors(form.phone) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.country) }}
+                                {{ form_widget(form.country, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.country) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.city) }}
+                                {{ form_widget(form.city, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.city) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.company) }}
+                                {{ form_widget(form.company, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.company) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.professionalBackground) }}
+                                {{ form_widget(form.professionalBackground, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.professionalBackground) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.experience) }}
+                                {{ form_widget(form.experience, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.experience) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.motivation) }}
+                        {{ form_widget(form.motivation, {'attr': {'class': 'form-control', 'rows': 4, 'placeholder': 'Tell us about your motivation to contribute to Europe\'s industrial property ecosystem...'}}) }}
+                        {{ form_errors(form.motivation) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.languagesSpoken) }}
+                        <div class="checkbox-group">
+                            {{ form_widget(form.languagesSpoken) }}
+                        </div>
+                        {{ form_errors(form.languagesSpoken) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="form-check">
+                            {{ form_widget(form.agreeToTerms, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(form.agreeToTerms, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                            {{ form_errors(form.agreeToTerms) }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="form-check">
+                            {{ form_widget(form.subscribeNewsletter, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(form.subscribeNewsletter, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                            {{ form_errors(form.subscribeNewsletter) }}
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            🚀 Join PropertyCrowd Europe
+                        </button>
+                    </div>
+                    
+                    {{ form_end(form) }}
+                    
+                    <div class="text-center mt-4">
+                        <p class="text-muted small">
+                            By registering, you agree to our 
+                            <a href="#" class="text-primary">Terms of Service</a> and 
+                            <a href="#" class="text-primary">Privacy Policy</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+            <h3 class="mb-4">Why Join PropertyCrowd Europe?</h3>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card border-0 h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-cash-coin text-success" style="font-size: 3rem;"></i>
+                            </div>
+                            <h5>Earn Rewards</h5>
+                            <p class="text-muted">Get paid for quality property submissions and gain VIP promotions</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card border-0 h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-star-fill text-warning" style="font-size: 3rem;"></i>
+                            </div>
+                            <h5>Build Reputation</h5>
+                            <p class="text-muted">Advance through tiers and become a recognized expert</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card border-0 h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-network-widearea text-primary" style="font-size: 3rem;"></i>
+                            </div>
+                            <h5>Network Access</h5>
+                            <p class="text-muted">Connect with Europe's industrial property professionals</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

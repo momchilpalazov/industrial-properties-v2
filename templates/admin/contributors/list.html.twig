@@ -2,7 +2,7 @@
 
 {% block title %}Contributors List - PropertyCrowd Europe{% endblock %}
 
-{% block content %}
+{% block body %}
 <div class="row">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -36,10 +36,10 @@
                 <label for="tier" class="form-label">Tier</label>
                 <select class="form-select" id="tier" name="tier">
                     <option value="">Всички tier-ове</option>
-                    <option value="BRONZE" {{ filters.tier == 'BRONZE' ? 'selected' : '' }}>Bronze</option>
-                    <option value="SILVER" {{ filters.tier == 'SILVER' ? 'selected' : '' }}>Silver</option>
-                    <option value="GOLD" {{ filters.tier == 'GOLD' ? 'selected' : '' }}>Gold</option>
-                    <option value="PLATINUM" {{ filters.tier == 'PLATINUM' ? 'selected' : '' }}>Platinum</option>
+                    <option value="BRONZE" {{ (filters.tier ?? '') == 'BRONZE' ? 'selected' : '' }}>Bronze</option>
+                    <option value="SILVER" {{ (filters.tier ?? '') == 'SILVER' ? 'selected' : '' }}>Silver</option>
+                    <option value="GOLD" {{ (filters.tier ?? '') == 'GOLD' ? 'selected' : '' }}>Gold</option>
+                    <option value="PLATINUM" {{ (filters.tier ?? '') == 'PLATINUM' ? 'selected' : '' }}>Platinum</option>
                 </select>
             </div>
             <div class="col-md-3 d-flex align-items-end">

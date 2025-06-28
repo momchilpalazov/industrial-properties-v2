@@ -2,7 +2,7 @@
 
 {% block title %}Property Submissions - PropertyCrowd Europe{% endblock %}
 
-{% block content %}
+{% block body %}
 <div class="row">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -84,47 +84,52 @@
                                             {% endif %}
                                         </div>
                                         <div>
-                                            <div class="fw-bold">{{ submission.propertyName }}</div>
-                                            {% if submission.description %}
+                                            <div class="fw-bold">{{ submission.titleBg ?? submission.titleEn ?? 'Няма заглавие' }}</div>
+                                            {% if submission.descriptionBg or submission.descriptionEn %}
                                                 <div class="small text-muted">
-                                                    {{ submission.description|length > 100 ? submission.description|slice(0, 100) ~ '...' : submission.description }}
+                                                    {% set description = submission.descriptionBg ?? submission.descriptionEn %}
+                                                    {{ description|length > 100 ? description|slice(0, 100) ~ '...' : description }}
                                                 </div>
                                             {% endif %}
-                                            {% if submission.totalArea %}
+                                            {% if submission.area %}
                                                 <div class="small text-info">
-                                                    <i class="bi bi-rulers me-1"></i>{{ submission.totalArea }} кв.м
+                                                    <i class="bi bi-rulers me-1"></i>{{ submission.area }} кв.м
                                                 </div>
                                             {% endif %}
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-2">
-                                            {% set tier = submission.contributor.tier %}
-                                            {% if tier == 'PLATINUM' %}
-                                                <i class="bi bi-star-fill text-warning"></i>
-                                            {% elseif tier == 'GOLD' %}
-                                                <i class="bi bi-star text-warning"></i>
-                                            {% elseif tier == 'SILVER' %}
-                                                <i class="bi bi-circle text-secondary"></i>
-                                            {% else %}
-                                                <i class="bi bi-circle text-muted"></i>
-                                            {% endif %}
+                                    {% if submission.submittedBy %}
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-2">
+                                                {% set tier = submission.submittedBy.tier %}
+                                                {% if tier == 'PLATINUM' %}
+                                                    <i class="bi bi-star-fill text-warning"></i>
+                                                {% elseif tier == 'GOLD' %}
+                                                    <i class="bi bi-star text-warning"></i>
+                                                {% elseif tier == 'SILVER' %}
+                                                    <i class="bi bi-circle text-secondary"></i>
+                                                {% else %}
+                                                    <i class="bi bi-circle text-muted"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                <a href="{{ path('admin_contributors_view', {id: submission.submittedBy.id}) }}" 
+                                                   class="text-decoration-none">
+                                                    {{ submission.submittedBy.fullName }}
+                                                </a>
+                                                <div class="small text-muted">{{ submission.submittedBy.europeanId }}</div>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <a href="{{ path('admin_contributors_view', {id: submission.contributor.id}) }}" 
-                                               class="text-decoration-none">
-                                                {{ submission.contributor.fullName }}
-                                            </a>
-                                            <div class="small text-muted">{{ submission.contributor.europeanId }}</div>
-                                        </div>
-                                    </div>
+                                    {% else %}
+                                        <span class="text-muted">Неизвестен contributor</span>
+                                    {% endif %}
                                 </td>
                                 <td>
                                     <div>
                                         <i class="bi bi-geo-alt me-1"></i>
-                                        {{ submission.city }}, {{ submission.country }}
+                                        {{ submission.locationBg ?? submission.locationEn ?? 'Непознато' }}, {{ submission.country }}
                                     </div>
                                     {% if submission.address %}
                                         <div class="small text-muted">{{ submission.address }}</div>
@@ -132,7 +137,7 @@
                                 </td>
                                 <td>
                                     <span class="badge bg-secondary">
-                                        {{ submission.propertyType|replace({'_': ' '})|title }}
+                                        Индустриален
                                     </span>
                                 </td>
                                 <td>
@@ -140,8 +145,8 @@
                                         <div class="fw-bold text-success">
                                             {{ submission.price|number_format(0, '.', ',') }} €
                                         </div>
-                                        {% if submission.priceType %}
-                                            <div class="small text-muted">{{ submission.priceType|replace({'_': ' '})|title }}</div>
+                                        {% if submission.pricePerSqm %}
+                                            <div class="small text-muted">{{ submission.pricePerSqm }} €/кв.м</div>
                                         {% endif %}
                                     {% else %}
                                         <span class="text-muted">-</span>
@@ -151,9 +156,13 @@
                                     <span class="badge bg-{{ submission.status == 'approved' ? 'success' : (submission.status == 'rejected' ? 'danger' : 'warning') }}">
                                         {{ submission.status|title }}
                                     </span>
-                                    {% if submission.reviewedAt %}
+                                    {% if submission.status == 'approved' and submission.approvedAt %}
                                         <div class="small text-muted">
-                                            {{ submission.reviewedAt|date('d.m.Y H:i') }}
+                                            {{ submission.approvedAt|date('d.m.Y H:i') }}
+                                        </div>
+                                    {% elseif submission.status == 'rejected' and submission.rejectedAt %}
+                                        <div class="small text-muted">
+                                            {{ submission.rejectedAt|date('d.m.Y H:i') }}
                                         </div>
                                     {% endif %}
                                 </td>

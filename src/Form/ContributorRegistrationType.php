@@ -129,6 +129,7 @@ class ContributorRegistrationType extends AbstractType
             ])
             ->add('languagesSpoken', ChoiceType::class, [
                 'label' => 'Езици които говорите',
+                'property_path' => 'languages',
                 'choices' => [
                     'Български' => 'bg',
                     'English' => 'en',

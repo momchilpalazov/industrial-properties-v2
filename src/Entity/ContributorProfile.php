@@ -56,6 +56,27 @@ class ContributorProfile
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $linkedinProfile = null;
 
+    #[ORM\Column(length: 2, nullable: true)]
+    private ?string $country = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $city = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $professionalBackground = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $experience = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $motivation = null;
+
+    #[ORM\Column]
+    private bool $agreeToTerms = false;
+
+    #[ORM\Column]
+    private bool $subscribeNewsletter = false;
+
     #[ORM\Column(type: Types::JSON)]
     private array $languages = [];
 
@@ -226,6 +247,83 @@ class ContributorProfile
     public function setLinkedinProfile(?string $linkedinProfile): static
     {
         $this->linkedinProfile = $linkedinProfile;
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): static
+    {
+        $this->country = $country;
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): static
+    {
+        $this->city = $city;
+        return $this;
+    }
+
+    public function getProfessionalBackground(): ?string
+    {
+        return $this->professionalBackground;
+    }
+
+    public function setProfessionalBackground(?string $professionalBackground): static
+    {
+        $this->professionalBackground = $professionalBackground;
+        return $this;
+    }
+
+    public function getExperience(): ?string
+    {
+        return $this->experience;
+    }
+
+    public function setExperience(?string $experience): static
+    {
+        $this->experience = $experience;
+        return $this;
+    }
+
+    public function getMotivation(): ?string
+    {
+        return $this->motivation;
+    }
+
+    public function setMotivation(?string $motivation): static
+    {
+        $this->motivation = $motivation;
+        return $this;
+    }
+
+    public function isAgreeToTerms(): bool
+    {
+        return $this->agreeToTerms;
+    }
+
+    public function setAgreeToTerms(bool $agreeToTerms): static
+    {
+        $this->agreeToTerms = $agreeToTerms;
+        return $this;
+    }
+
+    public function isSubscribeNewsletter(): bool
+    {
+        return $this->subscribeNewsletter;
+    }
+
+    public function setSubscribeNewsletter(bool $subscribeNewsletter): static
+    {
+        $this->subscribeNewsletter = $subscribeNewsletter;
         return $this;
     }
 
@@ -575,5 +673,24 @@ class ContributorProfile
             self::TIER_PLATINUM => 'Platinum Authority',
             self::TIER_DIAMOND => 'Diamond Pioneer'
         ];
+    }
+
+    /**
+     * Get email from the associated User entity
+     */
+    public function getEmail(): ?string
+    {
+        return $this->user?->getEmail();
+    }
+
+    /**
+     * Set email on the associated User entity
+     */
+    public function setEmail(string $email): static
+    {
+        if ($this->user) {
+            $this->user->setEmail($email);
+        }
+        return $this;
     }
 }

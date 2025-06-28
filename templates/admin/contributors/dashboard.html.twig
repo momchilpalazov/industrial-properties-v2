@@ -2,7 +2,7 @@
 
 {% block title %}PropertyCrowd Europe - Dashboard{% endblock %}
 
-{% block content %}
+{% block body %}
 <div class="row">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -185,14 +185,14 @@
                                 </span>
                             </div>
                             <div class="flex-grow-1">
-                                <div class="fw-bold">{{ submission.propertyName }}</div>
+                                <div class="fw-bold">{{ submission.titleBg ?? submission.titleEn ?? 'Без заглавие' }}</div>
                                 <div class="small text-muted">
-                                    {{ submission.city }}, {{ submission.country }} • 
+                                    {{ submission.address ?? (submission.locationBg ?? submission.locationEn) }}, {{ submission.country }} • 
                                     {{ submission.submittedAt|date('d.m.Y H:i') }}
                                 </div>
                             </div>
                             <div>
-                                <a href="{{ path('admin_contributors_view', {id: submission.contributor.id}) }}" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ path('admin_contributors_view', {id: submission.submittedBy.id}) }}" class="btn btn-sm btn-outline-primary">
                                     Виж
                                 </a>
                             </div>

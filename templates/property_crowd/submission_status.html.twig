@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Статус на предложение #{{ submission.id }} - PropertyCrowd Europe{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">
+                    <i class="bi bi-house-check me-2"></i>
+                    Статус на предложение #{{ submission.id }}
+                </h1>
+                <a href="{{ path('property_crowd_my_submissions') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Назад към моите предложения
+                </a>
+            </div>
+
+            <!-- Submission Status Card -->
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ submission.propertyName }}</h5>
+                        <span class="badge bg-{{ submission.status == 'approved' ? 'success' : (submission.status == 'rejected' ? 'danger' : 'warning') }} fs-6">
+                            {{ submission.status|title }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Property Info -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <strong>Локация:</strong><br>
+                            <i class="bi bi-geo-alt me-1"></i>{{ submission.city }}, {{ submission.country }}
+                            {% if submission.address %}
+                                <br><small class="text-muted">{{ submission.address }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Тип имот:</strong><br>
+                            <span class="badge bg-secondary">{{ submission.propertyType|replace({'_': ' '})|title }}</span>
+                        </div>
+                    </div>
+
+                    {% if submission.price %}
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <strong>Цена:</strong><br>
+                            <span class="text-success fw-bold">{{ submission.price|number_format(0, '.', ',') }} €</span>
+                            {% if submission.priceType %}
+                                <br><small class="text-muted">{{ submission.priceType|replace({'_': ' '})|title }}</small>
+                            {% endif %}
+                        </div>
+                        {% if submission.totalArea %}
+                        <div class="col-md-6">
+                            <strong>Обща площ:</strong><br>
+                            {{ submission.totalArea }} кв.м
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Status Timeline -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6>Хронология на обработката:</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <strong>Подадено:</strong> {{ submission.submittedAt|date('d.m.Y H:i') }}
+                                </li>
+                                {% if submission.aiProcessedAt %}
+                                <li class="mb-2">
+                                    <i class="bi bi-robot text-info me-2"></i>
+                                    <strong>AI анализ:</strong> {{ submission.aiProcessedAt|date('d.m.Y H:i') }}
+                                </li>
+                                {% endif %}
+                                {% if submission.status == 'approved' and submission.approvedAt %}
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <strong>Одобрено:</strong> {{ submission.approvedAt|date('d.m.Y H:i') }}
+                                </li>
+                                {% elseif submission.status == 'rejected' and submission.rejectedAt %}
+                                <li class="mb-2">
+                                    <i class="bi bi-x-circle text-danger me-2"></i>
+                                    <strong>Отхвърлено:</strong> {{ submission.rejectedAt|date('d.m.Y H:i') }}
+                                    {% if submission.rejectionReason %}
+                                        <br><small class="text-muted">Причина: {{ submission.rejectionReason }}</small>
+                                    {% endif %}
+                                </li>
+                                {% else %}
+                                <li class="mb-2">
+                                    <i class="bi bi-clock text-warning me-2"></i>
+                                    <strong>В процес на обработка...</strong>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    {% if submission.description %}
+                    <div class="mt-4">
+                        <h6>Описание:</h6>
+                        <p class="text-muted">{{ submission.description }}</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- AI Analysis Results -->
+                    {% if submission.aiAnalysis %}
+                    <div class="mt-4">
+                        <h6>AI анализ:</h6>
+                        <div class="alert alert-info">
+                            <small>{{ submission.aiAnalysis }}</small>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Points Earned -->
+                    {% if submission.status == 'approved' %}
+                    <div class="mt-4">
+                        <div class="alert alert-success">
+                            <i class="bi bi-star me-2"></i>
+                            <strong>Поздравления!</strong> Вашето предложение е одобрено и сте спечелили точки.
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Actions -->
+            {% if submission.status == 'pending' %}
+            <div class="mt-4 text-center">
+                <div class="alert alert-warning">
+                    <i class="bi bi-clock me-2"></i>
+                    Вашето предложение се обработва. Ще получите известие при промяна на статуса.
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

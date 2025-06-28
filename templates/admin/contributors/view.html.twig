@@ -173,16 +173,16 @@
                                 {% for submission in submissions %}
                                     <tr>
                                         <td>
-                                            <div class="fw-bold">{{ submission.propertyName }}</div>
+                                            <div class="fw-bold">{{ submission.titleBg ?? submission.titleEn ?? 'Без заглавие' }}</div>
                                             {% if submission.price %}
                                                 <div class="small text-muted">{{ submission.price|number_format(0, '.', ',') }} EUR</div>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            {{ submission.city }}, {{ submission.country }}
+                                            {{ submission.address ?? (submission.locationBg ?? submission.locationEn) }}, {{ submission.country }}
                                         </td>
                                         <td>
-                                            <span class="badge bg-secondary">{{ submission.propertyType|replace({'_': ' '})|title }}</span>
+                                            <span class="badge bg-secondary">{{ submission.type ? submission.type.name : 'Неопределен тип' }}</span>
                                         </td>
                                         <td>
                                             <span class="badge bg-{{ submission.status == 'approved' ? 'success' : (submission.status == 'rejected' ? 'danger' : 'warning') }}">

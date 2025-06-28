@@ -50,7 +50,8 @@ class ContributorRewardRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cr')
             ->where('cr.contributor = :contributor')
             ->setParameter('contributor', $contributor)
-            ->orderBy('cr.earnedAt', 'DESC')
+            ->orderBy('cr.awardedAt', 'DESC')
+            ->addOrderBy('cr.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }
@@ -63,7 +64,8 @@ class ContributorRewardRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cr')
             ->where('cr.type = :type')
             ->setParameter('type', $type)
-            ->orderBy('cr.earnedAt', 'DESC')
+            ->orderBy('cr.awardedAt', 'DESC')
+            ->addOrderBy('cr.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }
@@ -76,7 +78,8 @@ class ContributorRewardRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cr')
             ->where('cr.status = :status')
             ->setParameter('status', $status)
-            ->orderBy('cr.earnedAt', 'DESC')
+            ->orderBy('cr.awardedAt', 'DESC')
+            ->addOrderBy('cr.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }
@@ -89,7 +92,7 @@ class ContributorRewardRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cr')
             ->where('cr.status = :status')
             ->setParameter('status', 'pending')
-            ->orderBy('cr.earnedAt', 'ASC')
+            ->orderBy('cr.createdAt', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -206,7 +209,7 @@ class ContributorRewardRepository extends ServiceEntityRepository
             ->select('COUNT(cr.id) as rewards_count')
             ->addSelect('SUM(cr.points) as total_points')
             ->addSelect('SUM(cr.monetaryValue) as total_monetary')
-            ->where('cr.earnedAt BETWEEN :start AND :end')
+            ->where('cr.awardedAt BETWEEN :start AND :end')
             ->andWhere('cr.status = :status')
             ->setParameter('start', $startDate)
             ->setParameter('end', $endDate)
@@ -225,7 +228,8 @@ class ContributorRewardRepository extends ServiceEntityRepository
             ->andWhere('cr.type = :type')
             ->setParameter('contributor', $contributor)
             ->setParameter('type', $type)
-            ->orderBy('cr.earnedAt', 'DESC')
+            ->orderBy('cr.awardedAt', 'DESC')
+            ->addOrderBy('cr.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }
@@ -259,7 +263,8 @@ class ContributorRewardRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('cr')
             ->where('cr.status = :status')
             ->setParameter('status', 'awarded')
-            ->orderBy('cr.earnedAt', 'DESC')
+            ->orderBy('cr.awardedAt', 'DESC')
+            ->addOrderBy('cr.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();

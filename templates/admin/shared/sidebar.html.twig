@@ -50,6 +50,66 @@
                     Промоции
                 </a>
             </li>
+            
+            <!-- PropertyCrowd Europe Section -->
+            <li class="nav-item mt-3">
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>PropertyCrowd Europe</span>
+                </h6>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_contributors_dashboard' %}active{% endif %}" 
+                   href="{{ path('admin_contributors_dashboard') }}">
+                    <i class="bi bi-speedometer2"></i>
+                    Contributors Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_contributors_list' or app.request.get('_route') starts with 'admin_contributors_view' %}active{% endif %}" 
+                   href="{{ path('admin_contributors_list') }}">
+                    <i class="bi bi-people"></i>
+                    Contributors
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_contributors_submissions' %}active{% endif %}" 
+                   href="{{ path('admin_contributors_submissions') }}">
+                    <i class="bi bi-house-add"></i>
+                    Submissions
+                    {% set pending_submissions = 0 %}
+                    {% if pending_submissions > 0 %}
+                        <span class="badge bg-warning ms-2">{{ pending_submissions }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_contributors_rewards' %}active{% endif %}" 
+                   href="{{ path('admin_contributors_rewards') }}">
+                    <i class="bi bi-gift"></i>
+                    Rewards
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_contributors_leaderboard' %}active{% endif %}" 
+                   href="{{ path('admin_contributors_leaderboard') }}">
+                    <i class="bi bi-trophy"></i>
+                    Leaderboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.get('_route') starts with 'admin_contributors_analytics' %}active{% endif %}" 
+                   href="{{ path('admin_contributors_analytics') }}">
+                    <i class="bi bi-graph-up"></i>
+                    Analytics
+                </a>
+            </li>
+            
+            <!-- Divider -->
+            <li class="nav-item mt-3">
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>System Management</span>
+                </h6>
+            </li>
             <li class="nav-item">
                 <a class="nav-link {% if app.request.get('_route') starts with 'admin_blog' and not app.request.get('_route') starts with 'admin_blog_category' %}active{% endif %}" 
                    href="{{ path('admin_blog_index') }}">

@@ -1,5 +1,5 @@
 // Service Worker за кеширане на ресурси
-const CACHE_NAME = 'industrial-properties-v2.9';
+const CACHE_NAME = 'industrial-properties-v3.0';
 const STATIC_CACHE = [
     '/',
     '/favicon.svg',
@@ -47,14 +47,21 @@ self.addEventListener('fetch', (event) => {
     const { request } = event;
     const url = new URL(request.url);
 
+    // Кешираме само GET заявки
+    if (request.method !== 'GET') {
+        return;
+    }
+
     // За HTML файлове използваме Network First
     if (request.destination === 'document') {
         event.respondWith(
             fetch(request)
                 .then((response) => {
-                    const responseClone = response.clone();
-                    caches.open(CACHE_NAME)
-                        .then((cache) => cache.put(request, responseClone));
+                    if (response.status === 200) {
+                        const responseClone = response.clone();
+                        caches.open(CACHE_NAME)
+                            .then((cache) => cache.put(request, responseClone));
+                    }
                     return response;
                 })
                 .catch(() => caches.match(request))
@@ -74,9 +81,11 @@ self.addEventListener('fetch', (event) => {
                     }
                     return fetch(request)
                         .then((response) => {
-                            const responseClone = response.clone();
-                            caches.open(CACHE_NAME)
-                                .then((cache) => cache.put(request, responseClone));
+                            if (response.status === 200) {
+                                const responseClone = response.clone();
+                                caches.open(CACHE_NAME)
+                                    .then((cache) => cache.put(request, responseClone));
+                            }
                             return response;
                         });
                 })

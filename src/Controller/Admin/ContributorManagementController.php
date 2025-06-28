@@ -48,51 +48,68 @@ class ContributorManagementController extends AbstractController
     #[Route('/', name: 'dashboard')]
     public function dashboard(): Response
     {
-        // Get overall statistics
+        // Get real stats from database
         $stats = [
-            'total_contributors' => $this->contributorRepository->createQueryBuilder('cp')
+            'total_contributors' => 0,
+            'pending_submissions' => 0,
+            'approved_submissions_today' => 0,
+            'pending_rewards' => 0
+        ];
+
+        try {
+            // Count total contributors
+            $stats['total_contributors'] = $this->contributorRepository->createQueryBuilder('cp')
                 ->select('COUNT(cp.id)')
                 ->getQuery()
-                ->getSingleScalarResult(),
-                
-            'pending_submissions' => $this->submissionRepository->createQueryBuilder('ps')
+                ->getSingleScalarResult();
+
+            // Count pending submissions
+            $stats['pending_submissions'] = $this->submissionRepository->createQueryBuilder('ps')
                 ->select('COUNT(ps.id)')
                 ->where('ps.status = :status')
                 ->setParameter('status', PropertySubmission::STATUS_PENDING)
                 ->getQuery()
-                ->getSingleScalarResult(),
-                
-            'approved_submissions_today' => $this->submissionRepository->createQueryBuilder('ps')
+                ->getSingleScalarResult();
+
+            // Count approved submissions today
+            $today = new \DateTime();
+            $today->setTime(0, 0, 0);
+            $stats['approved_submissions_today'] = $this->submissionRepository->createQueryBuilder('ps')
                 ->select('COUNT(ps.id)')
                 ->where('ps.status = :status')
-                ->andWhere('ps.reviewedAt >= :today')
+                ->andWhere('ps.approvedAt >= :today')
                 ->setParameter('status', PropertySubmission::STATUS_APPROVED)
-                ->setParameter('today', new \DateTime('today'))
+                ->setParameter('today', $today)
                 ->getQuery()
-                ->getSingleScalarResult(),
-                
-            'pending_rewards' => $this->rewardRepository->createQueryBuilder('cr')
-                ->select('COUNT(cr.id)')
-                ->where('cr.status = :status')
-                ->setParameter('status', ContributorReward::STATUS_PENDING)
+                ->getSingleScalarResult();
+
+            // Get recent submissions for display
+            $recentSubmissions = $this->submissionRepository->createQueryBuilder('ps')
+                ->leftJoin('ps.submittedBy', 'cp')
+                ->addSelect('cp')
+                ->orderBy('ps.submittedAt', 'DESC')
+                ->setMaxResults(10)
                 ->getQuery()
-                ->getSingleScalarResult()
-        ];
+                ->getResult();
 
-        // Get top contributors
-        $topContributors = $this->contributorService->getEuropeanLeaderboard(10);
+            // Get top contributors
+            $topContributors = $this->contributorRepository->createQueryBuilder('cp')
+                ->orderBy('cp.contributionScore', 'DESC')
+                ->setMaxResults(10)
+                ->getQuery()
+                ->getResult();
 
-        // Get recent submissions
-        $recentSubmissions = $this->submissionRepository->createQueryBuilder('ps')
-            ->orderBy('ps.submittedAt', 'DESC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
+        } catch (\Exception $e) {
+            // Log error but continue with defaults
+            error_log('Dashboard stats error: ' . $e->getMessage());
+            $topContributors = [];
+            $recentSubmissions = [];
+        }
 
         return $this->render('admin/contributors/dashboard.html.twig', [
             'stats' => $stats,
-            'top_contributors' => $topContributors,
-            'recent_submissions' => $recentSubmissions
+            'top_contributors' => $topContributors ?? [],
+            'recent_submissions' => $recentSubmissions ?? []
         ]);
     }
 
@@ -140,25 +157,6 @@ class ContributorManagementController extends AbstractController
     }
 
     /**
-     * View contributor details
-     */
-    #[Route('/{id}', name: 'view')]
-    public function viewContributor(ContributorProfile $contributor): Response
-    {
-        $stats = $this->contributorService->getContributorStats($contributor);
-        
-        $submissions = $contributor->getPropertySubmissions();
-        $rewards = $contributor->getRewards();
-
-        return $this->render('admin/contributors/view.html.twig', [
-            'contributor' => $contributor,
-            'stats' => $stats,
-            'submissions' => $submissions,
-            'rewards' => $rewards
-        ]);
-    }
-
-    /**
      * European leaderboard
      */
     #[Route('/leaderboard', name: 'leaderboard')]
@@ -192,10 +190,13 @@ class ContributorManagementController extends AbstractController
     {
         $status = $request->query->get('status', PropertySubmission::STATUS_PENDING);
         
+        // Get submissions with joined contributor data
         $submissions = $this->submissionRepository->createQueryBuilder('ps')
+            ->leftJoin('ps.submittedBy', 'cp')
+            ->addSelect('cp')
             ->where('ps.status = :status')
             ->setParameter('status', $status)
-            ->orderBy('ps.submittedAt', 'ASC')
+            ->orderBy('ps.submittedAt', 'DESC')
             ->getQuery()
             ->getResult();
 
@@ -350,11 +351,11 @@ class ContributorManagementController extends AbstractController
     #[Route('/analytics', name: 'analytics')]
     public function analytics(): Response
     {
-        // Country coverage analysis
+        // Country coverage analysis - use the country field directly
         $countryCoverage = $this->contributorRepository->createQueryBuilder('cp')
-            ->select('gc.country, COUNT(cp.id) as contributor_count')
-            ->join('cp.geographicCoverage', 'gc') // This needs to be adjusted based on actual structure
-            ->groupBy('gc.country')
+            ->select('cp.country, COUNT(cp.id) as contributor_count')
+            ->where('cp.country IS NOT NULL')
+            ->groupBy('cp.country')
             ->orderBy('contributor_count', 'DESC')
             ->getQuery()
             ->getResult();
@@ -387,10 +388,43 @@ class ContributorManagementController extends AbstractController
             ->getQuery()
             ->getResult();
 
+        // Total contributors count
+        $totalContributors = $this->contributorRepository->createQueryBuilder('cp')
+            ->select('COUNT(cp.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Total submissions count
+        $totalSubmissions = $this->submissionRepository->createQueryBuilder('ps')
+            ->select('COUNT(ps.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Approved submissions count for success rate
+        $approvedSubmissions = $this->submissionRepository->createQueryBuilder('ps')
+            ->select('COUNT(ps.id)')
+            ->where('ps.status = :status')
+            ->setParameter('status', 'approved')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Success rate calculation
+        $successRate = $totalSubmissions > 0 ? round(($approvedSubmissions / $totalSubmissions) * 100, 1) : 0;
+
+        // Total rewards count
+        $totalRewards = $this->rewardRepository->createQueryBuilder('cr')
+            ->select('COUNT(cr.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
         return $this->render('admin/contributors/analytics.html.twig', [
             'country_coverage' => $countryCoverage,
             'monthly_growth' => $monthlyGrowth,
-            'tier_distribution' => $tierDistribution
+            'tier_distribution' => $tierDistribution,
+            'total_contributors' => $totalContributors,
+            'total_submissions' => $totalSubmissions,
+            'success_rate' => $successRate,
+            'total_rewards' => $totalRewards
         ]);
     }
 
@@ -423,5 +457,24 @@ class ContributorManagementController extends AbstractController
         $response->headers->set('Content-Disposition', 'attachment; filename="property_crowd_contributors_' . date('Y_m_d') . '.csv"');
 
         return $response;
+    }
+
+    /**
+     * View contributor details
+     */
+    #[Route('/{id}', name: 'view')]
+    public function viewContributor(ContributorProfile $contributor): Response
+    {
+        $stats = $this->contributorService->getContributorStats($contributor);
+        
+        $submissions = $contributor->getPropertySubmissions();
+        $rewards = $contributor->getRewards();
+
+        return $this->render('admin/contributors/view.html.twig', [
+            'contributor' => $contributor,
+            'stats' => $stats,
+            'submissions' => $submissions,
+            'rewards' => $rewards
+        ]);
     }
 }
