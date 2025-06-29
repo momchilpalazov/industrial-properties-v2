@@ -101,7 +101,7 @@
                                                 <button type="button" class="btn btn-outline-info" 
                                                         data-bs-toggle="modal" 
                                                         data-bs-target="#viewRewardModal"
-                                                        data-reward='{{ reward|json_encode|e('html_attr') }}'
+                                                        data-reward-id="{{ reward.id }}"
                                                         title="Детайли">
                                                     <i class="bi bi-eye"></i>
                                                 </button>
@@ -383,40 +383,172 @@
             if (viewRewardModal) {
                 viewRewardModal.addEventListener('show.bs.modal', function(event) {
                     const button = event.relatedTarget;
-                    const rewardData = JSON.parse(button.getAttribute('data-reward'));
+                    const rewardId = button.getAttribute('data-reward-id');
                     const modalBody = document.getElementById('viewRewardBody');
+                    const modalLabel = document.getElementById('viewRewardModalLabel');
                     
+                    // Reset content
                     modalBody.innerHTML = `
-                        <div class="row">
-                            <div class="col-sm-4"><strong>Contributor:</strong></div>
-                            <div class="col-sm-8">${rewardData.contributor.fullName} (${rewardData.contributor.europeanId})</div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-4"><strong>Тип награда:</strong></div>
-                            <div class="col-sm-8">
-                                <span class="badge bg-info">${rewardData.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Зареждане...</span>
                             </div>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-4"><strong>Точки:</strong></div>
-                            <div class="col-sm-8"><strong class="text-success">+${rewardData.amount}</strong></div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-4"><strong>Описание:</strong></div>
-                            <div class="col-sm-8">${rewardData.description}</div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-4"><strong>Създаден:</strong></div>
-                            <div class="col-sm-8">${new Date(rewardData.createdAt.date).toLocaleDateString('bg-BG')} ${new Date(rewardData.createdAt.date).toLocaleTimeString('bg-BG')}</div>
-                        </div>
                     `;
+                    
+                    modalLabel.textContent = `Детайли за награда #${rewardId}`;
+                    
+                    // Load reward details via AJAX
+                    fetch(`/admin/contributors/rewards/${rewardId}/details`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (!data || typeof data !== 'object') {
+                                throw new Error('Invalid response data');
+                            }
+                            
+                            modalBody.innerHTML = `
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="card mb-3">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Информация за наградата</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <table class="table table-sm">
+                                                    <tr>
+                                                        <td><strong>ID:</strong></td>
+                                                        <td>${data.id}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Тип:</strong></td>
+                                                        <td>
+                                                            <span class="badge bg-info">
+                                                                ${data.type ? data.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Неопределен'}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Сума:</strong></td>
+                                                        <td><strong class="text-success">+${data.amount} ${data.currency || 'Точки'}</strong></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Статус:</strong></td>
+                                                        <td>
+                                                            <span class="badge bg-${data.status === 'approved' ? 'success' : (data.status === 'rejected' ? 'danger' : 'warning')}">
+                                                                ${data.status === 'approved' ? 'Одобрена' : (data.status === 'rejected' ? 'Отхвърлена' : 'Чака одобрение')}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Дата на създаване:</strong></td>
+                                                        <td>${data.created_at || 'Неизвестна'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Дата на награждаване:</strong></td>
+                                                        <td>${data.awarded_at || 'Не е награден още'}</td>
+                                                    </tr>
+                                                    ${data.approved_at ? `
+                                                    <tr>
+                                                        <td><strong>Дата на одобрение:</strong></td>
+                                                        <td>${data.approved_at}</td>
+                                                    </tr>
+                                                    ` : ''}
+                                                </table>
+                                            </div>
+                                        </div>
+                                        
+                                        ${data.description ? `
+                                        <div class="card mb-3">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Описание</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                ${data.description}
+                                            </div>
+                                        </div>
+                                        ` : ''}
+                                        
+                                        ${data.notes ? `
+                                        <div class="card mb-3">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Бележки</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                ${data.notes}
+                                            </div>
+                                        </div>
+                                        ` : ''}
+                                        
+                                        ${data.rejection_reason ? `
+                                        <div class="card mb-3">
+                                            <div class="card-header bg-danger text-white">
+                                                <h6 class="mb-0">Причина за отхвърляне</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                ${data.rejection_reason}
+                                            </div>
+                                        </div>
+                                        ` : ''}
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        ${data.contributor ? `
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Contributor</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-2"><strong>${data.contributor.full_name}</strong></div>
+                                                <div class="small text-muted mb-1">ID: ${data.contributor.european_id}</div>
+                                                <div class="small text-muted mb-1">Tier: 
+                                                    <span class="badge bg-${data.contributor.tier === 'PLATINUM' ? 'warning' : (data.contributor.tier === 'GOLD' ? 'warning' : (data.contributor.tier === 'SILVER' ? 'secondary' : 'light'))}">
+                                                        ${data.contributor.tier}
+                                                    </span>
+                                                </div>
+                                                ${data.contributor.company ? `<div class="small text-muted">${data.contributor.company}</div>` : ''}
+                                            </div>
+                                        </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        })
+                        .catch(error => {
+                            console.error('Error loading reward details:', error);
+                            modalBody.innerHTML = `
+                                <div class="alert alert-danger">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    Грешка при зареждане на детайлите: ${error.message}<br>
+                                    Моля, опитайте отново или се свържете с администратор.
+                                </div>
+                            `;
+                            
+                            // Auto-close modal after 3 seconds on error
+                            setTimeout(() => {
+                                const modal = bootstrap.Modal.getInstance(viewRewardModal);
+                                if (modal) {
+                                    modal.hide();
+                                }
+                            }, 3000);
+                        });
                 });
             }
             
+            // Fix for aria-hidden accessibility warning
+            document.addEventListener('hidden.bs.modal', function (event) {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (modal.style.display === 'none' || !modal.classList.contains('show')) {
+                        modal.setAttribute('aria-hidden', 'true');
+                    }
+                });
+            });
+
             // Handle reject reward modal
             const rejectRewardModal = document.getElementById('rejectRewardModal');
             if (rejectRewardModal) {

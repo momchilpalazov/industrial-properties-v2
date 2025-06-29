@@ -294,11 +294,20 @@ class PropertyCrowdController extends AbstractController
 
         $countries = $this->contributorService->getActiveCountries();
         $tiers = ContributorProfile::getTiersList();
+        $countryStats = $this->contributorService->getCountryStats();
 
+        // Split leaderboard data for different template sections
+        $top_contributors = array_slice($leaderboard, 0, 3); // Top 3 for podium
+        $contributors = $leaderboard; // Full list for table
+        
         return $this->render('property_crowd/leaderboard.html.twig', [
-            'leaderboard' => $leaderboard,
+            'top_contributors' => $top_contributors,
+            'contributors' => $contributors,
             'countries' => $countries,
             'tiers' => $tiers,
+            'country_stats' => $countryStats,
+            'total_pages' => ceil(count($leaderboard) / 50), // Simple pagination
+            'current_page' => 1,
             'filters' => [
                 'period' => $period,
                 'country' => $country,

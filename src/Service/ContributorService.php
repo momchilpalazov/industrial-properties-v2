@@ -304,12 +304,38 @@ class ContributorService
         $submissions = $contributor->getPropertySubmissions();
         $rewards = $contributor->getRewards();
         
+        // Calculate submission statistics
+        $approvedSubmissions = 0;
+        $pendingSubmissions = 0;
+        $rejectedSubmissions = 0;
+        
+        foreach ($submissions as $submission) {
+            switch ($submission->getStatus()) {
+                case 'approved':
+                    $approvedSubmissions++;
+                    break;
+                case 'pending':
+                    $pendingSubmissions++;
+                    break;
+                case 'rejected':
+                    $rejectedSubmissions++;
+                    break;
+            }
+        }
+        
+        $totalSubmissions = count($submissions);
+        $successRate = $totalSubmissions > 0 ? ($approvedSubmissions / $totalSubmissions) * 100 : 0;
+        
         return [
             'european_id' => $contributor->getEuropeanId(),
             'tier' => $contributor->getTier(),
             'contribution_score' => $contributor->getContributionScore(),
             'total_submissions' => $contributor->getTotalSubmissions(),
             'approved_properties' => $contributor->getApprovedProperties(),
+            'approved_submissions' => $approvedSubmissions,
+            'pending_submissions' => $pendingSubmissions,
+            'rejected_submissions' => $rejectedSubmissions,
+            'success_rate' => $successRate,
             'total_rewards' => count($rewards),
             'join_date' => $contributor->getCreatedAt(),
             'rank_european' => $this->getContributorRank($contributor),
@@ -929,5 +955,54 @@ class ContributorService
                 "Price range within market expectations"
             ]
         ];
+    }
+
+    /**
+     * Get country statistics for leaderboard
+     */
+    public function getCountryStats(): array
+    {
+        // Get all contributors with their geographic coverage
+        $qb = $this->entityManager->createQueryBuilder();
+        $contributors = $qb->select('cp.geographicCoverage')
+            ->from(ContributorProfile::class, 'cp')
+            ->where('cp.geographicCoverage IS NOT NULL')
+            ->andWhere('cp.geographicCoverage != :empty')
+            ->setParameter('empty', '[]')
+            ->getQuery()
+            ->getResult();
+
+        // Parse geographic coverage and count by country
+        $countryCounts = [];
+        foreach ($contributors as $contributor) {
+            $coverage = $contributor['geographicCoverage'];
+            
+            // Handle both array and JSON string formats
+            if (is_string($coverage)) {
+                $coverage = json_decode($coverage, true);
+            }
+            
+            if (is_array($coverage)) {
+                foreach ($coverage as $countryCode) {
+                    $countryCounts[$countryCode] = ($countryCounts[$countryCode] ?? 0) + 1;
+                }
+            }
+        }
+
+        // Sort by count and format for template
+        arsort($countryCounts);
+        
+        $countryStats = [];
+        foreach ($countryCounts as $countryCode => $count) {
+            $countryName = self::EUROPEAN_COUNTRIES[$countryCode] ?? $countryCode;
+            
+            $countryStats[] = [
+                'country_code' => $countryCode,
+                'country_name' => $countryName,
+                'contributors' => $count
+            ];
+        }
+
+        return $countryStats;
     }
 }

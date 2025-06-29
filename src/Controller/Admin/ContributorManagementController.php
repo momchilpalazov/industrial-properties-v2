@@ -477,4 +477,79 @@ class ContributorManagementController extends AbstractController
             'rewards' => $rewards
         ]);
     }
+
+    /**
+     * Get submission details for modal view
+     */
+    #[Route('/submissions/{id}/details', name: 'submission_details', methods: ['GET'])]
+    public function getSubmissionDetails(PropertySubmission $submission): Response
+    {
+        $contributor = $submission->getSubmittedBy();
+        
+        return $this->json([
+            'id' => $submission->getId(),
+            'submission_id' => $submission->getSubmissionId(),
+            'title_bg' => $submission->getTitleBg(),
+            'title_en' => $submission->getTitleEn(),
+            'description_bg' => $submission->getDescriptionBg(),
+            'description_en' => $submission->getDescriptionEn(),
+            'price' => $submission->getPrice(),
+            'price_per_sqm' => $submission->getPricePerSqm(),
+            'area' => $submission->getArea(),
+            'address' => $submission->getAddress(),
+            'location_bg' => $submission->getLocationBg(),
+            'location_en' => $submission->getLocationEn(),
+            'country' => $submission->getCountry(),
+            'type' => $submission->getType() ? $submission->getType()->getName() : null,
+            'status' => $submission->getStatus(),
+            'submitted_at' => $submission->getSubmittedAt()?->format('d.m.Y H:i'),
+            'year_built' => $submission->getYearBuilt(),
+            'available_from' => $submission->getAvailableFrom()?->format('d.m.Y'),
+            'rejection_reason' => $submission->getRejectionReason(),
+            'contributor' => $contributor ? [
+                'id' => $contributor->getId(),
+                'full_name' => $contributor->getFullName(),
+                'european_id' => $contributor->getEuropeanId(),
+                'tier' => $contributor->getTier(),
+                'company' => $contributor->getCompany()
+            ] : null,
+            'images' => $submission->getImages()
+        ]);
+    }
+
+    /**
+     * Get reward details for modal view
+     */
+    #[Route('/rewards/{id}/details', name: 'reward_details', methods: ['GET'])]
+    public function getRewardDetails(ContributorReward $reward): Response
+    {
+        try {
+            $contributor = $reward->getContributor();
+            
+            $data = [
+                'id' => $reward->getId(),
+                'type' => $reward->getType(),
+                'amount' => $reward->getAmount(),
+                'currency' => $reward->getCurrency(),
+                'description' => $reward->getDescription(),
+                'status' => $reward->getStatus(),
+                'awarded_at' => $reward->getAwardedAt()?->format('d.m.Y H:i'),
+                'approved_at' => $reward->getApprovedAt()?->format('d.m.Y H:i'),
+                'created_at' => $reward->getCreatedAt()?->format('d.m.Y H:i'),
+                'rejection_reason' => $reward->getRejectionReason(),
+                'notes' => $reward->getNotes(),
+                'contributor' => $contributor ? [
+                    'id' => $contributor->getId(),
+                    'full_name' => $contributor->getFullName(),
+                    'european_id' => $contributor->getEuropeanId(),
+                    'tier' => $contributor->getTier(),
+                    'company' => $contributor->getCompany()
+                ] : null
+            ];
+            
+            return $this->json($data);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

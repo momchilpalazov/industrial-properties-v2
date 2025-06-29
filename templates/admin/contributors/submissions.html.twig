@@ -318,6 +318,7 @@
                     const button = event.relatedTarget;
                     const submissionId = button.getAttribute('data-submission-id');
                     const modalBody = document.getElementById('viewModalBody');
+                    const modalLabel = document.getElementById('viewModalLabel');
                     
                     // Reset content
                     modalBody.innerHTML = `
@@ -328,17 +329,132 @@
                         </div>
                     `;
                     
-                    // Load submission details (simplified placeholder)
-                    // In real implementation, you would fetch detailed data via AJAX
-                    setTimeout(() => {
-                        modalBody.innerHTML = `
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle me-2"></i>
-                                Детайлен преглед на предложение #${submissionId}
-                            </div>
-                            <p>Тази функционалност може да бъде разширена с AJAX заявка за пълни детайли на предложението.</p>
-                        `;
-                    }, 500);
+                    modalLabel.textContent = `Детайли за предложение #${submissionId}`;
+                    
+                    // Load submission details via AJAX
+                    fetch(`/admin/contributors/submissions/${submissionId}/details`)
+                        .then(response => response.json())
+                        .then(data => {
+                            modalBody.innerHTML = `
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="card mb-3">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Основна информация</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <table class="table table-sm">
+                                                    <tr>
+                                                        <td><strong>ID:</strong></td>
+                                                        <td>${data.submission_id || data.id}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Заглавие (BG):</strong></td>
+                                                        <td>${data.title_bg || 'Не е указано'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Заглавие (EN):</strong></td>
+                                                        <td>${data.title_en || 'Не е указано'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Цена:</strong></td>
+                                                        <td>${data.price ? data.price + ' EUR' : 'Не е указана'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Площ:</strong></td>
+                                                        <td>${data.area || 'Не е указана'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Адрес:</strong></td>
+                                                        <td>${data.address || 'Не е указан'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Локация (BG):</strong></td>
+                                                        <td>${data.location_bg || 'Не е указана'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Локация (EN):</strong></td>
+                                                        <td>${data.location_en || 'Не е указана'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Държава:</strong></td>
+                                                        <td>${data.country || 'Не е указана'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Тип:</strong></td>
+                                                        <td>${data.type || 'Не е указан'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Година на строеж:</strong></td>
+                                                        <td>${data.year_built || 'Не е указана'}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Свободен от:</strong></td>
+                                                        <td>${data.available_from || 'Не е указано'}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        
+                                        ${data.description_bg || data.description_en ? `
+                                        <div class="card mb-3">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Описание</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                ${data.description_bg ? `<div class="mb-3"><strong>Български:</strong><br>${data.description_bg}</div>` : ''}
+                                                ${data.description_en ? `<div><strong>English:</strong><br>${data.description_en}</div>` : ''}
+                                            </div>
+                                        </div>
+                                        ` : ''}
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="card mb-3">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Статус</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <span class="badge bg-${data.status === 'approved' ? 'success' : (data.status === 'rejected' ? 'danger' : 'warning')} fs-6">
+                                                    ${data.status === 'approved' ? 'Одобрено' : (data.status === 'rejected' ? 'Отхвърлено' : 'Чака одобрение')}
+                                                </span>
+                                                <div class="mt-2">
+                                                    <small class="text-muted">Подадено: ${data.submitted_at || 'Неизвестно'}</small>
+                                                </div>
+                                                ${data.rejection_reason ? `<div class="mt-2 alert alert-danger"><small><strong>Причина за отхвърляне:</strong><br>${data.rejection_reason}</small></div>` : ''}
+                                            </div>
+                                        </div>
+                                        
+                                        ${data.contributor ? `
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Contributor</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-2"><strong>${data.contributor.full_name}</strong></div>
+                                                <div class="small text-muted mb-1">ID: ${data.contributor.european_id}</div>
+                                                <div class="small text-muted mb-1">Tier: 
+                                                    <span class="badge bg-${data.contributor.tier === 'PLATINUM' ? 'warning' : (data.contributor.tier === 'GOLD' ? 'warning' : (data.contributor.tier === 'SILVER' ? 'secondary' : 'light'))}">
+                                                        ${data.contributor.tier}
+                                                    </span>
+                                                </div>
+                                                ${data.contributor.company ? `<div class="small text-muted">${data.contributor.company}</div>` : ''}
+                                            </div>
+                                        </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        })
+                        .catch(error => {
+                            console.error('Error loading submission details:', error);
+                            modalBody.innerHTML = `
+                                <div class="alert alert-danger">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    Грешка при зареждане на детайлите. Моля, опитайте отново.
+                                </div>
+                            `;
+                        });
                 });
             }
             
